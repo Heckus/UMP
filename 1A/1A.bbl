@@ -1,0 +1,66 @@
+\begin{thebibliography}{10}
+
+\bibitem{galappaththige2026pixelsprimitivesscenechange}
+C.~J. Galappaththige, J.~Lai, T.~Patten, D.~Dansereau, N.~Suenderhauf, and D.~Miller, ``From pixels to primitives: Scene change detection in 3d gaussian splatting,'' 2026.
+
+\bibitem{11128502}
+D.~Yang, J.~J. Leonard, and Y.~Girdhar, ``Seasplat: Representing underwater scenes with 3d gaussian splatting and a physically grounded image formation model,'' in {\em 2025 IEEE International Conference on Robotics and Automation (ICRA)}, pp.~7632--7638, 2025.
+
+\bibitem{li2025watersplattingfastunderwater3d}
+H.~Li, W.~Song, T.~Xu, A.~Elsig, and J.~Kulhanek, ``Watersplatting: Fast underwater 3d scene reconstruction using gaussian splatting,'' 2025.
+
+\bibitem{10897713}
+T.~Wu, Y.-J. Yuan, L.-X. Zhang, J.~Yang, Y.-P. Cao, L.-Q. Yan, and L.~Gao, ``Recent advances in 3d gaussian splatting,'' {\em Computational Visual Media}, vol.~10, no.~4, pp.~613--642, 2024.
+
+\bibitem{xu2026nasgsnoiseawaresonargaussian}
+S.~Xu, J.~Jiang, J.~S. Willners, and S.~Wang, ``Nas-gs: Noise-aware sonar gaussian splatting,'' 2026.
+
+\bibitem{s26154713}
+W.~Yang, X.~Qian, X.~Liu, and J.~Leng, ``Sonarreg-gs slam: Sparse sonar-guided depth regularization for underwater gaussian splatting slam,'' {\em Sensors}, vol.~26, no.~15, 2026.
+
+\bibitem{11223217}
+A.~V. Sethuraman, M.~Rucker, O.~Bagoren, P.-C. Kung, N.~N. Amutha, and K.~A. Skinner, ``Sonarsplat: Novel view synthesis of imaging sonar via gaussian splatting,'' {\em IEEE Robotics and Automation Letters}, vol.~10, no.~12, pp.~13312--13319, 2025.
+
+\bibitem{11184160}
+Z.~Ling, Y.~Feng, A.~Meng, R.~Xiao, S.~Pan, W.~Lu, and L.~Hu, ``Aqua-splat: Physically-informed sonar-camera gaussian splatting for underwater 3d reconstruction,'' {\em IEEE Robotics and Automation Letters}, vol.~10, no.~11, pp.~11896--11903, 2025.
+
+\bibitem{huang2025restorationreconstructionrethinking3d}
+G.~Huang, H.~Wang, Z.~Qi, W.~Lu, D.~Bull, and N.~Anantrasirichai, ``From restoration to reconstruction: Rethinking 3d gaussian splatting for underwater scenes,'' 2025.
+
+\bibitem{zhang2024recgsremovingwatercaustic}
+T.~Zhang, W.~Zhi, K.~Huang, J.~Mangelson, C.~Barbalata, and M.~Johnson-Roberson, ``Recgs: Removing water caustic with recurrent gaussian splatting,'' 2024.
+
+\bibitem{Liu_2025}
+S.~Liu, N.~Gao, Z.~Gu, H.~Dou, Y.~Deng, and H.~Li, ``Spatiotemporal degradation-aware 3d gaussian splatting for realistic underwater scene reconstruction,'' in {\em Proceedings of the 33rd ACM International Conference on Multimedia}, MM '25, pp.~141--150, ACM, Oct. 2025.
+
+\bibitem{10203316}
+D.~Levy, A.~Peleg, N.~Pearl, D.~Rosenbaum, D.~Akkaynak, S.~Korman, and T.~Treibitz, ``Seathru-nerf: Neural radiance fields in scattering media,'' in {\em 2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~56--65, 2023.
+
+\bibitem{10.3389/fmars.2025.1573612}
+X.~Fan, X.~Wang, H.~Ni, Y.~Xin, and P.~Shi, ``Water-adapted 3d gaussian splatting for precise underwater scene reconstruction,'' {\em Frontiers in Marine Science}, vol.~Volume 12 - 2025, 2025.
+
+\bibitem{jmse14060563}
+T.~Zhang, H.~Qin, Q.~Liu, and X.~Liu, ``Underwater image restoration integrating monocular depth estimation with a physical imaging model,'' {\em Journal of Marine Science and Engineering}, vol.~14, no.~6, 2026.
+
+\bibitem{s20185170}
+D.~Ngo, S.~Lee, Q.-H. Nguyen, T.~M. Ngo, G.-D. Lee, and B.~Kang, ``Single image haze removal from image enhancement perspective for real-time vision-based systems,'' {\em Sensors}, vol.~20, no.~18, 2020.
+
+\bibitem{doi:10.2352/ISSN.2470-1173.2016.18.DPMI-252}
+H.~Blasinski and J.~Farrell, ``A three parameter underwater image formation model,'' {\em Electronic Imaging}, vol.~28, no.~18, pp.~1--1, 2016.
+
+\bibitem{9880452}
+Q.~Xu, Z.~Xu, J.~Philip, S.~Bi, Z.~Shu, K.~Sunkavalli, and U.~Neumann, ``Point-nerf: Point-based neural radiance fields,'' in {\em 2022 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~5428--5438, 2022.
+
+\bibitem{zhou20253dscenechangemodeling}
+Z.~Zhou, J.~Ni, S.~Zhang, Y.~Chen, and S.~Huang, ``3d scene change modeling with consistent multi-view aggregation,'' 2025.
+
+\bibitem{10.1145/3806262.3806264}
+Q.~Zhong, W.~Liu, H.~Zhou, P.~Lu, and W.~Shi, ``3d gaussian splatting for scene editing and completion,'' in {\em Proceedings of the 2nd International Conference on Artificial Intelligence, Digital Media Technology and Social Computing}, ICAIDS '26, (New York, NY, USA), p.~14–25, Association for Computing Machinery, 2026.
+
+\bibitem{10852207}
+Z.~Lu, J.~Ye, and J.~Leonard, ``3dgs-cd: 3d gaussian splatting-based change detection for physical object rearrangement,'' {\em IEEE Robotics and Automation Letters}, vol.~10, no.~3, pp.~2662--2669, 2025.
+
+\bibitem{gordon2023field}
+S.~Gordon, E.~Aston, M.~Lechene, J.~Harianto, P.~Bray, W.~Figueira, M.~Gonzalez~Rivero, and R.~Ferrari~Legorreta, ``Field photogrammetry in {4D}. {Reef Restoration and Adaption Program (EcoRRAP)}. {Standard Operational Procedure Number 14 (1 of series): Overview and in-field workflow},'' tech. rep., Australian Institute of Marine Science, Townsville, 2023.
+
+\end{thebibliography}

@@ -4,6 +4,8 @@
 \usepackage{tabularx}
 \usepackage{enumitem}
 \usepackage{booktabs}
+\usepackage{cite}
+\usepackage{graphicx} % Required for inserting images
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5em}
@@ -22,16 +24,16 @@
 \textbf{Submit:} Electronically, via Canvas Assessment Upload (Week 5) \\
 
 \vspace{0.5cm}
-\noindent Student Name: \hrulefill \\
+\noindent Student Name: Joshua Hecke \\
 \vspace{0.2cm}
 
-\noindent Student No.: \hrulefill \\
+\noindent Student No\# : n11585382 \\
 \vspace{0.2cm}
 
-\noindent Research Topic Title: \hrulefill \\
+\noindent Research Topic Title: Investigation of Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models \\
 \vspace{0.2cm}
 
-\noindent Project Supervisor: \hrulefill \\
+\noindent Project Supervisor: Niko Sünderhauf \\
 \vspace{0.5cm}
 
 \section*{Assessment Tasks}
@@ -47,35 +49,32 @@
     \item Compile a reference list of the most useful literature on your topic.
 \end{enumerate}
 
-This assessment item will be marked by your project supervisor.
 
-On completion of this assessment, you should have formed an information research strategy that will allow you to discover evidence based scholarly, trade and professional literature that will underpin your research project proposal.
-
-Guidance is available from the QUT Library website, including relevant library Researching by study area guides.
-
-Advice is available from the HiQ service point (V block level 3), Online Help (Chat or email) or consultation (by appointment) with your engineering librarians.
 
 \section*{Concept Map : Draw and label a graphical outline view of your research question.}
-Firstly, describe the overall project objective and list any questions to be investigated. Include any scope considerations, for example, location or time-based.
+%NOTE:CONCEPT MAP BLANK FOR NOW
 
-Concept maps are graphical tools that organize knowledge and assist you to clarify the concepts and show the relationship between concepts. For further information click here.
-
-Use the space below to develop your concept map.
+\textbf{Overall Project Objective:} To research and evaluate the application of primitive-space scene change detection (specifically GS-DIFF) on 3D Gaussian Splatting models reconstructed from underwater environments. 
+\\\textbf{Questions to be investigated:}
+    \begin{itemize}
+        \item 1. Can the primitive-space comparison method (GS-DIFF) handle the specific geometric and photometric drift inherent in underwater 3DGS reconstructions?
+        \item 2. If primitive-level comparison fails due to marine noise, do render-then-compare methods (like SCAR-3D or 3DGS-CD) offer a more robust fallback by leveraging 2D foundation models?
+    \end{itemize}
+\textbf{Scope:} Focus on newly proposed 3D Gaussian Splatting methods designed for underwater environments (such as WaterSplatting, SeaSplat, and Aqua-Splat) and the application of scene change detection within these complex marine models.
 \vspace{3cm}
 
+
+
+
 \section*{Now take the terms and phrases from your concept map to develop and refine a search strategy.}
-Develop a search statement.
-
-Separately identify the key concepts you wish to search for. Click here and here for further information.
-
 \begin{table}[h]
 \centering
 \renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|p{3.5cm}|c|p{3.5cm}|c|p{3.5cm}|}
+\begin{tabular}{|>{\centering\arraybackslash}p{3.5cm}|c|>{\centering\arraybackslash}p{3.5cm}|c|>{\centering\arraybackslash}p{3.5cm}|}
 \hline
-\centering 1st Concept & AND & \centering 2nd Concept & AND & \centering\arraybackslash 3rd Concept \\
+1st Concept & AND & 2nd Concept & AND & 3rd Concept \\
 \hline
- & & & & \\[1.5cm]
+3D Gaussian Splatting & & Underwater & & Change Detection \\[1.5cm]
 \hline
 \end{tabular}
 \end{table}
@@ -85,11 +84,11 @@ Now list any synonyms (words with the same or similar meaning) that may also ret
 \begin{table}[h]
 \centering
 \renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|c|p{3.5cm}|c|p{3.5cm}|c|p{3.5cm}|c|}
+\begin{tabular}{|c|>{\centering\arraybackslash}p{3.5cm}|c|>{\centering\arraybackslash}p{3.5cm}|c|>{\centering\arraybackslash}p{3.5cm}|c|}
 \hline
-OR & \centering Synonyms & AND & \centering Synonyms & AND & \centering Synonyms & OR \tabularnewline
+OR & Synonyms & AND & Synonyms & AND & Synonyms & OR \\
 \hline
- & & & & & & \\[1.5cm]
+ & 3DGS, Radiance Field & & Marine, Subsea, Sonar & & Object Rearrangement, Monitoring & \\[1.5cm]
 \hline
 \end{tabular}
 \end{table}
@@ -100,23 +99,44 @@ e.g., spectr* will retrieve spectra, spectral, spectrometry, spectroscopy, spect
 
 List those of your search keywords that can be usefully truncated in the box below:
 
+\begin{center}
+\fbox{\parbox{0.8\textwidth}{
+\vspace{0.2cm}
+\centering underwat*, marin*, reconstruct*, detect*, splat*, change*, scene*
+\vspace{0.2cm}
+}}
+\end{center}
+
 Note that if the database supports autostemming, as Compendex, Scopus and Web of Science do by default, truncation is not required. If you do truncate the terms, that is also okay.
 
 However, with Web of Science, autostemming is not performed when a phrase is enclosed in quotation marks. If you want to stem the word or words in a phrase search, you will need to use the truncation symbol – typically *.
 
-\vspace{1cm}
+\vspace{0.5cm}
 Structure your search statement in the box below using Boolean search logic operators (AND, OR, NOT). Use parentheses ( ) so that you can order a keyword search. Enclose a literal text string in inverted commas to force an exact key phrase search. For example: ("artificial intelligence" OR "fuzzy logic") AND (power AND (distribution OR transmission))
-\vspace{2cm}
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{
+\vspace{0.2cm}
+\centering
+("3D Gaussian Splatting" OR "3DGS" OR "radiance field") \\
+AND (underwater OR marine OR subsea OR sonar) \\
+AND ("change detection" OR "object rearrangement" OR monitoring)
+\vspace{0.2cm}
+}}
+\end{center}
+
+
 
 \section*{Search for relevant engineering literature in a library database.}
 Name the most useful literature database searched: Identify this QUT Library subscribed database (and if applicable, its delivery platform). For example: QUT Library Search; Compendex (on Engineering Village); Web of Science; Scopus.
 
-\textbf{Database Name:} \hrulefill \\
+\textbf{Database Name:} IEEE Xplore \\
+\textbf{Database Platform:} IEEE \\
 
-\textbf{Database Platform:} \hrulefill \\
+\textbf{Comment on the scope:} IEEE Xplore provides extensive coverage of high-impact engineering and computer science proceedings, capturing the most recent advancements in robotics (ICRA, IROS, RA-L) and 3D computer vision (CVPR, ICCV) where state-of-the-art underwater 3DGS and change detection research is primarily published.
 
-Comment on the scope of your chosen database and why it proved to be of high value to your literature search:
-\vspace{2cm}
+
+
 
 \section*{Identify relevant and authoritative information sources.}
 List key information sources applicable and relevant to your research topic. Attempt to include at least one in each of the following three categories:
@@ -126,49 +146,79 @@ List key information sources applicable and relevant to your research topic. Att
     \item Standards (or regulations) / Patents – the finding Standards \& Patents guides will assist.
 \end{enumerate}
 
+
+
+
+
 \section*{Evaluate and analyse three (3) key references.}
-From your search results (typically these will be journal articles or conference papers or book chapters) you may use the template below to evaluate and analyse key references.
 
-\subsection*{Reference \# 1 -- Use IEEE Citation Style (or an alternative style agreed with your supervisor)}
-\textbf{Citation:} \vspace{1cm} \\
-\textbf{How does this paper relate to my topic?} \vspace{1.5cm} \\
-\textbf{What key findings are reported?} \vspace{1.5cm} \\
-\textbf{How does this paper relate to other work in the field?} \vspace{1.5cm} \\
-\textbf{Interpret important figures/tables/illustrations (cite the page number).} \vspace{1.5cm} \\
-\textbf{List other references to investigate further (a good paper can often lead to another).} \vspace{1.5cm} \\
-\textbf{General notes/observations on this paper’s attributes.} \vspace{1.5cm}
+\subsection*{Reference \# 1 }
+\textbf{Citation:} C. J. Galappaththige et al., "From Pixels to Primitives: Scene Change Detection in 3D Gaussian Splatting," \textit{arXiv preprint arXiv:2605.07203}, 2026 \cite{galappaththige2026pixelsprimitivesscenechange}.
+\begin{itemize}
+    \item \textbf{How does this paper relate to my topic?} This is the core methodological paper for the project. It introduces GS-DIFF, the primary 3DGS scene change detection method that the project aims to test and adapt for underwater environments.
+    \item \textbf{What key findings are reported?} The authors demonstrate that multi-view scene change detection can be performed directly in 3D primitive space rather than 2D rendered image space. By modeling geometric and photometric drift, GS-DIFF can accurately detect changes and distinguish between structural changes (e.g., object movement) and surface-level changes (e.g., illumination shifts) without relying on external 2D foundation models.
+    \item \textbf{How does this paper relate to other work in the field?} It breaks away from the standard "render-then-compare" paradigm used by previous state-of-the-art methods (like SCAR-3D and 3DGS-CD), eliminating the computational overhead of 2D rendering and the reliance on feature extractors like SAM.
+    \item \textbf{Interpret important figures/tables/illustrations (cite the page number).} Figure 2 (pg. 4) illustrates the pipeline, highlighting how covariance inflation is used to absorb reconstruction drift to enable direct primitive matching. Table 1 (pg. 8) shows it achieves state-of-the-art mIoU without learned features.
+    \item \textbf{List other references to investigate further.} SCAR-3D (Zhou et al., 2025) and 3DGS-CD (Lu et al., 2025) to compare against render-then-compare baselines.
+    \item \textbf{General notes/observations on this paper’s attributes.} The method is robust but heavily dependent on the quality of the underlying 3DGS reconstruction, which may pose challenges when applied to noisy underwater captures.
+\end{itemize}
 
-\subsection*{Reference \# 2 -- Use IEEE Citation Style (or an alternative style agreed with your supervisor)}
-\textbf{Citation:} \vspace{1cm} \\
-\textbf{How does this paper relate to my topic?} \vspace{1.5cm} \\
-\textbf{What key findings are reported?} \vspace{1.5cm} \\
-\textbf{How does this paper relate to other work in the field?} \vspace{1.5cm} \\
-\textbf{Interpret important figures / tables / illustrations (cite the page number).} \vspace{1.5cm} \\
-\textbf{List other references to investigate further (a good paper can often lead to another).} \vspace{1.5cm} \\
-\textbf{General notes/observations on this paper’s attributes.} \vspace{1.5cm}
+\subsection*{Reference \# 2}
+\textbf{Citation:} D. Yang, J. J. Leonard, and Y. Girdhar, "SeaSplat: Representing Underwater Scenes with 3D Gaussian Splatting and a Physically Grounded Image Formation Model," in \textit{2025 IEEE International Conference on Robotics and Automation (ICRA)}, 2025 \cite{11128502}.
+\begin{itemize}
+    \item \textbf{How does this paper relate to my topic?} SeaSplat adapts 3DGS specifically for underwater scenes, providing a framework for how marine 3DGS models are reconstructed and color-restored, which acts as the foundational representation on which we intend to perform scene change detection.
+    \item \textbf{What key findings are reported?} SeaSplat successfully combines 3D Gaussian Splatting with a physically grounded underwater image formation model. By simultaneously learning the parameters of the medium (attenuation and backscatter) alongside the 3DGS representation, it restores the scene's true color and accurately estimates geometry without the "floaters" typical of standard 3DGS in scattering media.
+    \item \textbf{How does this paper relate to other work in the field?} Unlike standard 3DGS or NeRF methods, SeaSplat explicitly models the underwater medium. It achieves real-time rendering and better visual quality compared to SeaThru-NeRF, while remaining computationally efficient.
+    \item \textbf{Interpret important figures / tables / illustrations (cite the page number).} Figure 2 (pg. 3) illustrates the splatting pipeline with the medium formation model. Figure 5 (pg. 6) showcases qualitative novel view synthesis, demonstrating how SeaSplat successfully restores underlying colors compared to baselines.
+    \item \textbf{List other references to investigate further.} WaterSplatting (Li et al., 2025) and SeaThru-NeRF (Levy et al., 2023).
+    \item \textbf{General notes/observations on this paper’s attributes.} The explicit separation of the object color and the scattering medium is highly beneficial. Change detection methods like GS-DIFF will likely perform much better if applied only to the restored "object" Gaussians rather than the medium-entangled raw representations.
+\end{itemize}
 
-\subsection*{Reference \# 3 -- Use IEEE Citation Style (or an alternative style agreed with your supervisor)}
-\textbf{Citation:} \vspace{1cm} \\
-\textbf{How does this paper relate to my topic?} \vspace{1.5cm} \\
-\textbf{What key findings are reported?} \vspace{1.5cm} \\
-\textbf{How does this paper relate to other work in the field?} \vspace{1.5cm} \\
-\textbf{Interpret important figures / tables / illustrations (cite the page number).} \vspace{1.5cm} \\
-\textbf{List other references to investigate further (a good paper can often lead to another).} \vspace{1.5cm} \\
-\textbf{General notes/observations on this paper’s attributes.} \vspace{1.5cm}
+\subsection*{Reference \# 3 }
+\textbf{Citation:} H. Li, W. Song, T. Xu, A. Elsig, and J. Kulhanek, "WaterSplatting: Fast Underwater 3D Scene Reconstruction Using Gaussian Splatting," \textit{arXiv preprint arXiv:2408.08206}, 2025 \cite{li2025watersplattingfastunderwater3d}.
+\begin{itemize}
+    \item \textbf{How does this paper relate to my topic?} It presents an alternative state-of-the-art methodology for handling scattering media with 3DGS. Evaluating how WaterSplatting handles volumetric geometry vs. surface geometry is crucial for understanding how primitive-space change detection can be applied.
+    \item \textbf{What key findings are reported?} WaterSplatting employs 3DGS for explicit geometry representation alongside a separate volumetric field (queried once per pixel) for capturing the scattering medium. This dual representation allows for rapid scene restoration and novel view synthesis, outperforming NeRF-based methods in rendering quality on underwater datasets.
+    \item \textbf{How does this paper relate to other work in the field?} Unlike SeaSplat which embeds the medium model directly into the splatting mathematics, WaterSplatting uses a separate volumetric field for the medium. This keeps the 3DGS geometry explicit and clean, which may be more suitable for primitive-level change detection algorithms.
+    \item \textbf{Interpret important figures / tables / illustrations (cite the page number).} Figure 1 (pg. 1) compares WaterSplatting's real-time restored rendering with SeaThru-NeRF. Figure 2 (pg. 4) illustrates the dual representation pipeline separating medium and object components.
+    \item \textbf{List other references to investigate further.} SeaSplat (Yang et al., 2025) to compare medium modeling approaches.
+    \item \textbf{General notes/observations on this paper’s attributes.} The separation of the scattering medium into a distinct volumetric field means the underlying 3DGS primitives purely represent scene geometry. This is an ideal input format for GS-DIFF's geometric and appearance kernels.
+\end{itemize}
+
 
 \section*{Identify and locate published authorities (experts) on your research question.}
 Name up to three (3) published authors (external to QUT) who are clearly experts on your topic. State why you believe they are an expert. You can usually judge this from the extent and quality of research material they have published and/or the extent to which their research papers have been cited. If it is given, list their latest institutional affiliation (i.e., where they work). Provide a hyperlink to your expert's academic or professional web page or their ORCiD ID that lists their recent publications, their experience and engagement with the research question/problem. Should they hold a relevant, registered patent, then state that.
 \vspace{3cm}
 
+\begin{enumerate}
+    \item \textbf{John J. Leonard (MIT):} A highly cited expert in SLAM and marine robotics. He is a co-author of several highly relevant recent papers applying 3DGS to robotics and underwater scenes, including SeaSplat and 3DGS-CD. \href{https://scholar.google.com/citations?user=Rk1kG2gAAAAJ}{Google Scholar Profile}.
+    \vspace{0.2cm}
+    \item \textbf{Bernhard Kerbl (Inria):} The original lead author of the seminal 3D Gaussian Splatting paper. He is a recognized authority in real-time rendering and neural radiance fields, forming the foundation of the 3DGS representations used in this project. \href{https://scholar.google.com/citations?user=51M6a-oAAAAJ}{Google Scholar Profile}.
+    \vspace{0.2cm}
+    \item \textbf{Lin Gao (Chinese Academy of Sciences):} An expert in computer graphics and 3D vision, and co-author of a comprehensive recent review on 3D Gaussian splatting advancements \cite{10897713}. He has extensive experience in 3D modeling and neural rendering techniques. \href{https://scholar.google.com/citations?user=5wFzZkUAAAAJ}{Google Scholar Profile}.
+\end{enumerate}
+
 \section*{Identify, categorize and synthesize findings from your examination of the literature.}
 Categorise major findings (issues, trends or themes) apparent in your preliminary investigation of the literature.
 \vspace{3cm}
+
+\begin{itemize}
+    \item \textbf{Adaptation of 3DGS to Marine Environments:} There is a rapid emergence of 3DGS methods tailored for underwater conditions (e.g., WaterSplatting, SeaSplat, Aqua-Splat, SonarReg-GS, RecGS). These models specifically address marine challenges like light scattering, wavelength-dependent attenuation, and caustics, often by explicitly separating the scene geometry from the scattering medium.
+    \item \textbf{Primitive-Space Scene Change Detection:} Concurrently, change detection in 3DGS is shifting towards direct "primitive-space" comparison (e.g., GS-DIFF) which eliminates the reliance on 2D feature extractors by comparing the Gaussians' geometric and photometric parameters directly.
+    \item \textbf{Synthesis \& Gap:} While new underwater 3DGS methods effectively restore scene geometry and color, and primitive-space change detection algorithms like GS-DIFF provide robust 3D change localization in air, the combination of these two advancements remains unexplored. There is a significant gap in understanding how primitive-space change detection performs on the unique primitive structures generated by underwater 3DGS reconstructions. This gap motivates the research project to explore the feasibility and performance of combining methods like WaterSplatting/SeaSplat with GS-DIFF for robust change detection in marine environments.
+\end{itemize}
 
 \section*{Explain the impact of your literature evaluation on the design of your research project.}
 Describe and explain what impact these findings might have on the direction, focus or scope of your research project.
 \vspace{3cm}
 
+The findings from the literature evaluation directly shape the risk management and methodology of the project design. 
+Firstly, because underwater 3DGS reconstructions are inherently noisier (higher geometric and photometric drift due to scattering and poor visibility), the project will need to focus heavily on modifying the covariance inflation and adaptive color bandwidth parameters within the GS-DIFF algorithm to handle this exacerbated drift. 
+Secondly, recognizing that direct primitive-space comparison might prove too brittle on severely degraded underwater models, the project design now incorporates a staged fallback strategy. If GS-DIFF fails to reliably isolate changes from reconstruction noise, the project will pivot to testing "render-then-compare" methods (such as SCAR-3D or 3DGS-CD). These methods leverage the robust semantic understanding of 2D foundation models (EfficientSAM) on the rendered images, which may prove more resilient to the specific artifacts produced by underwater 3DGS.
+
 \section*{Reference List.}
 Cite using IEEE Citation Style (or an alternative style agreed with your supervisor) at least eight (8) of the most relevant and useful references you have read on your project topic.
-
+\nocite{*}
+\bibliographystyle{ieeetr} 
+\bibliography{Literature/references}
 \end{document}
