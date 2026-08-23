@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<MarkingCriteria document="marking criteria.jpg">
+    <Criterion id="1">
+        <Name>Criterion 1</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Concept map has comprehensive breakdown of project concepts and associated keywords and clearly shows how the different aspects connect with each other,</Summary>
+    </Criterion>
+    <Criterion id="2">
+        <Name>Criterion 2</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Search statement(s) unmistakeably logical and highly effective. Logical arrangement of Boolean search operators. Effective use of truncation and wildcards. Use of field restriction; e.g. limit to keywords, controlled vocabulary, topic classification.</Summary>
+    </Criterion>
+    <Criterion id="3">
+        <Name>Criterion 3</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Search conducted in an obviously useful database. Comprehensive justification for choosing that search database provided. Highly cogent evaluation of the usefulness and relevance of the chosen database.</Summary>
+    </Criterion>
+    <Criterion id="4">
+        <Name>Criterion 4</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>All three required categories of information sources are provided. Key, reputable, highly relevant information source titles clearly germane to research topic/research question identified.</Summary>
+    </Criterion>
+    <Criterion id="5">
+        <Name>Criterion 5</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Each paper cogently and effectively summarised to distil the essence. Lucid, insightful discussion provided showing clear relevance of findings to the research question.</Summary>
+    </Criterion>
+    <Criterion id="6">
+        <Name>Criterion 6</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Unambiguous (non-QUT) expert identified Expert has numerous well-cited and/or recent academic publications on the topic Expert's website / ORCiD ID linked to x 3 instances.</Summary>
+    </Criterion>
+    <Criterion id="7">
+        <Name>Criterion 7</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Literature trends, current research developments and controversies are comprehensively identified. A research gap, an unexplored area, an unanswered question or a conflicting finding in existing knowledge is identified.</Summary>
+    </Criterion>
+    <Criterion id="8">
+        <Name>Criterion 8</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Recently published literature findings have most clearly informed and influenced the student's project research design. E.g., the student is now pursuing knowledge to close a reported research gap.</Summary>
+    </Criterion>
+    <Criterion id="9">
+        <Name>Criterion 9</Name>
+        <GradeLevel>High Distinction</GradeLevel>
+        <Summary>Completely consistent reference style used. Fulsome bibliographic information is laid out precisely following the prescribed style conventions. and References are unambiguously highly relevant to the project topic.</Summary>
+    </Criterion>
+</MarkingCriteria>
