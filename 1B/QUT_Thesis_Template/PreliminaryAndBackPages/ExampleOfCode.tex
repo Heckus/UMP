@@ -1,0 +1,66 @@
+% ***************************************************
+% Example of Code; how to import Code in pdf.
+% ***************************************************
+%This example is provided for your reference only. DO NOT INCLUDE IN YOUR FINAL THESIS. 
+\chapter{Example of Code}
+
+\section{Find the greatest number from a list of numbers in \textit{Python}}
+
+\begin{verbatim}
+
+a=[1,2,3,4,6,7,99,88,999]
+    max= 0
+    for i in a:
+        if i > max:
+            max=i
+    print(max)
+
+\end{verbatim}
+
+
+   \begin{table}[H]
+    \caption{Sample process portfolio frame.}
+    \label{tab:PortfolioFrame}
+        \setlength{\tabcolsep}{12pt}
+        \centering
+        \renewcommand{\arraystretch}{1.2}
+        \small
+        \resizebox{\textwidth}{!}
+        {
+        {\fontfamily{qcr}\selectfont
+    \begin{tabular}{lll} 
+        \hline
+        \textbf{Process Type} & \textbf{Process Name} & \textbf{Process Index}\\ 
+        \hline
+        Generic Process & Claim\_Header/ ClaimID & 0.3996\\
+        \hline
+        Generic Process & ClaimProcessingStages/ ClaimID & 0.3885\\
+        \hline
+        {Specialisation}
+        & ClaimProcessingStages/ ClaimID // Claim\_Outcome///O1 & 0.3866\\
+        \hline
+        {Specialisation}
+        & Claim\_Header/ ClaimID // Claim\_Type///Type 1& 0.3855\\
+        \hline
+        {Specialisation} 
+        & Claim\_Header/ ClaimID // Policy\_Type///Type 2& 0.3844\\
+        \hline
+        {Specialisation}
+        & Claim\_Header/ ClaimID // Claim\_Type///Type 2& 0.3841\\
+        \hline
+        {Specialisation} 
+        & ClaimProcessingStages/ ClaimID // Staff\_ID///ID1 & 0.3838\\
+        \hline
+        {Specialisation} 
+        & ClaimProcessingStages/ ClaimID // Staff\_ID///ID2 & 0.3821\\
+        \hline
+        {Specialisation} 
+        & Claim\_Header/ ClaimID // Policy\_Type///Type 1& 0.3802\\
+        \hline
+        {Specialisation} 
+        & ClaimProcessingStages/ ClaimID // Claim\_Outcome///O2& 0.3791\\
+        \hline
+    \end{tabular}
+    }
+    }
+    \end{table}
