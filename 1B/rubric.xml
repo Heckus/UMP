@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rubric>
+    <criterion name="Outline of project">
+        <points>9 / 8.33</points>
+        <requirement>A very well defined project proposal which demonstrates a clear and detailed understanding of what the project entails.</requirement>
+    </criterion>
+    <criterion name="Project plan">
+        <points>9 / 8.33</points>
+        <requirement>A comprehensive breakdown of all the elements within the project, which demonstrates a sound methodology for completing the project.</requirement>
+    </criterion>
+    <criterion name="Time planning">
+        <points>3 / 2.78</points>
+        <requirement>A comprehensive and detailed time plan of when each element within the project can be completed.</requirement>
+    </criterion>
+    <criterion name="Literature review">
+        <points>9 / 8.33</points>
+        <requirement>A comprehensive initial literature review relevant to defining the project scope, which demonstrates a good understanding of the background to the project.</requirement>
+    </criterion>
+</rubric>

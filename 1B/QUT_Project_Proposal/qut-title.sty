@@ -1,0 +1,83 @@
+%*************************************
+% QUT Thesis Title Page Formatting Package
+%*************************************
+%\ProvidesPackage{qut-title}[2021/11/10 QUT thesis title template]
+%\RequirePackage{graphicx}
+
+%qut-title.sty
+% An Honours thesis style class for the Queensland University of Technology
+% Tina Yuting Huang
+% 2021
+% Based on 2018/03/19 v.01 UQ thesis title template, and
+% Based on https://cms.qut.edu.au/__data/assets/pdf_file/0004/7249/requirements_for_presenting_theses.pdf
+
+%*************************************
+% Define new 'storing' commands and set defaults.
+%*************************************
+%Current degree.
+\newcommand*{\currentdegrees}[1]{\gdef\@currentdegrees{#1}}
+\newcommand*{\@currentdegrees}{Bachelor, Master}
+\newcommand*{\submittedfor}[1]{\gdef\@submittedfor{#1}}
+\newcommand*{\@submittedfor}{Specify degree you are submitting for}
+\newcommand*{\school}[1]{\gdef\@school{#1}}
+\newcommand*{\@school}{School xxx}
+\newcommand*{\faculty}[1]{\gdef\@faculty{#1}}
+\newcommand*{\@faculty}{Faculty xxx}
+\newcommand*{\university}[1]{\gdef\@university{#1}}
+\newcommand*{\@university}{University xxx}
+\newcommand{\supervisor}[1]{\gdef\@supervisor{#1}}
+\newcommand{\@supervisor}{Principal Supervisor: }
+\newcommand{\asscsupervisor}[1]{\gdef\@asscsupervisor{#1}}
+\newcommand{\@asscsupervisor}{Associate Supervisor: }
+
+%Your ORCID
+%\newcommand*{\orcid}[1]{\gdef\@orcid{#1}}
+%\newcommand*{\@orcid}{Your orcid}
+
+%Renew the maketitle command.
+\renewcommand*{\maketitle}{%
+
+%*************************************
+% Title Page layout
+%*************************************
+\pagestyle{empty}	
+%Suppress the header.
+\rmfamily					
+%Make sure we have Roman font family.
+
+%----------------Front Page ---------
+\noindent
+\vfill
+\begin{center}
+	\includegraphics[width=.65\textwidth]{QUTLogo}
+\end{center}
+        \vspace{34 pt}
+\begin{center}
+    \huge\bfseries
+	\thetitle
+\end{center}
+
+\begin{center}
+	\Large
+    \theauthor \\
+\end{center}
+\begin{center}
+	\@currentdegrees{}
+\end{center}
+\vspace{20 pt}
+
+
+\vspace{100 pt}
+
+\begin{center}
+    \large{ENN595 - Project} \\ 
+    Submitted in fulfilment of the requirement for the degree of\\ \textbf{\@submittedfor{}}\\
+    \vspace{120 pt}
+	\@school{}\\
+        \@faculty{}\\
+	\@university{}\\
+        \textbf{\thedate{}}\\
+\end{center}
+}
+
+
