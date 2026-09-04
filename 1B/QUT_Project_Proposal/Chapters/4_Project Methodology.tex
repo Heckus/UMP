@@ -1,17 +1,35 @@
 \chapter{Project Methodology}
 
-The project will follow a systems engineering approach, utilizing the AIMS EcoRRAP dataset to validate a newly proposed primitive-space change detection pipeline.
+This project will follow a structured, four-phase pipeline development methodology tailored for applied computer vision and robotics research. It is designed to be highly adaptable, allowing for the iterative testing and integration of state-of-the-art methods.
 
-\section{Proposed Pipeline}
-The methodology consists of several key stages:
-\begin{enumerate}
-    \item \textbf{Dataset Processing:} Using EcoRRAP imagery from two collection times (Time A and Time B).
-    \item \textbf{Structure-from-Motion (SfM):} Running COLMAP on both datasets to estimate camera poses and sparse point clouds.
-    \item \textbf{3DGS Reconstruction:} Utilizing algorithms like Aqua Splat or Water-Adapted 3DGS to generate high-fidelity, water-removed reconstructions of the reef at each time point.
-    \item \textbf{Primitive-Space Comparison (GS-DIFF):} 
-    \begin{itemize}
-        \item Applying geometric drift modeling (covariance inflation and observation uncertainty).
-        \item Computing geometric and appearance kernels directly on the primitives.
-    \end{itemize}
-    \item \textbf{Change Maps Generation:} Extracting explicit Colour Change Maps, Geometry Change Maps, and a combined Full Change Map.
-\end{enumerate}
+\section{Phase 1: Foundation and Method Selection}
+The initial phase focuses on establishing the theoretical and data foundations required for the project.
+\begin{itemize}
+    \item \textbf{Literature \& Candidate Selection:} Conduct a deep dive into recent (2024-2026) underwater 3D Gaussian Splatting (3DGS) architectures. Select 2-4 candidate methods (e.g., DualPhys-GS, WaterGS) based on open-source code availability, physical grounding, and geometric robustness.
+    \item \textbf{Data Preparation:} Secure and preprocess the AIMS EcoRRAP dataset. This involves data cleaning, establishing camera poses, and performing initial Structure from Motion (SfM) using tools like COLMAP or Agisoft Metashape to generate the sparse point clouds required to initialize 3DGS.
+    \item \textbf{Pipeline Scaffolding:} Set up the high-performance computing environment, ensuring PyTorch, CUDA dependencies, and 3DGS rasterizers are properly configured.
+\end{itemize}
+
+\section{Phase 2: Baseline Reconstruction and Optimization}
+Before change detection can occur, accurate baseline models must be generated and geometrically evaluated.
+\begin{itemize}
+    \item \textbf{Model Training:} Train the 2-4 selected underwater 3DGS models on time-sequential data from the EcoRRAP dataset (e.g., Time A and Time B).
+    \item \textbf{Reconstruction Evaluation:} Evaluate the visual synthesis quality using standard metrics (PSNR, SSIM, LPIPS).
+    \item \textbf{Geometric Validation \& Filtering:} Critically assess the geometric fidelity of the primitives. At the conclusion of this phase, a review will determine if additional processing or geometric filtering is required. For instance, to achieve the millimeter accuracy necessary for detecting fine-scale coral changes, techniques like SuGaR~\cite{guedon2024sugar} may be implemented to force the 3D Gaussians to align tightly to the actual physical surfaces, thereby suppressing floating artifacts and water caustics.
+\end{itemize}
+
+\section{Phase 3: Scene Change Detection (SCD) Integration}
+This phase bridges the gap between static reconstruction and dynamic analysis.
+\begin{itemize}
+    \item \textbf{Pipeline Integration:} Implement the GS-DIFF (or similar primitive-space) change detection pipeline on top of the trained underwater 3DGS models.
+    \item \textbf{Temporal Alignment:} Ensure precise spatial alignment between the models of Time A and Time B. If models are trained independently, implement robust registration techniques to align the point clouds and Gaussians into a shared global coordinate space.
+    \item \textbf{Kernel Adaptation:} Fine-tune and adapt the geometric and appearance kernels used by the SCD algorithm to account for the unique optical attenuation and scattering characteristics inherent to the underwater reconstructions.
+\end{itemize}
+
+\section{Phase 4: Comparative Evaluation and Synthesis}
+The final phase evaluates the entire pipeline's efficacy and answers the project's core research questions.
+\begin{itemize}
+    \item \textbf{SCD Efficacy in Coral Scenes:} Evaluate the overall success of the primitive-space change detection pipeline in accurately identifying structural changes in coral reefs while ignoring transient lighting and water shifts.
+    \item \textbf{Foundation Comparison:} Compare how the choice of the underlying 3DGS method (from Phase 2) impacts the final change detection accuracy. Identify which underwater adaptation provides the most robust foundation for SCD.
+    \item \textbf{Documentation \& Recommendations:} Synthesize findings into the final report, providing actionable insights for the QUT Centre for Robotics and AIMS on the viability of this pipeline for long-term ecological monitoring.
+\end{itemize}

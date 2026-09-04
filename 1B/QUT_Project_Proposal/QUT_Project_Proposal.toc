@@ -1,32 +1,34 @@
 \changetocdepth {2}
 \changetocdepth {2}
-\contentsline {chapter}{Keywords}{iii}{chapter*.2}%
+\contentsline {chapter}{Keywords}{ii}{chapter*.2}%
 \contentsline {chapter}{Contents}{iii}{chapter*.3}%
 \contentsline {chapter}{List of Tables}{iv}{chapter*.4}%
-\contentsline {chapter}{List of Figures}{v}{chapter*.5}%
-\contentsline {chapter}{\chapternumberline {1}Project Overiew}{1}{chapter.1}%
+\contentsline {chapter}{List of Figures}{iv}{chapter*.5}%
+\contentsline {chapter}{\chapternumberline {1}Project Overview}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation and Background}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Project Objectives}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Scope and Context}{2}{section.1.3}%
 \contentsline {chapter}{\chapternumberline {2}Literature Review}{2}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Introduction}{2}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Physical Image Formation \& Inverse Rendering Models}{2}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Image Restoration (UIR) \& Multi-View Priors}{3}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Geometric \& Scale Adaptations for Turbidity}{3}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Dynamic Environments \& Transient Artifacts}{3}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Alternative Optics \& Benchmarking Studies}{4}{section.2.6}%
-\contentsline {section}{\numberline {2.7}Conclusion}{4}{section.2.7}%
-\contentsline {chapter}{\chapternumberline {3}Stakeholders \& Resources}{5}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Stakeholders}{5}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Resources}{5}{section.3.2}%
+\contentsline {section}{\numberline {2.1}The Importance of Coral Monitoring and Traditional Methods}{2}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Scene Change Detection and 3D Representations}{3}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Underwater Scene Reconstruction and 3D Gaussian Splatting}{4}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Summary of Findings and Research Gap}{5}{section.2.4}%
+\contentsline {chapter}{\chapternumberline {3}Stakeholders \& Resources}{6}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Stakeholders}{6}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Resources}{6}{section.3.2}%
 \contentsline {chapter}{\chapternumberline {4}Project Methodology}{7}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Proposed Pipeline}{7}{section.4.1}%
+\contentsline {section}{\numberline {4.1}Phase 1: Foundation and Method Selection}{7}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Phase 2: Baseline Reconstruction and Optimization}{8}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Phase 3: Scene Change Detection (SCD) Integration}{8}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Phase 4: Comparative Evaluation and Synthesis}{9}{section.4.4}%
 \contentsline {chapter}{\chapternumberline {5}Deliverables}{9}{chapter.5}%
 \contentsline {chapter}{\chapternumberline {6}Quality \& Sustainability}{10}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Quality}{10}{section.6.1}%
 \contentsline {section}{\numberline {6.2}Sustainability}{10}{section.6.2}%
-\contentsline {chapter}{\chapternumberline {7}Risks, Requirements \& Constraints}{12}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Constraints}{12}{section.7.1}%
+\contentsline {chapter}{\chapternumberline {7}Risks, Requirements \& Constraints}{11}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Constraints \& Requirements}{11}{section.7.1}%
 \contentsline {section}{\numberline {7.2}Risks and Blockers}{12}{section.7.2}%
-\contentsline {chapter}{\chapternumberline {8}Timeline \& Deliverables}{13}{chapter.8}%
+\contentsline {chapter}{\chapternumberline {8}Project Timeline}{12}{chapter.8}%
 \contentsline {chapter}{\chapternumberline {9}Management of Project Changes}{14}{chapter.9}%
-\contentsline {chapter}{\chapternumberline {10}Sign off}{15}{chapter.10}%
-\contentsline {chapter}{Appendix A: Risk Assessment}{16}{chapter*.9}%
-\contentsline {chapter}{Bibliography}{17}{chapter*.11}%
+\contentsline {chapter}{\chapternumberline {10}Sign off}{14}{chapter.10}%
+\contentsline {chapter}{Bibliography}{15}{chapter*.10}%

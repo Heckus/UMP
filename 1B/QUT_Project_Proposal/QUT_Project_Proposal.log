@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.8)  4 SEP 2026 13:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.8)  4 SEP 2026 17:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/hecke/0Github/UMP/1B/QUT_Project_Proposal/QUT_Project_Proposal.tex
+**/home/hecke/0Github/UMP/1B/QUT_Project_Proposal/QUT_Project_Proposal
 (/home/hecke/0Github/UMP/1B/QUT_Project_Proposal/QUT_Project_Proposal.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -619,9 +619,9 @@ Package: amsthm 2020/05/29 v2.20.6
 Stock height and width: 845.04684pt by 597.50787pt
 Top and edge trims: 0pt and 0pt
 Page height and width: 845.04684pt by 597.50787pt
-Text height and width: 679pt by 426pt
+Text height and width: 708pt by 426pt
 Spine and edge margins: 85.35826pt and 85.35826pt
-Upper and lower margins: 85.35826pt and 80.68858pt
+Upper and lower margins: 71.13188pt and 65.91496pt
 Headheight and headsep: 56.9055pt and 14.5pt
 Footskip: 14.5pt
 Columnsep and columnseprule: 10pt and 0pt
@@ -634,30 +634,7 @@ Sidefoothsep and sidefootwidth: 7pt and 42pt
 Sidefootvsep and sidefootheight: 14.5pt and 590.14995pt
 ******************************************************
 
-
-Class memoir Warning: The fancyhdr package is not recommended with memoir.
-(memoir)              We have our own well integrated interface to handle
-(memoir)              headers and footers. See the manual section 7.3
-(memoir)              onwards for details. on input line 97.
-
-(/usr/share/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
-Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
-\f@nch@headwidth=\skip258
-\f@nch@offset@elh=\skip259
-\f@nch@offset@erh=\skip260
-\f@nch@offset@olh=\skip261
-\f@nch@offset@orh=\skip262
-\f@nch@offset@elf=\skip263
-\f@nch@offset@erf=\skip264
-\f@nch@offset@olf=\skip265
-\f@nch@offset@orf=\skip266
-\f@nch@height=\skip267
-\f@nch@footalignment=\skip268
-\f@nch@widthL=\skip269
-\f@nch@widthC=\skip270
-\f@nch@widthR=\skip271
-\@temptokenb=\toks38
-)) (./LaTexPackages.tex (/usr/share/texmf-dist/tex/latex/cite/cite.sty
+) (./LaTexPackages.tex (/usr/share/texmf-dist/tex/latex/cite/cite.sty
 LaTeX Info: Redefining \cite on input line 302.
 LaTeX Info: Redefining \nocite on input line 332.
 Package: cite 2015/02/27  v 5.5
@@ -671,12 +648,12 @@ Package: calc 2025/03/01 v4.3b Infix arithmetic (KKT,FJ)
 \calc@Bcount=\count368
 \calc@Adimen=\dimen273
 \calc@Bdimen=\dimen274
-\calc@Askip=\skip272
-\calc@Bskip=\skip273
+\calc@Askip=\skip258
+\calc@Bskip=\skip259
 LaTeX Info: Redefining \setlength on input line 86.
 LaTeX Info: Redefining \addtolength on input line 87.
 \calc@Ccount=\count369
-\calc@Cskip=\skip274
+\calc@Cskip=\skip260
 ) (/usr/share/texmf-dist/tex/latex/eso-pic/eso-pic.sty
 Package: eso-pic 2025/12/10 v3.0d eso-pic (RN)
 \ESO@tempdima=\dimen275
@@ -706,10 +683,10 @@ File: pppdftex.def 2025/07/23 v0.6g Pdfpages driver for pdfTeX (AM)
 )
 \pdfpages@includegraphics@status=\count370
 \AM@pagebox=\box65
-\AM@global@opts=\toks39
+\AM@global@opts=\toks38
 \AM@pagecnt=\count371
-\AM@toc@title=\toks40
-\AM@lof@heading=\toks41
+\AM@toc@title=\toks39
+\AM@lof@heading=\toks40
 \c@AM@survey=\count372
 \AM@templatesizebox=\box66
 ) (/usr/share/texmf-dist/tex/latex/wrapfig/wrapfig.sty
@@ -717,7 +694,7 @@ File: pppdftex.def 2025/07/23 v0.6g Pdfpages driver for pdfTeX (AM)
 \WF@size=\dimen281
 \c@WF@wrappedlines=\count373
 \WF@box=\box67
-\WF@everypar=\toks42
+\WF@everypar=\toks41
 Package: wrapfig 2003/01/31  v 3.6
 ) (/usr/share/texmf-dist/tex/latex/tools/bm.sty
 Package: bm 2025/10/21 v1.2g Bold Symbol Support (DPC/FMi)
@@ -754,7 +731,7 @@ Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 )
 \g_MT_multlinerow_int=\count374
 \l_MT_multwidth_dim=\dimen284
-\origjot=\skip275
+\origjot=\skip261
 \l_MT_shortvdotswithinadjustabove_dim=\dimen285
 \l_MT_shortvdotswithinadjustbelow_dim=\dimen286
 \l_MT_above_intertext_sep=\dimen287
@@ -765,17 +742,17 @@ Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 \xmathstrut@dim=\dimen291
 ) (/usr/share/texmf-dist/tex/latex/framed/framed.sty
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
-\OuterFrameSep=\skip276
+\OuterFrameSep=\skip262
 \fb@frw=\dimen292
 \fb@frh=\dimen293
 ) (/usr/share/texmf-dist/tex/latex/microtype/microtype.sty
 Package: microtype 2026/03/01 v3.2d Micro-typographical refinements (RS)
-\MT@toks=\toks43
+\MT@toks=\toks42
 \MT@tempbox=\box73
 \MT@count=\count375
 LaTeX Info: Redefining \noprotrusionifhmode on input line 1084.
 LaTeX Info: Redefining \leftprotrusion on input line 1085.
-\MT@prot@toks=\toks44
+\MT@prot@toks=\toks43
 LaTeX Info: Redefining \rightprotrusion on input line 1104.
 LaTeX Info: Redefining \textls on input line 1449.
 \MT@outer@kern=\dimen294
@@ -786,7 +763,7 @@ LaTeX Info: Redefining \textmicrotypecontext on input line 2070.
 File: microtype-pdftex.def 2026/03/01 v3.2d Definitions specific to pdftex (RS)
 LaTeX Info: Redefining \lsstyle on input line 944.
 LaTeX Info: Redefining \lslig on input line 944.
-\MT@outer@space=\skip277
+\MT@outer@space=\skip263
 )
 Package microtype Info: Loading configuration file microtype.cfg.
  (/usr/share/texmf-dist/tex/latex/microtype/microtype.cfg
@@ -819,47 +796,47 @@ Package zref Info: New property: page on input line 769.
 \c@abspage=\count377
 Package zref Info: New property: abspage on input line 67.
 )
-\mdf@templength=\skip278
+\mdf@templength=\skip264
 \c@mdf@globalstyle@cnt=\count378
-\mdf@skipabove@length=\skip279
-\mdf@skipbelow@length=\skip280
-\mdf@leftmargin@length=\skip281
-\mdf@rightmargin@length=\skip282
-\mdf@innerleftmargin@length=\skip283
-\mdf@innerrightmargin@length=\skip284
-\mdf@innertopmargin@length=\skip285
-\mdf@innerbottommargin@length=\skip286
-\mdf@splittopskip@length=\skip287
-\mdf@splitbottomskip@length=\skip288
-\mdf@outermargin@length=\skip289
-\mdf@innermargin@length=\skip290
-\mdf@linewidth@length=\skip291
-\mdf@innerlinewidth@length=\skip292
-\mdf@middlelinewidth@length=\skip293
-\mdf@outerlinewidth@length=\skip294
-\mdf@roundcorner@length=\skip295
-\mdf@footenotedistance@length=\skip296
-\mdf@userdefinedwidth@length=\skip297
-\mdf@needspace@length=\skip298
-\mdf@frametitleaboveskip@length=\skip299
-\mdf@frametitlebelowskip@length=\skip300
-\mdf@frametitlerulewidth@length=\skip301
-\mdf@frametitleleftmargin@length=\skip302
-\mdf@frametitlerightmargin@length=\skip303
-\mdf@shadowsize@length=\skip304
-\mdf@extratopheight@length=\skip305
-\mdf@subtitleabovelinewidth@length=\skip306
-\mdf@subtitlebelowlinewidth@length=\skip307
-\mdf@subtitleaboveskip@length=\skip308
-\mdf@subtitlebelowskip@length=\skip309
-\mdf@subtitleinneraboveskip@length=\skip310
-\mdf@subtitleinnerbelowskip@length=\skip311
-\mdf@subsubtitleabovelinewidth@length=\skip312
-\mdf@subsubtitlebelowlinewidth@length=\skip313
-\mdf@subsubtitleaboveskip@length=\skip314
-\mdf@subsubtitlebelowskip@length=\skip315
-\mdf@subsubtitleinneraboveskip@length=\skip316
-\mdf@subsubtitleinnerbelowskip@length=\skip317
+\mdf@skipabove@length=\skip265
+\mdf@skipbelow@length=\skip266
+\mdf@leftmargin@length=\skip267
+\mdf@rightmargin@length=\skip268
+\mdf@innerleftmargin@length=\skip269
+\mdf@innerrightmargin@length=\skip270
+\mdf@innertopmargin@length=\skip271
+\mdf@innerbottommargin@length=\skip272
+\mdf@splittopskip@length=\skip273
+\mdf@splitbottomskip@length=\skip274
+\mdf@outermargin@length=\skip275
+\mdf@innermargin@length=\skip276
+\mdf@linewidth@length=\skip277
+\mdf@innerlinewidth@length=\skip278
+\mdf@middlelinewidth@length=\skip279
+\mdf@outerlinewidth@length=\skip280
+\mdf@roundcorner@length=\skip281
+\mdf@footenotedistance@length=\skip282
+\mdf@userdefinedwidth@length=\skip283
+\mdf@needspace@length=\skip284
+\mdf@frametitleaboveskip@length=\skip285
+\mdf@frametitlebelowskip@length=\skip286
+\mdf@frametitlerulewidth@length=\skip287
+\mdf@frametitleleftmargin@length=\skip288
+\mdf@frametitlerightmargin@length=\skip289
+\mdf@shadowsize@length=\skip290
+\mdf@extratopheight@length=\skip291
+\mdf@subtitleabovelinewidth@length=\skip292
+\mdf@subtitlebelowlinewidth@length=\skip293
+\mdf@subtitleaboveskip@length=\skip294
+\mdf@subtitlebelowskip@length=\skip295
+\mdf@subtitleinneraboveskip@length=\skip296
+\mdf@subtitleinnerbelowskip@length=\skip297
+\mdf@subsubtitleabovelinewidth@length=\skip298
+\mdf@subsubtitlebelowlinewidth@length=\skip299
+\mdf@subsubtitleaboveskip@length=\skip300
+\mdf@subsubtitlebelowskip@length=\skip301
+\mdf@subsubtitleinneraboveskip@length=\skip302
+\mdf@subsubtitleinnerbelowskip@length=\skip303
  (/usr/share/texmf-dist/tex/latex/mdframed/md-frame-0.mdf
 File: md-frame-0.mdf 2013/07/01\ 1.9b: md-frame-0
 )
@@ -868,33 +845,33 @@ File: md-frame-0.mdf 2013/07/01\ 1.9b: md-frame-0
 \mdf@splitbox@one=\box76
 \mdf@splitbox@two=\box77
 \mdf@splitbox@save=\box78
-\mdfsplitboxwidth=\skip318
-\mdfsplitboxtotalwidth=\skip319
-\mdfsplitboxheight=\skip320
-\mdfsplitboxdepth=\skip321
-\mdfsplitboxtotalheight=\skip322
-\mdfframetitleboxwidth=\skip323
-\mdfframetitleboxtotalwidth=\skip324
-\mdfframetitleboxheight=\skip325
-\mdfframetitleboxdepth=\skip326
-\mdfframetitleboxtotalheight=\skip327
-\mdffootnoteboxwidth=\skip328
-\mdffootnoteboxtotalwidth=\skip329
-\mdffootnoteboxheight=\skip330
-\mdffootnoteboxdepth=\skip331
-\mdffootnoteboxtotalheight=\skip332
-\mdftotallinewidth=\skip333
-\mdfboundingboxwidth=\skip334
-\mdfboundingboxtotalwidth=\skip335
-\mdfboundingboxheight=\skip336
-\mdfboundingboxdepth=\skip337
-\mdfboundingboxtotalheight=\skip338
-\mdf@freevspace@length=\skip339
-\mdf@horizontalwidthofbox@length=\skip340
-\mdf@verticalmarginwhole@length=\skip341
-\mdf@horizontalspaceofbox=\skip342
-\mdfsubtitleheight=\skip343
-\mdfsubsubtitleheight=\skip344
+\mdfsplitboxwidth=\skip304
+\mdfsplitboxtotalwidth=\skip305
+\mdfsplitboxheight=\skip306
+\mdfsplitboxdepth=\skip307
+\mdfsplitboxtotalheight=\skip308
+\mdfframetitleboxwidth=\skip309
+\mdfframetitleboxtotalwidth=\skip310
+\mdfframetitleboxheight=\skip311
+\mdfframetitleboxdepth=\skip312
+\mdfframetitleboxtotalheight=\skip313
+\mdffootnoteboxwidth=\skip314
+\mdffootnoteboxtotalwidth=\skip315
+\mdffootnoteboxheight=\skip316
+\mdffootnoteboxdepth=\skip317
+\mdffootnoteboxtotalheight=\skip318
+\mdftotallinewidth=\skip319
+\mdfboundingboxwidth=\skip320
+\mdfboundingboxtotalwidth=\skip321
+\mdfboundingboxheight=\skip322
+\mdfboundingboxdepth=\skip323
+\mdfboundingboxtotalheight=\skip324
+\mdf@freevspace@length=\skip325
+\mdf@horizontalwidthofbox@length=\skip326
+\mdf@verticalmarginwhole@length=\skip327
+\mdf@horizontalspaceofbox=\skip328
+\mdfsubtitleheight=\skip329
+\mdfsubsubtitleheight=\skip330
 \c@mdfcountframes=\count379
 
 ****** mdframed patching \endmdf@trivlist
@@ -911,9 +888,9 @@ Package: mdwlist 1996/05/02 1.1 Various list-related things
 ) (/usr/share/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count384
-\float@exts=\toks45
+\float@exts=\toks44
 \float@box=\box79
-\@float@everytoks=\toks46
+\@float@everytoks=\toks45
 \@floatcapt=\box80
 ) (/usr/share/texmf-dist/tex/generic/mathdots/mathdots.sty
 Package: mathdots 2014/06/11 v0.9 Improve and add various macros for dots in math.
@@ -960,14 +937,14 @@ Loading kernel: messages; fonts; allocations: state,
 \D@c=\dimen299
 \L@c=\dimen300
 \R@c=\dimen301
-\Edge@c=\toks47
+\Edge@c=\toks46
 \X@p=\dimen302
 \Y@p=\dimen303
 \U@p=\dimen304
 \D@p=\dimen305
 \L@p=\dimen306
 \R@p=\dimen307
-\Edge@p=\toks48
+\Edge@p=\toks47
 \X@origin=\dimen308
 \Y@origin=\dimen309
 \X@xbase=\dimen310
@@ -994,17 +971,17 @@ Loading kernel: messages; fonts; allocations: state,
 \csp@=\count391
 \quotPTK@=\dimen323
  utility macros; pictures: \xy, positions,
-\swaptoks@@=\toks49
+\swaptoks@@=\toks48
 \connectobjectbox@@=\box84
  objects,
-\styletoks@=\toks50
+\styletoks@=\toks49
  decorations; kernel objects: directionals, circles, text; options; algorithms: directions, edges, connections;  Xy-pic loaded) (/usr/share/texmf-dist/tex/generic/iftex/ifpdf.sty
 Package: ifpdf 2019/10/25 v3.4 ifpdf legacy package. Use iftex instead.
 )
 Package: xy 2013/10/06 Xy-pic version 3.8.9
  (/usr/share/texmf-dist/tex/generic/xypic/xyall.tex  Xy-pic option: All features v.3.8 (/usr/share/texmf-dist/tex/generic/xypic/xycurve.tex  Xy-pic option: Curve and Spline extension v.3.12 curve,
 \crv@cnt@=\count392
-\crvpts@=\toks51
+\crvpts@=\toks50
 \splinebox@=\box85
 \splineval@=\dimen324
 \splinedepth@=\dimen325
@@ -1017,15 +994,39 @@ Package: xy 2013/10/06 Xy-pic version 3.8.9
  loaded) (/usr/share/texmf-dist/tex/generic/xypic/xyrotate.tex  Xy-pic option: Rotate and Scale extension v.3.8 loaded) (/usr/share/texmf-dist/tex/generic/xypic/xycolor.tex  Xy-pic option: Colour extension v.3.11 loaded) (/usr/share/texmf-dist/tex/generic/xypic/xymatrix.tex  Xy-pic option: Matrix feature v.3.14
 \Row=\count393
 \Col=\count394
-\queue@=\toks52
-\queue@@=\toks53
+\queue@=\toks51
+\queue@@=\toks52
 \qcount@=\count395
 \qcount@@=\count396
 \matrixsize@=\count397
  loaded) (/usr/share/texmf-dist/tex/generic/xypic/xyarrow.tex  Xy-pic option: Arrow and Path feature v.3.9 path, \ar, loaded) (/usr/share/texmf-dist/tex/generic/xypic/xygraph.tex  Xy-pic option: Graph feature v.3.11 loaded) loaded) (/usr/share/texmf-dist/tex/generic/xypic/xypdf.tex  Xy-pic option: PDF driver v.1.7 Xy-pic pdf driver: `color' extension support (/usr/share/texmf-dist/tex/generic/xypic/xypdf-co.tex loaded) Xy-pic pdf driver: `curve' extension support (/usr/share/texmf-dist/tex/generic/xypic/xypdf-cu.tex loaded) Xy-pic pdf driver: `frame' extension support (/usr/share/texmf-dist/tex/generic/xypic/xypdf-fr.tex loaded) Xy-pic pdf driver: `line' extension support (/usr/share/texmf-dist/tex/generic/xypic/xypdf-li.tex loaded) Xy-pic pdf driver: `rotate' extension support (/usr/share/texmf-dist/tex/generic/xypic/xypdf-ro.tex loaded) loaded)) (/usr/share/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2024/02/08 v1.3d Input encoding file
-\inpenc@prehook=\toks54
-\inpenc@posthook=\toks55
+\inpenc@prehook=\toks53
+\inpenc@posthook=\toks54
+)
+
+Class memoir Warning: The fancyhdr package is not recommended with memoir.
+(memoir)              We have our own well integrated interface to handle
+(memoir)              headers and footers. See the manual section 7.3
+(memoir)              onwards for details. on input line 37.
+
+(/usr/share/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
+\f@nch@headwidth=\skip331
+\f@nch@offset@elh=\skip332
+\f@nch@offset@erh=\skip333
+\f@nch@offset@olh=\skip334
+\f@nch@offset@orh=\skip335
+\f@nch@offset@elf=\skip336
+\f@nch@offset@erf=\skip337
+\f@nch@offset@olf=\skip338
+\f@nch@offset@orf=\skip339
+\f@nch@height=\skip340
+\f@nch@footalignment=\skip341
+\f@nch@widthL=\skip342
+\f@nch@widthC=\skip343
+\f@nch@widthR=\skip344
+\@temptokenb=\toks55
 ) (/usr/share/texmf-dist/tex/latex/blindtext/blindtext.sty
 Package: blindtext 2012/01/06 V2.0 blindtext-Package
  (/usr/share/texmf-dist/tex/latex/tools/xspace.sty
@@ -1226,45 +1227,96 @@ File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \tikz@expandcount=\count436
  (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))) (/usr/share/texmf-dist/tex/latex/graphics/rotating.sty
+))) (/usr/share/texmf-dist/tex/latex/pgfgantt/pgfgantt.sty
+Package: pgfgantt 2024/06/19 v5.0a Draw Gantt diagrams with TikZ
+ (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrows.code.tex
+File: tikzlibraryarrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+ (/usr/share/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
+File: pgflibraryarrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\arrowsize=\dimen380
+)) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@layerbox@background=\box97
+\pgf@layerboxsaved@background=\box98
+) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypatterns.code.tex
+File: tikzlibrarypatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+ (/usr/share/texmf-dist/tex/generic/pgf/libraries/pgflibrarypatterns.code.tex
+File: pgflibrarypatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+ (/usr/share/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)) (/usr/share/texmf-dist/tex/latex/pgf/utilities/pgfcalendar.sty (/usr/share/texmf-dist/tex/generic/pgf/utilities/pgfcalendar.code.tex
+File: pgfcalendar.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfcalendarcurrentjulian=\count437
+\pgf@cal@easter@Y=\count438
+\pgf@cal@easter@G=\count439
+\pgf@cal@easter@C=\count440
+\pgf@cal@easter@X=\count441
+\pgf@cal@easter@Z=\count442
+\pgf@cal@easter@D=\count443
+\pgf@cal@easter@E=\count444
+\pgf@cal@easter@N=\count445
+\pgf@cal@easter@M=\count446
+\pgf@cal@easter@julianday=\count447
+))
+\gtt@currentline=\count448
+\gtt@lasttitleline=\count449
+\gtt@currgrid=\count450
+\gtt@chartwidth=\count451
+\gtt@lasttitleslot=\count452
+\gtt@elementid=\count453
+\gtt@today@slot=\count454
+\gtt@startjulian=\count455
+\gtt@endjulian=\count456
+\gtt@chartid=\count457
+\gtt@vrule@slot=\count458
+\gtt@calendar@slots=\count459
+\gtt@calendar@weeknumber=\count460
+\gtt@calendar@startofweek=\count461
+\gtt@left@slot=\count462
+\gtt@right@slot=\count463
+) (/usr/share/texmf-dist/tex/latex/graphics/rotating.sty
 Package: rotating 2025/01/14 v2.16e rotated objects in LaTeX
-\c@r@tfl@t=\count437
+\c@r@tfl@t=\count464
 \rotFPtop=\skip345
 \rotFPbot=\skip346
-\rot@float@box=\box97
+\rot@float@box=\box99
 \rot@mess@toks=\toks68
 ) (/usr/share/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@colwidth=\skip347
-\multirow@cntb=\count438
+\multirow@cntb=\count465
 \multirow@dima=\skip348
-\bigstrutjot=\dimen380
+\bigstrutjot=\dimen381
 ) (/usr/share/texmf-dist/tex/latex/tools/multicol.sty
 Package: multicol 2025/10/21 v2.0b multicolumn formatting (FMi)
-\c@tracingmulticols=\count439
-\mult@box=\box98
-\multicol@leftmargin=\dimen381
-\c@unbalance=\count440
-\c@collectmore=\count441
-\doublecol@number=\count442
-\multicoltolerance=\count443
-\multicolpretolerance=\count444
-\full@width=\dimen382
-\page@free=\dimen383
-\premulticols=\dimen384
-\postmulticols=\dimen385
+\c@tracingmulticols=\count466
+\mult@box=\box100
+\multicol@leftmargin=\dimen382
+\c@unbalance=\count467
+\c@collectmore=\count468
+\doublecol@number=\count469
+\multicoltolerance=\count470
+\multicolpretolerance=\count471
+\full@width=\dimen383
+\page@free=\dimen384
+\premulticols=\dimen385
+\postmulticols=\dimen386
 \multicolsep=\skip349
 \multicolbaselineskip=\skip350
-\partial@page=\box99
-\last@line=\box100
-\mc@boxedresult=\box101
-\maxbalancingoverflow=\dimen386
-\mult@rightbox=\box102
-\mult@grightbox=\box103
-\mult@firstbox=\box104
-\mult@gfirstbox=\box105
-\@tempa=\box106
-\@tempa=\box107
+\partial@page=\box101
+\last@line=\box102
+\mc@boxedresult=\box103
+\maxbalancingoverflow=\dimen387
+\mult@rightbox=\box104
+\mult@grightbox=\box105
+\mult@firstbox=\box106
+\mult@gfirstbox=\box107
 \@tempa=\box108
 \@tempa=\box109
 \@tempa=\box110
@@ -1299,26 +1351,19 @@ Package: multicol 2025/10/21 v2.0b multicolumn formatting (FMi)
 \@tempa=\box139
 \@tempa=\box140
 \@tempa=\box141
-\c@minrows=\count445
-\c@columnbadness=\count446
-\c@finalcolumnbadness=\count447
-\last@try=\dimen387
-\multicolovershoot=\dimen388
-\multicolundershoot=\dimen389
-\mult@nat@firstbox=\box142
-\colbreak@box=\box143
-\mc@col@check@num=\count448
-\g__mc_curr_col_int=\count449
-) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.geometric.code.tex
-File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
- (/usr/share/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.geometric.code.tex
-File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrows.code.tex
-File: tikzlibraryarrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
- (/usr/share/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
-File: pgflibraryarrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\arrowsize=\dimen390
-)) (/usr/share/texmf-dist/tex/latex/paralist/paralist.sty
+\@tempa=\box142
+\@tempa=\box143
+\c@minrows=\count472
+\c@columnbadness=\count473
+\c@finalcolumnbadness=\count474
+\last@try=\dimen388
+\multicolovershoot=\dimen389
+\multicolundershoot=\dimen390
+\mult@nat@firstbox=\box144
+\colbreak@box=\box145
+\mc@col@check@num=\count475
+\g__mc_curr_col_int=\count476
+) (/usr/share/texmf-dist/tex/latex/paralist/paralist.sty
 Package: paralist 2017/01/22 v2.7 Extended list environments
 \pltopsep=\skip351
 \plpartopsep=\skip352
@@ -1343,8 +1388,8 @@ Package caption Info: memoir document class detected.
  (/usr/share/texmf-dist/tex/latex/caption/caption-memoir.sto
 File: caption-memoir.sto 2023/09/08 v2.2c Adaption of the caption package to the memoir document class (AR)
 ))
-\c@caption@flags=\count450
-\c@continuedfloat=\count451
+\c@caption@flags=\count477
+\c@continuedfloat=\count478
 Package caption Info: changepage package is loaded.
 \caption@adjustwidth@hsize=\dimen399
 \caption@adjustwidth@linewidth=\dimen400
@@ -1358,9 +1403,9 @@ Package caption Info: rotating package is loaded.
 Package caption Info: wrapfig package is loaded.
 )
 Package caption Info: New subtype `subfigure' on input line 238.
-\c@subfigure=\count452
+\c@subfigure=\count479
 Package caption Info: New subtype `subtable' on input line 238.
-\c@subtable=\count453
+\c@subtable=\count480
 ) (/usr/share/texmf-dist/tex/generic/soul/soul.sty
 Package: soul 2023-06-14 v3.1 Permit use of UTF-8 characters in soul (HO)
  (/usr/share/texmf-dist/tex/generic/soul/soul-ori.sty
@@ -1377,10 +1422,10 @@ Package: soul-ori 2023-06-14 v3.1 letterspacing/underlining (mf)
 \SOUL@hyphkern=\dimen404
 \SOUL@dimen=\dimen405
 \SOUL@dimeni=\dimen406
-\SOUL@minus=\count454
-\SOUL@comma=\count455
-\SOUL@apo=\count456
-\SOUL@grave=\count457
+\SOUL@minus=\count481
+\SOUL@comma=\count482
+\SOUL@apo=\count483
+\SOUL@grave=\count484
 \SOUL@spaceskip=\skip355
 \SOUL@ttwidth=\dimen407
 \SOUL@uldp=\dimen408
@@ -1394,7 +1439,7 @@ Package: xkeyval 2025/11/04 v2.10 package option processing (HA)
 \XKV@tempa@toks=\toks77
 \XKV@tempb@toks=\toks78
 )
-\XKV@depth=\count458
+\XKV@depth=\count485
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 )) (/usr/share/texmf-dist/tex/latex/mfirstuc/mfirstuc.sty
 Package: mfirstuc 2025/04/03 v2.09 (NLCT)
@@ -1407,44 +1452,44 @@ Package: datatool-base 2025/12/04 v3.4.3 (NLCT)
  (/usr/share/texmf-dist/tex/latex/tracklang/tracklang.sty
 Package: tracklang 2025/03/11 v1.6.6 (NLCT) Track Languages
  (/usr/share/texmf-dist/tex/generic/tracklang/tracklang.tex))
-\l__datatool_tmpa_int=\count459
-\l__datatool_tmpb_int=\count460
-\l__datatool_tmpc_int=\count461
-\l__datatool_tmpd_int=\count462
-\l__datatool_count_int=\count463
-\l__datatool_tmp_datatype_int=\count464
+\l__datatool_tmpa_int=\count486
+\l__datatool_tmpb_int=\count487
+\l__datatool_tmpc_int=\count488
+\l__datatool_tmpd_int=\count489
+\l__datatool_count_int=\count490
+\l__datatool_tmp_datatype_int=\count491
 \l__datatool_tmpa_dim=\dimen410
 \l__datatool_tmpb_dim=\dimen411
  (/usr/share/texmf-dist/tex/latex/datatool/datatool-l3fp.def
 File: datatool-l3fp.def 2025/12/04 v3.4.3 (NLCT)
 )
 \@dtl@toks=\toks81
-\@dtl@tmpcount=\count465
+\@dtl@tmpcount=\count492
 \dtl@tmplength=\skip356
-\l__datatool_measure_box=\box144
-\dtl@sortresult=\count466
+\l__datatool_measure_box=\box146
+\dtl@sortresult=\count493
  (/usr/share/texmf-dist/tex/latex/datatool/datatool-utf8.ldf
 File: datatool-utf8.ldf 2025/12/04 v3.4.3 (NLCT)
 )
-\@dtl@datatype=\count467
-\c_datatool_unknown_int=\count468
-\l__datatool_year_int=\count469
-\l__datatool_month_int=\count470
-\l__datatool_day_int=\count471
-\l__datatool_hour_int=\count472
-\l__datatool_minute_int=\count473
-\l__datatool_second_int=\count474
-\l__datatool_tzhour_int=\count475
-\l__datatool_tzminute_int=\count476
-\l__datatool_julian_int=\count477
-\l__datatool_local_julian_int=\count478
-\l__datatool_prefix_int=\count479
-\l__datatool_suffix_int=\count480
-\@dtl@foreach@level=\count481
-\dtl@codeA=\count482
-\dtl@codeB=\count483
+\@dtl@datatype=\count494
+\c_datatool_unknown_int=\count495
+\l__datatool_year_int=\count496
+\l__datatool_month_int=\count497
+\l__datatool_day_int=\count498
+\l__datatool_hour_int=\count499
+\l__datatool_minute_int=\count500
+\l__datatool_second_int=\count501
+\l__datatool_tzhour_int=\count502
+\l__datatool_tzminute_int=\count503
+\l__datatool_julian_int=\count504
+\l__datatool_local_julian_int=\count505
+\l__datatool_prefix_int=\count506
+\l__datatool_suffix_int=\count507
+\@dtl@foreach@level=\count508
+\dtl@codeA=\count509
+\dtl@codeB=\count510
 )
-\gls@level=\count484
+\gls@level=\count511
 \@gls@tmpb=\toks82
 \gls@tmplen=\skip357
 
@@ -1473,7 +1518,7 @@ Package: glossary-long 2025/11/09 v4.9 (NLCT)
 Package: glossary-super 2025/11/09 v4.9 (NLCT)
  (/usr/share/texmf-dist/tex/latex/supertabular/supertabular.sty
 Package: supertabular 2025/06/26 v4.2d the supertabular environment
-\c@tracingst=\count485
+\c@tracingst=\count512
 \ST@wd=\dimen414
 \ST@rightskip=\skip361
 \ST@leftskip=\skip362
@@ -1487,10 +1532,10 @@ Package: supertabular 2025/06/26 v4.2d the supertabular environment
 \ST@prevht=\dimen421
 \ST@toadd=\dimen422
 \ST@dimen=\dimen423
-\ST@pbox=\box145
+\ST@pbox=\box147
 )) (/usr/share/texmf-dist/tex/latex/glossaries/styles/glossary-tree.sty
 Package: glossary-tree 2025/11/09 v4.9 (NLCT)
-\l__glossaries_tree_max_known_level_int=\count486
+\l__glossaries_tree_max_known_level_int=\count513
 \l__glossaries_tree_offset_dim=\dimen424
 \l__glossaries_tree_namewidth_dim=\dimen425
 \l__glossaries_tree_symbolwidth_dim=\dimen426
@@ -1500,27 +1545,27 @@ Package: glossary-tree 2025/11/09 v4.9 (NLCT)
 \l__glossaries_tree_symbolwidth_padding_dim=\dimen430
 \l__glossaries_tree_namesymbolwidth_dim=\dimen431
 \l__glossaries_tree_namesymbolwidth_padding_dim=\dimen432
-\l__glossaries_tree_level_int=\count487
+\l__glossaries_tree_level_int=\count514
 \glstreeindent=\skip364
 )) (/usr/share/texmf-dist/tex/latex/algorithms/algorithm.sty
 Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating environment
 \@float@every@algorithm=\toks87
-\c@algorithm=\count488
+\c@algorithm=\count515
 ) (/usr/share/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
 Package: algpseudocode 
  (/usr/share/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
 
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
-\c@ALG@line=\count489
-\c@ALG@rem=\count490
-\c@ALG@nested=\count491
+\c@ALG@line=\count516
+\c@ALG@rem=\count517
+\c@ALG@nested=\count518
 \ALG@tlm=\skip365
 \ALG@thistlm=\skip366
-\c@ALG@Lnr=\count492
-\c@ALG@blocknr=\count493
-\c@ALG@storecount=\count494
-\c@ALG@tmpcounter=\count495
+\c@ALG@Lnr=\count519
+\c@ALG@blocknr=\count520
+\c@ALG@storecount=\count521
+\c@ALG@tmpcounter=\count522
 \ALG@tmplength=\skip367
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
@@ -1551,16 +1596,16 @@ LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count496
+\scratchcounter=\count523
 \scratchdimen=\dimen433
-\scratchbox=\box146
-\nofMPsegments=\count497
-\nofMParguments=\count498
+\scratchbox=\box148
+\nofMPsegments=\count524
+\nofMParguments=\count525
 \everyMPshowfont=\toks88
-\MPscratchCnt=\count499
+\MPscratchCnt=\count526
 \MPscratchDim=\dimen434
-\MPnumerator=\count500
-\makeMPintoPDFobject=\count501
+\MPnumerator=\count527
+\makeMPintoPDFobject=\count528
 \everyMPtoPDFconversion=\toks89
 ) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -1587,10 +1632,10 @@ Package hyperref Info: Link coloring ON on input line 48.
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
 * \textwidth=426.0pt
-* \textheight=679.0pt
+* \textheight=708.0pt
 * \oddsidemargin=13.0pt
 * \evensidemargin=13.0pt
-* \topmargin=-58.31723pt
+* \topmargin=-72.54361pt
 * \headheight=56.9055pt
 * \headsep=14.5pt
 * \topskip=12.0pt
@@ -1651,4 +1696,123 @@ File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
 LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 48.
  (/usr/share/texmf-dist/tex/latex/psnfss/omsztmcm.fd
-File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for
+File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 48.
+ (/usr/share/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
+ (/usr/share/texmf-dist/tex/latex/microtype/mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+) (/usr/share/texmf-dist/tex/latex/microtype/mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+) (/usr/share/texmf-dist/tex/latex/microtype/mt-eur.cfg
+File: mt-eur.cfg 2006/07/31 v1.1 microtype config. file: AMS Euler Roman (RS)
+)
+LaTeX Font Info:    Trying to load font information for U+stmry on input line 48.
+ (/usr/share/texmf-dist/tex/latex/stmaryrd/Ustmry.fd)
+Package xypdf Info: Line width: 0.47987pt on input line 48.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: supertabular package is loaded.
+Package caption Info: End \AtBeginDocument code.
+<QUTLogo.png, id=135, 749.80125pt x 182.6825pt>
+File: QUTLogo.png Graphic file (type png)
+<use QUTLogo.png>
+Package pdftex.def Info: QUTLogo.png  used on input line 52.
+(pdftex.def)             Requested size: 276.8974pt x 67.46323pt.
+ [1
+
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc} <./qutlogo.png>] [2
+
+] (./QUT_Project_Proposal.toc
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 3.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 3.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 3.
+) [3
+
+] (./QUT_Project_Proposal.lot) (./QUT_Project_Proposal.lof) [4
+
+] (./Chapters/1_ProjectOverview.tex
+Chapter 1.
+[1
+
+]) (./Chapters/2_Literature Review.tex
+Chapter 2.
+[2] [3] [4]) (./Chapters/3_Stakeholders and Resources.tex
+Chapter 3.
+[5]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 27.
+ (/usr/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+) [6]) (./Chapters/4_Project Methodology.tex
+Chapter 4.
+[7]
+Overfull \hbox (0.13123pt too wide) in paragraph at lines 16--17
+[]\OT1/ptm/b/n/12 (-20) Model Train-ing: \OT1/ptm/m/n/12 (-20) Train the 2-4 se-lected un-der-wa-ter 3DGS mod-els on time-sequential
+ []
+
+[8]) (./Chapters/5_Deliverables.tex
+Chapter 5.
+[9]) (./Chapters/6_Quality and Sustainability.tex
+Chapter 6.
+[10]
+Overfull \hbox (14.12979pt too wide) in paragraph at lines 17--18
+[]\OT1/ptm/b/n/12 (-20) Knowledge Trans-fer: \OT1/ptm/m/n/12 (-20) Pro-duc-ing com-pre-hen-sive doc-u-men-ta-tion and a well-commented
+ []
+
+) (./Chapters/7_Risks Requirements and Constraints.tex
+Chapter 7.
+[11]) (./Chapters/8_Timeline and Deliverables.tex
+Chapter 8.
+[12]) [13] (./Chapters/9_Management of Project Changes.tex
+Chapter 9.
+) (./Chapters/10_Sign off.tex
+Chapter 10.
+) [14] (./QUT_Project_Proposal.bbl
+bibitemlist
+[15
+
+] [16] [17]) [18]
+\tf@toc=\write8
+\openout8 = `QUT_Project_Proposal.toc'.
+
+\tf@lot=\write9
+\openout9 = `QUT_Project_Proposal.lot'.
+
+\tf@lof=\write10
+\openout10 = `QUT_Project_Proposal.lof'.
+
+ (./QUT_Project_Proposal.aux)
+ ***********
+LaTeX2e <2025-11-01>
+L3 programming layer <2020/03/25>
+ ***********
+Package rerunfilecheck Info: File `QUT_Project_Proposal.out' has not changed.
+(rerunfilecheck)             Checksum: 66B06778E68588EF30CB709767FDE059;5727.
+ ) 
+Here is how much of TeX's memory you used:
+ 46407 strings out of 469515
+ 870135 string characters out of 5470808
+ 1517719 words of memory out of 5000000
+ 73782 multiletter control sequences out of 15000+600000
+ 686016 words of font info for 344 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 99i,11n,107p,3369b,1011s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on QUT_Project_Proposal.pdf (22 pages, 153619 bytes).
+PDF statistics:
+ 393 PDF objects out of 1000 (max. 8388607)
+ 357 compressed objects within 4 object streams
+ 99 named destinations out of 1000 (max. 500000)
+ 81170 words of extra memory for PDF output out of 89155 (max. 10000000)
+

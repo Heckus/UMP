@@ -1,16 +1,17 @@
 \chapter{Risks, Requirements \& Constraints}
 
-\section{Constraints}
+\section{Constraints \& Requirements}
 \begin{itemize}
-    \item \textbf{Time:} The project spans over two semesters and must meet the scheduled progress checks.
-    \item \textbf{Data Availability:} Dependence on the successful licensing and transfer of the EcoRRAP dataset from AIMS.
-    \item \textbf{Computing Power:} Training 3DGS models is computationally expensive and is constrained by available GPU resources.
+    \item \textbf{Timeline \& Compute Factor:} The project is strictly constrained by a two-semester timeline. A major requirement is factoring in the substantial time required to train multiple computationally expensive 3DGS models before the change detection evaluation phase can even begin. 
+    \item \textbf{Data Availability \& Suitability:} The project relies heavily on acquiring suitable temporal data. A critical constraint is finding data that surveys an identical geographical location with a sufficient time gap to demonstrate structural change.
+    \item \textbf{Data Security \& Compliance:} Any data utilized, particularly the AIMS EcoRRAP dataset, must be securely managed and used strictly within the bounds of the established data-sharing or borrowing agreements.
+    \item \textbf{Hardware Access:} Training 3DGS models requires continuous access to high-end GPUs. A strict constraint is securing this compute time locally; failure to do so will require pivoting the project budget into cloud computing solutions (e.g., AWS, RunPod) to train the pipeline.
 \end{itemize}
 
 \section{Risks and Blockers}
 \begin{itemize}
-    \item \textbf{Extreme Environmental Change:} Too much change between timestamps could result in completely uncorrelated reconstructions, making tracking impossible.
-    \item \textbf{Moving Features:} Transient features in the dataset like sea animals, sand, or shadows duplicating on the change map and cluttering the output.
-    \item \textbf{Geometric Noise:} If water or geometric noise cannot be removed completely during the initial reconstruction phase, these errors will propagate into the GS-DIFF model.
-    \item \textbf{Complexity of Coral:} Coral is highly geometrically complex and can be difficult to model accurately via Gaussian splatting while being measured under noise.
+    \item \textbf{Algorithm Failing on Underwater Noise:} If the inherent underwater noise, scattering, and optical attenuation cannot be adequately filtered during the initial reconstruction phase, these errors will propagate directly into the GS-DIFF model, causing the algorithm to falsely identify noise as structural change.
+    \item \textbf{Extreme Environmental Change:} Too much change between timestamps could result in completely uncorrelated reconstructions, making temporal alignment and tracking impossible.
+    \item \textbf{Moving Features:} Transient features in the dataset (like marine life, moving sand, or shifting shadows) could duplicate on the change map, heavily cluttering the output and masking actual coral growth or decay.
+    \item \textbf{Complexity of Coral:} Coral is highly geometrically complex and can be exceedingly difficult to model accurately via Gaussian splatting, especially when measured under noisy underwater conditions.
 \end{itemize}

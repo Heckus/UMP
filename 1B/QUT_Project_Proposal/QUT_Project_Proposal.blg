@@ -3,55 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: QUT_Project_Proposal.aux
 The style file: ieeetr.bst
 Database file #1: ./Chapters/Bibliography.bib
-Warning--I didn't find a database entry for "WaterGS"
-Warning--I didn't find a database entry for "DualPhysGS"
-Warning--I didn't find a database entry for "UW3DGS"
-Warning--I didn't find a database entry for "RSplatting"
-Warning--I didn't find a database entry for "WaterClearGS"
-Warning--I didn't find a database entry for "RUSplatting"
-Warning--I didn't find a database entry for "UWGS"
-Warning--I didn't find a database entry for "Underwater360"
-Warning--I didn't find a database entry for "CrossRegime"
-Warning--I didn't find a database entry for "GaussianSplashing"
-You've used 4 entries,
+You've used 32 entries,
             1876 wiz_defined-function locations,
-            523 strings with 4742 characters,
-and the built_in function-call counts, 1463 in all, are:
-= -- 131
-> -- 71
+            635 strings with 10804 characters,
+and the built_in function-call counts, 8482 in all, are:
+= -- 699
+> -- 561
 < -- 0
-+ -- 25
-- -- 21
-* -- 113
-:= -- 209
-add.period$ -- 4
-call.type$ -- 4
-change.case$ -- 4
++ -- 198
+- -- 166
+* -- 651
+:= -- 1287
+add.period$ -- 32
+call.type$ -- 32
+change.case$ -- 35
 chr.to.int$ -- 0
-cite$ -- 4
-duplicate$ -- 74
-empty$ -- 131
-format.name$ -- 21
-if$ -- 354
+cite$ -- 32
+duplicate$ -- 375
+empty$ -- 748
+format.name$ -- 166
+if$ -- 2013
 int.to.chr$ -- 0
-int.to.str$ -- 4
-missing$ -- 4
-newline$ -- 15
-num.names$ -- 4
-pop$ -- 15
+int.to.str$ -- 32
+missing$ -- 18
+newline$ -- 99
+num.names$ -- 32
+pop$ -- 140
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 55
+skip$ -- 278
 stack$ -- 0
-substring$ -- 108
-swap$ -- 34
+substring$ -- 362
+swap$ -- 146
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 10
-width$ -- 5
-write$ -- 42
-(There were 10 warnings)
+while$ -- 56
+width$ -- 34
+write$ -- 289

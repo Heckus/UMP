@@ -1,7 +1,7 @@
 \chapter{Stakeholders \& Resources}
 
 \section{Stakeholders}
-The stakeholders for this project are identified in the table below. Regular updates will be provided to the supervisor, with final outcomes presented to the QUT engineering faculty.
+The stakeholders for this project are identified in the table below. Regular updates will be provided to the supervisory team, with final outcomes presented to the QUT engineering faculty and associated partners.
 
 \begin{table}[H]
 \centering
@@ -10,18 +10,21 @@ The stakeholders for this project are identified in the table below. Regular upd
 \toprule
 \textbf{Stakeholder} & \textbf{Interest / Role} \\
 \midrule
-Project Supervisor & Niko Suenderhauf. Provides technical guidance, assesses progress, ensures academic rigour. \\
-QUT Centre for Robotics & End-user of the SCD pipeline for robotics mapping and autonomy research. \\
-AIMS (Australian Institute of Marine Science) & Provider of the EcoRRAP dataset; interested in tracking coral reef health and adaptation. \\
-Future Students & Potential users of the GS-DIFF algorithm for advanced scene change detection and structural monitoring. \\
+Prof. Niko Suenderhauf & Project Supervisor. Provides overarching technical guidance, assesses progress, and ensures the academic rigour of the scene change detection implementation. \\
+\addlinespace
+Dr. Scarlett Raine & Dataset contact and domain expert for underwater research at QCR. Provides insights into the ecological relevance of the project and ensures that the research aligns with real-world coral reef monitoring needs. \\
+\addlinespace
+QUT Centre for Robotics & High-value stakeholder and end-user. Interested in the integration of the SCD pipeline for advanced robotics mapping and autonomy research. \\
+\addlinespace
+AIMS & High-value stakeholder and provider of the EcoRRAP dataset. AIMS is interested in utilizing advanced 3D reconstruction to track coral reef health and structural changes. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Resources}
-Successful completion of this project requires the following resources:
+Training and optimizing Gaussian splatting models requires significant computational power and high-quality data. Successful completion of this project requires the following key resources:
 \begin{itemize}
-    \item \textbf{Dataset:} The AIMS EcoRRAP dataset, containing 4D field photogrammetry of reef clusters, will serve as the testing foundation.
-    \item \textbf{Computing Hardware:} Access to high-performance computing with dedicated GPUs (e.g., NVIDIA RTX 4090 or equivalent) for processing and rendering 3DGS models efficiently.
-    \item \textbf{Software:} Agisoft Metashape for initial processing, Python for script development, and PyTorch for 3DGS optimizations.
+    \item \textbf{Dataset:} The AIMS EcoRRAP dataset will serve as the core testing foundation. This high-fidelity dataset contains time-series field photogrammetry of coral reef clusters, which is absolutely essential for training and validating the change detection pipeline.
+    \item \textbf{Computing Hardware:} Training Gaussian Splatting models is a memory and compute-intensive process. The project necessitates access to a high-performance workstation equipped with a top-tier NVIDIA GPU boasting a minimum of 24 GB of VRAM (For example a NVIDIA RTX 3090, RTX 4090, or A-series equivalents) to handle the optimization of millions of 3D primitives without running out of memory.
+    \item \textbf{Software \& Frameworks:} Python for script development, PyTorch for executing 3DGS optimizations, and specialized 3DGS CUDA kernels. Agisoft Metashape or COLMAP may also be required for initial camera pose estimations (Structure from Motion) prior to splatting.
 \end{itemize}

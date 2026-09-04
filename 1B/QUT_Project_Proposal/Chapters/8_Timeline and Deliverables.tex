@@ -1,20 +1,49 @@
-\chapter{Timeline \& Deliverables}
+\chapter{Project Timeline}
 
-The project is scheduled over two semesters, concluding in October 2027.
+The project is scheduled over two semesters, concluding in October 2027. The progression of the six core phases is visualized in the Gantt chart below, accounting for the substantial time required for algorithm development and model training.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{ganttchart}[
+    x unit=0.9cm,
+    y unit title=0.6cm,
+    y unit chart=0.7cm,
+    vgrid, hgrid,
+    title label font=\bfseries\footnotesize,
+    bar label font=\footnotesize,
+    bar/.append style={fill=blue!40, rounded corners=2pt},
+    bar height=0.6
+]{1}{15}
+\gantttitle{2026}{5} \gantttitle{2027}{10} \\
+\gantttitle{Aug}{1} \gantttitle{Sep}{1} \gantttitle{Oct}{1} \gantttitle{Nov}{1} \gantttitle{Dec}{1} 
+\gantttitle{Jan}{1} \gantttitle{Feb}{1} \gantttitle{Mar}{1} \gantttitle{Apr}{1} \gantttitle{May}{1} 
+\gantttitle{Jun}{1} \gantttitle{Jul}{1} \gantttitle{Aug}{1} \gantttitle{Sep}{1} \gantttitle{Oct}{1} \\
+
+\ganttbar{Phase 1: Planning}{1}{2} \\
+\ganttbar{Phase 2: Data \& Setup}{2}{3} \\
+\ganttbar{Phase 3: Interim Review}{3}{3} \\
+\ganttbar{Phase 4: Algorithm Dev}{6}{11} \\
+\ganttbar{Phase 5: Evaluation}{12}{14} \\
+\ganttbar{Phase 6: Final Reporting}{14}{15}
+\end{ganttchart}
+}
+\caption{Project Timeline and Phase Progression (Aug 2026 -- Oct 2027)}
+\end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Project Timeline}
+\caption{Key Project Milestones}
 \begin{tabularx}{\textwidth}{l l X}
 \toprule
-\textbf{Phase} & \textbf{Due Date} & \textbf{Deliverable(s)} \\
+\textbf{Phase} & \textbf{Timeline} & \textbf{Milestone} \\
 \midrule
-Phase 1: Planning & Week 7 & Project Proposal (this document). \\
-Phase 2: Data \& Setup & Week 12 & EcoRRAP dataset secured, baseline COLMAP models generated. \\
-Phase 3: Interim Review & October 2026 & Presentation of progress, initial 3DGS reconstruction tests, and primitive comparison mockups. \\
-Phase 4: Algorithm Dev & Semester 1, 2027 & GS-DIFF pipeline integration with underwater specific adaptations. \\
-Phase 5: Evaluation & Semester 2, 2027 & Extracting change maps and evaluating mIoU/F1 scores. \\
-Phase 6: Final Reporting & October 2027 & Full results, Draft Final Report, Final Report, Oral Presentation. \\
+Phase 1: Planning & Aug -- Sep 2026 & Project Proposal (this document). \\
+Phase 2: Data \& Setup & Sep -- Oct 2026 & EcoRRAP dataset secured, baseline models generated. \\
+Phase 3: Interim Review & October 2026 & Presentation of progress, initial reconstruction tests. \\
+Phase 4: Algorithm Dev & Feb -- Jun 2027 & GS-DIFF pipeline integration with underwater adaptations. \\
+Phase 5: Evaluation & Jul -- Sep 2027 & Extracting change maps and evaluating structural changes. \\
+Phase 6: Final Reporting & Sep -- Oct 2027 & Full results, Final Report, Oral Presentation. \\
 \bottomrule
 \end{tabularx}
 \end{table}

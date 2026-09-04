@@ -27,7 +27,7 @@
 \RequirePackage{url} %Typeset urls properly.
 % \RequirePackagecolorlinks{hyperref}		
 \usepackage{hyperref}
-\hypersetup{colorlinks=true, citecolor=blue, linkcolor=blue}
+\hypersetup{colorlinks=true, citecolor=black, linkcolor=black}
 %Hyperlink your pdf output.
 \RequirePackage{geometry} %set the margins.
 \RequirePackage{memhfixc} % Set the correct layout
@@ -57,10 +57,10 @@
 %*************************************
 % ********* Set page layout **********
 \setlrmarginsandblock{30mm}{30mm}{*}
-\setulmarginsandblock{30mm}{30mm}{*}
+\setulmarginsandblock{25mm}{25mm}{*}
 \setheadfoot{20mm}{\baselineskip}
 \setheaderspaces{*}{\baselineskip}{*}
-\def\baselinestretch{1.5}
+\def\baselinestretch{1}
 \def\keywordname{{\bf Keywords:}}
 
 
@@ -69,18 +69,39 @@
 \checkandfixthelayout
 
 % ********* Chapter and section style **********
+% \makechapterstyle{mychapterstyle}{%
+%     \renewcommand{\chapnamefont}{\LARGE\rmfamily\bfseries}%
+%     \renewcommand{\chapnumfont}{\LARGE\rmfamily\bfseries}%
+%     \renewcommand{\chaptitlefont}{\LARGE\rmfamily\bfseries}%
+%     \renewcommand{\printchaptertitle}[1]{%
+%         \chaptitlefont\hrule height 0.5pt \vspace{1em}%
+%         {##1}\vspace{1em}\hrule height 0.5pt%
+%         }%
+%     \renewcommand{\printchapternum}{%
+%         \chapnumfont\thechapter%
+%         }%
+% }
+
 \makechapterstyle{mychapterstyle}{%
+    % --- Add these length adjustments to pull the title up ---
+    \setlength{\beforechapskip}{30pt} % Set to positive to add space before the chapter
+    \setlength{\midchapskip}{0pt}      % Removes the hidden gap where the chapter number was
+    
     \renewcommand{\chapnamefont}{\LARGE\rmfamily\bfseries}%
     \renewcommand{\chapnumfont}{\LARGE\rmfamily\bfseries}%
     \renewcommand{\chaptitlefont}{\Huge\rmfamily\bfseries}%
+    
+    \renewcommand{\printchaptername}{} 
+    \renewcommand{\printchapternum}{} 
+    
     \renewcommand{\printchaptertitle}[1]{%
         \chaptitlefont\hrule height 0.5pt \vspace{1em}%
         {##1}\vspace{1em}\hrule height 0.5pt%
         }%
-    \renewcommand{\printchapternum}{%
-        \chapnumfont\thechapter%
-        }%
 }
+
+% Prevent chapters from automatically starting on a new page
+\renewcommand{\clearforchapter}{}
 
 \chapterstyle{mychapterstyle}
 
@@ -92,15 +113,16 @@
 \makeevenhead{headings}{\thepage}{}{\small\slshape\leftmark}
 \makeoddhead{headings}{\small\slshape\rightmark}{}{\thepage}
 
-\usepackage{fancyhdr}
-% ---- added to change style
+% ---- Use native memoir pagestyles instead of fancyhdr ----
+\makepagestyle{myfancy}
+\makeevenfoot{myfancy}{}{}{Page \thepage}
+\makeoddfoot{myfancy}{}{}{Page \thepage}
+\makeevenhead{myfancy}{}{}{}
+\makeoddhead{myfancy}{}{}{}
 
-\pagestyle{fancy}
-
-\rfoot{Page \thepage}
-
-
-
+\pagestyle{myfancy}
+\aliaspagestyle{chapter}{myfancy}
+\aliaspagestyle{plain}{myfancy}
 % ********* Table of contents style **********
 \settocdepth{subsection}
 

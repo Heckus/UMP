@@ -1,7 +1,18 @@
-\chapter{Project Overiew}
+\chapter{Project Overview}
 
-This project aims to address a critical gap in multi-view Scene Change Detection (SCD) for underwater environments by investigating and developing primitive-space change detection methods within underwater 3D Gaussian Splatting (3DGS) models. 
+\section{Motivation and Background}
+Coral reefs are among the most biologically diverse and ecologically vital environments on the planet. However, they are increasingly vulnerable to climate change, pollution, and anthropogenic stressors. Effective biological research and environmental monitoring rely heavily on robust, high-frequency structural and health assessments. Scene Change Detection (SCD) has possible applications as a critical tool in these efforts, enabling researchers to track fine-scale structural dynamics (e.g., coral growth and physical breakage) as well as appearance shifts (e.g., coral bleaching) over time.
 
-The primary objective is to move beyond traditional render-then-compare paradigms (which rely on pixel-space comparison) by performing change detection directly on the 3DGS primitives. By analyzing native primitive attributes—position, anisotropic covariance, and color—this project will evaluate whether these attributes carry sufficient signal for reliable scene change detection. 
+Recently, 3D Gaussian Splatting (3DGS)~\cite{10897713} has revolutionized 3D scene reconstruction. Its adaptation to underwater environments is a highly active but nascent field, with foundational methods only emerging between 2024 and 2026~\cite{11128502, article, xing2025uw3dgsunderwater3dreconstruction, 10.3389/fmars.2025.1573612}. These cutting-edge techniques successfully model and strip away complex underwater optical degradation, such as light scattering and attenuation. This project seeks to capitalize on these new methods, bridging the gap between novel 3D reconstruction research and practical, actionable tools for marine ecology.
 
-The research will investigate algorithms to handle the inherent challenges of independent 3DGS reconstructions, specifically geometric drift (representation ambiguity and observation uncertainty) and photometric drift. Ultimately, the project will apply this methodology to the EcoRRAP dataset provided by the Australian Institute of Marine Science (AIMS) and the QUT Centre for Robotics, testing its ability to separate structural changes (e.g., coral growth or breakage) from surface-level appearance changes (e.g., bleaching or lighting shifts) in a complex, real-world underwater environment.
+\section{Project Objectives}
+This project aims to investigate the feasibility and performance of a state-of-the-art primitive-space Scene Change Detection method~\cite{galappaththige2026pixelsprimitivesscenechange} when applied to the challenging domain of underwater coral scenes. While this novel SCD method has demonstrated success on standard, terrestrial datasets, it is imperative to test its robustness in highly complex, real-world domains to determine its true utility and limitations. 
+
+Instead of relying on traditional render-then-compare paradigms that suffer from viewpoint dependencies and require pixel-space comparison, the project will perform change detection directly on the native 3DGS primitives (analyzing position, anisotropic covariance, and color)\cite{galappaththige2026pixelsprimitivesscenechange}. To achieve this, the project will focus on two core evaluations:
+\begin{enumerate}
+    \item \textbf{GS-DIFF Efficacy in Coral Environments:} Evaluate the success of the primitive-space change detection algorithm in accurately identifying and separating structural changes from appearance changes in underwater coral scenes.
+    \item \textbf{Evaluation of Underwater 3DGS Methods:} Research and select 2 to 4 of the most recent underwater 3DGS generation methods. The project will evaluate which of these techniques produces the most consistent and reliable reconstructions to serve as the optimal foundation for the change detection pipeline.
+\end{enumerate}
+
+\section{Scope and Context}
+To validate this pipeline, the project will utilize the EcoRRAP dataset~\cite{gordon2023field}, provided by the Australian Institute of Marine Science (AIMS) in collaboration with the QUT Centre for Robotics. Ultimately, this research will demonstrate how emerging underwater 3DGS rendering techniques can be harnessed to extract meaningful, temporal data, empowering biologists with advanced tools for reef monitoring.

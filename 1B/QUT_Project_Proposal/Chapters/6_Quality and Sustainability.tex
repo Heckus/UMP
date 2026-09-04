@@ -1,16 +1,18 @@
 \chapter{Quality \& Sustainability}
 
 \section{Quality}
-The quality of the final deliverable will be validated against a set of performance criteria using standard scene change detection metrics:
+The quality of the final deliverable will be validated against a set of performance criteria using standard scene change detection metrics, alongside strict software engineering practices:
 \begin{itemize}
     \item \textbf{Accuracy Metrics:} Evaluating Mean Intersection over Union (mIoU) and F1 score against baseline render-then-compare methods.
-    \item \textbf{Disambiguation:} The ability to successfully separate structural changes from surface-level color changes accurately.
-    \item \textbf{Robustness:} Performance under the inherent underwater noise found in the EcoRRAP dataset.
+    \item \textbf{Disambiguation:} The ability to successfully separate true structural changes from surface-level color changes accurately.
+    \item \textbf{Robustness:} Performance under the inherent underwater noise, turbidity, and optical attenuation found in the EcoRRAP dataset.
+    \item \textbf{Software Engineering Practices:} The codebase will be maintained using Git version control, ensuring a transparent development history. Unit testing will be employed for core algorithmic components (such as kernel computation) to ensure reliability and reproducible research outputs.
 \end{itemize}
 
 \section{Sustainability}
-Sustainability will be considered through:
+Sustainability will be considered through both computational and environmental lenses:
 \begin{itemize}
-    \item \textbf{Code Efficiency:} Ensuring the primitive comparison runs efficiently without requiring heavy, power-intensive render-then-compare loops across hundreds of viewpoints.
-    \item \textbf{Knowledge Transfer:} Producing comprehensive documentation and a well-commented codebase to ensure the project's findings can be built upon in future QUT Centre for Robotics research.
+    \item \textbf{Computational Efficiency:} Ensuring the primitive comparison runs efficiently in 3D space, significantly reducing the carbon footprint of the pipeline by avoiding power-intensive render-then-compare loops across hundreds of synthetic 2D viewpoints.
+    \item \textbf{Environmental Impact:} By bridging the gap between raw data collection and actionable spatial conservation planning, this pipeline directly supports marine conservation initiatives (e.g., Global Biodiversity Framework Targets). More accurate and scalable tracking of coral reef structural health enables better-informed ecological management.
+    \item \textbf{Knowledge Transfer:} Producing comprehensive documentation and a well-commented codebase to ensure the project's findings can be efficiently built upon in future QUT Centre for Robotics and AIMS research projects, preventing redundant computational work.
 \end{itemize}
