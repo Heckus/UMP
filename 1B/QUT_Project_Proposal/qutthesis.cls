@@ -14,7 +14,7 @@
 \NeedsTeXFormat{LaTeX2e}[2016/05/16]
 
 %Load the memoir class.
-\LoadClass[12pt, a4paper]{memoir}
+\LoadClass[12pt, a4paper, oneside, openany]{memoir}
 
 %*************************************
 % Load packages

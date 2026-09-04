@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99e (TeX Live 2026/Arch Linux)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: QUT_Project_Proposal.aux
+The style file: ieeetr.bst
+Database file #1: ./Chapters/Bibliography.bib
+Warning--I didn't find a database entry for "WaterGS"
+Warning--I didn't find a database entry for "DualPhysGS"
+Warning--I didn't find a database entry for "UW3DGS"
+Warning--I didn't find a database entry for "RSplatting"
+Warning--I didn't find a database entry for "WaterClearGS"
+Warning--I didn't find a database entry for "RUSplatting"
+Warning--I didn't find a database entry for "UWGS"
+Warning--I didn't find a database entry for "Underwater360"
+Warning--I didn't find a database entry for "CrossRegime"
+Warning--I didn't find a database entry for "GaussianSplashing"
+You've used 4 entries,
+            1876 wiz_defined-function locations,
+            523 strings with 4742 characters,
+and the built_in function-call counts, 1463 in all, are:
+= -- 131
+> -- 71
+< -- 0
++ -- 25
+- -- 21
+* -- 113
+:= -- 209
+add.period$ -- 4
+call.type$ -- 4
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 4
+duplicate$ -- 74
+empty$ -- 131
+format.name$ -- 21
+if$ -- 354
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 4
+newline$ -- 15
+num.names$ -- 4
+pop$ -- 15
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 55
+stack$ -- 0
+substring$ -- 108
+swap$ -- 34
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 10
+width$ -- 5
+write$ -- 42
+(There were 10 warnings)

@@ -1,0 +1,16 @@
+\chapter{Risks, Requirements \& Constraints}
+
+\section{Constraints}
+\begin{itemize}
+    \item \textbf{Time:} The project spans over two semesters and must meet the scheduled progress checks.
+    \item \textbf{Data Availability:} Dependence on the successful licensing and transfer of the EcoRRAP dataset from AIMS.
+    \item \textbf{Computing Power:} Training 3DGS models is computationally expensive and is constrained by available GPU resources.
+\end{itemize}
+
+\section{Risks and Blockers}
+\begin{itemize}
+    \item \textbf{Extreme Environmental Change:} Too much change between timestamps could result in completely uncorrelated reconstructions, making tracking impossible.
+    \item \textbf{Moving Features:} Transient features in the dataset like sea animals, sand, or shadows duplicating on the change map and cluttering the output.
+    \item \textbf{Geometric Noise:} If water or geometric noise cannot be removed completely during the initial reconstruction phase, these errors will propagate into the GS-DIFF model.
+    \item \textbf{Complexity of Coral:} Coral is highly geometrically complex and can be difficult to model accurately via Gaussian splatting while being measured under noise.
+\end{itemize}

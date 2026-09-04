@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}
+
+\bibitem{11128502}
+D.~Yang, J.~J. Leonard, and Y.~Girdhar, ``Seasplat: Representing underwater scenes with 3d gaussian splatting and a physically grounded image formation model,'' in {\em 2025 IEEE International Conference on Robotics and Automation (ICRA)}, pp.~7632--7638, 2025.
+
+\bibitem{10.3389/fmars.2025.1573612}
+X.~Fan, X.~Wang, H.~Ni, Y.~Xin, and P.~Shi, ``Water-adapted 3d gaussian splatting for precise underwater scene reconstruction,'' {\em Frontiers in Marine Science}, vol.~Volume 12 - 2025, 2025.
+
+\bibitem{11184160}
+Z.~Ling, Y.~Feng, A.~Meng, R.~Xiao, S.~Pan, W.~Lu, and L.~Hu, ``Aqua-splat: Physically-informed sonar-camera gaussian splatting for underwater 3d reconstruction,'' {\em IEEE Robotics and Automation Letters}, vol.~10, no.~11, pp.~11896--11903, 2025.
+
+\bibitem{Liu_2025}
+S.~Liu, N.~Gao, Z.~Gu, H.~Dou, Y.~Deng, and H.~Li, ``Spatiotemporal degradation-aware 3d gaussian splatting for realistic underwater scene reconstruction,'' in {\em Proceedings of the 33rd ACM International Conference on Multimedia}, MM '25, pp.~141--150, ACM, Oct. 2025.
+
+\end{thebibliography}

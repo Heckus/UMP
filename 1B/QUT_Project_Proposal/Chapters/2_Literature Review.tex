@@ -1,7 +1,22 @@
-% ***************************************************
-% Literature Review
-% ***************************************************
-
-
-
 \chapter{Literature Review}
+
+\section{Introduction}
+Underwater 3D scene reconstruction and change detection are critical for marine monitoring, such as tracking coral reef health and adaptation. While 3D Gaussian Splatting (3DGS) has emerged as an efficient and photorealistic representation for digital twins, its application in underwater environments remains challenging due to the complex physical properties of water, including light scattering, attenuation, and dynamic elements. This review categorizes recent advancements in underwater 3DGS and scene change detection into five key groups based on their technical approach to solving the underwater degradation problem.
+
+\section{Physical Image Formation \& Inverse Rendering Models}
+These methods strictly embed the physics of light, such as the Jaffe-McGlamery model, into the rendering equation to separate scene geometry from water degradation (attenuation, scattering, backscatter). \textit{SeaSplat}~\cite{11128502} was the first to constrain 3DGS using a physically grounded range- and color-dependent model. \textit{WaterGS}~\cite{WaterGS} framed the reconstruction as a formal inverse rendering problem using 2D Gaussians and bundle adjustment. \textit{DualPhys-GS}~\cite{DualPhysGS} uses a dual feature-guided scattering-attenuation model, while \textit{UW-3DGS}~\cite{UW3DGS} employs a learnable image-formation module and Physics-Aware Uncertainty Pruning (PAUP) to filter noise. These methods achieve true "clear water" novel view synthesis by mathematically stripping away the medium.
+
+\section{Image Restoration (UIR) \& Multi-View Priors}
+Instead of directly modeling physics during rendering, these methods bridge traditional 2D underwater image enhancement with 3D structural consistency. \textit{R-Splatting}~\cite{RSplatting} leverages pre-enhanced views from diverse 2D restoration models and introduces an illumination generator. \textit{WaterClear-GS}~\cite{WaterClearGS} employs dual-branch optimization to maintain structural photometric consistency while cleaning the textures. This approach trades the complexity of physical modeling for the robustness of 2D pre-processing neural networks.
+
+\section{Geometric \& Scale Adaptations for Turbidity}
+These papers focus on altering the structural and rendering mechanics of the Gaussians to survive low-visibility, sparse data, or extreme depths. \textit{Water-Adapted 3DGS}~\cite{10.3389/fmars.2025.1573612} modifies the primitives themselves using complexity-adaptive distribution and depth-adaptive multi-scale radius rendering. \textit{RUSplatting}~\cite{RUSplatting} uses frame interpolation and decoupled RGB learning specifically to survive sparse-view, low-light deep-sea settings. \textit{AquaSplatting}~\cite{11184160} combines implicit and explicit representations to handle sparse far-field data in cloudy water. Modifying Gaussian primitives significantly improves geometric stability over standard 3DGS when dealing with highly turbid water.
+
+\section{Dynamic Environments \& Transient Artifacts}
+Underwater environments are rarely static. This group deals with time-varying visibility and moving objects like marine life, divers, or floating particles. \textit{UW-GS}~\cite{UWGS} uses distance-dependent variance and binary motion masks to filter out transient fish and divers. \textit{Spatiotemporal Degradation-Aware 3DGS}~\cite{Liu_2025} tracks changing water currents, localized turbidity spikes, and lighting variations over time, highlighting the shift from static scene reconstruction to handling the complex temporal dynamics of real-world ocean environments.
+
+\section{Alternative Optics \& Benchmarking Studies}
+Papers that expand capture mechanics or provide meta-analysis. \textit{Underwater360}~\cite{Underwater360} introduces omnidirectional spherical ray-casting to eliminate refraction distortions in wide-angle setups. \textit{Gaussian Splatting Underwater: A Controlled Cross-Regime Study}~\cite{CrossRegime} provides a rigorous benchmark evaluating system limitations across various turbidity scales. \textit{Gaussian Splashing}~\cite{GaussianSplashing} is an early foundational study adapting direct volumetric rendering explicitly to aquatic medium physics.
+
+\section{Conclusion}
+The literature demonstrates a clear trajectory from adapting basic 3DGS to underwater scenes via image restoration priors, to embedding complex physical models, and finally adapting the primitives themselves for robustness. The proposed primitive-space scene change detection pipeline will build upon these foundational works, leveraging the geometric and photometric properties of the primitives to separate structural changes from appearance changes and environmental drift.

@@ -1,0 +1,17 @@
+\chapter{Project Methodology}
+
+The project will follow a systems engineering approach, utilizing the AIMS EcoRRAP dataset to validate a newly proposed primitive-space change detection pipeline.
+
+\section{Proposed Pipeline}
+The methodology consists of several key stages:
+\begin{enumerate}
+    \item \textbf{Dataset Processing:} Using EcoRRAP imagery from two collection times (Time A and Time B).
+    \item \textbf{Structure-from-Motion (SfM):} Running COLMAP on both datasets to estimate camera poses and sparse point clouds.
+    \item \textbf{3DGS Reconstruction:} Utilizing algorithms like Aqua Splat or Water-Adapted 3DGS to generate high-fidelity, water-removed reconstructions of the reef at each time point.
+    \item \textbf{Primitive-Space Comparison (GS-DIFF):} 
+    \begin{itemize}
+        \item Applying geometric drift modeling (covariance inflation and observation uncertainty).
+        \item Computing geometric and appearance kernels directly on the primitives.
+    \end{itemize}
+    \item \textbf{Change Maps Generation:} Extracting explicit Colour Change Maps, Geometry Change Maps, and a combined Full Change Map.
+\end{enumerate}
