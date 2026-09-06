@@ -123,6 +123,7 @@
 \pagestyle{myfancy}
 \aliaspagestyle{chapter}{myfancy}
 \aliaspagestyle{plain}{myfancy}
+\aliaspagestyle{headings}{myfancy}
 % ********* Table of contents style **********
 \settocdepth{subsection}
 

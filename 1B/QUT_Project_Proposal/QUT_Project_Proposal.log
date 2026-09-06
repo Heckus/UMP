@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.8)  4 SEP 2026 17:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.8)  6 SEP 2026 21:36
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/hecke/0Github/UMP/1B/QUT_Project_Proposal/QUT_Project_Proposal
+**/home/hecke/0Github/UMP/1B/QUT_Project_Proposal/QUT_Project_Proposal.tex
 (/home/hecke/0Github/UMP/1B/QUT_Project_Proposal/QUT_Project_Proposal.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -1724,7 +1724,7 @@ Package caption Info: End \AtBeginDocument code.
 <QUTLogo.png, id=135, 749.80125pt x 182.6825pt>
 File: QUTLogo.png Graphic file (type png)
 <use QUTLogo.png>
-Package pdftex.def Info: QUTLogo.png  used on input line 52.
+Package pdftex.def Info: QUTLogo.png  used on input line 53.
 (pdftex.def)             Requested size: 276.8974pt x 67.46323pt.
  [1
 
@@ -1746,43 +1746,63 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
 Chapter 1.
 [1
 
-]) (./Chapters/2_Literature Review.tex
+]
+<./Images/conops.jpg, id=219, 2826.56pt x 1541.76pt>
+File: ./Images/conops.jpg Graphic file (type jpg)
+<use ./Images/conops.jpg>
+Package pdftex.def Info: ./Images/conops.jpg  used on input line 22.
+(pdftex.def)             Requested size: 383.3974pt x 209.11668pt.
+) (./Chapters/2_Literature Review.tex
 Chapter 2.
-[2] [3] [4]) (./Chapters/3_Stakeholders and Resources.tex
+[2 <./Images/conops.jpg>] [3] [4] [5]
+Underfull \hbox (badness 10000) in paragraph at lines 73--73
+[]\OT1/ptm/b/n/12 (+20) Physically-
+ []
+
+
+Underfull \hbox (badness 3088) in paragraph at lines 73--73
+[]|\OT1/ptm/m/n/12 (+20) Optical-aware dual-branch op-ti-miza-tion us-ing
+ []
+
+
+Underfull \hbox (badness 7814) in paragraph at lines 73--73
+[]\OT1/ptm/b/n/12 (+20) Extreme En-vi-ron-
+ []
+
+) [6] [7] (./Chapters/3_Stakeholders and Resources.tex
 Chapter 3.
-[5]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 27.
- (/usr/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+(/usr/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [6]) (./Chapters/4_Project Methodology.tex
+) [8]) (./Chapters/4_Project Methodology.tex
 Chapter 4.
-[7]
+[9]
 Overfull \hbox (0.13123pt too wide) in paragraph at lines 16--17
 []\OT1/ptm/b/n/12 (-20) Model Train-ing: \OT1/ptm/m/n/12 (-20) Train the 2-4 se-lected un-der-wa-ter 3DGS mod-els on time-sequential
  []
 
-[8]) (./Chapters/5_Deliverables.tex
+[10]) [11] (./Chapters/5_Deliverables.tex
 Chapter 5.
-[9]) (./Chapters/6_Quality and Sustainability.tex
+) [12] (./Chapters/6_Quality and Sustainability.tex
 Chapter 6.
-[10]
+[13]
 Overfull \hbox (14.12979pt too wide) in paragraph at lines 17--18
 []\OT1/ptm/b/n/12 (-20) Knowledge Trans-fer: \OT1/ptm/m/n/12 (-20) Pro-duc-ing com-pre-hen-sive doc-u-men-ta-tion and a well-commented
  []
 
 ) (./Chapters/7_Risks Requirements and Constraints.tex
 Chapter 7.
-[11]) (./Chapters/8_Timeline and Deliverables.tex
+[14]) [15] (./Chapters/8_Timeline and Deliverables.tex
 Chapter 8.
-[12]) [13] (./Chapters/9_Management of Project Changes.tex
+) [16] (./Chapters/9_Management of Project Changes.tex
 Chapter 9.
 ) (./Chapters/10_Sign off.tex
 Chapter 10.
-) [14] (./QUT_Project_Proposal.bbl
+) [17] (./QUT_Project_Proposal.bbl
 bibitemlist
-[15
+[18
 
-] [16] [17]) [18]
+] [19] [20]) [21]
 \tf@toc=\write8
 \openout8 = `QUT_Project_Proposal.toc'.
 
@@ -1798,21 +1818,21 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `QUT_Project_Proposal.out' has not changed.
-(rerunfilecheck)             Checksum: 66B06778E68588EF30CB709767FDE059;5727.
+(rerunfilecheck)             Checksum: 5CE1DE41D9E477FE6D93AC2A91A369AB;5727.
  ) 
 Here is how much of TeX's memory you used:
- 46407 strings out of 469515
- 870135 string characters out of 5470808
- 1517719 words of memory out of 5000000
- 73782 multiletter control sequences out of 15000+600000
- 686016 words of font info for 344 fonts, out of 8000000 for 9000
+ 46438 strings out of 469515
+ 870502 string characters out of 5470808
+ 1519620 words of memory out of 5000000
+ 73791 multiletter control sequences out of 15000+600000
+ 688688 words of font info for 356 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,11n,107p,3369b,1011s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on QUT_Project_Proposal.pdf (22 pages, 153619 bytes).
+ 99i,13n,107p,3373b,1009s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on QUT_Project_Proposal.pdf (25 pages, 759306 bytes).
 PDF statistics:
- 393 PDF objects out of 1000 (max. 8388607)
- 357 compressed objects within 4 object streams
- 99 named destinations out of 1000 (max. 500000)
- 81170 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 436 PDF objects out of 1000 (max. 8388607)
+ 394 compressed objects within 4 object streams
+ 102 named destinations out of 1000 (max. 500000)
+ 85271 words of extra memory for PDF output out of 89155 (max. 10000000)
 

@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: QUT_Project_Proposal.aux
 The style file: ieeetr.bst
 Database file #1: ./Chapters/Bibliography.bib
-You've used 32 entries,
+You've used 30 entries,
             1876 wiz_defined-function locations,
-            635 strings with 10804 characters,
-and the built_in function-call counts, 8482 in all, are:
-= -- 699
-> -- 561
+            621 strings with 10393 characters,
+and the built_in function-call counts, 8041 in all, are:
+= -- 657
+> -- 539
 < -- 0
-+ -- 198
-- -- 166
-* -- 651
-:= -- 1287
-add.period$ -- 32
-call.type$ -- 32
-change.case$ -- 35
++ -- 190
+- -- 160
+* -- 614
+:= -- 1217
+add.period$ -- 30
+call.type$ -- 30
+change.case$ -- 33
 chr.to.int$ -- 0
-cite$ -- 32
-duplicate$ -- 375
-empty$ -- 748
-format.name$ -- 166
-if$ -- 2013
+cite$ -- 30
+duplicate$ -- 353
+empty$ -- 707
+format.name$ -- 160
+if$ -- 1909
 int.to.chr$ -- 0
-int.to.str$ -- 32
-missing$ -- 18
-newline$ -- 99
-num.names$ -- 32
-pop$ -- 140
+int.to.str$ -- 30
+missing$ -- 16
+newline$ -- 93
+num.names$ -- 30
+pop$ -- 137
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 278
+skip$ -- 268
 stack$ -- 0
-substring$ -- 362
-swap$ -- 146
+substring$ -- 346
+swap$ -- 140
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 56
-width$ -- 34
-write$ -- 289
+while$ -- 51
+width$ -- 32
+write$ -- 268

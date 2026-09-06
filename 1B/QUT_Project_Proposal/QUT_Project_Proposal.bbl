@@ -33,17 +33,11 @@ M.~Davey, C.~J. Klein, C.~Roelfsema, C.~D. Kuempel, and H.~Possingham, ``A revie
 \bibitem{10.1145/3806262.3806264}
 Q.~Zhong, W.~Liu, H.~Zhou, P.~Lu, and W.~Shi, ``3d gaussian splatting for scene editing and completion,'' in {\em Proceedings of the 2nd International Conference on Artificial Intelligence, Digital Media Technology and Social Computing}, ICAIDS '26, (New York, NY, USA), p.~14–25, Association for Computing Machinery, 2026.
 
-\bibitem{zhou20253dscenechangemodeling}
-Z.~Zhou, J.~Ni, S.~Zhang, Y.~Chen, and S.~Huang, ``3d scene change modeling with consistent multi-view aggregation,'' 2025.
-
 \bibitem{10852207}
 Z.~Lu, J.~Ye, and J.~Leonard, ``3dgs-cd: 3d gaussian splatting-based change detection for physical object rearrangement,'' {\em IEEE Robotics and Automation Letters}, vol.~10, no.~3, pp.~2662--2669, 2025.
 
-\bibitem{doi:10.2352/ISSN.2470-1173.2016.18.DPMI-252}
-H.~Blasinski and J.~Farrell, ``A three parameter underwater image formation model,'' {\em Electronic Imaging}, vol.~28, no.~18, pp.~1--1, 2016.
-
-\bibitem{jmse14060563}
-T.~Zhang, H.~Qin, Q.~Liu, and X.~Liu, ``Underwater image restoration integrating monocular depth estimation with a physical imaging model,'' {\em Journal of Marine Science and Engineering}, vol.~14, no.~6, 2026.
+\bibitem{zhou20253dscenechangemodeling}
+Z.~Zhou, J.~Ni, S.~Zhang, Y.~Chen, and S.~Huang, ``3d scene change modeling with consistent multi-view aggregation,'' 2025.
 
 \bibitem{s20185170}
 D.~Ngo, S.~Lee, Q.-H. Nguyen, T.~M. Ngo, G.-D. Lee, and B.~Kang, ``Single image haze removal from image enhancement perspective for real-time vision-based systems,'' {\em Sensors}, vol.~20, no.~18, 2020.
@@ -57,26 +51,14 @@ J.~Li, G.~Han, J.~Wan, Y.~Gao, and D.~Han, ``Dualphys-gs: Dual physically-guided
 \bibitem{zhang2024recgsremovingwatercaustic}
 T.~Zhang, W.~Zhi, K.~Huang, J.~Mangelson, C.~Barbalata, and M.~Johnson-Roberson, ``Recgs: Removing water caustic with recurrent gaussian splatting,'' 2024.
 
-\bibitem{zhang2026watercleargsopticalawaregaussiansplatting}
-X.~Zhang, Y.~Wang, S.~Fang, Z.~Wang, D.~Qi, and W.~Ding, ``Waterclear-gs: Optical-aware gaussian splatting for underwater reconstruction and restoration,'' 2026.
-
 \bibitem{li2025watersplattingfastunderwater3d}
 H.~Li, W.~Song, T.~Xu, A.~Elsig, and J.~Kulhanek, ``Watersplatting: Fast underwater 3d scene reconstruction using gaussian splatting,'' 2025.
 
 \bibitem{huang2025restorationreconstructionrethinking3d}
 G.~Huang, H.~Wang, Z.~Qi, W.~Lu, D.~Bull, and N.~Anantrasirichai, ``From restoration to reconstruction: Rethinking 3d gaussian splatting for underwater scenes,'' 2025.
 
-\bibitem{jiang2025rusplattingrobust3dgaussian}
-Z.~Jiang, H.~Wang, G.~Huang, B.~Seymour, and N.~Anantrasirichai, ``Rusplatting: Robust 3d gaussian splatting for sparse-view underwater scene reconstruction,'' 2025.
-
-\bibitem{10943785}
-H.~Wang, N.~Anantrasirichai, F.~Zhang, and D.~Bull, ``Uw-gs: Distractor-aware 3d gaussian splatting for enhanced underwater scene reconstruction,'' in {\em 2025 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)}, pp.~3280--3289, 2025.
-
-\bibitem{Liu_2025}
-S.~Liu, N.~Gao, Z.~Gu, H.~Dou, Y.~Deng, and H.~Li, ``Spatiotemporal degradation-aware 3d gaussian splatting for realistic underwater scene reconstruction,'' in {\em Proceedings of the 33rd ACM International Conference on Multimedia}, MM '25, pp.~141--150, ACM, Oct. 2025.
-
-\bibitem{hu2026underwater360reconstructingunderwaterscenes}
-J.~Hu, W.~Song, S.~Yu, M.~Wang, Z.~Yi, R.~Wu, M.~Xiang, N.~Lei, S.~Wang, Z.~Luo, and Y.~He, ``Underwater360: Reconstructing underwater scenes from panoramic images with omnidirectional gaussian splatting,'' 2026.
+\bibitem{zhang2026watercleargsopticalawaregaussiansplatting}
+X.~Zhang, Y.~Wang, S.~Fang, Z.~Wang, D.~Qi, and W.~Ding, ``Waterclear-gs: Optical-aware gaussian splatting for underwater reconstruction and restoration,'' 2026.
 
 \bibitem{11223217}
 A.~V. Sethuraman, M.~Rucker, O.~Bagoren, P.-C. Kung, N.~N. Amutha, and K.~A. Skinner, ``Sonarsplat: Novel view synthesis of imaging sonar via gaussian splatting,'' {\em IEEE Robotics and Automation Letters}, vol.~10, no.~12, pp.~13312--13319, 2025.
@@ -89,6 +71,18 @@ Z.~Ling, Y.~Feng, A.~Meng, R.~Xiao, S.~Pan, W.~Lu, and L.~Hu, ``Aqua-splat: Phys
 
 \bibitem{s26154713}
 W.~Yang, X.~Qian, X.~Liu, and J.~Leng, ``Sonarreg-gs slam: Sparse sonar-guided depth regularization for underwater gaussian splatting slam,'' {\em Sensors}, vol.~26, no.~15, 2026.
+
+\bibitem{jiang2025rusplattingrobust3dgaussian}
+Z.~Jiang, H.~Wang, G.~Huang, B.~Seymour, and N.~Anantrasirichai, ``Rusplatting: Robust 3d gaussian splatting for sparse-view underwater scene reconstruction,'' 2025.
+
+\bibitem{10943785}
+H.~Wang, N.~Anantrasirichai, F.~Zhang, and D.~Bull, ``Uw-gs: Distractor-aware 3d gaussian splatting for enhanced underwater scene reconstruction,'' in {\em 2025 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)}, pp.~3280--3289, 2025.
+
+\bibitem{Liu_2025}
+S.~Liu, N.~Gao, Z.~Gu, H.~Dou, Y.~Deng, and H.~Li, ``Spatiotemporal degradation-aware 3d gaussian splatting for realistic underwater scene reconstruction,'' in {\em Proceedings of the 33rd ACM International Conference on Multimedia}, MM '25, pp.~141--150, ACM, Oct. 2025.
+
+\bibitem{hu2026underwater360reconstructingunderwaterscenes}
+J.~Hu, W.~Song, S.~Yu, M.~Wang, Z.~Yi, R.~Wu, M.~Xiang, N.~Lei, S.~Wang, Z.~Luo, and Y.~He, ``Underwater360: Reconstructing underwater scenes from panoramic images with omnidirectional gaussian splatting,'' 2026.
 
 \bibitem{alvarez2026gaussiansplattingunderwatercontrolled}
 O.~Álvarez Tuñón and S.~Graßhof, ``Gaussian splatting underwater: A controlled cross-regime study,'' 2026.

@@ -21,7 +21,7 @@ Before change detection can occur, accurate baseline models must be generated an
 \section{Phase 3: Scene Change Detection (SCD) Integration}
 This phase bridges the gap between static reconstruction and dynamic analysis.
 \begin{itemize}
-    \item \textbf{Pipeline Integration:} Implement the GS-DIFF (or similar primitive-space) change detection pipeline on top of the trained underwater 3DGS models.
+    \item \textbf{Pipeline Integration:} Implement the GS-DIFF change detection pipeline on top of the trained underwater 3DGS models.
     \item \textbf{Temporal Alignment:} Ensure precise spatial alignment between the models of Time A and Time B. If models are trained independently, implement robust registration techniques to align the point clouds and Gaussians into a shared global coordinate space.
     \item \textbf{Kernel Adaptation:} Fine-tune and adapt the geometric and appearance kernels used by the SCD algorithm to account for the unique optical attenuation and scattering characteristics inherent to the underwater reconstructions.
 \end{itemize}
