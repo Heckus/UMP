@@ -1,0 +1,47 @@
+# Byte-compiled / cache files
+*.pyc
+__pycache__
+conda*
+
+# IDEs and editors
+.vscode
+
+# Data and outputs
+data
+output
+logs
+wandb
+
+#datasets
+datasets/*
+build
+screenshots
+tensorboard_3d
+sweeps/sweep_config.yaml
+snapshot_*
+nohup*
+
+# Project-specific directories and files
+diff_rasterization/diff_rast.egg-info
+diff_rasterization/dist
+clustering/pcds
+SIBR_viewers
+uw_formation/bs_estimation
+uw_formation/depth_gs
+uw_formation/depth_estimation
+uw_formation/white_balancing
+uw_formation/clean_bs
+uw_formation/depth_text
+uw_formation/add_bs
+uw_formation/plots/*
+
+diff-gaussian-rasterization_depthUW
+diff-gaussian-rasterization_UW
+diff-gaussian-rasterization_UWV2
+
+# Submodules (keep these last)
+submodules/diff-gaussian-rasterization_depth
+submodules/simple-knn
+submodules/diff-gaussian-rasterization_UW
+submodules/diff-gaussian-rasterization_UWV2
+submodules/transformers

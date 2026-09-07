@@ -1,0 +1,143 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{Technical Execution Plan: Online Scene Change Detection (O-SCD)\\
+\large Custom Dataset Generation and Training Pipeline}
+\author{Joshua Hecke}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This document outlines the end-to-end technical steps for creating a custom time-variant dataset and training the \textbf{O-SCD} (Online Scene Change Detection) framework. Because we do not yet have a multi-temporal underwater dataset, we must construct a custom dataset consisting of two states: a reference scene (Object A) and an inference/query scene (Object A + Object B).
+
+O-SCD operates in a label-free, online manner by relying on a pre-computed 3D Gaussian Splatting (3DGS) reconstruction of the \textit{reference scene}, and performs PnP-based pose estimation on the fly for the \textit{inference scene}.
+
+\section{Phase 1: Dataset Generation and Structure}
+To successfully run O-SCD, your custom dataset must adhere exactly to the directory structure expected by the dataloaders.
+
+\subsection{Image Capture}
+\begin{enumerate}
+    \item \textbf{Reference Scene (Time 1):} Capture a set of images (e.g., 50-150) covering the target object/area (Object A). Save these images into a folder named \texttt{input} inside a \texttt{reference\_scene} directory.
+    \item \textbf{Inference Scene (Time 2):} Introduce the change (Object B) into the same environment. Capture a new set of images from varying perspectives. Save these images directly into an \texttt{images} folder inside an \texttt{inference\_scene} directory.
+\end{enumerate}
+
+\subsection{Expected Directory Layout}
+Before running any scripts, organize your custom dataset as follows:
+\begin{lstlisting}[language=bash]
+~/UMP/Codebase/Dataset/Custom_OSCD_Dataset/
+|--- reference_scene/
+|    |--- input/
+|         |--- frame001.jpg
+|         |--- frame002.jpg ...
+|--- inference_scene/
+     |--- input/
+          |--- frame001.jpg
+          |--- frame002.jpg ...
+\end{lstlisting}
+
+\section{Phase 2: Preparation and COLMAP Processing}
+\textbf{CRITICAL PREPROCESSING STEP:} O-SCD requires camera poses \textbf{only} for the reference scene (poses for the inference scene are estimated on the fly via PnP). However, because O-SCD directly inherits the \textit{undistorted} pinhole camera intrinsics from the reference scene and applies them to the inference scene, \textbf{the inference images must also be undistorted} to prevent systematic projection errors. 
+
+The easiest way to achieve this is to run the standard 3DGS \texttt{convert.py} on \textbf{both} scenes independently. This will generate undistorted images in an \texttt{images/} folder for both.
+
+\begin{lstlisting}[language=bash]
+# Use the standard 3DGS conversion tool to run COLMAP
+cd ~/UMP/Codebase/Tools/gaussian-splatting-main
+conda activate colmap_runner
+
+# Generate sparse point cloud and undistorted images for the reference scene
+python convert.py -s ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset/reference_scene
+
+# Generate undistorted images for the inference scene (O-SCD will ignore its sparse poses)
+python convert.py -s ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset/inference_scene
+\end{lstlisting}
+This will create \texttt{sparse/0} and \texttt{images/} inside both directories. O-SCD's dataloader is hardcoded to load from \texttt{inference\_scene/images}, which will now correctly contain undistorted images.
+
+\section{Phase 3: Reference Scene Reconstruction}
+O-SCD requires a fully trained 3DGS point cloud of the reference scene as a prior. It expects this reconstruction to be stored in a directory named \texttt{reference\_reconstruction} at the root of the dataset.
+
+\begin{lstlisting}[language=bash]
+# Switch to the standard 3DGS environment
+conda activate 3dgs # (or whichever env you use for standard 3DGS)
+
+# Train the baseline model on the reference scene
+# By setting -m to reference_reconstruction, it saves directly where O-SCD expects it
+python train.py -s ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset/reference_scene \
+                -m ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset/reference_reconstruction
+\end{lstlisting}
+Verify that \texttt{\textasciitilde/UMP/Codebase/Dataset/Custom\_OSCD\_Dataset/reference\_reconstruction/point\_cloud/iteration\_30000/point\_cloud.ply} exists.
+
+\section{Phase 4: Running O-SCD}
+With the environment prepared, you can now run the O-SCD pipeline.
+
+\subsection{Environment Setup}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Change-Detection/O-SCD-main
+
+# Initialize and update submodules (CRITICAL for requirements.txt to succeed)
+git submodule update --init --recursive
+
+conda create -n oscd python=3.12 -y
+conda activate oscd
+
+# Install dependencies (CUDA 12.x recommended based on RTX 5070 Ti)
+pip install torch torchvision xformers --index-url https://download.pytorch.org/whl/cu121
+pip install cupy-cuda12x
+pip install -r requirements.txt
+\end{lstlisting}
+
+\subsection{Executing Online Change Detection}
+Run the core \texttt{oscd.py} script. This script loads the reference point cloud, aligns the inference images, detects the changes, and generates the change masks.
+
+\begin{lstlisting}[language=bash]
+# Run Change Detection
+# --test_hold 5 holds out 1/5th of the frames for testing (if needed)
+# --resolution 1 ensures full resolution (default scripts use 4 for downsampling)
+python oscd.py -s ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset \
+               -m ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset/output \
+               --resolution 1 \
+               --test_hold 5
+\end{lstlisting}
+
+\subsection{Executing Scene Update (Optional)}
+O-SCD also provides an update script to modify the 3D Gaussian Splatting scene representation based on the detected changes.
+\begin{lstlisting}[language=bash]
+python update.py -s ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset \
+                 -m ~/UMP/Codebase/Dataset/Custom_OSCD_Dataset/output \
+                 --resolution 1
+\end{lstlisting}
+
+\end{document}

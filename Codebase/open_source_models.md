@@ -7,12 +7,10 @@ Based on the literature review in the QUT Project Proposal and the bibliography,
 - **3DGS-CD** (Lu et al., 2025): [https://github.com/520xyxyzq/3DGS-CD](https://github.com/520xyxyzq/3DGS-CD)
 
 ## Physically-Grounded Underwater 3DGS
-- **SeaSplat** (Yang et al., 2025): [https://github.com/tyz1030/neuralsea](https://github.com/tyz1030/neuralsea)
+- **SeaSplat** (Yang et al., 2025): [https://seasplat.github.io/](https://seasplat.github.io/)
 - **RecGS** (Zhang et al., 2024): [https://github.com/tyz1030/recgs](https://github.com/tyz1030/recgs)
-- **Aquatic-GS** :[https://aquaticgs.github.io/](https://aquaticgs.github.io/)
 - **3D-UIR**: [https://bilityniu.github.io/3D-UIR/](https://bilityniu.github.io/3D-UIR/)
 ## Image Restoration & Prior-Driven
-- **WaterClear-GS** (Zhang et al., 2026): [https://buaaxrzhang.github.io/WaterClear-GS/](https://buaaxrzhang.github.io/WaterClear-GS/)
 - **WaterSplatting** (Li et al., 2025): [https://github.com/water-splatting/water-splatting](https://github.com/water-splatting/water-splatting)
 - **Gaussian Splashing**: [https://github.com/BGU-CS-VIL/gaussianSplashing](https://github.com/BGU-CS-VIL/gaussianSplashing)
 ## Extreme Environments & Adaptations
@@ -28,4 +26,4 @@ Based on the literature review in the QUT Project Proposal and the bibliography,
 
 ---
 **Note:** The following methods were mentioned in the literature review but currently do not appear to have their full code officially open-sourced or easily accessible on GitHub: 
-*WaterGS, DualPhys-GS, UW-3DGS, R-Splatting, Water-Adapted 3DGS, Aqua-Splat, and SonarReg-GS.*
+*WaterGS, DualPhys-GS, UW-3DGS, R-Splatting, Water-Adapted 3DGS, Aqua-Splat,WaterClear-GS**,Aquatic-GS**, and SonarReg-GS.*

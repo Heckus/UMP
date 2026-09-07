@@ -1,0 +1,318 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{Technical Execution Plan: Phases 1 \& 2\\
+\large Underwater 3D Gaussian Splatting Reconstruction}
+\author{Joshua Hecke}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This document outlines the detailed technical steps required to execute Phase 1 (Foundation and Method Selection) and Phase 2 (Baseline Reconstruction and Optimization) of the Scene Change Detection in Underwater 3D Gaussian Splatting project. It specifically addresses two critical constraints:
+\begin{enumerate}
+    \item Utilizing a dual-boot Ubuntu setup on a high-performance machine equipped with an NVIDIA RTX 5070 Ti (16GB GDDR7).
+    \item Leveraging the open-sourced \textbf{Submerged3D} dataset for initial testing and validation before accessing the AIMS EcoRRAP dataset.
+\end{enumerate}
+
+\section{Phase 1: Environment and Hardware Setup}
+
+\subsection{Ubuntu and NVIDIA Drivers}
+The machine utilizes an RTX 5070 Ti, which is based on the latest architecture. It is critical to use the latest NVIDIA proprietary drivers.
+\begin{lstlisting}[language=bash]
+# After installing Ubuntu 24.04 (or 22.04), update the system
+sudo apt update && sudo apt upgrade -y
+
+# Install standard build essentials
+sudo apt install build-essential git wget curl -y
+
+# Add the proprietary graphics drivers PPA and install the latest driver
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt update
+sudo ubuntu-drivers autoinstall
+# Reboot the machine after installation
+sudo reboot
+\end{lstlisting}
+
+\subsection{CUDA Toolkit and Conda Configuration}
+Because the RTX 5070 Ti requires up-to-date software, we will aim to use the latest CUDA versions (e.g., CUDA 12.1+). 
+
+\textbf{Important Note on CUDA Compatibility:} Several of the evaluated codebases originally specify \textbf{CUDA 11.8}. If you encounter compilation errors (specifically with the \texttt{diff-gaussian-rasterization} modules) when using CUDA 12.x, you will need to downgrade the environment's PyTorch and CUDA toolkit to 11.8. Notes are provided in each section below.
+
+\begin{lstlisting}[language=bash]
+# Download and install Miniconda
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm -rf ~/miniconda3/miniconda.sh
+~/miniconda3/bin/conda init bash
+# Restart terminal
+\end{lstlisting}
+
+\subsection{Dataset Preparation (Submerged3D)}
+We will use the Submerged3D dataset hosted on HuggingFace.
+\begin{lstlisting}[language=bash]
+# Install HuggingFace CLI
+pip install -U "huggingface_hub[cli]"
+
+# Download the Submerged3D dataset
+huggingface-cli download theflash987/Submerged3D --repo-type dataset --local-dir ~/UMP/Codebase/Dataset/Submerged3D
+\end{lstlisting}
+The Submerged3D dataset contains 4 environments (e.g., Cormoran, Isro, Kwaj, Tokai), each with 20 images in an \texttt{images} folder, but no COLMAP data.
+
+\subsection{Generating COLMAP Data}
+The \texttt{convert.py} script from the standard 3DGS repository expects input images to be located in an \texttt{input/} folder. Because the Submerged3D dataset provides images in an \texttt{images/} folder, you must first rename this folder to \texttt{input/}.
+
+\begin{lstlisting}[language=bash]
+# Rename the images directory for each scene
+mv ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/images ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/input
+\end{lstlisting}
+
+Then, you can generate the required sparse point cloud and camera poses for 3DGS using the \texttt{convert.py} script:
+
+\begin{lstlisting}[language=bash]
+# Install COLMAP (and FFmpeg if needed)
+sudo apt install colmap ffmpeg -y
+
+# The original 3D Gaussian Splatting repository is already provided in the Tools directory.
+cd ~/UMP/Codebase/Tools/gaussian-splatting-main
+
+# Create a temporary conda environment to run the script
+conda create -n colmap_runner python=3.9 -y
+conda activate colmap_runner
+
+# Run the convert script on each of the 4 scenes
+# Replace <scene_name> with Cormoran, Isro, Kwaj, and Tokai
+python convert.py -s ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>
+\end{lstlisting}
+
+This will create a \texttt{sparse/0} folder inside each scene directory, containing the \texttt{cameras.bin}, \texttt{images.bin}, and \texttt{points3D.bin} files required by the 3DGS approaches. The script will also create an \texttt{images} folder containing undistorted versions of the inputs.
+
+\subsection{Depth Map Generation and Frame Interpolation}
+Several models (3D-UIR, UW-GS, and RUSplatting) strictly require or highly recommend depth maps. RUSplatting additionally requires inverted depth maps and heavily relies on interpolated frames due to the sparse views (only 20 images per scene).
+
+\textbf{1. Depth Map Generation (Depth-Anything-V2)}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/Tools/Depth-Anything-V2-main
+conda create -n depth_anything python=3.10 -y
+conda activate depth_anything
+pip install torch torchvision torchaudio
+pip install -r requirements.txt
+
+# Download the weights manually
+mkdir checkpoints
+wget "https://huggingface.co/depth-anything/Depth-Anything-V2-Large/resolve/main/depth_anything_v2_vitl.pth?download=true" -O checkpoints/depth_anything_v2_vitl.pth
+
+# For standard depth maps (e.g., for 3D-UIR and UW-GS):
+python run.py --encoder vitl --pred-only --grayscale --img-path ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/images --outdir ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/depthmap
+
+# For inverted depth maps (Required by RUSplatting):
+# Note: You MUST modify run.py line 63 to include `depth = 255.0 - depth` before running this.
+python run.py --encoder vitl --pred-only --grayscale --img-path ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/images --outdir ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/depthmap_inverted
+\end{lstlisting}
+
+\textbf{2. Frame Interpolation (RIFE) - Required for RUSplatting}
+RUSplatting requires generating intermediate frames between your 20 source images (named with a \texttt{\_to\_} flag, e.g., \texttt{frame000\_to\_frame001.jpg}). You will need to utilize a tool like RIFE (Real-Time Intermediate Flow Estimation) to generate these prior to running RUSplatting.\section{Phase 2: Baseline Reconstruction and Optimization}
+We will train 6 different models. For each model, assume you are running the commands from the root of the respective repository inside \texttt{~/UMP/Codebase/3DGS-Water-Approaches/}.
+
+\textbf{Note on Submodules:} Before installing dependencies for any model, run \texttt{git submodule update --init --recursive} inside the repository to ensure all submodules are properly downloaded.
+
+\subsection{Model 1: SeaSplat}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Physics/seasplat-master
+conda create --name seasplat_py310 -y python=3.10
+conda activate seasplat_py310
+
+# Try latest CUDA first. If it fails, use: pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
+pip install torch torchvision torchaudio
+pip install -r requirements.txt
+pip install submodules/diff-gaussian-rasterization
+pip install submodules/simple-knn
+
+# Train
+python train.py -s ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> --exp seasplat_exp --do_seathru --seathru_from_iter 10000 --eval
+\end{lstlisting}
+
+\subsection{Model 2: 3D-UIR}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main
+conda create -n 3d-uir python=3.10
+conda activate 3d-uir
+
+# NOTE: Originally uses CUDA 11.8. Try latest first. If failure:
+# pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
+# conda install cudatoolkit-dev=11.8 -c conda-forge
+pip install torch torchvision torchaudio
+
+pip install submodules/diff-gaussian-rasterization
+pip install submodules/simple-knn/
+pip install submodules/fused-ssim/
+pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+
+# 3D-UIR expects the depth directory to be named "depths" instead of "depthmap"
+# It also requires a depth parameters JSON file
+cd ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>
+ln -s depthmap depths
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main
+
+# Generate depth parameters for 3D-UIR
+python utils/make_depth_scale.py --base_dir ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> --depths_dir ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/depths
+
+# Train
+python train.py -s ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> -d ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>/depths --eval
+\end{lstlisting}
+
+\subsection{Model 3: Gaussian Splashing}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main
+conda env create --file environment.yml
+conda activate gaussianSplashing_env
+
+# Train using Hybrid mode
+python train.py -s ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> --underwater_processing HYB --eval
+\end{lstlisting}
+
+\subsection{Model 4: WaterSplatting}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Image/water-splatting-main
+conda create --name water_splatting -y python=3.8
+conda activate water_splatting
+
+# NOTE: Originally built for CUDA 11.8. 
+pip install torch==2.1.2+cu118 torchvision==0.16.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+conda install -c "nvidia/label/cuda-11.8.0" cuda-toolkit
+pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+pip install nerfstudio==1.1.4
+ns-install-cli
+pip install --no-use-pep517 -e .
+
+# Train
+ns-train water-splatting --vis viewer+wandb colmap --downscale-factor 1 --colmap-path sparse/0 --data ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> --images-path images
+\end{lstlisting}
+
+\subsection{Model 5: RUSplatting}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main
+conda create -n rusplatting python=3.12
+conda activate rusplatting
+
+# Uses PyTorch 2.5.1 and CUDA 12.8 natively
+pip install torch torchvision torchaudio
+pip install submodules/diff-gaussian-rasterization
+pip install submodules/simple-knn
+
+# RUSplatting expects the inverted depth maps to be available in "depthmap"
+cd ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>
+mv depthmap depthmap_standard
+ln -s depthmap_inverted depthmap
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main
+
+# Train
+python train.py -s ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> --adaptive --eval
+
+# Restore original depthmap after training
+cd ~/UMP/Codebase/Dataset/Submerged3D/<scene_name>
+rm depthmap
+mv depthmap_standard depthmap
+\end{lstlisting}
+
+\subsection{Model 6: UW-GS}
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Additional/UW-GS-main
+conda env create -f environment.yml
+conda activate UW-GS
+
+# NOTE: Environment targets Python 3.7, PyTorch 1.12.1, CUDA 11.6. It is highly recommended to follow these versions strictly for this codebase.
+pip install imageio==2.27.0 opencv-python imageio-ffmpeg scipy dearpygui lpips
+
+# Train
+python train.py -s ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> -m output/scene --BMM_Flag --eval
+\end{lstlisting}
+
+\section{Mesh Extraction with SuGaR (The 7th Splat)}
+Once the 6 models are trained, evaluate their output point clouds visually. Select the output directory of the model that provides the cleanest water-removed geometry. We will use this pre-trained 3DGS model as a prior for SuGaR.
+
+\begin{lstlisting}[language=bash]
+cd ~/UMP/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main
+conda create --name sugar -y python=3.9
+conda activate sugar
+
+# NOTE: Requires CUDA 11.8 for compatibility with PyTorch3D and its specific rasterizer versions.
+conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+conda install -c fvcore -c iopath -c conda-forge fvcore iopath
+conda install pytorch3d==0.7.4 -c pytorch3d
+conda install -c plotly plotly
+conda install -c conda-forge rich plyfile==0.8.1 jupyterlab nodejs ipywidgets
+pip install open3d PyMCubes
+
+pip install -e gaussian_splatting/submodules/diff-gaussian-rasterization/
+pip install -e gaussian_splatting/submodules/simple-knn/
+
+# Run SuGaR on the best pre-trained model
+python train_full_pipeline.py -s ~/UMP/Codebase/Dataset/Submerged3D/<scene_name> -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir <path_to_best_model_output>
+\end{lstlisting}
+
+This will generate a highly detailed, surface-aligned 3D Gaussian Splatting model and extract a textured \texttt{.obj} mesh representing the clear-water baseline structure.
+
+\section{Evaluation and Quantitative Metrics}
+To produce a quantitative table comparing the models (e.g., PSNR, SSIM, LPIPS), it is critical that the models are trained with the \texttt{--eval} flag (as specified in the commands above). This flag holds out a subset of images (usually every 8th image) for testing.
+
+\subsection{Standard 3DGS-based Models}
+For SeaSplat, 3D-UIR, Gaussian Splashing, RUSplatting, and UW-GS, evaluation is a two-step process using the scripts provided in the respective forks:
+
+\begin{lstlisting}[language=bash]
+# Step 1: Render the test set
+# Run this from the root of the specific model's repository
+python render.py -m <path_to_model_output> --skip_train
+
+# Step 2: Compute metrics
+python metrics.py -m <path_to_model_output>
+\end{lstlisting}
+The output will be saved in \texttt{<path\_to\_model\_output>/results.json}, detailing the PSNR, SSIM, and LPIPS scores on the holdout set.
+
+\subsection{WaterSplatting (Nerfstudio)}
+WaterSplatting automatically computes metrics during training and evaluates on a holdout set by default. You can view the final metrics in the console output or the WandB dashboard (if configured). Alternatively, you can explicitly evaluate a trained model by running:
+\begin{lstlisting}[language=bash]
+ns-eval --load-config <path_to_outputs>/config.yml
+\end{lstlisting}
+
+\subsection{Viewing Outputs Visually}
+To visually inspect the trained models:
+\begin{itemize}
+    \item \textbf{Standard 3DGS Models}: Use the pre-compiled \textbf{SIBR Viewers} provided by the original 3D Gaussian Splatting repository. Alternatively, you can drag and drop the output \texttt{point\_cloud.ply} (located in \texttt{<path\_to\_model\_output>/point\_cloud/iteration\_30000/}) into a WebGL viewer like \href{https://playcanvas.com/supersplat/editor}{SuperSplat} or \href{https://antimatter15.com/splat/}{Antimatter15's Splat Viewer}.
+    \item \textbf{WaterSplatting (Nerfstudio)}: Run \texttt{ns-viewer --load-config <path\_to\_outputs>/config.yml} and open the provided localhost link in your browser.
+\end{itemize}
+
+\end{document}

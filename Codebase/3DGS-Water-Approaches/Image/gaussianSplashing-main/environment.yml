@@ -1,0 +1,27 @@
+name: gaussianSplashing_env
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+  - nvidia
+dependencies:
+  - plyfile=0.8.1
+  - python=3.10
+  - pip>=22.3.1
+  - tqdm
+  - pip:
+    - torch
+    - torchvision
+    - torchaudio
+    - matplotlib
+    - wandb
+    - timm
+    - scikit-learn
+    - pdc-dp-means
+    - opencv-python
+    - pyyaml
+# post_build:
+#   - pip install --upgrade pip
+#   - pip install submodules/diff-gaussian-rasterization_depth
+#   - pip install submodules/simple-knn
+#   - pip install git+https://github.com/huggingface/transformers.git # uses of DepthAnything

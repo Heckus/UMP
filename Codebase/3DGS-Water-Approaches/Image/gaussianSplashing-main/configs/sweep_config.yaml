@@ -1,0 +1,153 @@
+name: SweepInit
+program: train.py
+method: grid
+metric:
+  goal: maximize
+  name: test/loss_viewpoint - psnr
+parameters:
+  LoadingParameters:
+    parameters:
+      sh_degree:
+        values: [3]
+      source_path:
+        values: [data/SeathruNeRF_dataset/JapaneseGradens-RedSea]
+      model_path:
+        values: [./output/GroupSweepDebug/JG-RedSea/]
+      images:
+        values: [images]
+      initialization_points_option: # "cluster", "pointcloud", "random"
+        values: [pointcloud]
+      resolution:
+        values: [-1]
+      white_background:
+        value: false
+      data_device:
+        value: cuda
+      eval:
+        values: [true]
+      underwater_processing:
+        value: HYB
+  OptimizationParameters:
+    parameters:
+      iterations:
+        values: [30_000]
+      position_lr_init:
+        values: [0.00016]
+      position_lr_final:
+        values: [1.6e-06]
+      position_lr_delay_mult:
+        values: [0.01]
+      position_lr_max_steps:
+        values: [30000]
+      feature_lr:
+        values: [0.0025]
+      opacity_lr:
+        values: [0.05]
+      scaling_lr:
+        values: [0.005]
+      rotation_lr:
+        values: [0.001]
+      percent_dense:
+        values: [0.01]
+      lambda_dssim:
+        values: [0.2]
+      lambda_bsest:
+        values: [0.1]
+      densification_interval:
+        value: 100
+      opacity_reset_interval:
+        value: 3000
+      masking_interval:
+        value: 3000
+      densify_from_iter:
+        values: [500]
+      densify_until_iter:
+        values: [15000]
+      densify_grad_threshold:
+        values: [0.0002]
+      remove_min_opacity_threshold:
+        values: [0.005]
+      random_background:
+        values: [false]
+  PipelineParameters:
+    parameters:
+      convert_SHs_python:
+        values: [false]
+      compute_cov3D_python:
+        values: [false]
+      debug:
+        values: [false]
+  WandbParameters:
+    parameters:
+      wb_use_logger:
+        values: [true]
+      wb_project:
+        values: [gaussian_splattingUW]
+      wb_group:
+        values: [GroupSweepDebug]
+      wb_name:
+        values: [JG_sweep]
+      wb_dir:
+        values: [./logs/]
+      wb_resume:
+        values: [null]
+      wb_id:
+        values: [null]
+  GeneralParameters:
+    parameters:
+      ip:
+        value: "0"
+      port:
+        value: 0
+      debug_from:
+        values: [-1]
+      detect_anomaly:
+        values: [false]
+      quiet:
+        values: [false]
+      start_checkpoint:
+        values: [null]
+      test_iterations:  
+        values: [[  
+          1,
+          3000,
+          10000,
+          30000
+        ]]  
+      save_iterations:  
+        values: [[  
+        ]]
+      checkpoint_iterations:
+        values: [[
+        ]]  
+      save_for_metrics:
+        value: false
+      save_for_video:
+        value: false
+  UnderwaterParameters:
+    parameters:
+      remove_bs_from_images:
+        value: false
+      removal_using_monocular_depth:
+        value: false
+      bs_removal_every:
+        value: 5000  
+      exp_range_dl:
+        value: 0.05
+      exp_range_dh:
+        value: 1.0
+      exp_range_bl:
+        value: 0.05
+      exp_range_bh:
+        value: 1.0
+      binf_range_l:
+        values: [0.05, 0.2, 0.4, 0.6]
+      binf_range_h:
+        values: [0.9]
+  TrainingTime:
+    parameters:
+      minutes:
+        value: 0
+      seconds: 
+        value: 0
+      
