@@ -4,6 +4,7 @@
 #PBS -l walltime=04:00:00
 #PBS -P EUAPGM7346
 #PBS -j oe
+#PBS -o setup_env_complete.log
 
 # ==============================================================================
 # setup_env.pbs - HPC wrapper for environment provisioning

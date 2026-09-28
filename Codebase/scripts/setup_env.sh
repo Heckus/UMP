@@ -626,15 +626,15 @@ setup_3d_uir() {
     ensure_submodule "${sub_ssim}" "https://github.com/rahul-goel/fused-ssim.git"
 
     run_cmd conda create -n 3d-uir python=3.10 -y
-    run_cmd conda install -y -n 3d-uir -c conda-forge cudatoolkit-dev=11.8
+    # cudatoolkit-dev not available; CUDA provided via module load CUDA/12.1.1
     activate_env 3d-uir
-    run_cmd pip install --upgrade pip
+    run_cmd pip install --upgrade pip ninja
     run_cmd pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
-    run_cmd pip install plyfile tqdm opencv-python joblib ninja
+    run_cmd pip install plyfile tqdm opencv-python joblib
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_ssim}" --no-build-isolation --no-build-isolation
-    run_cmd pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+    run_cmd pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
     deactivate_env
     log_success "Environment '3d-uir' successfully provisioned."
 }
@@ -691,7 +691,7 @@ setup_rusplatting() {
 
     run_cmd conda create -n rusplatting python=3.12 -y
     activate_env rusplatting
-    run_cmd pip install --upgrade pip
+    run_cmd pip install --upgrade pip ninja
     run_cmd pip install torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
     run_cmd pip install plyfile tqdm opencv-python joblib scipy imageio imageio-ffmpeg dearpygui lpips
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
@@ -713,7 +713,7 @@ setup_UW_GS() {
     log_info "Creating UW-GS environment (omitting Windows mkl/vc dependencies)..."
     run_cmd conda create -n UW-GS python=3.7 -y
     activate_env UW-GS
-    run_cmd pip install --upgrade pip
+    run_cmd pip install --upgrade pip ninja
     run_cmd pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
     run_cmd pip install plyfile==0.8.1 tqdm imageio==2.27.0 opencv-python imageio-ffmpeg scipy dearpygui lpips
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
@@ -737,7 +737,7 @@ setup_sugar() {
     run_cmd conda install -y -n sugar -c fvcore -c iopath -c conda-forge fvcore iopath
     run_cmd conda install -y -n sugar -c pytorch3d pytorch3d==0.7.4
     activate_env sugar
-    run_cmd pip install --upgrade pip
+    run_cmd pip install --upgrade pip ninja
     run_cmd pip install open3d PyMCubes plyfile==0.8.1 rich plotly
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
@@ -761,7 +761,7 @@ setup_oscd() {
 
     run_cmd conda create -n oscd python=3.12 -y
     activate_env oscd
-    run_cmd pip install --upgrade pip
+    run_cmd pip install --upgrade pip ninja
     run_cmd pip install torch torchvision xformers --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install cupy-cuda12x
     run_cmd pip install plyfile tqdm opencv-python lpips transformers==4.56.1 torchmetrics viser
