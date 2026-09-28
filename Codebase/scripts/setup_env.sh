@@ -298,6 +298,10 @@ ensure_submodule() {
 
     if [[ -d "${target_dir}" ]] && { [[ -f "${target_dir}/setup.py" ]] || [[ -f "${target_dir}/CMakeLists.txt" ]] || [[ -d "${target_dir}/.git" ]]; }; then
         log_info "Submodule verified: $(basename "$(dirname "${target_dir}")")/$(basename "${target_dir}")"
+        # Ensure nested submodules (e.g. third_party/glm) are also initialized
+        if [[ -f "${target_dir}/.gitmodules" ]] && [[ -d "${target_dir}/.git" ]]; then
+            (cd "${target_dir}" && git submodule update --init --recursive 2>/dev/null || true)
+        fi
         return 0
     fi
 
@@ -305,11 +309,11 @@ ensure_submodule() {
     rm -rf "${target_dir}"
     mkdir -p "$(dirname "${target_dir}")"
     if [[ -n "${branch}" ]]; then
-        git clone --depth 1 -b "${branch}" "${repo_url}" "${target_dir}" || \
-        git clone "${repo_url}" "${target_dir}"
+        git clone --recursive --depth 1 -b "${branch}" "${repo_url}" "${target_dir}" || \
+        git clone --recursive "${repo_url}" "${target_dir}"
     else
-        git clone --depth 1 "${repo_url}" "${target_dir}" || \
-        git clone "${repo_url}" "${target_dir}"
+        git clone --recursive --depth 1 "${repo_url}" "${target_dir}" || \
+        git clone --recursive "${repo_url}" "${target_dir}"
     fi
     log_success "Submodule cloned into ${target_dir}."
 }
@@ -327,6 +331,10 @@ ensure_submodule_with_fallback() {
 
     if [[ -d "${target_dir}" ]] && { [[ -f "${target_dir}/setup.py" ]] || [[ -f "${target_dir}/CMakeLists.txt" ]] || [[ -d "${target_dir}/.git" ]]; }; then
         log_info "Submodule verified: $(basename "$(dirname "${target_dir}")")/$(basename "${target_dir}")"
+        # Ensure nested submodules (e.g. third_party/glm) are also initialized
+        if [[ -f "${target_dir}/.gitmodules" ]] && [[ -d "${target_dir}/.git" ]]; then
+            (cd "${target_dir}" && git submodule update --init --recursive 2>/dev/null || true)
+        fi
         return 0
     fi
 
@@ -334,16 +342,16 @@ ensure_submodule_with_fallback() {
     rm -rf "${target_dir}"
     mkdir -p "$(dirname "${target_dir}")"
     if [[ -n "${branch}" ]]; then
-        if ! git clone --depth 1 -b "${branch}" "${primary_url}" "${target_dir}"; then
+        if ! git clone --recursive --depth 1 -b "${branch}" "${primary_url}" "${target_dir}"; then
             log_warn "Primary clone failed. Retrying with fallback: ${fallback_url}..."
-            git clone --depth 1 -b "${branch}" "${fallback_url}" "${target_dir}" || \
-            git clone "${fallback_url}" "${target_dir}"
+            git clone --recursive --depth 1 -b "${branch}" "${fallback_url}" "${target_dir}" || \
+            git clone --recursive "${fallback_url}" "${target_dir}"
         fi
     else
-        if ! git clone --depth 1 "${primary_url}" "${target_dir}"; then
+        if ! git clone --recursive --depth 1 "${primary_url}" "${target_dir}"; then
             log_warn "Primary clone failed. Retrying with fallback: ${fallback_url}..."
-            git clone --depth 1 "${fallback_url}" "${target_dir}" || \
-            git clone "${fallback_url}" "${target_dir}"
+            git clone --recursive --depth 1 "${fallback_url}" "${target_dir}" || \
+            git clone --recursive "${fallback_url}" "${target_dir}"
         fi
     fi
     log_success "Submodule cloned into ${target_dir}."
