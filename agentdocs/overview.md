@@ -11,13 +11,14 @@ The primary objective of this project is to investigate and develop methods for 
 The repository is organized into distinct sections to support both the academic and software development components of the thesis:
 
 - **`1A/` & `1B/`**: Contain academic submissions. `1A` houses the Literature Review (Assessment 1A), and `1B` contains the Project Proposal. Both include LaTeX source files and the resulting compiled PDFs.
-- **`Codebase/`**: The main directory for software development, experiments, and data management. It includes:
+- **`Codebase/`**: The main directory for software development and experiments. It includes:
   - `3DGS-Change-Detection/`: Source code and experiments specifically for scene change detection in 3DGS.
   - `3DGS-Water-Approaches/`: Code adapting 3DGS for underwater environments (addressing turbidity, lighting, etc.).
-  - `Dataset/`: Storage for datasets used in training and evaluation.
   - `scripts/`: Production-grade bash automation suite for environment provisioning, multi-model training pipelines, and pre-flight validation (`setup_env.sh`, `run_pipeline.sh`, `verify_env.sh`). Detailed documentation is available in [`pipeline_and_scripts.md`](./pipeline_and_scripts.md).
   - `Tools/` & `src/`: Utility scripts and core source code.
   - `open_source_models.md`: A curated reference list of relevant open-source 3DGS models and repositories.
+- **`Dataset/`**: Storage for datasets used in training and evaluation.
+- **`HPC/`**: High-Performance Computing resources, including `HPC/Guides/` for interacting with cluster environments.
 - **`Literature/`**: A comprehensive collection of research papers (PDFs) and the master bibliography (`references.bib`) covering 3DGS, underwater imaging, and change detection.
 - **`QUT_Thesis_Template_DO_NOT_TOUCH/`**: The official LaTeX template for the final QUT thesis document.
 - **`agentdocs/`**: The living documentation system maintained by AI agents to preserve project context and provide instructions for future development sessions.

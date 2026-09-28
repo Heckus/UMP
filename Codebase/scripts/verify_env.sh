@@ -72,7 +72,7 @@ log_error() {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 CODEBASE_DIR="${REPO_ROOT}/Codebase"
-DEFAULT_DATASET_DIR="${CODEBASE_DIR}/Dataset/Submerged3D"
+DEFAULT_DATASET_DIR="${REPO_ROOT}/Dataset/Submerged3D"
 
 # Master list of all 11 isolated Conda environments
 REQUIRED_CONDA_ENVS=(
@@ -119,7 +119,7 @@ ${CLR_BOLD}Examples:${CLR_RESET}
   verify_env.sh                                # Run all standard checks
   verify_env.sh --skip-gpu                     # Run checks without requiring an NVIDIA GPU
   verify_env.sh --env oscd                     # Verify only the 'oscd' Conda environment
-  verify_env.sh --dataset Codebase/Dataset/Submerged3D/Cormoran
+  verify_env.sh --dataset Dataset/Submerged3D/Cormoran
 EOF
 }
 
@@ -431,7 +431,7 @@ check_required_tools() {
 main() {
     local opt_skip_gpu=false
     local opt_check_gpu=false
-    local opt_target_env=""
+    local opt_target_envs=()
     local opt_all_envs=false
     local opt_target_dataset=""
 
@@ -459,7 +459,7 @@ main() {
                     log_error "Option '--env' requires a non-empty environment name argument."
                     exit 1
                 fi
-                opt_target_env="$2"
+                opt_target_envs+=("$2")
                 shift 2
                 ;;
             --all-envs)
@@ -485,7 +485,7 @@ main() {
 
     # Determine execution mode: targeted check vs. full pre-flight suite
     local has_targeted_check=false
-    if [[ -n "${opt_target_env}" || -n "${opt_target_dataset}" || "${opt_all_envs}" == "true" ]]; then
+    if [[ ${#opt_target_envs[@]} -gt 0 || -n "${opt_target_dataset}" || "${opt_all_envs}" == "true" ]]; then
         has_targeted_check=true
     fi
 
@@ -502,8 +502,10 @@ main() {
     fi
 
     # 2. Conda Environment Check Execution
-    if [[ -n "${opt_target_env}" ]]; then
-        check_single_conda_env "${opt_target_env}" || exit 2
+    if [[ ${#opt_target_envs[@]} -gt 0 ]]; then
+        for env in "${opt_target_envs[@]}"; do
+            check_single_conda_env "${env}" || exit 2
+        done
     elif [[ "${opt_all_envs}" == "true" || "${has_targeted_check}" != "true" ]]; then
         check_all_conda_envs || exit 2
     fi

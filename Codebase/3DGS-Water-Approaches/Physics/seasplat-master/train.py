@@ -1032,7 +1032,8 @@ if __name__ == "__main__":
 
     now = datetime.now()
     today = now.strftime("%m%d%Y")
-    args.model_path = str(Path(args.source_path) / "experiments" / today / args.exp)
+    if args.model_path == "":
+        args.model_path = str(Path(args.source_path) / "experiments" / today / args.exp)
     if not os.path.exists(args.model_path):
         os.makedirs(args.model_path)
 

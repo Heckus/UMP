@@ -34,9 +34,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 CODEBASE_DIR="${REPO_ROOT}/Codebase"
-DEFAULT_SUBMERGED_DATASET="${CODEBASE_DIR}/Dataset/Submerged3D"
-DEFAULT_OSCD_DATASET="${CODEBASE_DIR}/Dataset/Custom_OSCD_Dataset"
+DEFAULT_SUBMERGED_DATASET="${REPO_ROOT}/Dataset/Submerged3D"
+DEFAULT_OSCD_DATASET="${REPO_ROOT}/Dataset/Custom_OSCD_Dataset"
 CONDA_DIR="${CONDA_DIR:-$HOME/miniconda3}"
+ERROR_LOG="${REPO_ROOT}/pipeline_errors.log"
 
 # ------------------------------------------------------------------------------
 # ANSI Color & Formatting Setup
@@ -99,7 +100,7 @@ Options:
                         rusplatting, uw-gs, oscd, sugar)
   --all                 Execute all 8 models sequentially
   --dataset <path>      Path to dataset root or scene directory
-  --scene <name>        Specific scene name (e.g. Cormoran, Isro, Kwaj, Tokai; default: Cormoran)
+  --scene <name>        Specific scene name (e.g. Cormoran, Isro, Kwaj, Tokai; default: Kwaj,Tokai)
   --stage <stage>       Pipeline stage: colmap, depth, train, mesh, eval, all (default: all)
   --dry-run             Print expected execution path and commands without running them
   --skip-verify         Skip pre-execution verification (verify_env.sh)
@@ -128,7 +129,7 @@ Examples:
   ./run_pipeline.sh --help
   ./run_pipeline.sh --model seasplat --dry-run
   ./run_pipeline.sh --model seasplat --stage train --dry-run --skip-verify
-  ./run_pipeline.sh --model oscd --dataset Codebase/Dataset/Custom_OSCD_Dataset --dry-run
+  ./run_pipeline.sh --model oscd --dataset Dataset/Custom_OSCD_Dataset --dry-run
   ./run_pipeline.sh --all --dry-run --skip-verify
   ./run_pipeline.sh --model 3d-uir --scene Cormoran --skip-gpu
 EOF
@@ -243,19 +244,42 @@ run_preflight_verification() {
     if [[ "${RUN_ALL}" == "true" ]]; then
         verify_args+=("--all-envs")
     else
-        local mapped_env=""
-        case "${target_model}" in
-            seasplat) mapped_env="seasplat_py310" ;;
-            3d-uir) mapped_env="3d-uir" ;;
-            gaussiansplashing) mapped_env="gaussianSplashing_env" ;;
-            watersplatting) mapped_env="water_splatting" ;;
-            rusplatting) mapped_env="rusplatting" ;;
-            uw-gs) mapped_env="UW-GS" ;;
-            sugar) mapped_env="sugar" ;;
-            oscd) mapped_env="oscd" ;;
-            *) mapped_env="colmap_runner" ;;
-        esac
-        verify_args+=("--env" "${mapped_env}")
+        local envs_to_check=()
+        if should_run_stage "colmap"; then
+            envs_to_check+=("colmap_runner")
+        fi
+        if should_run_stage "depth" && [[ "${target_model}" != "oscd" && "${target_model}" != "sugar" ]]; then
+            envs_to_check+=("depth_anything")
+        fi
+        
+        if should_run_stage "train" || should_run_stage "eval"; then
+            case "${target_model}" in
+                seasplat) envs_to_check+=("seasplat_py310") ;;
+                3d-uir) envs_to_check+=("3d-uir") ;;
+                gaussiansplashing) envs_to_check+=("gaussianSplashing_env") ;;
+                watersplatting) envs_to_check+=("water_splatting") ;;
+                rusplatting) envs_to_check+=("rusplatting") ;;
+                uw-gs) envs_to_check+=("UW-GS") ;;
+                sugar) envs_to_check+=("sugar") ;;
+                oscd) envs_to_check+=("oscd" "3dgs") ;;
+            esac
+        fi
+        
+        if should_run_stage "mesh" && [[ "${target_model}" != "sugar" ]]; then
+            envs_to_check+=("sugar")
+        fi
+        
+        if [[ ${#envs_to_check[@]} -eq 0 ]]; then
+            # Fallback if no stages match explicitly
+            envs_to_check+=("colmap_runner")
+        fi
+
+        # Remove duplicates
+        local unique_envs=($(echo "${envs_to_check[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+        
+        for env in "${unique_envs[@]}"; do
+            verify_args+=("--env" "${env}")
+        done
     fi
 
     if [[ "${DRY_RUN}" == "true" ]]; then
@@ -277,13 +301,60 @@ run_preflight_verification() {
 run_sugar_mesh_stage() {
     local scene_path="$1"
     local scene_name="$2"
+    local current_model="$3"
     local gs_prior="${GS_OUTPUT_DIR:-}"
 
     if [[ -z "${gs_prior}" ]]; then
-        gs_prior="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/seasplat-master/output/seasplat_exp/${scene_name}"
+        # Dynamically determine the prior based on the current model being executed
+        case "${current_model}" in
+            seasplat) gs_prior="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/seasplat-master/output/${scene_name}" ;;
+            3d-uir) gs_prior="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/output/${scene_name}" ;;
+            gaussiansplashing) gs_prior="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/output/${scene_name}" ;;
+            rusplatting) gs_prior="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main/output/${scene_name}" ;;
+            uw-gs) gs_prior="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/UW-GS-main/output/${scene_name}" ;;
+            watersplatting) 
+                local ws_base="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/${scene_name}/water-splatting"
+                local ws_export
+                ws_export="$(find "${ws_base}" -type d -name "export" | sort -r | head -n 1 2>/dev/null || true)"
+                if [[ -n "${ws_export}" ]]; then
+                    gs_prior="${ws_export}"
+                else
+                    gs_prior="${ws_base}/export"
+                fi
+                ;;
+            oscd) gs_prior="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${scene_path}")/output" ;;
+            *) gs_prior="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/seasplat-master/output/${scene_name}" ;;
+        esac
     fi
 
     log_info "Mesh Extraction: Running SuGaR on top of best 3DGS point cloud prior from: ${gs_prior}"
+    
+    if [[ "${DRY_RUN}" != "true" ]]; then
+        local target_pc_dir="${gs_prior}/point_cloud/iteration_7000"
+        local target_pc="${target_pc_dir}/point_cloud.ply"
+        if [[ ! -f "${target_pc}" ]]; then
+            mkdir -p "${target_pc_dir}"
+            local best_ply=""
+            for candidate in "point_cloud/iteration_30000/point_cloud.ply" "updated_scene.ply" "splat.ply" "point_cloud.ply"; do
+                local found
+                found="$(find "${gs_prior}" -maxdepth 4 -name "$(basename "${candidate}")" | grep "${candidate}$" | head -n 1 || true)"
+                if [[ -z "${found}" ]]; then
+                    found="$(find "${gs_prior}" -maxdepth 4 -name "${candidate}" | head -n 1 || true)"
+                fi
+                if [[ -n "${found}" ]]; then
+                    best_ply="${found}"
+                    break
+                fi
+            done
+            if [[ -n "${best_ply}" ]]; then
+                log_info "SuGaR compatibility fix: Symlinking ${best_ply} to ${target_pc}"
+                ln -sfn "${best_ply}" "${target_pc}"
+            else
+                log_warn "Could not find a valid .ply file for SuGaR in ${gs_prior}. SuGaR might fail."
+            fi
+        fi
+    fi
+
     run_stage_command "sugar" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main" \
         python train_full_pipeline.py -s "${scene_path}" -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir "${gs_prior}"
     log_info "Exported textured mesh: ${scene_path}/output/refined_mesh/${scene_name}.obj with export_obj=True"
@@ -320,7 +391,7 @@ execute_model_pipeline() {
             scene_path="${dataset_path}"
             scene_name="$(basename "${dataset_path}")"
         else
-            scene_name="${scene_arg:-${SCENE_NAME:-Cormoran}}"
+            scene_name="${scene_arg:-Kwaj}"
             scene_path="${dataset_path}/${scene_name}"
         fi
     fi
@@ -349,6 +420,19 @@ execute_model_pipeline() {
             elif [[ ! -d "${dataset_path}/reference_scene" || ! -d "${dataset_path}/inference_scene" ]]; then
                 log_warn "OSCD stage notice: Target dataset '${dataset_path}' does not contain required 'reference_scene' or 'inference_scene' subdirectories."
             fi
+
+            # Folder normalization for OSCD (images/ -> input/)
+            for subscene in "reference_scene" "inference_scene"; do
+                if [[ -d "${dataset_path}/${subscene}/images" && ! -d "${dataset_path}/${subscene}/input" ]]; then
+                    if [[ "${DRY_RUN}" == "true" ]]; then
+                        log_dry "Folder normalization: would rename '${dataset_path}/${subscene}/images' to '${dataset_path}/${subscene}/input'"
+                    else
+                        log_info "Renaming images/ to input/ for OSCD scene '${subscene}'..."
+                        mv "${dataset_path}/${subscene}/images" "${dataset_path}/${subscene}/input"
+                        log_success "Normalized OSCD folder: ${subscene}/images -> input"
+                    fi
+                fi
+            done
         else
             if [[ ! -d "${dataset_path}" ]]; then
                 if [[ "${DRY_RUN}" == "true" ]]; then
@@ -405,10 +489,10 @@ execute_model_pipeline() {
         if [[ "${model}" == "rusplatting" ]]; then
             log_info "Generating inverted depth maps for RUSplatting (Depth-Anything-V2 ViT-L):"
             run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
-                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/images" --outdir "${scene_path}/depthmap_inverted"
-            log_info "Generating intermediate frames via RIFE interpolation with '_to_' naming pattern (e.g. frame000_to_frame001.jpg)..."
+                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap_inverted"
+            log_info "Note: RUSplatting expects pre-generated intermediate frames (e.g., via RIFE) with ._to_. naming pattern in the input directory."
             if [[ "${DRY_RUN}" == "true" ]]; then
-                log_dry "RIFE frame interpolation: generate synthetic intermediate frames with '_to_' naming pattern in ${scene_path}/images"
+                log_dry "RIFE frame interpolation: generate synthetic intermediate frames with '_to_' naming pattern in ${scene_path}/input"
                 log_dry "Symlink inverted depthmap: ln -sfn ${scene_path}/depthmap_inverted ${scene_path}/depthmap"
             else
                 ln -sfn "${scene_path}/depthmap_inverted" "${scene_path}/depthmap"
@@ -416,7 +500,7 @@ execute_model_pipeline() {
         elif [[ "${model}" == "3d-uir" ]]; then
             log_info "Generating standard depth maps for 3D-UIR (Depth-Anything-V2 ViT-L):"
             run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
-                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/images" --outdir "${scene_path}/depthmap"
+                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap"
             log_info "Symlink depthmap to depths for 3D-UIR: ${scene_path}/depths -> ${scene_path}/depthmap"
             if [[ "${DRY_RUN}" == "true" ]]; then
                 log_dry "Symlink depthmap to depths: ln -sfn ${scene_path}/depthmap ${scene_path}/depths"
@@ -429,7 +513,7 @@ execute_model_pipeline() {
         elif [[ "${model}" != "oscd" && "${model}" != "sugar" ]]; then
             log_info "Generating standard depth maps (Depth-Anything-V2 ViT-L):"
             run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
-                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/images" --outdir "${scene_path}/depthmap"
+                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap"
         fi
     fi
 
@@ -441,41 +525,59 @@ execute_model_pipeline() {
         case "${model}" in
             seasplat)
                 run_stage_command "seasplat_py310" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/seasplat-master" \
-                    python train.py -s "${scene_path}" --exp seasplat_exp --do_seathru --seathru_from_iter 10000 --eval
+                    python train.py -s "${scene_path}" -m "output/${scene_name}" --do_seathru --seathru_from_iter 10000 --eval
                 ;;
             3d-uir)
                 run_stage_command "3d-uir" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main" \
-                    python train.py -s "${scene_path}" -d "${scene_path}/depths" --eval
+                    python train.py -s "${scene_path}" -m "output/${scene_name}" -d "${scene_path}/depths" --eval
                 ;;
             gaussiansplashing)
                 run_stage_command "gaussianSplashing_env" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main" \
-                    python train.py -s "${scene_path}" --underwater_processing HYB --eval
+                    python train.py -s "${scene_path}" -m "output/${scene_name}" --underwater_processing HYB --eval
                 ;;
             watersplatting)
                 run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
-                    ns-train water-splatting --vis viewer+wandb colmap --downscale-factor 1 --colmap-path sparse/0 --data "${scene_path}" --images-path images
+                    ns-train water-splatting --experiment-name "${scene_name}" --vis viewer+wandb colmap --downscale-factor 1 --eval-mode interval --eval-interval 8 --colmap-path sparse/0 --data "${scene_path}" --images-path input
+                local ws_output_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/${scene_name}/water-splatting"
+                local config_path
+                config_path="$(find "${ws_output_dir}" -name 'config.yml' | sort -r | head -n 1 2>/dev/null || true)"
+                if [[ -n "${config_path}" ]]; then
+                    local run_dir
+                    run_dir="$(dirname "${config_path}")"
+                    log_info "Exporting WaterSplatting to .ply for visualization and SuGaR:"
+                    run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
+                        ns-export gaussian-splat --load-config "${config_path}" --output-dir "${run_dir}/export"
+                fi
                 ;;
             rusplatting)
                 run_stage_command "rusplatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main" \
-                    python train.py -s "${scene_path}" --adaptive --eval
+                    python train.py -s "${scene_path}" -m "output/${scene_name}" --adaptive --eval
                 ;;
             uw-gs)
                 run_stage_command "UW-GS" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/UW-GS-main" \
                     python train.py -s "${scene_path}" -m "output/${scene_name}" --BMM_Flag --eval
                 ;;
             oscd)
+                local oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
                 log_info "Step 1: Baseline reference 3DGS reconstruction (30k iterations checkpoint: reference_reconstruction/point_cloud/iteration_30000/point_cloud.ply):"
                 run_stage_command "3dgs" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                    python train.py -s "${dataset_path}/reference_scene" -m "${dataset_path}/reference_reconstruction"
+                    python train.py -s "${dataset_path}/reference_scene" -m "${oscd_output_base}/reference_reconstruction"
+                
+                # We need to symlink the reference reconstruction back to the dataset path because oscd.py hardcodes looking for it inside args.source_path
+                # "os.path.join(args.source_path, 'reference_reconstruction', ...)"
+                if [[ ! -e "${dataset_path}/reference_reconstruction" ]]; then
+                    ln -sfn "${oscd_output_base}/reference_reconstruction" "${dataset_path}/reference_reconstruction"
+                fi
+
                 log_info "Step 2: Online Scene Change Detection (oscd.py in O-SCD-main):"
                 run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
-                    python oscd.py -s "${dataset_path}" -m "${dataset_path}/output" --resolution 1 --test_hold 5 --refine
+                    python oscd.py -s "${dataset_path}" -m "${oscd_output_base}/output" --resolution 1 --test_hold 5 --refine
                 log_info "Step 3: Update 3D scene representation (update.py producing updated_scene.ply):"
                 run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
-                    python update.py -s "${dataset_path}" -m "${dataset_path}/output" --resolution 1 --test_hold 5
+                    python update.py -s "${dataset_path}" -m "${oscd_output_base}/output" --resolution 1 --test_hold 5
                 ;;
             sugar)
-                run_sugar_mesh_stage "${scene_path}" "${scene_name}"
+                run_sugar_mesh_stage "${scene_path}" "${scene_name}" "${model}"
                 ;;
         esac
     fi
@@ -483,9 +585,9 @@ execute_model_pipeline() {
     # --------------------------------------------------------------------------
     # Stage 5: Mesh Extraction (SuGaR)
     # --------------------------------------------------------------------------
-    if should_run_stage "mesh" && [[ "${model}" != "sugar" ]]; then
+    if should_run_stage "mesh" && [[ "${model}" != "sugar" && "${model}" != "oscd" ]]; then
         log_info "--- Stage 5: Mesh Extraction (mesh) (SuGaR) ---"
-        run_sugar_mesh_stage "${scene_path}" "${scene_name}"
+        run_sugar_mesh_stage "${scene_path}" "${scene_name}" "${model}"
     fi
 
     # --------------------------------------------------------------------------
@@ -494,29 +596,45 @@ execute_model_pipeline() {
     if should_run_stage "eval"; then
         log_info "--- Stage 6: Benchmarking & Metrics Evaluation (eval) (${model}) ---"
         if [[ "${model}" == "oscd" ]]; then
+            local oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
             log_info "Evaluating novel view synthesis metrics (utils/metrics.py -> results.json):"
             run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
-                python utils/metrics.py -m "${dataset_path}/output"
+                python utils/metrics.py -m "${oscd_output_base}/output"
             log_info "Evaluating change detection segmentation masks (utils/evaluate.py):"
             run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
-                python utils/evaluate.py --gt "${dataset_path}/gt_mask" --pred_binary "${dataset_path}/output/renders/change_mask"
-            log_info "Metrics written to results.json and evaluation.txt"
+                python utils/evaluate.py --gt "${dataset_path}/gt_mask" --pred_binary "${oscd_output_base}/output/renders/change_mask"
+            log_info "Metrics written to results.json and evaluation.json"
         elif [[ "${model}" == "watersplatting" ]]; then
             local ws_output_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/${scene_name}/water-splatting"
+            # Get the actual config path (there is a timestamp folder, so we use find or wildcards if needed)
+            # Actually, Nerfstudio creates a timestamp folder, e.g. outputs/scene_name/water-splatting/2026-09-28_112233/config.yml
+            # We'll use a wildcard to get the latest config
+            local config_path
+            config_path="$(find "${ws_output_dir}" -name 'config.yml' | sort -r | head -n 1 2>/dev/null || true)"
+            if [[ -z "${config_path}" ]]; then
+                log_error "Could not find config.yml for WaterSplatting in ${ws_output_dir}"
+                exit 1
+            fi
+            local run_dir
+            run_dir="$(dirname "${config_path}")"
+            log_info "Evaluating WaterSplatting with config: ${config_path}"
             run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
-                ns-eval --load-config "${ws_output_dir}/config.yml"
+                ns-eval --load-config "${config_path}" --output-path "${run_dir}/results.json"
+
         elif [[ "${model}" == "sugar" ]]; then
             log_info "SuGaR mesh evaluation completed with OBJ export."
         else
             local eval_dir=""
             local eval_env=""
             local output_path=""
+            local render_script="render.py"
 
             case "${model}" in
                 seasplat)
                     eval_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/seasplat-master"
                     eval_env="seasplat_py310"
-                    output_path="${eval_dir}/output/seasplat_exp/${scene_name}"
+                    output_path="${eval_dir}/output/${scene_name}"
+                    render_script="render_uw.py"
                     ;;
                 3d-uir)
                     eval_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main"
@@ -540,8 +658,8 @@ execute_model_pipeline() {
                     ;;
             esac
 
-            log_info "Running held-out novel view synthesis rendering (render.py):"
-            run_stage_command "${eval_env}" "${eval_dir}" python render.py -m "${output_path}" --skip_train
+            log_info "Running held-out novel view synthesis rendering (${render_script}):"
+            run_stage_command "${eval_env}" "${eval_dir}" python "${render_script}" -m "${output_path}" --skip_train
             log_info "Computing quantitative metrics (metrics.py):"
             run_stage_command "${eval_env}" "${eval_dir}" python metrics.py -m "${output_path}"
             log_info "Evaluation metrics computed: results.json (PSNR, SSIM, LPIPS) in ${output_path}"
@@ -549,6 +667,34 @@ execute_model_pipeline() {
     fi
 
     log_success "Pipeline execution completed for model: ${model}"
+}
+
+# ------------------------------------------------------------------------------
+# Fault-Tolerant Execution Wrapper
+# ------------------------------------------------------------------------------
+run_with_fault_tolerance() {
+    local m="$1"
+    local dataset="$2"
+    local scene="$3"
+
+    log_info "Starting fault-tolerant execution for model=${m}, scene=${scene}"
+    set +e
+    (
+        set -e
+        execute_model_pipeline "${m}" "${dataset}" "${scene}"
+    )
+    local exit_code=$?
+    set -e
+
+    if [[ ${exit_code} -ne 0 ]]; then
+        local timestamp
+        timestamp="$(date +"%Y-%m-%d %H:%M:%S")"
+        log_error "Execution failed for model=${m}, scene=${scene} with exit code ${exit_code}."
+        log_warn "Recording failure and continuing to the next execution..."
+        echo "[${timestamp}] ERROR: Model=${m} | Scene=${scene} | Stage=${STAGE_NAME} | ExitCode=${exit_code}" >> "${ERROR_LOG}"
+    else
+        log_success "Execution completed successfully for model=${m}, scene=${scene}."
+    fi
 }
 
 # ------------------------------------------------------------------------------
@@ -564,7 +710,7 @@ main() {
                 ;;
             --dry-run)
                 DRY_RUN=true
-                shift
+
                 ;;
             --skip-verify)
                 SKIP_VERIFY=true
@@ -649,9 +795,12 @@ main() {
     esac
 
     # 4. Validate dataset path if explicitly provided
-    if [[ -n "${DATASET_PATH}" && ! -e "${DATASET_PATH}" ]]; then
-        log_error "Dataset path does not exist: '${DATASET_PATH}'"
-        exit 3
+    if [[ -n "${DATASET_PATH}" ]]; then
+        if [[ ! -d "${DATASET_PATH}" ]]; then
+            log_error "Dataset path does not exist or is not a directory: '${DATASET_PATH}'"
+            exit 3
+        fi
+        DATASET_PATH="$(cd "${DATASET_PATH}" && pwd)"
     fi
 
     # 5. Model validation (if single model)
@@ -676,6 +825,14 @@ main() {
     run_preflight_verification "${canonical_model}" "${verify_dataset}"
 
     # 7. Pipeline execution
+    local default_scenes=("Kwaj" "Tokai")
+    local scenes_to_run=()
+    if [[ -n "${SCENE_NAME}" ]]; then
+        IFS=',' read -ra scenes_to_run <<< "${SCENE_NAME}"
+    else
+        scenes_to_run=("${default_scenes[@]}")
+    fi
+
     if [[ "${RUN_ALL}" == "true" ]]; then
         log_section "Beginning Sequential Execution of All 8 Models"
         local all_models=("seasplat" "3d-uir" "gaussiansplashing" "watersplatting" "rusplatting" "uw-gs" "sugar" "oscd")
@@ -698,11 +855,24 @@ main() {
                     fi
                 fi
             fi
-            execute_model_pipeline "${m}" "${m_dataset}" "${SCENE_NAME}"
+            
+            if [[ "${m}" == "oscd" ]]; then
+                run_with_fault_tolerance "${m}" "${m_dataset}" "oscd"
+            else
+                for s in "${scenes_to_run[@]}"; do
+                    run_with_fault_tolerance "${m}" "${m_dataset}" "${s}"
+                done
+            fi
         done
         log_section "All 8 Models Sequential Execution Completed Successfully"
     else
-        execute_model_pipeline "${canonical_model}" "${DATASET_PATH}" "${SCENE_NAME}"
+        if [[ "${canonical_model}" == "oscd" ]]; then
+            run_with_fault_tolerance "${canonical_model}" "${DATASET_PATH}" "oscd"
+        else
+            for s in "${scenes_to_run[@]}"; do
+                run_with_fault_tolerance "${canonical_model}" "${DATASET_PATH}" "${s}"
+            done
+        fi
     fi
 
     log_success "Master Orchestration Pipeline execution finished successfully."
@@ -710,3 +880,4 @@ main() {
 }
 
 main "$@"
+

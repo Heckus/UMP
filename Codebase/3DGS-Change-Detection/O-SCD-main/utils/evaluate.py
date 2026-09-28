@@ -69,6 +69,12 @@ def evaluate_segmentation(ground_truth_dir: str, predicted_binary_dir: str) -> T
 
         print(f"Mean IoU: {mean_miou}")
         print(f"Mean F1: {mean_f1}")
+        
+        # Save to evaluation.json
+        import json
+        out_path = os.path.join(os.path.dirname(os.path.dirname(predicted_binary_dir)), "evaluation.json")
+        with open(out_path, 'w') as f:
+            json.dump({"Mean IoU": mean_miou, "Mean F1": mean_f1}, f, indent=4)
 
     return mean_miou, mean_f1
 

@@ -1,0 +1,47 @@
+#!/bin/bash -l
+#PBS -N ump_run_pipeline
+#PBS -l select=1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100
+#PBS -l walltime=48:00:00
+#PBS -P ABCDEF1234
+#PBS -j oe
+
+# ==============================================================================
+# run_pipeline.pbs - HPC wrapper for training and evaluation orchestration
+#
+# This script configures the node with Anaconda and launches the main
+# run_pipeline.sh automation suite.
+# ==============================================================================
+
+cd $PBS_O_WORKDIR
+
+echo "Loading Anaconda3 module..."
+module load Anaconda3/2024.02-1
+
+# Initialize Conda
+eval "$(conda shell.bash hook)"
+
+# Path to the core automation script
+# Robust path resolution to handle execution from repository root or HPC/scripts/
+if [ -f "Codebase/scripts/run_pipeline.sh" ]; then
+    PIPELINE_SCRIPT="$PBS_O_WORKDIR/Codebase/scripts/run_pipeline.sh"
+elif [ -f "../../Codebase/scripts/run_pipeline.sh" ]; then
+    PIPELINE_SCRIPT="$PBS_O_WORKDIR/../../Codebase/scripts/run_pipeline.sh"
+else
+    echo "Error: Could not locate Codebase/scripts/run_pipeline.sh from $PBS_O_WORKDIR"
+    exit 1
+fi
+
+echo "Executing Pipeline Automation Suite..."
+
+# By default this runs all models.
+# To override, you can specify arguments when submitting:
+# qsub -v ARGS="--model seasplat --scene Cormoran" run_pipeline.pbs
+# Or modify the command below directly.
+
+if [ -n "$ARGS" ]; then
+    bash "$PIPELINE_SCRIPT" $ARGS
+else
+    bash "$PIPELINE_SCRIPT" --all
+fi
+
+echo "Pipeline Execution Finished."

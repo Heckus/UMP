@@ -1,0 +1,49 @@
+#!/bin/bash -l
+#PBS -N ump_setup_env
+#PBS -l select=1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100
+#PBS -l walltime=04:00:00
+#PBS -P ABCDEF1234
+#PBS -j oe
+
+# ==============================================================================
+# setup_env.pbs - HPC wrapper for environment provisioning
+#
+# This script provisions Conda environments using the HPC Anaconda module
+# and the underlying setup_env.sh automation script.
+# It explicitly avoids --all to prevent sudo apt-get calls that fail on HPC.
+# ==============================================================================
+
+cd $PBS_O_WORKDIR
+
+echo "Loading Anaconda3 module..."
+module load Anaconda3/2024.02-1
+
+# Initialize Conda for the current shell context safely
+eval "$(conda shell.bash hook)"
+
+# Path to the core automation script
+if [ -f "Codebase/scripts/setup_env.sh" ]; then
+    SETUP_SCRIPT="$PBS_O_WORKDIR/Codebase/scripts/setup_env.sh"
+elif [ -f "../../Codebase/scripts/setup_env.sh" ]; then
+    SETUP_SCRIPT="$PBS_O_WORKDIR/../../Codebase/scripts/setup_env.sh"
+else
+    echo "Error: Could not locate Codebase/scripts/setup_env.sh from $PBS_O_WORKDIR"
+    exit 1
+fi
+
+echo "Provisioning Environments..."
+
+# Provision each environment independently to bypass system dependency checks
+bash "$SETUP_SCRIPT" -y --env colmap_runner
+bash "$SETUP_SCRIPT" -y --env depth_anything
+bash "$SETUP_SCRIPT" -y --env seasplat_py310
+bash "$SETUP_SCRIPT" -y --env 3d-uir
+bash "$SETUP_SCRIPT" -y --env gaussianSplashing_env
+bash "$SETUP_SCRIPT" -y --env water_splatting
+bash "$SETUP_SCRIPT" -y --env rusplatting
+bash "$SETUP_SCRIPT" -y --env UW-GS
+bash "$SETUP_SCRIPT" -y --env sugar
+bash "$SETUP_SCRIPT" -y --env oscd
+bash "$SETUP_SCRIPT" -y --env 3dgs
+
+echo "Setup Complete!"

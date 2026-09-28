@@ -238,10 +238,7 @@ def evaluate_single(model_path, comparison_dir="with_water", skip_train=False):
             "LPIPS": torch.tensor(lpipss).mean().item(),
         }
 
-    if comparison_dir == "with_water":
-        results_file = Path(model_path) / "eval_metrics_with_water.json"
-    elif comparison_dir == "render":
-        results_file = Path(model_path) / "eval_metrics_render.json"
+    results_file = Path(model_path) / "results.json"
     with open(str(results_file), 'w') as f:
         json.dump(results, f)
 

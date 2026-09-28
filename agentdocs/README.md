@@ -40,3 +40,5 @@ After creating a new file, you **must** immediately update the index in this `RE
 - [**Agent Instructions**](./AGENT_INSTRUCTIONS.md): Central instructions for AI agents working in this repo.
 - [**Project Overview**](./overview.md): A high-level summary of the project's purpose and goals.
 - [**Pipeline & Automation Scripts**](./pipeline_and_scripts.md): Technical documentation for the one-shot bash automation suite, Conda environments, execution stages, and diagnostic tools.
+- [**Change Log**](./change_log.md): Chronological timeline of significant project updates, architecture changes, and file movements.
+- [**HPC Guide**](./HPC_Guide.md): Master reference for cluster operations, PBS job submission, GPU requests, and Conda management on the QUT Aqua cluster.

@@ -1,0 +1,38 @@
+#!/bin/bash -l
+#PBS -N ump_verify_env
+#PBS -l select=1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100
+#PBS -l walltime=00:30:00
+#PBS -P ABCDEF1234
+#PBS -j oe
+
+# ==============================================================================
+# verify_env.pbs - HPC wrapper for system diagnostics
+#
+# Ensures the HPC environment has GPUs available, Conda initialized,
+# and all 11 environments built.
+# ==============================================================================
+
+cd $PBS_O_WORKDIR
+
+echo "Loading Anaconda3 module..."
+module load Anaconda3/2024.02-1
+
+# Initialize Conda
+eval "$(conda shell.bash hook)"
+
+# Path to the core automation script
+if [ -f "Codebase/scripts/verify_env.sh" ]; then
+    VERIFY_SCRIPT="$PBS_O_WORKDIR/Codebase/scripts/verify_env.sh"
+elif [ -f "../../Codebase/scripts/verify_env.sh" ]; then
+    VERIFY_SCRIPT="$PBS_O_WORKDIR/../../Codebase/scripts/verify_env.sh"
+else
+    echo "Error: Could not locate Codebase/scripts/verify_env.sh from $PBS_O_WORKDIR"
+    exit 1
+fi
+
+echo "Running Pre-Flight Diagnostics..."
+
+# Run full suite of checks
+bash "$VERIFY_SCRIPT" --all-envs --check-gpu
+
+echo "Diagnostics Finished. Please review output for any failures (Exit code > 0)."

@@ -533,10 +533,15 @@ def logger_aux(namespace_dict):
     next_number_padded = str(next_number).zfill(5)
     next_filename = f"{wb_group}_{wb_name}_iter{iteration}_{next_number_padded}"
     new_run=False
-    if not wb_resume in ["allow", "must", "auto"]:
-        # new run
-        namespace_dict["LoadingParameters"]["model_path"] = os.path.join(folder_path ,next_filename)
-        new_run=True
+    if not namespace_dict["LoadingParameters"].get("model_path"):
+        if not wb_resume in ["allow", "must", "auto"]:
+            # new run
+            namespace_dict["LoadingParameters"]["model_path"] = os.path.join(folder_path ,next_filename)
+            new_run=True
+    else:
+        new_run = not (wb_resume in ["allow", "must", "auto"])
+        if not os.path.exists(namespace_dict["LoadingParameters"]["model_path"]):
+            os.makedirs(namespace_dict["LoadingParameters"]["model_path"])
     return wb_resume,wb_use_logger,wb_project,wb_group,wb_dir,wb_id,next_filename,new_run
         
         
