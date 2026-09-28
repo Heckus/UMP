@@ -13,7 +13,46 @@ Before submitting any jobs, you must ensure that your Research Project ID (RPID)
 2. Locate the line `#PBS -P EUAPGM7346` at the top of each script.
 3. Ensure `EUAPGM7346` is the RPID.
 
-## 2. Step 1: Provisioning the Conda Environments
+## Alternative: Interactive Setup & Debugging
+
+If you prefer to watch the environment compilation in real-time, troubleshoot errors interactively, or verify your scripts without submitting batch jobs, you can use an **Interactive Job**.
+
+**Suitability Assessment:**
+- **Pros:** Immediate feedback, real-time log streaming, and direct shell access if a build fails.
+- **Cons:** Interactive sessions on Aqua are resource-restricted. You are limited to 12 CPUs, 64GB RAM, and a MIG (1g.10gb) GPU profile with 10GB VRAM, with a maximum 12-hour walltime. This is sufficient for setting up Conda environments and running pre-flight checks, but it will be slower than the batch node (which gets 42 CPUs/243GB RAM). Furthermore, the 10GB VRAM limitation means you **should not** run the full 3DGS training pipeline (`run_pipeline.sh`) interactively, as models will likely run out of memory.
+
+### Requesting the Interactive Job
+
+Run the following command to request the maximum allowed interactive GPU resources:
+
+```bash
+qsub -I -l select=1:ncpus=12:ngpus=1:mem=64gb -l walltime=12:00:00 -P EUAPGM7346
+```
+
+Once you are dropped into the compute node shell, run the underlying bash scripts directly:
+
+1. **Load Conda:**
+   ```bash
+   module load Anaconda3/2024.02-1
+   conda init
+   source ~/.bashrc
+   ```
+
+2. **Run Setup:**
+   ```bash
+   bash Codebase/scripts/setup_env.sh --all
+   ```
+
+3. **Run Verification:**
+   ```bash
+   bash Codebase/scripts/verify_env.sh
+   ```
+
+After verifying the environments, type `exit` to leave the interactive session, and proceed to **Step 3** to submit the full batch pipeline.
+
+---
+
+## 2. Step 1: Provisioning the Conda Environments (Batch Method)
 
 Because the cluster nodes do not have internet access or `sudo` privileges configured the same way as a local desktop, you must build your environments using a compute node that exactly matches the architecture you will run on (in our case, the `H100` GPU).
 

@@ -57,3 +57,10 @@ During a hardware capability audit based on QUT Aqua cluster guides, inefficienc
 - **Dataset Path Validation Crash**:
   - **Bug**: The absolute path resolution logic used `! -e` to check dataset paths. Passing an existing file (instead of a directory) passed the check but caused `cd "${DATASET_PATH}"` to crash the orchestrator.
   - **Fix**: Altered the validation to use `! -d`, ensuring path resolution operates strictly on valid directories.
+
+### Final Architecture Lock (End of Session)
+- Implemented strict fault-tolerant subshell in `run_pipeline.sh`.
+- Optimized HPC PBS scripts to utilize 42 CPUs and 243GB RAM on H100 nodes.
+- Fixed various SuGaR symlinking and WaterSplatting export bugs.
+- Successfully integrated RPID `EUAPGM7346` into all submission scripts.
+- The HPC orchestration suite is fully verified and deployed.

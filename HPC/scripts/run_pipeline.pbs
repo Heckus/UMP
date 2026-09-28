@@ -20,6 +20,9 @@ module load Anaconda3/2024.02-1
 # Initialize Conda
 eval "$(conda shell.bash hook)"
 
+# Export the global_tools bin directory so the pipeline can find colmap and ffmpeg
+export PATH="$HOME/.conda/envs/global_tools/bin:$PATH"
+
 # Path to the core automation script
 # Robust path resolution to handle execution from repository root or HPC/scripts/
 if [ -f "Codebase/scripts/run_pipeline.sh" ]; then
