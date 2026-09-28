@@ -20,8 +20,9 @@ module load Anaconda3/2024.02-1
 # Initialize Conda
 eval "$(conda shell.bash hook)"
 
-# Export the global_tools bin directory so the script can find colmap and ffmpeg
-export PATH="$HOME/.conda/envs/global_tools/bin:$PATH"
+# Append the global_tools bin directory to the END of PATH so we don't override python/pip
+export PATH="$PATH:$HOME/.conda/envs/global_tools/bin"
+export LD_LIBRARY_PATH="$HOME/.conda/envs/global_tools/lib:$LD_LIBRARY_PATH"
 
 # Path to the core automation script
 if [ -f "Codebase/scripts/verify_env.sh" ]; then

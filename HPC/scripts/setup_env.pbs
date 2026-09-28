@@ -36,7 +36,6 @@ echo "Provisioning Environments..."
 # Provision global system tools (colmap, ffmpeg) securely via Conda
 echo "Provisioning global system tools (colmap, ffmpeg) via Conda..."
 conda create -n global_tools -c conda-forge colmap ffmpeg -y
-export PATH="$HOME/.conda/envs/global_tools/bin:$PATH"
 
 # Provision each environment independently to bypass system dependency checks
 bash "$SETUP_SCRIPT" -y --env colmap_runner
