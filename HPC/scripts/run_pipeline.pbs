@@ -14,8 +14,9 @@
 
 cd $PBS_O_WORKDIR
 
-echo "Loading Anaconda3 module..."
+echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
+module load cuda
 
 # Initialize Conda
 eval "$(conda shell.bash hook)"
