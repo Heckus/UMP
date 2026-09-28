@@ -1,0 +1,19 @@
+Loading Anaconda3 module...
+Running Pre-Flight Diagnostics...
+[INFO] Verifying NVIDIA GPU availability and driver status...
+[SUCCESS] NVIDIA GPU verified: NVIDIA A100-SXM4-40GB (Driver: 610.57.04, CUDA Version: unknown)
+[INFO] Verifying all 11 required Conda environments...
+[SUCCESS] All environments verified: All 11 required Conda environments are installed (OK).
+  ✓ colmap_runner
+  ✓ depth_anything
+  ✓ seasplat_py310
+  ✓ 3d-uir
+  ✓ gaussianSplashing_env
+  ✓ water_splatting
+  ✓ rusplatting
+  ✓ UW-GS
+  ✓ sugar
+  ✓ oscd
+  ✓ 3dgs
+[SUCCESS] All requested pre-flight verification checks passed successfully.
+Diagnostics Finished. Please review output for any failures (Exit code > 0).
