@@ -65,7 +65,6 @@ __global__ void checkFrustum(int P,
 	present[idx] = in_frustum(idx, orig_points, viewmatrix, projmatrix, false, p_view);
 }
 
-
 // Generates one key/value pair for all Gaussian / tile overlaps. 
 // Run once per Gaussian (1:N mapping).
 __global__ void duplicateWithKeys(
@@ -75,8 +74,7 @@ __global__ void duplicateWithKeys(
 	const uint32_t* offsets,
 	uint64_t* gaussian_keys_unsorted,
 	uint32_t* gaussian_values_unsorted,
-	float4* con_o,
-  uint32_t* tiles_touched,
+	int* radii,
 	dim3 grid)
 {
 	auto idx = cg::this_grid().thread_rank();
@@ -84,17 +82,31 @@ __global__ void duplicateWithKeys(
 		return;
 
 	// Generate no key/value pair for invisible Gaussians
-	if (tiles_touched[idx] > 0)
+	if (radii[idx] > 0)
 	{
 		// Find this Gaussian's offset in buffer for writing keys/values.
 		uint32_t off = (idx == 0) ? 0 : offsets[idx - 1];
-    // Update unsorted arrays with Gaussian idx for every tile that
-    // Gaussian touches
-    duplicateToTilesTouched(
-        points_xy[idx], con_o[idx], grid,
-        idx, off, depths[idx],
-        gaussian_keys_unsorted,
-        gaussian_values_unsorted);
+		uint2 rect_min, rect_max;
+
+		getRect(points_xy[idx], radii[idx], rect_min, rect_max, grid);
+
+		// For each tile that the bounding rect overlaps, emit a 
+		// key/value pair. The key is |  tile ID  |      depth      |,
+		// and the value is the ID of the Gaussian. Sorting the values 
+		// with this key yields Gaussian IDs in a list, such that they
+		// are first sorted by tile and then by depth. 
+		for (int y = rect_min.y; y < rect_max.y; y++)
+		{
+			for (int x = rect_min.x; x < rect_max.x; x++)
+			{
+				uint64_t key = y * grid.x + x;
+				key <<= 32;
+				key |= *((uint32_t*)&depths[idx]);
+				gaussian_keys_unsorted[off] = key;
+				gaussian_values_unsorted[off] = idx;
+				off++;
+			}
+		}
 	}
 }
 
@@ -203,21 +215,10 @@ int CudaRasterizer::Rasterizer::forward(
 	const float* cam_pos,
 	const float tan_fovx, float tan_fovy,
 	const bool prefiltered,
-  float* kernel_times,
 	float* out_color,
 	int* radii,
 	bool debug)
 {
-  // Timers for functions
-  cudaEvent_t overallStart, overallStop;
-  cudaEventCreate(&overallStart);
-  cudaEventCreate(&overallStop);
-  float milliseconds;
-
-	int num_rendered;
-  // Record Overall forward time
-  cudaEventRecord(overallStart, 0);
-
 	const float focal_y = height / (2.0f * tan_fovy);
 	const float focal_x = width / (2.0f * tan_fovx);
 
@@ -276,6 +277,7 @@ int CudaRasterizer::Rasterizer::forward(
 	CHECK_CUDA(cub::DeviceScan::InclusiveSum(geomState.scanning_space, geomState.scan_size, geomState.tiles_touched, geomState.point_offsets, P), debug)
 
 	// Retrieve total number of Gaussian instances to launch and resize aux buffers
+	int num_rendered;
 	CHECK_CUDA(cudaMemcpy(&num_rendered, geomState.point_offsets + P - 1, sizeof(int), cudaMemcpyDeviceToHost), debug);
 
 	size_t binning_chunk_size = required<BinningState>(num_rendered);
@@ -291,8 +293,7 @@ int CudaRasterizer::Rasterizer::forward(
 		geomState.point_offsets,
 		binningState.point_list_keys_unsorted,
 		binningState.point_list_unsorted,
-		geomState.conic_opacity,
-    geomState.tiles_touched,
+		radii,
 		tile_grid)
 	CHECK_CUDA(, debug)
 
@@ -318,7 +319,6 @@ int CudaRasterizer::Rasterizer::forward(
 
 	// Let each tile blend its range of Gaussians independently in parallel
 	const float* feature_ptr = colors_precomp != nullptr ? colors_precomp : geomState.rgb;
-
 	CHECK_CUDA(FORWARD::render(
 		tile_grid, block,
 		imgState.ranges,
@@ -331,15 +331,6 @@ int CudaRasterizer::Rasterizer::forward(
 		imgState.n_contrib,
 		background,
 		out_color), debug)
-
-  // End Overall timer
-  cudaEventRecord(overallStop, 0);
-  cudaEventSynchronize(overallStop);
-  cudaEventElapsedTime(&milliseconds, overallStart, overallStop);
-  kernel_times[0] = milliseconds;
-
-  cudaEventDestroy(overallStart);
-  cudaEventDestroy(overallStop);
 
 	return num_rendered;
 }
@@ -375,7 +366,6 @@ void CudaRasterizer::Rasterizer::backward(
 	float* dL_dsh,
 	float* dL_dscale,
 	float* dL_drot,
-	float* dL_dG2,
 	bool debug)
 {
 	GeometryState geomState = GeometryState::fromChunk(geom_buffer, P);
@@ -413,8 +403,7 @@ void CudaRasterizer::Rasterizer::backward(
 		(float3*)dL_dmean2D,
 		(float4*)dL_dconic,
 		dL_dopacity,
-		dL_dcolor,
-    dL_dG2), debug)
+		dL_dcolor), debug)
 
 	// Take care of the rest of preprocessing. Was the precomputed covariance
 	// given to us or a scales/rot pair? If precomputed, pass that. If not,
