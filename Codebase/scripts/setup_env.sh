@@ -599,8 +599,8 @@ setup_seasplat_py310() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile==0.8.1 tqdm opencv-python scipy ninja matplotlib
-    run_cmd pip install "${sub_diff}"
-    run_cmd pip install "${sub_knn}"
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'seasplat_py310' successfully provisioned."
 }
@@ -623,9 +623,9 @@ setup_3d_uir() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
     run_cmd pip install plyfile tqdm opencv-python joblib ninja
-    run_cmd pip install "${sub_diff}"
-    run_cmd pip install "${sub_knn}"
-    run_cmd pip install "${sub_ssim}"
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_ssim}" --no-build-isolation
     run_cmd pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
     deactivate_env
     log_success "Environment '3d-uir' successfully provisioned."
@@ -647,8 +647,8 @@ setup_gaussianSplashing_env() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install matplotlib wandb timm scikit-learn pdc-dp-means opencv-python pyyaml
-    run_cmd pip install "${sub_diff}"
-    run_cmd pip install "${sub_knn}"
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'gaussianSplashing_env' successfully provisioned."
 }
@@ -686,8 +686,8 @@ setup_rusplatting() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
     run_cmd pip install plyfile tqdm opencv-python joblib scipy imageio imageio-ffmpeg dearpygui lpips
-    run_cmd pip install "${sub_diff}"
-    run_cmd pip install "${sub_knn}"
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'rusplatting' successfully provisioned."
 }
@@ -708,8 +708,8 @@ setup_UW_GS() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
     run_cmd pip install plyfile==0.8.1 tqdm imageio==2.27.0 opencv-python imageio-ffmpeg scipy dearpygui lpips
-    run_cmd pip install "${sub_diff}"
-    run_cmd pip install "${sub_knn}"
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'UW-GS' successfully provisioned."
 }
@@ -731,8 +731,8 @@ setup_sugar() {
     activate_env sugar
     run_cmd pip install --upgrade pip
     run_cmd pip install open3d PyMCubes plyfile==0.8.1 rich plotly
-    run_cmd pip install "${sub_diff}"
-    run_cmd pip install "${sub_knn}"
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'sugar' successfully provisioned."
 }
@@ -757,9 +757,9 @@ setup_oscd() {
     run_cmd pip install torch torchvision xformers --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install cupy-cuda12x
     run_cmd pip install plyfile tqdm opencv-python lpips transformers==4.56.1 torchmetrics viser
-    run_cmd pip install "${sub_fastgs}"
-    run_cmd pip install "${sub_ssim}"
-    run_cmd pip install "${sub_knn}"
+    run_cmd pip install "${sub_fastgs}" --no-build-isolation
+    run_cmd pip install "${sub_ssim}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'oscd' successfully provisioned."
 }
@@ -781,9 +781,9 @@ setup_3dgs() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile tqdm opencv-python joblib
-    run_cmd pip install "${sub_diff}"
-    run_cmd pip install "${sub_knn}"
-    run_cmd pip install "${sub_ssim}"
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_ssim}" --no-build-isolation
     deactivate_env
     log_success "Environment '3dgs' successfully provisioned."
 }
