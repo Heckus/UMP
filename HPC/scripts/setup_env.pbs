@@ -19,6 +19,11 @@ echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
 module load cuda
 
+# Force CUDA_HOME export for PyTorch cpp_extension compilation
+if command -v nvcc >/dev/null 2>&1; then
+    export CUDA_HOME=$(dirname $(dirname $(command -v nvcc)))
+fi
+
 # Initialize Conda for the current shell context safely
 eval "$(conda shell.bash hook)"
 
