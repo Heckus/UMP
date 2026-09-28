@@ -2,7 +2,7 @@
 #PBS -N ump_setup_env
 #PBS -l select=1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100
 #PBS -l walltime=04:00:00
-#PBS -P ABCDEF1234
+#PBS -P EUAPGM7346
 #PBS -j oe
 
 # ==============================================================================

@@ -10,8 +10,8 @@ Before submitting any jobs, you must ensure that your Research Project ID (RPID)
    - `setup_env.pbs`
    - `verify_env.pbs`
    - `run_pipeline.pbs`
-2. Locate the line `#PBS -P ABCDEF1234` at the top of each script.
-3. Replace `ABCDEF1234` with your actual QUT Research Project ID.
+2. Locate the line `#PBS -P EUAPGM7346` at the top of each script.
+3. Ensure `EUAPGM7346` is the RPID.
 
 ## 2. Step 1: Provisioning the Conda Environments
 
