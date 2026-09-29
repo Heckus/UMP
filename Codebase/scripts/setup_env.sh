@@ -554,7 +554,7 @@ ensure_all_submodules() {
     ensure_submodule_with_fallback "${sugar_dir}/simple-knn" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
     ensure_submodule "${oscd_dir}/diff-gaussian-rasterization" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
-    ensure_submodule "${oscd_dir}/diff-gaussian-rasterization_fastgs" "https://github.com/Chumsy0725/diff-gaussian-rasterization_fastgs.git"
+    ensure_submodule "${oscd_dir}/diff-gaussian-rasterization_fastgs" "https://github.com/crimson-and-clover/diff-gaussian-rasterization_fastgs.git"
     ensure_submodule "${oscd_dir}/fused-ssim" "https://github.com/rahul-goel/fused-ssim.git"
     ensure_submodule_with_fallback "${oscd_dir}/simple-knn" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
@@ -654,7 +654,7 @@ setup_3d_uir() {
     # cudatoolkit-dev not available; CUDA provided via module load CUDA/12.1.1
     activate_env 3d-uir
     run_cmd pip install --upgrade pip ninja
-    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
+    run_cmd pip install "setuptools<70.0.0" wheel  # pkg_resources was removed in setuptools 70, required by old torch
     run_cmd pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
     run_cmd pip install plyfile tqdm opencv-python joblib
     # Override CUDA_HOME to match PyTorch's CUDA 11.8 build to avoid version mismatch during compilation
@@ -703,7 +703,7 @@ setup_water_splatting() {
     run_cmd conda install -y -n water_splatting -c "nvidia/label/cuda-11.8.0" cuda-toolkit
     activate_env water_splatting
     run_cmd pip install --upgrade pip
-    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
+    run_cmd pip install "setuptools<70.0.0" wheel  # restores pkg_resources required by torch.utils.cpp_extension
     run_cmd pip install torch==2.1.2+cu118 torchvision==0.16.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
     # tinycudann compiles CUDA kernels - must use CUDA 11.8 to match PyTorch
     _saved_cuda_home="${CUDA_HOME:-}"
@@ -712,10 +712,10 @@ setup_water_splatting() {
         [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
     done
     run_cmd pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
-    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     run_cmd pip install nerfstudio==1.1.4
     run_cmd ns-install-cli
     run_cmd pip install --no-use-pep517 -e "${repo_dir}"
+    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment 'water_splatting' successfully provisioned."
 }
@@ -812,7 +812,7 @@ setup_oscd() {
     local sub_knn="${repo_dir}/submodules/simple-knn"
 
     ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
-    ensure_submodule "${sub_fastgs}" "https://github.com/Chumsy0725/diff-gaussian-rasterization_fastgs.git"
+    ensure_submodule "${sub_fastgs}" "https://github.com/crimson-and-clover/diff-gaussian-rasterization_fastgs.git"
     ensure_submodule "${sub_ssim}" "https://github.com/rahul-goel/fused-ssim.git"
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
