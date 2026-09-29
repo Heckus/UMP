@@ -654,12 +654,20 @@ setup_3d_uir() {
     # cudatoolkit-dev not available; CUDA provided via module load CUDA/12.1.1
     activate_env 3d-uir
     run_cmd pip install --upgrade pip ninja
+    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
     run_cmd pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
     run_cmd pip install plyfile tqdm opencv-python joblib
+    # Override CUDA_HOME to match PyTorch's CUDA 11.8 build to avoid version mismatch during compilation
+    _saved_cuda_home="${CUDA_HOME:-}"
+    for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
+               /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
+        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+    done
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_ssim}" --no-build-isolation --no-build-isolation
     run_cmd pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment '3d-uir' successfully provisioned."
 }
@@ -695,8 +703,16 @@ setup_water_splatting() {
     run_cmd conda install -y -n water_splatting -c "nvidia/label/cuda-11.8.0" cuda-toolkit
     activate_env water_splatting
     run_cmd pip install --upgrade pip
+    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
     run_cmd pip install torch==2.1.2+cu118 torchvision==0.16.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+    # tinycudann compiles CUDA kernels - must use CUDA 11.8 to match PyTorch
+    _saved_cuda_home="${CUDA_HOME:-}"
+    for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
+               /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
+        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+    done
     run_cmd pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     run_cmd pip install nerfstudio==1.1.4
     run_cmd ns-install-cli
     run_cmd pip install --no-use-pep517 -e "${repo_dir}"
@@ -739,10 +755,18 @@ setup_UW_GS() {
     run_cmd conda create -n UW-GS python=3.7 -y
     activate_env UW-GS
     run_cmd pip install --upgrade pip ninja
+    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
     run_cmd pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
     run_cmd pip install plyfile==0.8.1 tqdm imageio==2.27.0 opencv-python imageio-ffmpeg scipy dearpygui lpips
+    # PyTorch 1.12.1 was built for CUDA 11.6; use CUDA 11.8 path (backward compatible) to avoid mismatch
+    _saved_cuda_home="${CUDA_HOME:-}"
+    for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
+               /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
+        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+    done
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment 'UW-GS' successfully provisioned."
 }
@@ -763,9 +787,17 @@ setup_sugar() {
     run_cmd conda install -y -n sugar -c pytorch3d pytorch3d==0.7.4
     activate_env sugar
     run_cmd pip install --upgrade pip ninja
+    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
     run_cmd pip install open3d PyMCubes plyfile==0.8.1 rich plotly
+    # PyTorch 2.0.1 was built for CUDA 11.8; point CUDA_HOME at 11.8 to avoid version mismatch
+    _saved_cuda_home="${CUDA_HOME:-}"
+    for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
+               /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
+        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+    done
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment 'sugar' successfully provisioned."
 }
