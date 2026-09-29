@@ -666,7 +666,7 @@ setup_3d_uir() {
     run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
     run_cmd pip install "${sub_ssim}" --no-build-isolation --no-build-isolation
-    run_cmd pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+    run_cmd pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch --no-build-isolation
     [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment '3d-uir' successfully provisioned."
@@ -698,6 +698,8 @@ setup_gaussianSplashing_env() {
 setup_water_splatting() {
     log_section "Provisioning Conda Environment: water_splatting (Python 3.8, Nerfstudio)"
     local repo_dir="${CODEBASE_DIR}/3DGS-Water-Approaches/Image/water-splatting-main"
+    
+    ensure_submodule "${repo_dir}/water_splatting/cuda/csrc/third_party/glm" "https://github.com/g-truc/glm.git"
 
     run_cmd conda create -n water_splatting python=3.8 -y
     run_cmd conda install -y -n water_splatting -c "nvidia/label/cuda-11.8.0" cuda-toolkit
