@@ -20,6 +20,31 @@ CODEBASE_DIR="${REPO_ROOT}/Codebase"
 CONDA_DIR="${CONDA_DIR:-$HOME/miniconda3}"
 
 # ------------------------------------------------------------------------------
+# CUDA_HOME Auto-Detection
+# Ensures CUDA_HOME is set for PyTorch cpp_extension (diff-gaussian-rasterization
+# and other CUDA submodules). Works whether called from PBS, interactive shell,
+# or directly. Exported so child processes inherit it.
+# ------------------------------------------------------------------------------
+if [[ -z "${CUDA_HOME:-}" ]]; then
+    if command -v nvcc >/dev/null 2>&1; then
+        export CUDA_HOME
+        CUDA_HOME="$(dirname "$(dirname "$(command -v nvcc)")")"
+    else
+        for _cuda_path in \
+            /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/12.1.1 \
+            /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/12.4.0 \
+            /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0 \
+            /usr/local/cuda; do
+            if [[ -f "${_cuda_path}/bin/nvcc" ]]; then
+                export CUDA_HOME="${_cuda_path}"
+                export PATH="${_cuda_path}/bin:${PATH}"
+                break
+            fi
+        done
+    fi
+fi
+
+# ------------------------------------------------------------------------------
 # ANSI Color & Formatting Setup
 # ------------------------------------------------------------------------------
 if [[ -t 1 ]] || [[ "${FORCE_COLOR:-0}" == "1" ]]; then

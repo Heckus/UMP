@@ -18,11 +18,33 @@ cd $PBS_O_WORKDIR
 
 echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
-module load CUDA/12.1.1
+
+# Try loading CUDA module - attempt multiple version strings as availability varies by node
+for CUDA_VER in "CUDA/12.1.1" "CUDA/12.4.0" "CUDA/11.8.0" "CUDA/12.6.0"; do
+    if module load "${CUDA_VER}" 2>/dev/null; then
+        echo "Loaded ${CUDA_VER}"
+        break
+    fi
+done
 
 # Force CUDA_HOME export for PyTorch cpp_extension compilation
+# Try nvcc from loaded module first, then common system paths
 if command -v nvcc >/dev/null 2>&1; then
     export CUDA_HOME=$(dirname $(dirname $(command -v nvcc)))
+    echo "CUDA_HOME set to: ${CUDA_HOME}"
+else
+    # Fallback: scan known HPC paths
+    for CUDA_PATH in /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/12.1.1 \
+                     /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/12.4.0 \
+                     /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0 \
+                     /usr/local/cuda; do
+        if [[ -f "${CUDA_PATH}/bin/nvcc" ]]; then
+            export CUDA_HOME="${CUDA_PATH}"
+            export PATH="${CUDA_HOME}/bin:${PATH}"
+            echo "CUDA_HOME set via fallback path: ${CUDA_HOME}"
+            break
+        fi
+    done
 fi
 
 # Initialize Conda for the current shell context safely
