@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # ==============================================================================
 # setup_env.sh - Automated Environment Setup for 3DGS & OSCD
 #
@@ -419,9 +419,10 @@ install_system_deps() {
         if [[ -n "${conda_bin}" && -x "${conda_bin}" ]]; then
             log_info "Attempting HPC user-space provisioning of colmap & ffmpeg via Conda (global_tools)..."
             if ! "${conda_bin}" env list 2>/dev/null | grep -E '^[[:space:]]*global_tools[[:space:]]' >/dev/null 2>&1; then
-                run_cmd "${conda_bin}" create -n global_tools -c conda-forge colmap ffmpeg -y
+                run_cmd "${conda_bin}" create -n global_tools -c conda-forge colmap ffmpeg openimageio -y
             else
-                log_info "Conda environment 'global_tools' already present."
+                log_info "Conda environment 'global_tools' already present. Ensuring openimageio is installed..."
+                run_cmd "${conda_bin}" install -n global_tools -c conda-forge openimageio -y
             fi
             export PATH="${PATH}:${HOME}/.conda/envs/global_tools/bin"
             log_success "System tools provisioned in 'global_tools' Conda environment."

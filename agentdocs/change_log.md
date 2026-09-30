@@ -214,8 +214,8 @@ The execution audit of `run_pipeline_complete.log` and `pipeline_errors.log` fro
 3. **SuGaR Prior Mesh Guard**:
    - **Root Cause**: When prior 3DGS models failed, `run_sugar_mesh_stage` attempted to execute `train_full_pipeline.py` against a nonexistent point cloud prior, failing with `FileNotFoundError: cameras.json`.
    - **Fix**: Added a guard in [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L404) that checks if a valid point cloud prior exists before running SuGaR; if not found, it cleanly warns and skips the stage instead of failing.
-
-
-
+4. **OpenImageIO (`libOpenImageIO.so.3.1`) in `global_tools`**:
+   - **Root Cause**: `colmap` on conda-forge depends on OpenImageIO 3.1 (`libOpenImageIO.so.3.1`). When `global_tools` was provisioned without explicitly naming `openimageio`, the solver did not install the package or pinned an incompatible ABI.
+   - **Fix**: Added `openimageio` explicitly to `global_tools` creation in [`setup_env.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/setup_env.sh#L422) and [`setup_env.pbs`](file:///s:/GithubRepos/UMP/HPC/scripts/setup_env.pbs#L63). Added self-healing check in both scripts to install `openimageio` if `global_tools` already exists. Enhanced [`verify_env.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/verify_env.sh#L687) with actionable repair commands if COLMAP encounters a runtime linker failure.
 
 

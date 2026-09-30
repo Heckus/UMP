@@ -1,4 +1,4 @@
-#!/bin/bash -l
+﻿#!/bin/bash -l
 #PBS -N ump_setup_env
 #PBS -l select=1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100
 #PBS -l walltime=02:00:00
@@ -57,12 +57,13 @@ fi
 # Initialize Conda for the current shell context safely
 eval "$(conda shell.bash hook)"
 
-# Provision global system tools (colmap, ffmpeg) securely via Conda if missing
+# Provision global system tools (colmap, ffmpeg, openimageio) securely via Conda if missing
 if ! conda env list 2>/dev/null | grep -E '^[[:space:]]*global_tools[[:space:]]' >/dev/null 2>&1; then
-    echo "Provisioning global system tools (colmap, ffmpeg) via Conda..."
-    conda create -n global_tools -c conda-forge colmap ffmpeg -y
+    echo "Provisioning global system tools (colmap, ffmpeg, openimageio) via Conda..."
+    conda create -n global_tools -c conda-forge colmap ffmpeg openimageio -y
 else
-    echo "Conda environment 'global_tools' is already present."
+    echo "Conda environment 'global_tools' is already present. Ensuring openimageio is installed..."
+    conda install -n global_tools -c conda-forge openimageio -y
 fi
 
 # Append the global_tools bin directory to PATH for system tool access.
