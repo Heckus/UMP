@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # ==============================================================================
 # colmap_wrapper.sh - Dynamic Linker & Runtime Wrapper for Conda COLMAP
 #
