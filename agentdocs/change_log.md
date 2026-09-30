@@ -198,6 +198,24 @@ Following completion of `run_pipeline.pbs` on the cluster, a comprehensive `.git
 - **Whitelisted Metrics**: Explicitly whitelists and tracks quantitative benchmarking artifacts: `results.json` (PSNR, SSIM, LPIPS per scene) and `evaluation.json` (OSCD change detection mIoU/F1).
 - **Execution Audit Logs**: Preserves cluster execution logs (`run_pipeline_complete.log`, `pipeline_errors.log`) as permanent proof of execution.
 
+## HPC First Execution Audit & Comprehensive Bugfixes (Job `26138897.aqua`)
+
+The execution audit of `run_pipeline_complete.log` and `pipeline_errors.log` from 48-hour batch run `26138897.aqua` confirmed that the pre-flight verification and Depth-Anything-V2 ViT-L depth estimation stages succeeded flawlessly across all scenes. However, 13 of 15 model executions failed due to a single domino-effect root cause and two localized package issues:
+
+1. **COLMAP Shared Library Missing (`libOpenImageIO.so.3.1`) & Sparse Model Absence**:
+   - **Root Cause**: `colmap` in `global_tools` failed at runtime (`colmap: error while loading shared libraries: libOpenImageIO.so.3.1: cannot open shared object file: No such file or directory`) because `colmap_runner` was active during Stage 2, and `global_tools/lib` was omitted from `LD_LIBRARY_PATH` to prevent leaking Qt/C++ ABI conflicts into other stages. Because `convert.py` failed with code 32512, `sparse/0/cameras.bin` was never created. Every subsequent 3DGS model (`gaussianSplashing`, `watersplatting`, `rusplatting`, `uw-gs`, `3dgs`, `3d-uir`) expects `sparse/0/` and crashed with `AssertionError: Could not recognize scene type!` or `FileNotFoundError`.
+   - **Fix**: Created [`colmap_wrapper.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/colmap_wrapper.sh) which auto-locates `global_tools/lib`, sets `LD_LIBRARY_PATH="${GT_LIB}:${LD_LIBRARY_PATH:-}"` strictly for the lifetime of the `colmap` process, and `exec`s the binary without leaking libraries to parent or sibling environments. Updated [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L551) to pass `--colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"`.
+   - **Verification**: Updated [`verify_env.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/verify_env.sh) to functionally execute `colmap_wrapper.sh -h` and verify successful output parsing rather than merely testing `command -v`.
+
+2. **SeaSplat Missing Dependency (`kornia`)**:
+   - **Root Cause**: `train.py` in `seasplat-master` failed on `from deepseecolor.losses import ... -> from kornia.color import rgb_to_lab` with `ModuleNotFoundError: No module named 'kornia'`.
+   - **Fix**: Added `kornia` to `pip install` in [`setup_seasplat_py310`](file:///s:/GithubRepos/UMP/Codebase/scripts/setup_env.sh#L698) and updated required extensions in [`verify_env.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/verify_env.sh#L299).
+
+3. **SuGaR Prior Mesh Guard**:
+   - **Root Cause**: When prior 3DGS models failed, `run_sugar_mesh_stage` attempted to execute `train_full_pipeline.py` against a nonexistent point cloud prior, failing with `FileNotFoundError: cameras.json`.
+   - **Fix**: Added a guard in [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L404) that checks if a valid point cloud prior exists before running SuGaR; if not found, it cleanly warns and skips the stage instead of failing.
+
+
 
 
 

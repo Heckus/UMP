@@ -296,7 +296,7 @@ get_env_required_extensions() {
             echo "torch torchvision cv2 PIL"
             ;;
         seasplat_py310)
-            echo "torch plyfile diff_gaussian_rasterization"
+            echo "torch plyfile diff_gaussian_rasterization kornia"
             ;;
         3d-uir)
             echo "torch diff_gaussian_rasterization simple_knn cv2"
@@ -677,7 +677,16 @@ check_required_tools() {
             tool_path="$(command -v "${tool}")"
             case "${tool}" in
                 colmap)
-                    tool_ver="$(colmap -h 2>&1 | head -n 1 | grep -o 'COLMAP [0-9.]*' || echo "")"
+                    if [[ -x "${SCRIPT_DIR}/colmap_wrapper.sh" ]]; then
+                        tool_ver="$("${SCRIPT_DIR}/colmap_wrapper.sh" -h 2>&1 | head -n 1 | grep -o 'COLMAP [0-9.]*' || echo "")"
+                    else
+                        tool_ver="$(colmap -h 2>&1 | head -n 1 | grep -o 'COLMAP [0-9.]*' || echo "")"
+                    fi
+                    if [[ -z "${tool_ver}" ]]; then
+                        log_error "COLMAP executable failed to run (missing shared library or broken binary)."
+                        missing_tools+=("colmap")
+                        continue
+                    fi
                     ;;
                 ffmpeg)
                     tool_ver="$(ffmpeg -version 2>&1 | head -n 1 | grep -o 'ffmpeg version [^ ]*' || echo "")"

@@ -401,7 +401,8 @@ run_sugar_mesh_stage() {
                 log_info "SuGaR compatibility fix: Symlinking ${best_ply} to ${target_pc}"
                 ln -sfn "${best_ply}" "${target_pc}"
             else
-                log_warn "Could not find a valid .ply file for SuGaR in ${gs_prior}. SuGaR might fail."
+                log_warn "No trained 3DGS point cloud prior found in '${gs_prior}'. Skipping SuGaR mesh extraction."
+                return 0
             fi
         fi
     fi
@@ -547,7 +548,7 @@ execute_model_pipeline() {
                 else
                     log_info "COLMAP undistortion for OSCD '${oscd_sub}':"
                     run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                        python convert.py -s "${sub_path}"
+                        python convert.py -s "${sub_path}" --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"
                 fi
             done
         else
@@ -564,7 +565,7 @@ execute_model_pipeline() {
                 log_info "COLMAP sparse reconstruction already exists at '${scene_path}/sparse/0'. Skipping Stage 2 to conserve compute."
             else
                 run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                    python convert.py -s "${scene_path}"
+                    python convert.py -s "${scene_path}" --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"
             fi
         fi
     fi

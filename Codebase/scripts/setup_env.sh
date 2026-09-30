@@ -695,7 +695,7 @@ setup_seasplat_py310() {
     activate_env seasplat_py310
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-    run_cmd pip install plyfile==0.8.1 tqdm opencv-python scipy ninja matplotlib
+    run_cmd pip install plyfile==0.8.1 tqdm opencv-python scipy ninja matplotlib kornia
     run_cmd pip install "${sub_diff}" --no-build-isolation
     run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
