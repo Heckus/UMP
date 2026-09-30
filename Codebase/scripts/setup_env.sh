@@ -768,7 +768,8 @@ setup_water_splatting() {
     done
     run_cmd pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
     run_cmd pip install nerfstudio==1.1.4
-    run_cmd ns-install-cli
+    # Note: ns-install-cli is omitted as it is purely optional interactive shell
+    # tab-completion and fails in headless non-interactive batch environments.
     run_cmd pip install --no-use-pep517 -e "${repo_dir}"
     [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env

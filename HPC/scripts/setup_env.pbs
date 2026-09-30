@@ -58,9 +58,10 @@ else
     echo "Conda environment 'global_tools' is already present."
 fi
 
-# Append the global_tools bin directory to PATH for system tool access
+# Append the global_tools bin directory to PATH for system tool access.
+# NOTE: Do NOT export global_tools/lib into LD_LIBRARY_PATH as it leaks
+# conda-forge C++/Qt libraries into target environments and breaks C extensions.
 export PATH="$PATH:$HOME/.conda/envs/global_tools/bin"
-export LD_LIBRARY_PATH="$HOME/.conda/envs/global_tools/lib:$LD_LIBRARY_PATH"
 
 # Path to the core automation script
 if [ -f "Codebase/scripts/setup_env.sh" ]; then
@@ -77,17 +78,13 @@ echo "Provisioning Environments..."
 FAILED_ENVS=()
 
 # Provision each environment independently to bypass system dependency checks.
-# Healthy existing environments are reused quickly; rusplatting is cleanly
-# recreated with --recreate to repair the CUDA 12.4 / 12.1 mismatch.
+# Healthy existing environments are verified and reused quickly;
+# water_splatting will complete its pending package installation.
 for ENV_NAME in colmap_runner depth_anything seasplat_py310 3d-uir gaussianSplashing_env water_splatting rusplatting UW-GS sugar oscd 3dgs; do
     echo "======================================================================"
     echo " Provisioning Conda Environment: ${ENV_NAME}"
     echo "======================================================================"
-    EXTRA_FLAGS=""
-    if [ "${ENV_NAME}" = "rusplatting" ]; then
-        EXTRA_FLAGS="--recreate"
-    fi
-    if ! bash "${SETUP_SCRIPT}" -y ${EXTRA_FLAGS} --env "${ENV_NAME}"; then
+    if ! bash "${SETUP_SCRIPT}" -y --env "${ENV_NAME}"; then
         echo "ERROR: Failed to provision ${ENV_NAME}" >&2
         FAILED_ENVS+=("${ENV_NAME}")
     fi

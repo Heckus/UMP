@@ -86,3 +86,20 @@ Following the execution of `setup_env.pbs` on the QUT Aqua cluster (Job ID `2601
 
 4. **Test Suite Path Resolution**:
    - Corrected relative path calculations in `Codebase/scripts/tests/e2e/` test suites (`SCRIPTS_DIR` / `REPO_ROOT`) after moving tests into `Codebase/scripts/tests/`.
+
+## HPC Setup Execution Audit & Resolution (Job ID `26106816.aqua`)
+
+Following the re-execution of `setup_env.pbs` on QUT Aqua (Job ID `26106816.aqua`), `setup_env_complete.log` was audited:
+
+1. **`rusplatting` Provisioning Success**:
+   - The PyTorch `cu121` wheel fix completely resolved the previous `__nvJitLinkComplete_12_4` linker failure. Both `diff-gaussian-rasterization` and `simple-knn` compiled without errors. Ten out of eleven environments succeeded.
+
+2. **`water_splatting` `ns-install-cli` / Qt ABI Failure Resolved**:
+   - **Bug**: The setup failed exclusively at `water_splatting` due to `ns-install-cli` calling `ns-export --tyro-print-completion zsh`. Importing `pymeshlab` raised `ImportError: /.../libmeshlab-common.so: undefined symbol: _ZdlPvm, version Qt_5`.
+   - **Root Cause**: Two issues combined:
+     1. `HPC/scripts/*.pbs` exported `LD_LIBRARY_PATH="$HOME/.conda/envs/global_tools/lib:$LD_LIBRARY_PATH"`. Conda-forge's `global_tools/lib` contains conflicting Qt5 and C++ runtime libraries that overrode environment-specific libraries across all Conda environments.
+     2. `ns-install-cli` is an interactive human terminal autocompletion generator that is completely unnecessary and unsupported in headless non-interactive PBS batch compute nodes.
+   - **Fixes**:
+     - Removed `export LD_LIBRARY_PATH="$HOME/.conda/envs/global_tools/lib:$LD_LIBRARY_PATH"` from `HPC/scripts/setup_env.pbs`, `HPC/scripts/verify_env.pbs`, and `HPC/scripts/run_pipeline.pbs`. (Conda executables like `colmap` and `ffmpeg` already locate their internal libraries via embedded ELF `RPATH`).
+     - Omitted the optional `ns-install-cli` invocation in `Codebase/scripts/setup_env.sh`, allowing `pip install -e "${repo_dir}"` to proceed directly.
+     - Removed `EXTRA_FLAGS="--recreate"` for `rusplatting` in `HPC/scripts/setup_env.pbs` since `rusplatting` is already successfully built and verified on the cluster.

@@ -48,7 +48,6 @@ eval "$(conda shell.bash hook)"
 
 # Append the global_tools bin directory to the END of PATH so we don't override python/pip
 export PATH="$PATH:$HOME/.conda/envs/global_tools/bin"
-export LD_LIBRARY_PATH="$HOME/.conda/envs/global_tools/lib:$LD_LIBRARY_PATH"
 
 # Path to the core automation script
 # Robust path resolution to handle execution from repository root or HPC/scripts/
