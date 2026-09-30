@@ -622,7 +622,7 @@ setup_colmap_runner() {
     create_conda_env colmap_runner python=3.9 -y
     activate_env colmap_runner
     run_cmd pip install --upgrade pip
-    run_cmd pip install tqdm
+    run_cmd pip install tqdm numpy
     deactivate_env
     log_success "Environment 'colmap_runner' successfully provisioned."
 }
@@ -707,7 +707,7 @@ setup_3d_uir() {
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install "setuptools<70.0.0" wheel  # pkg_resources was removed in setuptools 70, required by old torch
     run_cmd pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
-    run_cmd pip install plyfile tqdm opencv-python joblib
+    run_cmd pip install "numpy<2" plyfile tqdm opencv-python joblib
     # Override CUDA_HOME to match PyTorch's CUDA 11.8 build to avoid version mismatch during compilation
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
@@ -846,7 +846,7 @@ setup_sugar() {
     activate_env sugar
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
-    run_cmd pip install open3d PyMCubes plyfile==0.8.1 rich plotly
+    run_cmd pip install "numpy<2" open3d PyMCubes plyfile==0.8.1 rich plotly
     # PyTorch 2.0.1 was built for CUDA 11.8; point CUDA_HOME at 11.8 to avoid version mismatch
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \

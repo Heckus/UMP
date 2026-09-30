@@ -170,3 +170,19 @@ Following the removal of `ns-install-cli` and `LD_LIBRARY_PATH` pollution, `setu
 - **Exit Status**: `0` with zero errors or tracebacks anywhere in `setup_env_complete.log`.
 - **`verify_env.sh` Syntax Fix**: Restored missing `fi` on `check_required_tools` error branch at line 676. Tested with `bash -n` and validated with `--help`.
 - **`verify_env.sh` Python < 3.12 Probe Fix**: Removed backslash inside f-string expression `{", ".join(missing_exts)}` in `run_deep_env_check` (which is invalid in Python 3.8/3.10), extracting it to `ext_list = ", ".join(missing_exts)` before `print()`.
+
+## Pre-Flight Deep Probe Diagnostics & NumPy 1.x Pinning
+
+Interactive verification on compute node `gpu0n004` (Job ID: `26134151.aqua`) confirmed that 8 of 11 environments (`depth_anything`, `seasplat_py310`, `gaussianSplashing_env`, `water_splatting`, `rusplatting`, `UW-GS`, `oscd`, `3dgs`) immediately passed deep CUDA tensor allocation and C++ extension verification on the NVIDIA A100-SXM4-40GB GPU.
+
+The remaining 3 environments were investigated and resolved:
+1. **`colmap_runner` (Diagnostic Probe Fix)**:
+   - **Root Cause**: `get_env_required_extensions` expected `numpy`, but `convert.py` relies solely on Python standard libraries (`os`, `logging`, `shutil`, `argparse`) and `tqdm`.
+   - **Fix**: Adjusted required extension list to `sqlite3 tqdm` in `verify_env.sh`, and added `numpy` to `setup_colmap_runner` for extra coverage.
+2. **`3d-uir` (Diagnostic Probe & NumPy 1.x Pinning)**:
+   - **Root Cause**: `get_env_required_extensions` expected `scipy`, which is not imported or needed by `3D-UIR-main`. Additionally, pip installed unpinned NumPy 2.2.6, which triggered a C-API ABI mismatch warning against PyTorch 2.1.0 (compiled for NumPy 1.x).
+   - **Fix**: Adjusted required extensions to `torch diff_gaussian_rasterization simple_knn cv2` in `verify_env.sh`, and pinned `numpy<2` in `setup_3d_uir`.
+3. **`sugar` (Probe Output Parsing & NumPy 1.x Pinning)**:
+   - **Root Cause**: PyTorch 2.0.1, PyTorch3D 0.7.4, and CUDA kernel extensions were completely functional and executed correctly on the GPU. However, an unpinned NumPy 2.x installation emitted a `UserWarning` on `stderr` before `OK|...`. Since `verify_env.sh` checked `[[ "${probe_output}" == OK* ]]`, the leading warning text caused bash to treat it as a probe failure.
+   - **Fix**: Updated `run_deep_env_check` to extract the status line via `grep -E '^(OK|FAIL)\|' | tail -n 1`, guaranteeing that stderr warnings do not produce false failures. Pinned `numpy<2` in `setup_sugar` to eliminate the warning at the source.
+

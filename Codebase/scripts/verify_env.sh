@@ -290,7 +290,7 @@ get_env_required_extensions() {
     local env_name="$1"
     case "${env_name}" in
         colmap_runner)
-            echo "sqlite3 numpy"
+            echo "sqlite3 tqdm"
             ;;
         depth_anything)
             echo "torch torchvision cv2 PIL"
@@ -299,7 +299,7 @@ get_env_required_extensions() {
             echo "torch plyfile diff_gaussian_rasterization"
             ;;
         3d-uir)
-            echo "torch torchvision cv2 scipy"
+            echo "torch diff_gaussian_rasterization simple_knn cv2"
             ;;
         gaussianSplashing_env)
             echo "torch plyfile diff_gaussian_rasterization"
@@ -392,8 +392,11 @@ print(f"OK|Python {py_ver}|Torch {torch_ver}|{cuda_str}|Extensions: OK")
         probe_output="$("${conda_bin}" run -n "${env_name}" python -c "${probe_script}" "${env_name}" "${req_exts}" "${skip_gpu}" 2>&1)" || probe_rc=$?
     fi
 
-    if [[ ${probe_rc} -eq 0 && "${probe_output}" == OK* ]]; then
-        IFS='|' read -r _status _py _torch _cuda _ext <<< "${probe_output}"
+    local status_line
+    status_line="$(echo "${probe_output}" | grep -E '^(OK|FAIL)\|' | tail -n 1)"
+
+    if [[ ${probe_rc} -eq 0 && "${status_line}" == OK* ]]; then
+        IFS='|' read -r _status _py _torch _cuda _ext <<< "${status_line}"
         echo "  ${CLR_GREEN}✓${CLR_RESET} ${CLR_BOLD}${env_name}${CLR_RESET}: ${_py} | ${_torch} | ${_cuda} | ${_ext}"
         return 0
     else
