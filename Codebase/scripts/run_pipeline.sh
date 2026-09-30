@@ -978,10 +978,15 @@ main() {
 
     # 2. Defensive checks: model or all required
     if [[ "${RUN_ALL}" != "true" && -z "${MODEL_NAME}" ]]; then
-        log_error "Must specify either --model <name> or --all to run the pipeline."
-        echo "" >&2
-        show_help >&2
-        exit 1
+        if [[ "${DRY_RUN}" == "true" ]]; then
+            log_info "No model specified with --dry-run. Defaulting to '--all' execution plan."
+            RUN_ALL=true
+        else
+            log_error "Must specify either --model <name> or --all to run the pipeline."
+            echo "" >&2
+            show_help >&2
+            exit 1
+        fi
     fi
 
     # 3. Validate stage argument

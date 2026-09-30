@@ -188,6 +188,8 @@ The remaining 3 environments were investigated and resolved:
 
 4. **System Tools (`colmap` & `ffmpeg`) HPC Auto-Discovery**:
    - **Root Cause**: On HPC clusters lacking root privileges, system tools are provisioned in user space under the `global_tools` Conda environment. While `run_pipeline.pbs` and `setup_env.pbs` export `PATH="$PATH:$HOME/.conda/envs/global_tools/bin"`, interactive shell sessions did not automatically inherit this path, causing `verify_env.sh` to report `colmap` and `ffmpeg` missing.
-   - **Fix**: Added transparent auto-discovery in both `verify_env.sh` and `run_pipeline.sh` that detects `global_tools/bin` across standard Conda paths (`$HOME/.conda/envs/global_tools/bin`, `/mnt/hpccs01/home/$USER/.conda/...`, `<conda_base>/envs/...`) and appends it to `PATH`. Additionally added fallback in `setup_env.sh` (`install_system_deps`) to automatically create `global_tools` via Conda when `apt-get` is unavailable.
+5. **Pipeline CLI Usability (`--dry-run` Defaults to `--all`)**:
+   - **Improvement**: When running `run_pipeline.sh --dry-run` without passing an explicit `--model <name>` or `--all`, the CLI previously treated it as missing arguments and printed the usage help. It now automatically defaults to displaying the `--all` full 8-model execution plan.
+
 
 

@@ -710,10 +710,8 @@ check_required_tools() {
         local ckpt_sz
         ckpt_sz="$(du -h "${chk_vitl}" 2>/dev/null | cut -f1 || echo "present")"
         log_success "Depth-Anything-V2 Large checkpoint: ${chk_vitl} (${ckpt_sz})"
-        RECORD_REPORT "Depth-Anything-V2 Weights" "PASSED" "${ckpt_sz}"
     else
         log_warn "Depth-Anything-V2 Large checkpoint not found at ${chk_vitl} (run_pipeline.sh will auto-download)"
-        RECORD_REPORT "Depth-Anything-V2 Weights" "NOTICE" "Missing (auto-download on run)"
     fi
 
     return 0
