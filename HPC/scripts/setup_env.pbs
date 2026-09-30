@@ -16,6 +16,13 @@
 
 cd $PBS_O_WORKDIR
 
+# In PBS Pro on Aqua, standard PBS output (-o) is spooled until job completion.
+# To allow real-time monitoring (tail -f) during execution, stream output
+# concurrently to setup_env_live.log in the working directory.
+LIVE_LOG="$PBS_O_WORKDIR/setup_env_live.log"
+exec > >(tee "${LIVE_LOG}") 2>&1
+export PYTHONUNBUFFERED=1
+
 echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
 

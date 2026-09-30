@@ -53,6 +53,8 @@ if __name__ == '__main__':
         print(f'Progress {k+1}/{len(filenames)}: {filename}')
         
         raw_image = cv2.imread(filename)
+        if raw_image is None:
+            continue
         
         depth = depth_anything.infer_image(raw_image, args.input_size)
         

@@ -292,6 +292,9 @@ To configure a clean Ubuntu system with all drivers, runtimes, and models:
 # Check all components (GPU, all Conda envs, tools)
 ./Codebase/scripts/verify_env.sh --all-envs
 
+# Comprehensive deep functional probe (Python, PyTorch CUDA tensor allocation, C++ extensions, system resources, and submodules)
+./Codebase/scripts/verify_env.sh --all-envs --check-gpu --check-tools --deep --system --check-submodules
+
 # Check host without physical GPU (e.g. CI or non-NVIDIA machine)
 ./Codebase/scripts/verify_env.sh --skip-gpu
 

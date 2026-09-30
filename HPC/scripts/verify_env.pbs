@@ -4,15 +4,23 @@
 #PBS -l walltime=00:30:00
 #PBS -P EUAPGM7346
 #PBS -j oe
+#PBS -o verify_env_complete.log
 
 # ==============================================================================
 # verify_env.pbs - HPC wrapper for system diagnostics
 #
 # Ensures the HPC environment has GPUs available, Conda initialized,
-# and all 11 environments built.
+# all 11 environments built and functionally verified with PyTorch CUDA probes.
 # ==============================================================================
 
 cd $PBS_O_WORKDIR
+
+# In PBS Pro on Aqua, standard PBS output (-o) is spooled until job completion.
+# To allow real-time monitoring (tail -f) during execution, stream output
+# concurrently to verify_env_live.log in the working directory.
+LIVE_LOG="$PBS_O_WORKDIR/verify_env_live.log"
+exec > >(tee "${LIVE_LOG}") 2>&1
+export PYTHONUNBUFFERED=1
 
 echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
@@ -59,9 +67,25 @@ else
     exit 1
 fi
 
-echo "Running Pre-Flight Diagnostics..."
+echo "Running Comprehensive Pre-Flight Diagnostics..."
 
-# Run full suite of checks
-bash "$VERIFY_SCRIPT" --all-envs --check-gpu
-
-echo "Diagnostics Finished. Please review output for any failures (Exit code > 0)."
+# Run full beefed-up verification suite:
+#   --all-envs: Verify all 11 Conda environments
+#   --check-gpu: Verify NVIDIA GPU, driver, VRAM, and compute capability
+#   --check-tools: Verify system binaries (colmap, ffmpeg, git, python3)
+#   --deep: Execute in-environment Python/PyTorch CUDA tensor probes and C++ extension imports
+#   --system: Audit node CPU, RAM, and disk storage
+#   --check-submodules: Validate presence and non-emptiness of required git submodules
+if bash "$VERIFY_SCRIPT" --all-envs --check-gpu --check-tools --deep --system --check-submodules; then
+    echo "======================================================================"
+    echo " All Pre-Flight Diagnostics Passed! Ready for run_pipeline.pbs."
+    echo "======================================================================"
+    exit 0
+else
+    V_EXIT=$?
+    echo "======================================================================"
+    echo " Diagnostics FAILED with Exit Code: ${V_EXIT}."
+    echo " Please resolve errors shown above before submitting run_pipeline.pbs."
+    echo "======================================================================"
+    exit ${V_EXIT}
+fi

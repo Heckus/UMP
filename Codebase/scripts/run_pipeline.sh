@@ -38,6 +38,9 @@ DEFAULT_SUBMERGED_DATASET="${REPO_ROOT}/Dataset/Submerged3D"
 DEFAULT_OSCD_DATASET="${REPO_ROOT}/Dataset/Custom_OSCD_Dataset"
 CONDA_DIR="${CONDA_DIR:-$HOME/miniconda3}"
 ERROR_LOG="${REPO_ROOT}/pipeline_errors.log"
+export WANDB_MODE="${WANDB_MODE:-offline}"
+export PYTHONUNBUFFERED=1
+declare -a PIPELINE_SUMMARY=()
 
 # ------------------------------------------------------------------------------
 # ANSI Color & Formatting Setup
@@ -218,6 +221,42 @@ run_stage_command() {
         activate_conda_env "${env_name}"
         "${cmd[@]}"
     )
+}
+
+# ------------------------------------------------------------------------------
+# Checkpoint Verification & Provisioning
+# ------------------------------------------------------------------------------
+ensure_depth_anything_checkpoint() {
+    local da_dir="${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main"
+    local chk_dir="${da_dir}/checkpoints"
+    local chk_file="${chk_dir}/depth_anything_v2_vitl.pth"
+    local chk_url="https://huggingface.co/depth-anything/Depth-Anything-V2-Large/resolve/main/depth_anything_v2_vitl.pth?download=true"
+
+    if [[ -s "${chk_file}" ]]; then
+        return 0
+    fi
+
+    log_info "Depth-Anything-V2 checkpoint not found at: ${chk_file}"
+    if [[ "${DRY_RUN}" == "true" ]]; then
+        log_dry "Would create ${chk_dir} and download depth_anything_v2_vitl.pth"
+        return 0
+    fi
+
+    mkdir -p "${chk_dir}"
+    log_info "Downloading Depth-Anything-V2 Large checkpoint (~1.3 GB) from Hugging Face..."
+    if command -v curl >/dev/null 2>&1; then
+        curl -L -o "${chk_file}" "${chk_url}" || rm -f "${chk_file}"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -O "${chk_file}" "${chk_url}" || rm -f "${chk_file}"
+    else
+        conda run -n depth_anything python -c "import urllib.request; urllib.request.urlretrieve('${chk_url}', '${chk_file}')" || rm -f "${chk_file}"
+    fi
+
+    if [[ ! -s "${chk_file}" ]]; then
+        log_error "Failed to download Depth-Anything-V2 checkpoint to ${chk_file}. Please ensure internet connectivity or place depth_anything_v2_vitl.pth manually."
+        return 1
+    fi
+    log_success "Depth-Anything-V2 checkpoint verified: ${chk_file}"
 }
 
 # ------------------------------------------------------------------------------
@@ -435,11 +474,34 @@ execute_model_pipeline() {
             done
         else
             if [[ ! -d "${dataset_path}" ]]; then
-                if [[ "${DRY_RUN}" == "true" ]]; then
-                    log_dry "Command: huggingface-cli download theflash987/Submerged3D --repo-type dataset --local-dir ${dataset_path}"
+                if [[ -f "${dataset_path}.zip" ]]; then
+                    log_info "Found ${dataset_path}.zip. Extracting to $(dirname "${dataset_path}")..."
+                    if [[ "${DRY_RUN}" == "true" ]]; then
+                        log_dry "unzip -q \"${dataset_path}.zip\" -d \"$(dirname "${dataset_path}")\""
+                    else
+                        unzip -q "${dataset_path}.zip" -d "$(dirname "${dataset_path}")"
+                        log_success "Extracted dataset archive successfully."
+                    fi
+                elif [[ -f "${REPO_ROOT}/Dataset/Submerged3D.zip" ]]; then
+                    log_info "Found ${REPO_ROOT}/Dataset/Submerged3D.zip. Extracting to ${REPO_ROOT}/Dataset..."
+                    if [[ "${DRY_RUN}" == "true" ]]; then
+                        log_dry "unzip -q \"${REPO_ROOT}/Dataset/Submerged3D.zip\" -d \"${REPO_ROOT}/Dataset\""
+                    else
+                        unzip -q "${REPO_ROOT}/Dataset/Submerged3D.zip" -d "${REPO_ROOT}/Dataset"
+                        log_success "Extracted dataset archive successfully."
+                    fi
                 else
-                    log_info "Downloading Submerged3D benchmark dataset via huggingface-cli..."
-                    huggingface-cli download theflash987/Submerged3D --repo-type dataset --local-dir "${dataset_path}"
+                    if [[ "${DRY_RUN}" == "true" ]]; then
+                        log_dry "Command: huggingface-cli download theflash987/Submerged3D --repo-type dataset --local-dir ${dataset_path}"
+                    else
+                        log_info "Downloading Submerged3D benchmark dataset via huggingface-cli..."
+                        if command -v huggingface-cli >/dev/null 2>&1; then
+                            huggingface-cli download theflash987/Submerged3D --repo-type dataset --local-dir "${dataset_path}"
+                        else
+                            log_info "Using global_tools conda environment for huggingface-cli..."
+                            conda run -n global_tools huggingface-cli download theflash987/Submerged3D --repo-type dataset --local-dir "${dataset_path}"
+                        fi
+                    fi
                 fi
             fi
 
@@ -462,11 +524,20 @@ execute_model_pipeline() {
     if should_run_stage "colmap"; then
         log_info "--- Stage 2: COLMAP Sparse Reconstruction (colmap) ---"
         if [[ "${model}" == "oscd" ]]; then
-            log_info "COLMAP undistortion for dual scenes (reference_scene and inference_scene):"
-            run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                python convert.py -s "${dataset_path}/reference_scene"
-            run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                python convert.py -s "${dataset_path}/inference_scene"
+            for oscd_sub in "reference_scene" "inference_scene"; do
+                local sub_path="${dataset_path}/${oscd_sub}"
+                if [[ ! -d "${sub_path}" ]]; then
+                    log_warn "OSCD subscene '${sub_path}' not found. Cannot run COLMAP."
+                    continue
+                fi
+                if [[ "${STAGE_NAME}" != "colmap" && -d "${sub_path}/sparse/0" && ( -f "${sub_path}/sparse/0/cameras.bin" || -f "${sub_path}/sparse/0/cameras.txt" ) ]]; then
+                    log_info "COLMAP sparse reconstruction already exists for OSCD '${oscd_sub}'. Skipping Stage 2 to conserve compute."
+                else
+                    log_info "COLMAP undistortion for OSCD '${oscd_sub}':"
+                    run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
+                        python convert.py -s "${sub_path}"
+                fi
+            done
         else
             # Ensure folder normalization
             if [[ -d "${scene_path}/images" && ! -d "${scene_path}/input" ]]; then
@@ -476,8 +547,13 @@ execute_model_pipeline() {
                     mv "${scene_path}/images" "${scene_path}/input"
                 fi
             fi
-            run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                python convert.py -s "${scene_path}"
+
+            if [[ "${STAGE_NAME}" != "colmap" && -d "${scene_path}/sparse/0" && ( -f "${scene_path}/sparse/0/cameras.bin" || -f "${scene_path}/sparse/0/cameras.txt" ) ]]; then
+                log_info "COLMAP sparse reconstruction already exists at '${scene_path}/sparse/0'. Skipping Stage 2 to conserve compute."
+            else
+                run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
+                    python convert.py -s "${scene_path}"
+            fi
         fi
     fi
 
@@ -486,10 +562,28 @@ execute_model_pipeline() {
     # --------------------------------------------------------------------------
     if should_run_stage "depth"; then
         log_info "--- Stage 3: Depth Map Generation & Inversion (depth) ---"
+        if [[ "${model}" != "oscd" && "${model}" != "sugar" ]]; then
+            ensure_depth_anything_checkpoint
+        fi
+
         if [[ "${model}" == "rusplatting" ]]; then
-            log_info "Generating inverted depth maps for RUSplatting (Depth-Anything-V2 ViT-L):"
-            run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
-                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap_inverted"
+            local has_inverted_depth=false
+            if [[ "${STAGE_NAME}" != "depth" && -d "${scene_path}/depthmap_inverted" ]]; then
+                local inv_count
+                inv_count="$(find "${scene_path}/depthmap_inverted" -maxdepth 1 -name "*.png" 2>/dev/null | wc -l || true)"
+                if [[ ${inv_count} -gt 0 ]]; then
+                    has_inverted_depth=true
+                fi
+            fi
+
+            if [[ "${has_inverted_depth}" == "true" ]]; then
+                log_info "Inverted depth maps already exist in '${scene_path}/depthmap_inverted' (${inv_count} files). Skipping Depth-Anything-V2 generation."
+            else
+                log_info "Generating inverted depth maps for RUSplatting (Depth-Anything-V2 ViT-L):"
+                run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
+                    python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap_inverted"
+            fi
+
             log_info "Note: RUSplatting expects pre-generated intermediate frames (e.g., via RIFE) with ._to_. naming pattern in the input directory."
             if [[ "${DRY_RUN}" == "true" ]]; then
                 log_dry "RIFE frame interpolation: generate synthetic intermediate frames with '_to_' naming pattern in ${scene_path}/input"
@@ -498,22 +592,54 @@ execute_model_pipeline() {
                 ln -sfn "${scene_path}/depthmap_inverted" "${scene_path}/depthmap"
             fi
         elif [[ "${model}" == "3d-uir" ]]; then
-            log_info "Generating standard depth maps for 3D-UIR (Depth-Anything-V2 ViT-L):"
-            run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
-                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap"
+            local has_depth=false
+            if [[ "${STAGE_NAME}" != "depth" && -d "${scene_path}/depthmap" ]]; then
+                local d_count
+                d_count="$(find "${scene_path}/depthmap" -maxdepth 1 -name "*.png" 2>/dev/null | wc -l || true)"
+                if [[ ${d_count} -gt 0 ]]; then
+                    has_depth=true
+                fi
+            fi
+
+            if [[ "${has_depth}" == "true" ]]; then
+                log_info "Depth maps already exist in '${scene_path}/depthmap' (${d_count} files). Skipping Depth-Anything-V2 generation."
+            else
+                log_info "Generating standard depth maps for 3D-UIR (Depth-Anything-V2 ViT-L):"
+                run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
+                    python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap"
+            fi
+
             log_info "Symlink depthmap to depths for 3D-UIR: ${scene_path}/depths -> ${scene_path}/depthmap"
             if [[ "${DRY_RUN}" == "true" ]]; then
                 log_dry "Symlink depthmap to depths: ln -sfn ${scene_path}/depthmap ${scene_path}/depths"
             else
                 ln -sfn "${scene_path}/depthmap" "${scene_path}/depths"
             fi
-            log_info "Computing depth scale JSON for 3D-UIR:"
-            run_stage_command "3d-uir" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main" \
-                python utils/make_depth_scale.py --base_dir "${scene_path}" --depths_dir "${scene_path}/depths"
+
+            if [[ "${STAGE_NAME}" != "depth" && -f "${scene_path}/depths/depth_scale.json" ]]; then
+                log_info "3D-UIR depth scale JSON already exists at '${scene_path}/depths/depth_scale.json'. Skipping computation."
+            else
+                log_info "Computing depth scale JSON for 3D-UIR:"
+                run_stage_command "3d-uir" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main" \
+                    python utils/make_depth_scale.py --base_dir "${scene_path}" --depths_dir "${scene_path}/depths"
+            fi
         elif [[ "${model}" != "oscd" && "${model}" != "sugar" ]]; then
-            log_info "Generating standard depth maps (Depth-Anything-V2 ViT-L):"
-            run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
-                python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap"
+            local has_std_depth=false
+            if [[ "${STAGE_NAME}" != "depth" && -d "${scene_path}/depthmap" ]]; then
+                local s_count
+                s_count="$(find "${scene_path}/depthmap" -maxdepth 1 -name "*.png" 2>/dev/null | wc -l || true)"
+                if [[ ${s_count} -gt 0 ]]; then
+                    has_std_depth=true
+                fi
+            fi
+
+            if [[ "${has_std_depth}" == "true" ]]; then
+                log_info "Depth maps already exist in '${scene_path}/depthmap' (${s_count} files). Skipping Depth-Anything-V2 generation."
+            else
+                log_info "Generating standard depth maps (Depth-Anything-V2 ViT-L):"
+                run_stage_command "depth_anything" "${REPO_ROOT}/Codebase/Tools/Depth-Anything-V2-main" \
+                    python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap"
+            fi
         fi
     fi
 
@@ -558,15 +684,31 @@ execute_model_pipeline() {
                     python train.py -s "${scene_path}" -m "output/${scene_name}" --BMM_Flag --eval
                 ;;
             oscd)
+                if [[ "${DRY_RUN}" != "true" && (! -d "${dataset_path}/reference_scene" || ! -d "${dataset_path}/inference_scene") ]]; then
+                    log_warn "OSCD execution requires '${dataset_path}/reference_scene' and '${dataset_path}/inference_scene'. Dataset missing or incomplete. Skipping OSCD."
+                    return 0
+                fi
+
                 local oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
-                log_info "Step 1: Baseline reference 3DGS reconstruction (30k iterations checkpoint: reference_reconstruction/point_cloud/iteration_30000/point_cloud.ply):"
-                run_stage_command "3dgs" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                    python train.py -s "${dataset_path}/reference_scene" -m "${oscd_output_base}/reference_reconstruction"
+                local ref_pc="${oscd_output_base}/reference_reconstruction/point_cloud/iteration_30000/point_cloud.ply"
+
+                if [[ -f "${ref_pc}" ]]; then
+                    log_info "OSCD reference reconstruction checkpoint already exists at ${ref_pc}. Skipping Step 1."
+                else
+                    log_info "Step 1: Baseline reference 3DGS reconstruction (30k iterations checkpoint: reference_reconstruction/point_cloud/iteration_30000/point_cloud.ply):"
+                    run_stage_command "3dgs" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
+                        python train.py -s "${dataset_path}/reference_scene" -m "${oscd_output_base}/reference_reconstruction"
+                fi
                 
                 # We need to symlink the reference reconstruction back to the dataset path because oscd.py hardcodes looking for it inside args.source_path
                 # "os.path.join(args.source_path, 'reference_reconstruction', ...)"
-                if [[ ! -e "${dataset_path}/reference_reconstruction" ]]; then
-                    ln -sfn "${oscd_output_base}/reference_reconstruction" "${dataset_path}/reference_reconstruction"
+                if [[ "${DRY_RUN}" == "true" ]]; then
+                    log_dry "Symlink reference reconstruction: ln -sfn ${oscd_output_base}/reference_reconstruction ${dataset_path}/reference_reconstruction"
+                else
+                    mkdir -p "${dataset_path}"
+                    if [[ ! -e "${dataset_path}/reference_reconstruction" ]]; then
+                        ln -sfn "${oscd_output_base}/reference_reconstruction" "${dataset_path}/reference_reconstruction"
+                    fi
                 fi
 
                 log_info "Step 2: Online Scene Change Detection (oscd.py in O-SCD-main):"
@@ -600,26 +742,31 @@ execute_model_pipeline() {
             log_info "Evaluating novel view synthesis metrics (utils/metrics.py -> results.json):"
             run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
                 python utils/metrics.py -m "${oscd_output_base}/output"
-            log_info "Evaluating change detection segmentation masks (utils/evaluate.py):"
-            run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
-                python utils/evaluate.py --gt "${dataset_path}/gt_mask" --pred_binary "${oscd_output_base}/output/renders/change_mask"
+            if [[ -d "${dataset_path}/gt_mask" ]]; then
+                log_info "Evaluating change detection segmentation masks (utils/evaluate.py):"
+                run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
+                    python utils/evaluate.py --gt "${dataset_path}/gt_mask" --pred_binary "${oscd_output_base}/output/renders/change_mask"
+            else
+                log_warn "OSCD gt_mask directory not found at '${dataset_path}/gt_mask'. Skipping mask evaluation."
+            fi
             log_info "Metrics written to results.json and evaluation.json"
         elif [[ "${model}" == "watersplatting" ]]; then
             local ws_output_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/${scene_name}/water-splatting"
-            # Get the actual config path (there is a timestamp folder, so we use find or wildcards if needed)
-            # Actually, Nerfstudio creates a timestamp folder, e.g. outputs/scene_name/water-splatting/2026-09-28_112233/config.yml
-            # We'll use a wildcard to get the latest config
-            local config_path
-            config_path="$(find "${ws_output_dir}" -name 'config.yml' | sort -r | head -n 1 2>/dev/null || true)"
-            if [[ -z "${config_path}" ]]; then
-                log_error "Could not find config.yml for WaterSplatting in ${ws_output_dir}"
-                exit 1
+            if [[ "${DRY_RUN}" == "true" ]]; then
+                log_dry "Would evaluate WaterSplatting: ns-eval --load-config ${ws_output_dir}/latest/config.yml --output-path ${ws_output_dir}/latest/results.json"
+            else
+                local config_path
+                config_path="$(find "${ws_output_dir}" -name 'config.yml' 2>/dev/null | sort -r | head -n 1 || true)"
+                if [[ -z "${config_path}" ]]; then
+                    log_warn "Could not find config.yml for WaterSplatting in ${ws_output_dir}. Skipping evaluation."
+                else
+                    local run_dir
+                    run_dir="$(dirname "${config_path}")"
+                    log_info "Evaluating WaterSplatting with config: ${config_path}"
+                    run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
+                        ns-eval --load-config "${config_path}" --output-path "${run_dir}/results.json"
+                fi
             fi
-            local run_dir
-            run_dir="$(dirname "${config_path}")"
-            log_info "Evaluating WaterSplatting with config: ${config_path}"
-            run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
-                ns-eval --load-config "${config_path}" --output-path "${run_dir}/results.json"
 
         elif [[ "${model}" == "sugar" ]]; then
             log_info "SuGaR mesh evaluation completed with OBJ export."
@@ -678,6 +825,26 @@ run_with_fault_tolerance() {
     local scene="$3"
 
     log_info "Starting fault-tolerant execution for model=${m}, scene=${scene}"
+
+    # Failsafe: Verify available filesystem storage (require >= 5GB free)
+    local available_kb
+    available_kb="$(df -k "${REPO_ROOT}" 2>/dev/null | awk 'NR==2 {print $4}' || true)"
+    if [[ -n "${available_kb}" && "${available_kb}" =~ ^[0-9]+$ ]]; then
+        local available_gb=$(( available_kb / 1024 / 1024 ))
+        if [[ ${available_gb} -lt 5 ]]; then
+            local timestamp
+            timestamp="$(date +"%Y-%m-%d %H:%M:%S")"
+            log_error "CRITICAL: Insufficient disk space on ${REPO_ROOT} (${available_gb} GB remaining < 5 GB threshold)."
+            echo "[${timestamp}] DISK_ERROR: Model=${m} | Scene=${scene} | Remaining=${available_gb}GB" >> "${ERROR_LOG}"
+            PIPELINE_SUMMARY+=("${m}|${scene}|DISK_LOW (${available_gb}GB)|0s")
+            return 1
+        fi
+        log_info "Storage check: ${available_gb} GB available on filesystem."
+    fi
+
+    local start_time
+    start_time="$(date +%s)"
+
     set +e
     (
         set -e
@@ -686,14 +853,38 @@ run_with_fault_tolerance() {
     local exit_code=$?
     set -e
 
+    local end_time
+    end_time="$(date +%s)"
+    local elapsed=$(( end_time - start_time ))
+    local elapsed_str
+    if [[ ${elapsed} -ge 3600 ]]; then
+        elapsed_str="$(( elapsed / 3600 ))h $(( (elapsed % 3600) / 60 ))m $(( elapsed % 60 ))s"
+    elif [[ ${elapsed} -ge 60 ]]; then
+        elapsed_str="$(( elapsed / 60 ))m $(( elapsed % 60 ))s"
+    else
+        elapsed_str="${elapsed}s"
+    fi
+
     if [[ ${exit_code} -ne 0 ]]; then
         local timestamp
         timestamp="$(date +"%Y-%m-%d %H:%M:%S")"
-        log_error "Execution failed for model=${m}, scene=${scene} with exit code ${exit_code}."
+        log_error "Execution failed for model=${m}, scene=${scene} with exit code ${exit_code} (Duration: ${elapsed_str})."
         log_warn "Recording failure and continuing to the next execution..."
-        echo "[${timestamp}] ERROR: Model=${m} | Scene=${scene} | Stage=${STAGE_NAME} | ExitCode=${exit_code}" >> "${ERROR_LOG}"
+        echo "[${timestamp}] ERROR: Model=${m} | Scene=${scene} | Stage=${STAGE_NAME} | ExitCode=${exit_code} | Duration=${elapsed_str}" >> "${ERROR_LOG}"
+        PIPELINE_SUMMARY+=("${m}|${scene}|FAILED (code ${exit_code})|${elapsed_str}")
     else
-        log_success "Execution completed successfully for model=${m}, scene=${scene}."
+        log_success "Execution completed successfully for model=${m}, scene=${scene} (Duration: ${elapsed_str})."
+        PIPELINE_SUMMARY+=("${m}|${scene}|SUCCESS|${elapsed_str}")
+    fi
+
+    # Cool-down and GPU memory cleanup between model executions
+    sleep 2
+    if command -v nvidia-smi >/dev/null 2>&1; then
+        local gpu_stat
+        gpu_stat="$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null || true)"
+        if [[ -n "${gpu_stat}" ]]; then
+            log_info "Post-run GPU Memory: ${gpu_stat} MiB (used, total)"
+        fi
     fi
 }
 
@@ -710,7 +901,7 @@ main() {
                 ;;
             --dry-run)
                 DRY_RUN=true
-
+                shift
                 ;;
             --skip-verify)
                 SKIP_VERIFY=true
@@ -864,7 +1055,7 @@ main() {
                 done
             fi
         done
-        log_section "All 8 Models Sequential Execution Completed Successfully"
+        log_section "All 8 Models Sequential Execution Finished"
     else
         if [[ "${canonical_model}" == "oscd" ]]; then
             run_with_fault_tolerance "${canonical_model}" "${DATASET_PATH}" "oscd"
@@ -875,8 +1066,36 @@ main() {
         fi
     fi
 
-    log_success "Master Orchestration Pipeline execution finished successfully."
-    exit 0
+    # --------------------------------------------------------------------------
+    # Pipeline Execution Summary Report
+    # --------------------------------------------------------------------------
+    log_section "Pipeline Execution Summary Report"
+    echo -e "${CLR_BOLD}--------------------------------------------------------------------------------${CLR_RESET}"
+    printf "%-18s %-16s %-24s %-12s\n" "Model" "Scene" "Status" "Duration"
+    echo -e "${CLR_BOLD}--------------------------------------------------------------------------------${CLR_RESET}"
+    local total_failures=0
+    local total_success=0
+    for entry in "${PIPELINE_SUMMARY[@]}"; do
+        local sm ss st sd
+        IFS='|' read -r sm ss st sd <<< "${entry}"
+        if [[ "${st}" == SUCCESS* ]]; then
+            printf "%-18s %-16s ${CLR_GREEN}%-24s${CLR_RESET} %-12s\n" "${sm}" "${ss}" "${st}" "${sd}"
+            total_success=$(( total_success + 1 ))
+        else
+            printf "%-18s %-16s ${CLR_RED}%-24s${CLR_RESET} %-12s\n" "${sm}" "${ss}" "${st}" "${sd}"
+            total_failures=$(( total_failures + 1 ))
+        fi
+    done
+    echo -e "${CLR_BOLD}--------------------------------------------------------------------------------${CLR_RESET}"
+    log_info "Total Executions: ${#PIPELINE_SUMMARY[@]} | Succeeded: ${total_success} | Failed: ${total_failures}"
+
+    if [[ ${total_failures} -gt 0 ]]; then
+        log_warn "${total_failures} execution(s) recorded errors. Review detailed logs in '${ERROR_LOG}'."
+        exit 1
+    else
+        log_success "All pipeline runs executed without errors."
+        exit 0
+    fi
 }
 
 main "$@"

@@ -4,6 +4,7 @@
 #PBS -l walltime=48:00:00
 #PBS -P EUAPGM7346
 #PBS -j oe
+#PBS -o run_pipeline_complete.log
 
 # ==============================================================================
 # run_pipeline.pbs - HPC wrapper for training and evaluation orchestration
@@ -13,6 +14,13 @@
 # ==============================================================================
 
 cd $PBS_O_WORKDIR
+
+# In PBS Pro on Aqua, standard PBS output (-o) is spooled until job completion.
+# To allow real-time monitoring (tail -f) during execution, stream output
+# concurrently to run_pipeline_live.log in the working directory.
+LIVE_LOG="$PBS_O_WORKDIR/run_pipeline_live.log"
+exec > >(tee "${LIVE_LOG}") 2>&1
+export PYTHONUNBUFFERED=1
 
 echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
@@ -46,6 +54,19 @@ fi
 # Initialize Conda
 eval "$(conda shell.bash hook)"
 
+# Detect Conda executable and installation root
+if command -v conda >/dev/null 2>&1; then
+    export CONDA_EXE="$(command -v conda)"
+    export CONDA_DIR="$(dirname $(dirname "${CONDA_EXE}"))"
+    echo "CONDA_DIR set to: ${CONDA_DIR}"
+fi
+
+# Prevent WandB from hanging on headless batch jobs waiting for interactive login
+export WANDB_MODE="${WANDB_MODE:-offline}"
+
+# Hopper H100 architecture target for PyTorch JIT compilation
+export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-8.0;8.6;8.9;9.0+PTX}"
+
 # Append the global_tools bin directory to the END of PATH so we don't override python/pip
 export PATH="$PATH:$HOME/.conda/envs/global_tools/bin"
 
@@ -72,5 +93,17 @@ if [ -n "$ARGS" ]; then
 else
     bash "$PIPELINE_SCRIPT" --all
 fi
+PIPE_EXIT=$?
 
-echo "Pipeline Execution Finished."
+if [ ${PIPE_EXIT} -eq 0 ]; then
+    echo "======================================================================"
+    echo " Pipeline Automation Suite Completed Successfully!"
+    echo "======================================================================"
+else
+    echo "======================================================================"
+    echo " Pipeline Automation Suite Terminated with Errors (Exit Code: ${PIPE_EXIT})"
+    echo " Check pipeline_errors.log and run_pipeline_complete.log for details."
+    echo "======================================================================"
+fi
+
+exit ${PIPE_EXIT}

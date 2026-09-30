@@ -103,3 +103,61 @@ Following the re-execution of `setup_env.pbs` on QUT Aqua (Job ID `26106816.aqua
      - Removed `export LD_LIBRARY_PATH="$HOME/.conda/envs/global_tools/lib:$LD_LIBRARY_PATH"` from `HPC/scripts/setup_env.pbs`, `HPC/scripts/verify_env.pbs`, and `HPC/scripts/run_pipeline.pbs`. (Conda executables like `colmap` and `ffmpeg` already locate their internal libraries via embedded ELF `RPATH`).
      - Omitted the optional `ns-install-cli` invocation in `Codebase/scripts/setup_env.sh`, allowing `pip install -e "${repo_dir}"` to proceed directly.
      - Removed `EXTRA_FLAGS="--recreate"` for `rusplatting` in `HPC/scripts/setup_env.pbs` since `rusplatting` is already successfully built and verified on the cluster.
+
+## Real-Time PBS Output Logging & Comprehensive Verification Suite
+
+To enable live monitoring while jobs execute in the PBS queue and ensure 100% environment integrity before running long training jobs, the following enhancements were implemented:
+
+1. **PBS Output Logging (During & After Execution)**:
+   - **`run_pipeline.pbs`**: Added `#PBS -o run_pipeline_complete.log` and live stdout/stderr tee to `run_pipeline_live.log` (`exec > >(tee "${LIVE_LOG}") 2>&1`), with `PYTHONUNBUFFERED=1`. Allows real-time monitoring via `tail -f run_pipeline_live.log` during the 48-hour queue run, while PBS archives the full run and resource summary into `run_pipeline_complete.log` upon completion.
+   - **`verify_env.pbs`**: Added `#PBS -o verify_env_complete.log` and live tee to `verify_env_live.log`, capturing real-time diagnostic output.
+   - **`setup_env.pbs`**: Added live tee to `setup_env_live.log` to complement `#PBS -o setup_env_complete.log`.
+
+2. **Beefed-Up Verification Suite (`verify_env.sh`)**:
+   - **Deep In-Environment Functional Probes (`--deep`)**: Rather than superficial directory checks, executes an embedded Python probe in each Conda environment verifying: Python version, PyTorch version, `torch.cuda.is_available()`, GPU tensor allocation on CUDA, and model-specific C++ extensions (`diff_gaussian_rasterization`, `simple_knn`, `fused_ssim`, `tinycudann`, `nerfstudio`, `water_splatting`, `pytorch3d`, `cupy`, `diff_gaussian_rasterization_fastgs`).
+   - **Hardware & Storage Diagnostics (`--system`)**: Reports hostname, PBS Job ID & queue, CPU count (`nproc`), system RAM (`free -h`), and verifies available disk space across working directory, `$HOME`, and `/tmp` with low-space warnings (< 15 GB).
+   - **Git Submodules Integrity (`--check-submodules`)**: Verifies that all 12 git submodules across the 8 models are present and non-empty.
+   - **System Tools Verification (`--check-tools`)**: Verifies presence and versions of `colmap`, `ffmpeg`, `git`, and `python3`.
+   - **Report Card Summary**: Prints a clean, colorized diagnostic report card at the end of execution.
+
+## Deep-Dive Audit & Failsafes for `qsub HPC/scripts/run_pipeline.pbs`
+
+To guarantee zero fatal interruptions, prevent wasted H100 compute, and maximize uptime protection during 48-hour queue runs on QUT Aqua, a zero-tolerance audit of `run_pipeline.pbs` and `Codebase/scripts/run_pipeline.sh` was performed:
+
+1. **Critical Bug Fix - Infinite Loop on `--dry-run`**:
+   - **Bug**: In `run_pipeline.sh`, the `--dry-run` branch parsed without a trailing `shift`, causing any call with `--dry-run` to spin in an infinite `while [[ $# -gt 0 ]]` loop.
+   - **Fix**: Added `shift` to properly advance positional arguments. Verified execution completes in seconds.
+
+2. **Stage 3 Depth-Anything Checkpoint Provisioning & Auto-Download**:
+   - **Bug**: Depth-Anything-V2 `run.py` hardcodes loading `checkpoints/depth_anything_v2_vitl.pth`. If executed on a fresh node where the checkpoint was missing, all 6 models utilizing monocular depth estimation would crash.
+   - **Fix**: Added `ensure_depth_anything_checkpoint()` in `run_pipeline.sh` that detects missing weights and auto-downloads the ~1.3 GB ViT-L model from Hugging Face via `curl`/`wget` or Python `urllib`. Also added checkpoint validation to `verify_env.sh`.
+   - **Defensive Guard**: Added `if raw_image is None: continue` in `Depth-Anything-V2-main/run.py` to prevent crashes from unreadable files or directories.
+
+3. **Stage 1 Submerged3D Dataset Archive Fallback**:
+   - Added local archive fallback: if `Dataset/Submerged3D` is missing, checks for `Submerged3D.zip` (in directory or parent) and extracts with `unzip -q` before falling back to `huggingface-cli` (via `global_tools` if not on PATH).
+
+4. **Stage 2 COLMAP Idempotency (Saved ~8 Hours Compute)**:
+   - Running 8 models sequentially previously threatened to re-run full COLMAP bundle adjustment on the same scene 8 times (~30-60 min each = ~8 hours wasted).
+   - **Fix**: Added detection of existing `sparse/0/cameras.{bin,txt}`. If already reconstructed and the user didn't explicitly request `--stage colmap`, Stage 2 skips directly to model training.
+
+5. **Stage 3 Depth Estimation Idempotency**:
+   - Added detection of existing depth maps in `${scene_path}/depthmap` and `${scene_path}/depthmap_inverted`. If already populated, skips re-running Depth-Anything-V2.
+
+6. **Headless PBS Batch Execution Protection (WandB & Port Hangs)**:
+   - In `run_pipeline.pbs` and `run_pipeline.sh`, exported `WANDB_MODE=offline`. Prevents WandB from prompting on `stdin` for login keys or hanging on headless compute nodes.
+   - Added dry-run guard and fallback in WaterSplatting evaluation if `config.yml` is missing.
+
+7. **OSCD Pre-Flight Checks & Idempotency**:
+   - If `reference_scene` / `inference_scene` are missing, skips OSCD gracefully with a clean log notice rather than crashing.
+   - Added check for existing `reference_reconstruction` 30k checkpoint to skip re-running reference 3DGS training.
+   - Added guard for missing `gt_mask` directory during segmentation evaluation.
+
+8. **Runtime Resource Guards & GPU Memory Cool-Down**:
+   - **Storage Pre-Check**: Before starting each model run, `run_with_fault_tolerance` verifies that >= 5GB disk space is available on the filesystem (`df -k`), preventing corrupted checkpoint writes.
+   - **Cool-Down**: Added `sleep 2` and GPU memory logging via `nvidia-smi` between model executions to allow PyTorch CUDA memory to fully deallocate.
+
+9. **Execution Summary Report & Accurate PBS Status**:
+   - Tracks duration and status for every model and scene.
+   - Renders a clean formatted table summarizing all runs, total execution count, successes, and failures.
+   - Returns exit code 1 if any model failed (notifying PBS), or 0 on clean completion.
+
