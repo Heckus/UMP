@@ -169,3 +169,4 @@ Following the removal of `ns-install-cli` and `LD_LIBRARY_PATH` pollution, `setu
 - **All 11 Environments**: Every environment (`colmap_runner`, `depth_anything`, `seasplat_py310`, `3d-uir`, `gaussianSplashing_env`, `water_splatting`, `rusplatting`, `UW-GS`, `sugar`, `oscd`, `3dgs`) completed with `[SUCCESS]`.
 - **Exit Status**: `0` with zero errors or tracebacks anywhere in `setup_env_complete.log`.
 - **`verify_env.sh` Syntax Fix**: Restored missing `fi` on `check_required_tools` error branch at line 676. Tested with `bash -n` and validated with `--help`.
+- **`verify_env.sh` Python < 3.12 Probe Fix**: Removed backslash inside f-string expression `{", ".join(missing_exts)}` in `run_deep_env_check` (which is invalid in Python 3.8/3.10), extracting it to `ext_list = ", ".join(missing_exts)` before `print()`.

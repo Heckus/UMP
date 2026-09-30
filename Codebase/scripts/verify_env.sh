@@ -359,7 +359,8 @@ for ext in req_exts:
         missing_exts.append(f"{ext} ({e})")
 
 if missing_exts:
-    print(f"FAIL|Python {py_ver}|Missing extensions: {\", \".join(missing_exts)}")
+    ext_list = ", ".join(missing_exts)
+    print(f"FAIL|Python {py_ver}|Missing extensions: {ext_list}")
     sys.exit(1)
 
 if not is_colmap:
