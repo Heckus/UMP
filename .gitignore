@@ -1,0 +1,72 @@
+# ==============================================================================
+# Git Ignore Rules for 3DGS & OSCD Underwater Multi-View Photogrammetry (UMP)
+# ==============================================================================
+
+# Python bytecode and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Virtual environments & Conda
+.conda/
+env/
+venv/
+ENV/
+
+# Large Model Checkpoints, Weights & 3D Point Clouds (>100MB violates GitHub limits)
+*.ply
+*.pth
+*.pt
+*.ckpt
+*.bin
+*.obj
+*.mtl
+*.stl
+*.fbx
+*.blend
+
+# Datasets and raw archives
+Dataset/Submerged3D/
+Dataset/Submerged3D.zip
+Dataset/Custom_OSCD_Dataset/reference_scene/
+Dataset/Custom_OSCD_Dataset/inference_scene/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+
+# Deep monocular depth maps & intermediate rendered images
+**/depthmap/
+**/depthmap_inverted/
+**/depths/
+**/renders/
+**/sparse/
+**/input/
+**/images/
+
+# Heavy training output directories (keep results.json / evaluation.json)
+Codebase/**/output/**/point_cloud/
+Codebase/**/output/**/cameras.json
+Codebase/**/outputs/**/nerfstudio_models/
+Codebase/**/outputs/**/export/
+wandb/
+.wandb/
+
+# Always whitelist and preserve quantitative benchmark results
+!**/results.json
+!**/evaluation.json
+
+# OS and Editor metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

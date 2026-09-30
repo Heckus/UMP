@@ -191,5 +191,13 @@ The remaining 3 environments were investigated and resolved:
 5. **Pipeline CLI Usability (`--dry-run` Defaults to `--all`)**:
    - **Improvement**: When running `run_pipeline.sh --dry-run` without passing an explicit `--model <name>` or `--all`, the CLI previously treated it as missing arguments and printed the usage help. It now automatically defaults to displaying the `--all` full 8-model execution plan.
 
+## Post-Run Repository Synchronization & `.gitignore` Policy
+
+Following completion of `run_pipeline.pbs` on the cluster, a comprehensive `.gitignore` was established to safeguard against repository bloat and GitHub file size rejections:
+- **Excluded Large Binaries**: Prohibits committing point clouds (`*.ply`), dense meshes (`*.obj`, `*.mtl`), PyTorch weights (`*.pth`, `*.pt`, `*.ckpt`), raw dataset archives (`Dataset/Submerged3D/`, `*.zip`), and millions of dense depth maps (`**/depthmap/`, `**/renders/`).
+- **Whitelisted Metrics**: Explicitly whitelists and tracks quantitative benchmarking artifacts: `results.json` (PSNR, SSIM, LPIPS per scene) and `evaluation.json` (OSCD change detection mIoU/F1).
+- **Execution Audit Logs**: Preserves cluster execution logs (`run_pipeline_complete.log`, `pipeline_errors.log`) as permanent proof of execution.
+
+
 
 
