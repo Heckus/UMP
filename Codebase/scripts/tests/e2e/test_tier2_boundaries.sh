@@ -20,8 +20,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-SCRIPTS_DIR="${REPO_ROOT}/Codebase/scripts"
+SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPTS_DIR}/../.." && pwd)"
 
 VERIFY_SCRIPT="${SCRIPTS_DIR}/verify_env.sh"
 SETUP_SCRIPT="${SCRIPTS_DIR}/setup_env.sh"

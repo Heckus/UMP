@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #PBS -N ump_setup_env
-#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l select=1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100
 #PBS -l walltime=02:00:00
 #PBS -P EUAPGM7346
 #PBS -j oe
@@ -9,9 +9,9 @@
 # ==============================================================================
 # setup_env.pbs - HPC wrapper for environment provisioning
 #
-# This script provisions Conda environments using the HPC Anaconda module
-# and the underlying setup_env.sh automation script.
-# It explicitly avoids --all to prevent sudo apt-get calls that fail on HPC.
+# Provisions Conda environments using the HPC Anaconda module and the
+# underlying setup_env.sh automation script.
+# Configured for QUT Aqua cluster H100 GPU nodes with optimal resource shares.
 # ==============================================================================
 
 cd $PBS_O_WORKDIR
@@ -50,6 +50,18 @@ fi
 # Initialize Conda for the current shell context safely
 eval "$(conda shell.bash hook)"
 
+# Provision global system tools (colmap, ffmpeg) securely via Conda if missing
+if ! conda env list 2>/dev/null | grep -E '^[[:space:]]*global_tools[[:space:]]' >/dev/null 2>&1; then
+    echo "Provisioning global system tools (colmap, ffmpeg) via Conda..."
+    conda create -n global_tools -c conda-forge colmap ffmpeg -y
+else
+    echo "Conda environment 'global_tools' is already present."
+fi
+
+# Append the global_tools bin directory to PATH for system tool access
+export PATH="$PATH:$HOME/.conda/envs/global_tools/bin"
+export LD_LIBRARY_PATH="$HOME/.conda/envs/global_tools/lib:$LD_LIBRARY_PATH"
+
 # Path to the core automation script
 if [ -f "Codebase/scripts/setup_env.sh" ]; then
     SETUP_SCRIPT="$PBS_O_WORKDIR/Codebase/scripts/setup_env.sh"
@@ -62,21 +74,35 @@ fi
 
 echo "Provisioning Environments..."
 
-# Provision global system tools (colmap, ffmpeg) securely via Conda
-echo "Provisioning global system tools (colmap, ffmpeg) via Conda..."
-conda create -n global_tools -c conda-forge colmap ffmpeg -y
+FAILED_ENVS=()
 
-# Provision each environment independently to bypass system dependency checks
-bash "$SETUP_SCRIPT" -y --env colmap_runner
-bash "$SETUP_SCRIPT" -y --env depth_anything
-bash "$SETUP_SCRIPT" -y --env seasplat_py310
-bash "$SETUP_SCRIPT" -y --env 3d-uir
-bash "$SETUP_SCRIPT" -y --env gaussianSplashing_env
-bash "$SETUP_SCRIPT" -y --env water_splatting
-bash "$SETUP_SCRIPT" -y --env rusplatting
-bash "$SETUP_SCRIPT" -y --env UW-GS
-bash "$SETUP_SCRIPT" -y --env sugar
-bash "$SETUP_SCRIPT" -y --env oscd
-bash "$SETUP_SCRIPT" -y --env 3dgs
+# Provision each environment independently to bypass system dependency checks.
+# Healthy existing environments are reused quickly; rusplatting is cleanly
+# recreated with --recreate to repair the CUDA 12.4 / 12.1 mismatch.
+for ENV_NAME in colmap_runner depth_anything seasplat_py310 3d-uir gaussianSplashing_env water_splatting rusplatting UW-GS sugar oscd 3dgs; do
+    echo "======================================================================"
+    echo " Provisioning Conda Environment: ${ENV_NAME}"
+    echo "======================================================================"
+    EXTRA_FLAGS=""
+    if [ "${ENV_NAME}" = "rusplatting" ]; then
+        EXTRA_FLAGS="--recreate"
+    fi
+    if ! bash "${SETUP_SCRIPT}" -y ${EXTRA_FLAGS} --env "${ENV_NAME}"; then
+        echo "ERROR: Failed to provision ${ENV_NAME}" >&2
+        FAILED_ENVS+=("${ENV_NAME}")
+    fi
+done
 
-echo "Setup Complete!"
+if [ ${#FAILED_ENVS[@]} -ne 0 ]; then
+    echo "======================================================================"
+    echo " SETUP FAILED: The following environment(s) failed to provision:"
+    for F_ENV in "${FAILED_ENVS[@]}"; do
+        echo "  - ${F_ENV}"
+    done
+    echo "======================================================================"
+    exit 1
+fi
+
+echo "======================================================================"
+echo " All Environments Setup Complete and Verified!"
+echo "======================================================================"

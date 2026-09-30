@@ -116,8 +116,9 @@ setup_env.sh [OPTIONS]
 | `--drivers` | None | Installs recommended proprietary NVIDIA drivers via `ubuntu-drivers autoinstall`. |
 | `--conda` | None | Downloads, installs, and bootstraps Miniconda3 silently to `~/miniconda3`. |
 | `--env` | `<name>` | Provisions a single specified Conda environment (normalizes case and aliases). |
+| `--recreate`, `-f` | None | Forces recreation of Conda environment if it already exists. |
 | `--dry-run` | None | Prints planned installation commands without executing changes. |
-| `-y`, `--yes` | None | Non-interactive mode (auto-accepts confirmation prompts). |
+| `-y`, `--yes` | None | Non-interactive mode (auto-accept confirmation prompts). |
 
 ### System Packages Installed (`--system-deps`)
 
@@ -140,7 +141,7 @@ The table below summarizes all 11 isolated Conda environments provisioned by `se
 | **`3d-uir`** | 3.10 | PyTorch 2.1.0 (cu118) | `cudatoolkit-dev=11.8`, `tiny-cuda-nn`, `fused-ssim` | 3D-UIR image restoration with depth scaling priors. |
 | **`gaussianSplashing_env`** | 3.10 | PyTorch cu121 | `diff-gaussian-rasterization_UW`, `simple-knn`, `wandb`, `timm` | Gaussian Splashing direct volumetric rendering (HYB). |
 | **`water_splatting`** | 3.8 | PyTorch 2.1.2 (cu118) | `cuda-toolkit=11.8`, `nerfstudio==1.1.4`, `tiny-cuda-nn` | WaterSplatting Nerfstudio-based volume rendering. |
-| **`rusplatting`** | 3.12 | PyTorch 2.5.1 (cu124) | `diff-gaussian-rasterization`, `simple-knn`, `dearpygui`, `lpips` | RUSplatting sparse-view 3DGS with inverted depth. |
+| **`rusplatting`** | 3.12 | PyTorch 2.5.1 (cu121) | `diff-gaussian-rasterization`, `simple-knn`, `dearpygui`, `lpips` | RUSplatting sparse-view 3DGS with inverted depth. |
 | **`UW-GS`** | 3.7 | PyTorch 1.12.1 (cu116) | `diff-gaussian-rasterization`, `simple-knn`, `imageio` | UW-GS with Background Medium Model (Linux recipe). |
 | **`sugar`** | 3.9 | PyTorch 2.0.1 (cu118) | `pytorch3d==0.7.4`, `fvcore`, `iopath`, `open3d`, `PyMCubes` | SuGaR surface mesh extraction (.obj / .mtl). |
 | **`oscd`** | 3.12 | PyTorch cu121 | `cupy-cuda12x`, `xformers`, `diff-fastgs`, `viser`, `transformers` | Online Scene Change Detection & model updating. |

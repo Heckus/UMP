@@ -64,3 +64,25 @@ During a hardware capability audit based on QUT Aqua cluster guides, inefficienc
 - Fixed various SuGaR symlinking and WaterSplatting export bugs.
 - Successfully integrated RPID `EUAPGM7346` into all submission scripts.
 - The HPC orchestration suite is fully verified and deployed.
+
+## HPC Environment Provisioning Log Audit & Fixes (`setup_env_complete.log`)
+
+Following the execution of `setup_env.pbs` on the QUT Aqua cluster (Job ID `26019190.aqua`), the comprehensive 4,703-line execution log `setup_env_complete.log` was audited. Ten out of eleven Conda environments provisioned and compiled cleanly, but several critical runtime issues were discovered and resolved:
+
+1. **`rusplatting` PyTorch / CUDA 12.4 Mismatch (`undefined symbol: __nvJitLinkComplete_12_4`)**:
+   - **Bug**: `setup_env.sh` installed PyTorch 2.5.1 with `--index-url https://download.pytorch.org/whl/cu124`. Because Aqua's cluster environment loads `CUDA/12.1.1` into `CUDA_HOME` and `LD_LIBRARY_PATH`, building `diff-gaussian-rasterization` dynamically resolved `libnvJitLink.so.12` from the system's CUDA 12.1 instead of CUDA 12.4. This caused `libcusparse.so.12` to crash with `ImportError: undefined symbol: __nvJitLinkComplete_12_4`.
+   - **Fix**: Realigned `setup_rusplatting` to install PyTorch using `cu121` (`torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121`), matching the official upstream `environment.yml` and aligning with the host cluster's `CUDA/12.1.1` module and all other CUDA 12 environments (`seasplat_py310`, `gaussianSplashing_env`, `oscd`, `3dgs`).
+
+2. **Conda Idempotency & `--recreate` Support in `setup_env.sh`**:
+   - **Bug**: `setup_env.sh` invoked `conda create -n <name> -y` unconditionally. Re-running the script against existing environments resulted in `CondaValueError: prefix already exists`, failing executions under `set -e`.
+   - **Fix**: Introduced `create_conda_env` helper and `--recreate` / `-f` CLI flag. When an environment exists, the script safely reuses it and verifies/updates packages (taking seconds), unless `--recreate` is specified to perform a clean `conda env remove` followed by recreation.
+
+3. **`setup_env.pbs` Error Masking & Resource Rebalancing**:
+   - **Bug**: `setup_env.pbs` lacked error traps, silently continuing past the failed `rusplatting` setup and reporting `Exit_status: 0`. Furthermore, it requested only 8 CPUs and 32GB RAM without specifying `gpu_id=H100`, under-utilizing node resources. Additionally, re-running `setup_env.pbs` failed on `global_tools` due to unhandled existing prefix.
+   - **Fix**:
+     - Updated resources to `#PBS -l select=1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100` (matching `run_pipeline.pbs` and `verify_env.pbs`).
+     - Added existence check for `global_tools` before attempting creation.
+     - Added `FAILED_ENVS` tracking array in `setup_env.pbs`: prompts clean recreation (`--recreate`) for `rusplatting` while quickly validating existing healthy environments, and exits with code `1` if any environment fails.
+
+4. **Test Suite Path Resolution**:
+   - Corrected relative path calculations in `Codebase/scripts/tests/e2e/` test suites (`SCRIPTS_DIR` / `REPO_ROOT`) after moving tests into `Codebase/scripts/tests/`.

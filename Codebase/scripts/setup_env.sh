@@ -99,6 +99,7 @@ DO_SYSTEM_DEPS=false
 DO_DRIVERS=false
 DO_CONDA=false
 TARGET_ENV=""
+RECREATE_ENV=false
 
 # ------------------------------------------------------------------------------
 # Help and Usage Documentation
@@ -116,6 +117,7 @@ Options:
   --drivers             Install NVIDIA proprietary drivers via ubuntu-drivers autoinstall
   --conda               Install / bootstrap Miniconda3 to ~/miniconda3
   --env <name>          Provision a specific isolated Conda environment
+  --recreate, -f        Force recreation of Conda environment if it already exists
   --dry-run             Print planned installation commands and actions without executing
   -y, --yes             Non-interactive mode (auto-accept confirmation prompts)
 
@@ -203,6 +205,10 @@ parse_args() {
                 fi
                 TARGET_ENV="$2"
                 shift 2
+                ;;
+            --recreate|-f|--force)
+                RECREATE_ENV=true
+                shift
                 ;;
             --dry-run)
                 DRY_RUN=true
@@ -565,10 +571,55 @@ ensure_all_submodules() {
 # 5. Conda Environment Provisioning Recipes
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+# Helper: Create or Reuse Conda Environment
+# ------------------------------------------------------------------------------
+create_conda_env() {
+    local env_name="$1"
+    shift
+    local conda_bin
+    conda_bin="$(get_conda_exe 2>/dev/null || echo "conda")"
+
+    if [[ "${DRY_RUN}" == "true" ]]; then
+        if [[ "${RECREATE_ENV}" == "true" ]]; then
+            log_dry "conda env remove -n ${env_name} -y"
+            log_dry "conda create -n ${env_name} $*"
+        else
+            log_dry "conda create -n ${env_name} $* (or reuse if existing)"
+        fi
+        return 0
+    fi
+
+    local env_exists=false
+    if "${conda_bin}" env list 2>/dev/null | awk '{print $1}' | grep -Fxq "${env_name}"; then
+        env_exists=true
+    else
+        local conda_base
+        conda_base="$("${conda_bin}" info --base 2>/dev/null || dirname "$(dirname "${conda_bin}")")"
+        if [[ -d "${conda_base}/envs/${env_name}" ]] || [[ -d "${HOME}/.conda/envs/${env_name}" ]]; then
+            env_exists=true
+        fi
+    fi
+
+    if [[ "${env_exists}" == "true" ]]; then
+        if [[ "${RECREATE_ENV}" == "true" ]]; then
+            log_info "Removing existing Conda environment '${env_name}' (--recreate requested)..."
+            run_cmd conda env remove -n "${env_name}" -y
+            log_info "Creating fresh Conda environment '${env_name}'..."
+            run_cmd conda create -n "${env_name}" "$@"
+        else
+            log_info "Conda environment '${env_name}' already exists. Reusing environment (run with --recreate to wipe and reinstall)."
+        fi
+    else
+        log_info "Creating Conda environment '${env_name}'..."
+        run_cmd conda create -n "${env_name}" "$@"
+    fi
+}
+
 # Recipe 1: colmap_runner
 setup_colmap_runner() {
     log_section "Provisioning Conda Environment: colmap_runner (Python 3.9)"
-    run_cmd conda create -n colmap_runner python=3.9 -y
+    create_conda_env colmap_runner python=3.9 -y
     activate_env colmap_runner
     run_cmd pip install --upgrade pip
     run_cmd pip install tqdm
@@ -584,7 +635,7 @@ setup_depth_anything() {
     local chk_file="${chk_dir}/depth_anything_v2_vitl.pth"
     local chk_url="https://huggingface.co/depth-anything/Depth-Anything-V2-Large/resolve/main/depth_anything_v2_vitl.pth?download=true"
 
-    run_cmd conda create -n depth_anything python=3.10 -y
+    create_conda_env depth_anything python=3.10 -y
     activate_env depth_anything
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
@@ -627,13 +678,13 @@ setup_seasplat_py310() {
     ensure_submodule "${sub_diff}" "https://github.com/dxyang/diff-gaussian-rasterization"
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
-    run_cmd conda create -n seasplat_py310 python=3.10 -y
+    create_conda_env seasplat_py310 python=3.10 -y
     activate_env seasplat_py310
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile==0.8.1 tqdm opencv-python scipy ninja matplotlib
-    run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'seasplat_py310' successfully provisioned."
 }
@@ -650,7 +701,7 @@ setup_3d_uir() {
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
     ensure_submodule "${sub_ssim}" "https://github.com/rahul-goel/fused-ssim.git"
 
-    run_cmd conda create -n 3d-uir python=3.10 -y
+    create_conda_env 3d-uir python=3.10 -y
     # cudatoolkit-dev not available; CUDA provided via module load CUDA/12.1.1
     activate_env 3d-uir
     run_cmd pip install --upgrade pip ninja
@@ -663,9 +714,9 @@ setup_3d_uir() {
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
         [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_ssim}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_ssim}" --no-build-isolation
     run_cmd pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch --no-build-isolation
     [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
@@ -682,14 +733,14 @@ setup_gaussianSplashing_env() {
     ensure_submodule "${sub_diff}" "https://github.com/BGU-CS-VIL/diff-gaussian-rasterization_UW.git"
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
-    run_cmd conda create -n gaussianSplashing_env python=3.10 -y
+    create_conda_env gaussianSplashing_env python=3.10 -y
     run_cmd conda install -y -n gaussianSplashing_env -c conda-forge plyfile=0.8.1 tqdm
     activate_env gaussianSplashing_env
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install matplotlib wandb timm scikit-learn pdc-dp-means opencv-python pyyaml
-    run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'gaussianSplashing_env' successfully provisioned."
 }
@@ -701,8 +752,10 @@ setup_water_splatting() {
     
     ensure_submodule "${repo_dir}/water_splatting/cuda/csrc/third_party/glm" "https://github.com/g-truc/glm.git"
 
-    run_cmd conda create -n water_splatting python=3.8 -y
-    run_cmd conda install -y -n water_splatting -c "nvidia/label/cuda-11.8.0" cuda-toolkit
+    create_conda_env water_splatting python=3.8 -y
+    if [[ "${RECREATE_ENV}" == "true" ]] || ! conda list -n water_splatting cuda-toolkit >/dev/null 2>&1; then
+        run_cmd conda install -y -n water_splatting -c "nvidia/label/cuda-11.8.0" cuda-toolkit
+    fi
     activate_env water_splatting
     run_cmd pip install --upgrade pip
     run_cmd pip install "setuptools<70.0.0" wheel  # restores pkg_resources required by torch.utils.cpp_extension
@@ -732,13 +785,13 @@ setup_rusplatting() {
     ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
-    run_cmd conda create -n rusplatting python=3.12 -y
+    create_conda_env rusplatting python=3.12 -y
     activate_env rusplatting
     run_cmd pip install --upgrade pip ninja
-    run_cmd pip install torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+    run_cmd pip install torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile tqdm opencv-python joblib scipy imageio imageio-ffmpeg dearpygui lpips
-    run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'rusplatting' successfully provisioned."
 }
@@ -754,7 +807,7 @@ setup_UW_GS() {
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
     log_info "Creating UW-GS environment (omitting Windows mkl/vc dependencies)..."
-    run_cmd conda create -n UW-GS python=3.7 -y
+    create_conda_env UW-GS python=3.7 -y
     activate_env UW-GS
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
@@ -766,8 +819,8 @@ setup_UW_GS() {
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
         [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment 'UW-GS' successfully provisioned."
@@ -783,10 +836,12 @@ setup_sugar() {
     ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
-    run_cmd conda create -n sugar python=3.9 -y
-    run_cmd conda install -y -n sugar pytorch=2.0.1 torchvision=0.15.2 torchaudio=2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
-    run_cmd conda install -y -n sugar -c fvcore -c iopath -c conda-forge fvcore iopath
-    run_cmd conda install -y -n sugar -c pytorch3d pytorch3d==0.7.4
+    create_conda_env sugar python=3.9 -y
+    if [[ "${RECREATE_ENV}" == "true" ]] || ! conda list -n sugar pytorch3d >/dev/null 2>&1; then
+        run_cmd conda install -y -n sugar pytorch=2.0.1 torchvision=0.15.2 torchaudio=2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+        run_cmd conda install -y -n sugar -c fvcore -c iopath -c conda-forge fvcore iopath
+        run_cmd conda install -y -n sugar -c pytorch3d pytorch3d==0.7.4
+    fi
     activate_env sugar
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
@@ -797,8 +852,8 @@ setup_sugar() {
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
         [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment 'sugar' successfully provisioned."
@@ -818,15 +873,15 @@ setup_oscd() {
     ensure_submodule "${sub_ssim}" "https://github.com/rahul-goel/fused-ssim.git"
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
-    run_cmd conda create -n oscd python=3.12 -y
+    create_conda_env oscd python=3.12 -y
     activate_env oscd
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install torch torchvision xformers --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install cupy-cuda12x
     run_cmd pip install plyfile tqdm opencv-python lpips transformers==4.56.1 torchmetrics viser
     run_cmd pip install "${sub_fastgs}" --no-build-isolation
-    run_cmd pip install "${sub_ssim}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_ssim}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'oscd' successfully provisioned."
 }
@@ -843,14 +898,14 @@ setup_3dgs() {
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
     ensure_submodule "${sub_ssim}" "https://github.com/rahul-goel/fused-ssim.git"
 
-    run_cmd conda create -n 3dgs python=3.10 -y
+    create_conda_env 3dgs python=3.10 -y
     activate_env 3dgs
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile tqdm opencv-python joblib
-    run_cmd pip install "${sub_diff}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation --no-build-isolation
-    run_cmd pip install "${sub_ssim}" --no-build-isolation --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_ssim}" --no-build-isolation
     deactivate_env
     log_success "Environment '3dgs' successfully provisioned."
 }

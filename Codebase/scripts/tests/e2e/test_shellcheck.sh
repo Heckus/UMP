@@ -11,8 +11,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-SCRIPTS_DIR="${REPO_ROOT}/Codebase/scripts"
+SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPTS_DIR}/../.." && pwd)"
 
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/mock_helpers.sh"

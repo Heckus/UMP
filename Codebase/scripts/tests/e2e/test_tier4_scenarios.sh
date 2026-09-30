@@ -16,8 +16,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-SCRIPTS_DIR="${REPO_ROOT}/Codebase/scripts"
+SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPTS_DIR}/../.." && pwd)"
 
 PIPELINE_SCRIPT="${SCRIPTS_DIR}/run_pipeline.sh"
 
