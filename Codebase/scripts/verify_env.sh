@@ -674,6 +674,8 @@ check_required_tools() {
         log_error "Missing ${#missing_tools[@]} required system tool(s): ${missing_tools[*]}"
         log_error "Action required: Run './Codebase/scripts/setup_env.sh --system-deps' (or ensure global_tools environment is provisioned and in PATH)."
         return 4
+    fi
+
     log_success "All required system tools are available."
 
     # Checkpoint check for Depth-Anything-V2 ViT-L

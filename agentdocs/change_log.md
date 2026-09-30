@@ -161,3 +161,11 @@ To guarantee zero fatal interruptions, prevent wasted H100 compute, and maximize
    - Renders a clean formatted table summarizing all runs, total execution count, successes, and failures.
    - Returns exit code 1 if any model failed (notifying PBS), or 0 on clean completion.
 
+## Cluster Execution Verification: Job `26109855.aqua` (100% Flawless Setup)
+
+Following the removal of `ns-install-cli` and `LD_LIBRARY_PATH` pollution, `setup_env.pbs` was re-submitted under PBS Job ID `26109855.aqua`:
+- **Wall Time**: 17 minutes 2 seconds on node `gpu1n012` (42 CPUs, 243 GB RAM).
+- **`water_splatting`**: Provisioned with zero Qt ABI or completion generator errors (`[SUCCESS] Environment 'water_splatting' successfully provisioned.`).
+- **All 11 Environments**: Every environment (`colmap_runner`, `depth_anything`, `seasplat_py310`, `3d-uir`, `gaussianSplashing_env`, `water_splatting`, `rusplatting`, `UW-GS`, `sugar`, `oscd`, `3dgs`) completed with `[SUCCESS]`.
+- **Exit Status**: `0` with zero errors or tracebacks anywhere in `setup_env_complete.log`.
+- **`verify_env.sh` Syntax Fix**: Restored missing `fi` on `check_required_tools` error branch at line 676. Tested with `bash -n` and validated with `--help`.
