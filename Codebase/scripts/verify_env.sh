@@ -645,6 +645,28 @@ validate_dataset_path() {
 # Check 4: Required Tools and System Binaries
 # ------------------------------------------------------------------------------
 check_required_tools() {
+    # Auto-detect global_tools conda environment if colmap/ffmpeg are missing from PATH
+    if ! command -v colmap >/dev/null 2>&1 || ! command -v ffmpeg >/dev/null 2>&1; then
+        local conda_bin
+        conda_bin="$(resolve_conda_binary 2>/dev/null || command -v conda 2>/dev/null || echo "")"
+        local candidate_paths=(
+            "${HOME}/.conda/envs/global_tools/bin"
+            "/mnt/hpccs01/home/${USER:-}/.conda/envs/global_tools/bin"
+        )
+        if [[ -n "${conda_bin}" ]]; then
+            local conda_base
+            conda_base="$("${conda_bin}" info --base 2>/dev/null || dirname "$(dirname "${conda_bin}")")"
+            candidate_paths+=("${conda_base}/envs/global_tools/bin")
+        fi
+
+        for c_path in "${candidate_paths[@]}"; do
+            if [[ -d "${c_path}" && ( -x "${c_path}/colmap" || -x "${c_path}/ffmpeg" ) ]]; then
+                export PATH="${PATH}:${c_path}"
+                break
+            fi
+        done
+    fi
+
     local tools=("colmap" "ffmpeg" "git" "python3")
     log_info "Verifying required command-line tools: ${tools[*]}..."
 

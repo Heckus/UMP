@@ -414,8 +414,21 @@ install_system_deps() {
 
     if ! command -v apt-get >/dev/null 2>&1; then
         log_warn "apt-get not found on this system ($(uname -s) / $(uname -m))."
-        log_warn "Please ensure equivalent packages are installed manually:"
-        log_warn "  ${packages[*]}"
+        local conda_bin
+        conda_bin="$(get_conda_exe 2>/dev/null || echo "")"
+        if [[ -n "${conda_bin}" && -x "${conda_bin}" ]]; then
+            log_info "Attempting HPC user-space provisioning of colmap & ffmpeg via Conda (global_tools)..."
+            if ! "${conda_bin}" env list 2>/dev/null | grep -E '^[[:space:]]*global_tools[[:space:]]' >/dev/null 2>&1; then
+                run_cmd "${conda_bin}" create -n global_tools -c conda-forge colmap ffmpeg -y
+            else
+                log_info "Conda environment 'global_tools' already present."
+            fi
+            export PATH="${PATH}:${HOME}/.conda/envs/global_tools/bin"
+            log_success "System tools provisioned in 'global_tools' Conda environment."
+        else
+            log_warn "Please ensure equivalent packages are installed manually:"
+            log_warn "  ${packages[*]}"
+        fi
         return 0
     fi
 

@@ -186,3 +186,8 @@ The remaining 3 environments were investigated and resolved:
    - **Root Cause**: PyTorch 2.0.1, PyTorch3D 0.7.4, and CUDA kernel extensions were completely functional and executed correctly on the GPU. However, an unpinned NumPy 2.x installation emitted a `UserWarning` on `stderr` before `OK|...`. Since `verify_env.sh` checked `[[ "${probe_output}" == OK* ]]`, the leading warning text caused bash to treat it as a probe failure.
    - **Fix**: Updated `run_deep_env_check` to extract the status line via `grep -E '^(OK|FAIL)\|' | tail -n 1`, guaranteeing that stderr warnings do not produce false failures. Pinned `numpy<2` in `setup_sugar` to eliminate the warning at the source.
 
+4. **System Tools (`colmap` & `ffmpeg`) HPC Auto-Discovery**:
+   - **Root Cause**: On HPC clusters lacking root privileges, system tools are provisioned in user space under the `global_tools` Conda environment. While `run_pipeline.pbs` and `setup_env.pbs` export `PATH="$PATH:$HOME/.conda/envs/global_tools/bin"`, interactive shell sessions did not automatically inherit this path, causing `verify_env.sh` to report `colmap` and `ffmpeg` missing.
+   - **Fix**: Added transparent auto-discovery in both `verify_env.sh` and `run_pipeline.sh` that detects `global_tools/bin` across standard Conda paths (`$HOME/.conda/envs/global_tools/bin`, `/mnt/hpccs01/home/$USER/.conda/...`, `<conda_base>/envs/...`) and appends it to `PATH`. Additionally added fallback in `setup_env.sh` (`install_system_deps`) to automatically create `global_tools` via Conda when `apt-get` is unavailable.
+
+

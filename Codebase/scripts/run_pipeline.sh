@@ -42,6 +42,18 @@ export WANDB_MODE="${WANDB_MODE:-offline}"
 export PYTHONUNBUFFERED=1
 declare -a PIPELINE_SUMMARY=()
 
+# Auto-detect global_tools conda environment if colmap/ffmpeg are missing from PATH
+if ! command -v colmap >/dev/null 2>&1 || ! command -v ffmpeg >/dev/null 2>&1; then
+    for _gt in "${HOME}/.conda/envs/global_tools/bin" \
+               "/mnt/hpccs01/home/${USER:-}/.conda/envs/global_tools/bin" \
+               "${CONDA_DIR:-}/envs/global_tools/bin"; do
+        if [[ -d "${_gt}" && ( -x "${_gt}/colmap" || -x "${_gt}/ffmpeg" ) ]]; then
+            export PATH="${PATH}:${_gt}"
+            break
+        fi
+    done
+fi
+
 # ------------------------------------------------------------------------------
 # ANSI Color & Formatting Setup
 # ------------------------------------------------------------------------------
