@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # ==============================================================================
 # setup_env.sh - Automated Environment Setup for 3DGS & OSCD
 #
