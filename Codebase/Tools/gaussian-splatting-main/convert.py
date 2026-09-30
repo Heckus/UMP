@@ -1,4 +1,4 @@
-#
+﻿#
 # Copyright (C) 2023, Inria
 # GRAPHDECO research group, https://team.inria.fr/graphdeco
 # All rights reserved.
@@ -10,6 +10,7 @@
 #
 
 import os
+import sys
 import logging
 from argparse import ArgumentParser
 import shutil
@@ -31,26 +32,35 @@ use_gpu = 1 if not args.no_gpu else 0
 if not args.skip_matching:
     os.makedirs(args.source_path + "/distorted/sparse", exist_ok=True)
 
+    ## Detect modern COLMAP (3.13+ / 4.x) argument names vs legacy
+    feat_help = ""
+    try:
+        feat_help = os.popen(f"{colmap_command} feature_extractor -h 2>&1").read()
+    except Exception:
+        pass
+    extract_gpu_flag = "--FeatureExtraction.use_gpu" if "FeatureExtraction.use_gpu" in feat_help else "--SiftExtraction.use_gpu"
+    matching_gpu_flag = "--FeatureMatching.use_gpu" if "FeatureMatching.use_gpu" in feat_help else "--SiftMatching.use_gpu"
+
     ## Feature extraction
     feat_extracton_cmd = colmap_command + " feature_extractor "\
         "--database_path " + args.source_path + "/distorted/database.db \
         --image_path " + args.source_path + "/input \
         --ImageReader.single_camera 1 \
         --ImageReader.camera_model " + args.camera + " \
-        --SiftExtraction.use_gpu " + str(use_gpu)
+        " + extract_gpu_flag + " " + str(use_gpu)
     exit_code = os.system(feat_extracton_cmd)
     if exit_code != 0:
         logging.error(f"Feature extraction failed with code {exit_code}. Exiting.")
-        exit(exit_code)
+        sys.exit(1)
 
     ## Feature matching
     feat_matching_cmd = colmap_command + " exhaustive_matcher \
         --database_path " + args.source_path + "/distorted/database.db \
-        --SiftMatching.use_gpu " + str(use_gpu)
+        " + matching_gpu_flag + " " + str(use_gpu)
     exit_code = os.system(feat_matching_cmd)
     if exit_code != 0:
         logging.error(f"Feature matching failed with code {exit_code}. Exiting.")
-        exit(exit_code)
+        sys.exit(1)
 
     ### Bundle adjustment
     # The default Mapper tolerance is unnecessarily large,
@@ -63,7 +73,7 @@ if not args.skip_matching:
     exit_code = os.system(mapper_cmd)
     if exit_code != 0:
         logging.error(f"Mapper failed with code {exit_code}. Exiting.")
-        exit(exit_code)
+        sys.exit(1)
 
 ### Image undistortion
 ## We need to undistort our images into ideal pinhole intrinsics.
@@ -75,7 +85,7 @@ img_undist_cmd = (colmap_command + " image_undistorter \
 exit_code = os.system(img_undist_cmd)
 if exit_code != 0:
     logging.error(f"Mapper failed with code {exit_code}. Exiting.")
-    exit(exit_code)
+    sys.exit(1)
 
 files = os.listdir(args.source_path + "/sparse")
 os.makedirs(args.source_path + "/sparse/0", exist_ok=True)

@@ -1,4 +1,4 @@
-# Final Sweep and Fixes Changelog
+﻿# Final Sweep and Fixes Changelog
 
 During the zero-tolerance final sweep of the 3DGS / OSCD orchestration pipeline (`run_pipeline.sh` and related scripts), the entire data flow was traced from Dataset download and preparation through COLMAP, training, mesh extraction, and quantitative evaluation.
 
@@ -213,9 +213,15 @@ The execution audit of `run_pipeline_complete.log` and `pipeline_errors.log` fro
 
 3. **SuGaR Prior Mesh Guard**:
    - **Root Cause**: When prior 3DGS models failed, `run_sugar_mesh_stage` attempted to execute `train_full_pipeline.py` against a nonexistent point cloud prior, failing with `FileNotFoundError: cameras.json`.
-   - **Fix**: Added a guard in [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L404) that checks if a valid point cloud prior exists before running SuGaR; if not found, it cleanly warns and skips the stage instead of failing.
 4. **OpenImageIO (`libOpenImageIO.so.3.1`) in `global_tools`**:
    - **Root Cause**: `colmap` on conda-forge depends on OpenImageIO 3.1 (`libOpenImageIO.so.3.1`). When `global_tools` was provisioned without explicitly naming `openimageio`, the solver did not install the package or pinned an incompatible ABI.
    - **Fix**: Added `openimageio` explicitly to `global_tools` creation in [`setup_env.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/setup_env.sh#L422) and [`setup_env.pbs`](file:///s:/GithubRepos/UMP/HPC/scripts/setup_env.pbs#L63). Added self-healing check in both scripts to install `openimageio` if `global_tools` already exists. Enhanced [`verify_env.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/verify_env.sh#L687) with actionable repair commands if COLMAP encounters a runtime linker failure.
 
-
+5. **COLMAP 4.x CLI Flag Evolution (`--FeatureExtraction.use_gpu`)**:
+   - **Root Cause**: COLMAP 3.13+/4.x transitioned argument naming from `--SiftExtraction.use_gpu` and `--SiftMatching.use_gpu` to generic `--FeatureExtraction.use_gpu` and `--FeatureMatching.use_gpu`. `convert.py` passing legacy flags triggered `Failed to parse options - unrecognised option '--SiftExtraction.use_gpu'`.
+   - **Fix**: Implemented transparent runtime argument translation in [`colmap_wrapper.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/colmap_wrapper.sh) that detects modern COLMAP and translates SIFT flags to generic feature flags automatically. Additionally patched [`convert.py`](file:///s:/GithubRepos/UMP/Codebase/Tools/gaussian-splatting-main/convert.py) to dynamically probe CLI help output for flag capability.
+6. **COLMAP Subprocess Exit Code Masking & Stage 2 Validation**:
+   - **Root Cause**: `convert.py` invoked `exit(exit_code)` with `os.system` return value `256` (1 << 8). On POSIX, exit codes are 8-bit (`exit_code & 0xFF`), causing Python to exit with `0` despite failure, masking the error from bash.
+   - **Fix**: Replaced with `sys.exit(1)` upon non-zero exit codes. Added strict post-condition validation in [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L569) requiring `sparse/0/cameras.bin` or `sparse/0/cameras.txt` to exist before Stage 2 can be marked successful.
+7. **`verify_env.sh` Dynamic Linker Notice Parsing**:
+   - **Fix**: Updated regex parsing to `grep -o 'COLMAP [0-9.]*' | head -n 1` so that benign dynamic linker notices on line 1 do not prevent version detection.

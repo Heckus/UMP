@@ -41,4 +41,37 @@ if [[ -n "${GT_LIB}" && -d "${GT_LIB}" ]]; then
     export LD_LIBRARY_PATH="${GT_LIB}:${LD_LIBRARY_PATH:-}"
 fi
 
-exec "${COLMAP_BIN}" "$@"
+# Modern COLMAP (3.13+ / 4.x) argument translation:
+# In COLMAP >= 3.13, --SiftExtraction.use_gpu was renamed to --FeatureExtraction.use_gpu
+# and --SiftMatching.use_gpu was renamed to --FeatureMatching.use_gpu.
+translated_args=()
+USE_MODERN_FLAGS=false
+if "${COLMAP_BIN}" feature_extractor -h 2>&1 | grep -q "FeatureExtraction.use_gpu"; then
+    USE_MODERN_FLAGS=true
+fi
+
+for arg in "$@"; do
+    if [[ "${USE_MODERN_FLAGS}" == "true" ]]; then
+        case "$arg" in
+            --SiftExtraction.use_gpu=*)
+                translated_args+=("--FeatureExtraction.use_gpu=${arg#*=}")
+                ;;
+            --SiftExtraction.use_gpu)
+                translated_args+=("--FeatureExtraction.use_gpu")
+                ;;
+            --SiftMatching.use_gpu=*)
+                translated_args+=("--FeatureMatching.use_gpu=${arg#*=}")
+                ;;
+            --SiftMatching.use_gpu)
+                translated_args+=("--FeatureMatching.use_gpu")
+                ;;
+            *)
+                translated_args+=("$arg")
+                ;;
+        esac
+    else
+        translated_args+=("$arg")
+    fi
+done
+
+exec "${COLMAP_BIN}" "${translated_args[@]}"

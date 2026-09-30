@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # ==============================================================================
 # Codebase/scripts/run_pipeline.sh
 # ------------------------------------------------------------------------------
@@ -549,6 +549,10 @@ execute_model_pipeline() {
                     log_info "COLMAP undistortion for OSCD '${oscd_sub}':"
                     run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
                         python convert.py -s "${sub_path}" --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"
+                    if [[ "${DRY_RUN}" != "true" && ! -f "${sub_path}/sparse/0/cameras.bin" && ! -f "${sub_path}/sparse/0/cameras.txt" ]]; then
+                        log_error "COLMAP reconstruction failed to produce sparse/0/cameras.bin for OSCD '${oscd_sub}'."
+                        return 1
+                    fi
                 fi
             done
         else
@@ -566,6 +570,10 @@ execute_model_pipeline() {
             else
                 run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
                     python convert.py -s "${scene_path}" --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"
+                if [[ "${DRY_RUN}" != "true" && ! -f "${scene_path}/sparse/0/cameras.bin" && ! -f "${scene_path}/sparse/0/cameras.txt" ]]; then
+                    log_error "COLMAP reconstruction failed to produce sparse/0/cameras.bin for scene '${scene_name}'."
+                    return 1
+                fi
             fi
         fi
     fi
