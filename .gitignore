@@ -34,8 +34,16 @@ ENV/
 # Datasets and raw archives
 Dataset/Submerged3D/
 Dataset/Submerged3D.zip
-Dataset/Custom_OSCD_Dataset/reference_scene/
-Dataset/Custom_OSCD_Dataset/inference_scene/
+Dataset/Table/
+Dataset/Custom_OSCD_Dataset/**/sparse/
+Dataset/Custom_OSCD_Dataset/**/images/
+Dataset/Custom_OSCD_Dataset/**/distorted/
+Dataset/Custom_OSCD_Dataset/reference_reconstruction
+!Dataset/Custom_OSCD_Dataset/
+!Dataset/Custom_OSCD_Dataset/**/
+!Dataset/Custom_OSCD_Dataset/**/input/
+!Dataset/Custom_OSCD_Dataset/**/input/*.jpg
+!Dataset/Custom_OSCD_Dataset/**/input/*.png
 *.zip
 *.tar
 *.tar.gz
@@ -50,6 +58,9 @@ Dataset/Custom_OSCD_Dataset/inference_scene/
 **/sparse/
 **/input/
 **/images/
+!Dataset/Custom_OSCD_Dataset/**/input/
+!Dataset/Custom_OSCD_Dataset/**/input/*.jpg
+!Dataset/Custom_OSCD_Dataset/**/input/*.png
 
 # Heavy training output directories (keep results.json / evaluation.json)
 Codebase/**/output/**/point_cloud/

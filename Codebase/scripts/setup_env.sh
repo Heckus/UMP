@@ -721,7 +721,7 @@ setup_3d_uir() {
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install "setuptools<70.0.0" wheel  # pkg_resources was removed in setuptools 70, required by old torch
     run_cmd pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
-    run_cmd pip install "numpy<2" plyfile tqdm opencv-python joblib
+    run_cmd pip install "numpy<2" plyfile tqdm opencv-python joblib lpips
     # Override CUDA_HOME to match PyTorch's CUDA 11.8 build to avoid version mismatch during compilation
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \

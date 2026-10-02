@@ -244,8 +244,7 @@ def training(cfg_dot_dic, dataset, opt, pipe, uw, checkpoint=None, sweep_train_f
                             (dataset.underwater_processing, uw, uw_additions, dataset.removal_using_monocular_depth), curr_bs_dict)
             if (iteration in cfg_dot_dic.GeneralParameters.save_iterations):
                 print("\n[ITER {}] Saving Gaussians".format(iteration))
-                print("\n[ITER {}] Saving was denied by the user".format(iteration))
-                #scene.save(iteration)
+                scene.save(iteration)
         
             # Densification
             if iteration % opt.opacity_reset_interval == 0:# or (dataset.white_background and iteration == opt.densify_from_iter):
@@ -339,11 +338,30 @@ def prepare_output(dataset):
     # Set up output folder
     print("Output folder: {}".format(dataset.model_path))
     os.makedirs(dataset.model_path, exist_ok = True)
+    try:
+        with open(os.path.join(dataset.model_path, "cfg_args"), 'w') as cfg_log_f:
+            cfg_log_f.write(str(Namespace(**vars(dataset))))
+    except Exception:
+        pass
     
 def prepare_output_end(cfg_dot_dic, minutes, seconds, sweep_train_flag=False):
     cfg_dot_dic['TrainingTime'] = {"minutes": minutes, "seconds": seconds}
     if not sweep_train_flag:
-        write_dictionary_to_file(cfg_dot_dic, os.path.join(cfg_dot_dic.LoadingParameters.model_path,"cfg_args.json"))
+        model_path = cfg_dot_dic.LoadingParameters.model_path
+        write_dictionary_to_file(cfg_dot_dic, os.path.join(model_path, "cfg_args.json"))
+        try:
+            cfg_file = os.path.join(model_path, "cfg_args")
+            if not os.path.exists(cfg_file):
+                flat_dict = {}
+                for k, v in cfg_dot_dic.items():
+                    if isinstance(v, dict):
+                        flat_dict.update(v)
+                    else:
+                        flat_dict[k] = v
+                with open(cfg_file, 'w') as f:
+                    f.write(str(Namespace(**flat_dict)))
+        except Exception:
+            pass
     if wandb.run is not None:
         wandb.config.update({"TrainingTime": {"minutes": minutes, "seconds": seconds}})
     # evaluate(cfg_dot_dic.LoadingParameters.model_path[2:])

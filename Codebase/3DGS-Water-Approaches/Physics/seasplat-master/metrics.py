@@ -56,10 +56,19 @@ def readImages(renders_dir, gt_dir, fname_list=None):
 
     for fname in tqdm(fnames, desc="Reading image batch"):
         img_name = fname.split('.')[0]
-        if os.path.exists(gt_dir / (img_name + ".png")):
-            gt = Image.open(gt_dir / (img_name + ".png"))
-        else:
-            gt = Image.open(gt_dir / (img_name + ".JPG"))
+        gt_path = None
+        for ext in [".png", ".jpg", ".JPG", ".jpeg", ".JPEG"]:
+            cand = gt_dir / (img_name + ext)
+            if os.path.exists(cand):
+                gt_path = cand
+                break
+        if gt_path is None:
+            matches = list(gt_dir.glob(f"{img_name}.*"))
+            if matches:
+                gt_path = matches[0]
+            else:
+                gt_path = gt_dir / (img_name + ".jpg")
+        gt = Image.open(gt_path)
 
         render = Image.open(renders_dir / fname)
         renders.append(tf.to_tensor(render).unsqueeze(0)[:, :3, :, :].cuda())

@@ -27,6 +27,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+# shellcheck disable=SC2034
 REPO_ROOT="$(cd "${SCRIPTS_DIR}/../.." && pwd)"
 
 VERIFY_SCRIPT="${SCRIPTS_DIR}/verify_env.sh"

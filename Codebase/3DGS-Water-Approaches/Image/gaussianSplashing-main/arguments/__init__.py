@@ -252,13 +252,21 @@ def get_combined_args(parser : ArgumentParser):
     try:
         cfgfilepath = os.path.join(args_cmdline.model_path, "cfg_args")
         print("Looking for config file in", cfgfilepath)
-        with open(cfgfilepath) as cfg_file:
-            print("Config file found: {}".format(cfgfilepath))
-            cfgfile_string = cfg_file.read()
-    except TypeError:
-        print("Config file not found at")
+        if not os.path.exists(cfgfilepath) and os.path.exists(os.path.join(args_cmdline.model_path, "cfg_args.json")):
+            cfgfilepath = os.path.join(args_cmdline.model_path, "cfg_args.json")
+        if os.path.exists(cfgfilepath):
+            with open(cfgfilepath) as cfg_file:
+                print("Config file found: {}".format(cfgfilepath))
+                cfgfile_string = cfg_file.read()
+        else:
+            print("Config file not found at", cfgfilepath)
+    except Exception as e:
+        print("Config file error:", e)
         pass
-    args_cfgfile = eval(cfgfile_string)
+    try:
+        args_cfgfile = eval(cfgfile_string)
+    except Exception:
+        args_cfgfile = Namespace()
 
     merged_dict = vars(args_cfgfile).copy()
     for k,v in vars(args_cmdline).items():

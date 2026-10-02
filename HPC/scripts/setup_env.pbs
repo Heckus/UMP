@@ -14,7 +14,7 @@
 # Configured for QUT Aqua cluster H100 GPU nodes with optimal resource shares.
 # ==============================================================================
 
-cd $PBS_O_WORKDIR
+cd "$PBS_O_WORKDIR" || exit 1
 
 # In PBS Pro on Aqua, standard PBS output (-o) is spooled until job completion.
 # To allow real-time monitoring (tail -f) during execution, stream output
@@ -37,7 +37,9 @@ done
 # Force CUDA_HOME export for PyTorch cpp_extension compilation
 # Try nvcc from loaded module first, then common system paths
 if command -v nvcc >/dev/null 2>&1; then
-    export CUDA_HOME=$(dirname $(dirname $(command -v nvcc)))
+    nvcc_bin="$(command -v nvcc)"
+    CUDA_HOME="$(dirname "$(dirname "${nvcc_bin}")")"
+    export CUDA_HOME
     echo "CUDA_HOME set to: ${CUDA_HOME}"
 else
     # Fallback: scan known HPC paths

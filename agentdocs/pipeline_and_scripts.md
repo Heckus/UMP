@@ -138,7 +138,7 @@ The table below summarizes all 11 isolated Conda environments provisioned by `se
 | **`colmap_runner`** | 3.9 | System COLMAP | `tqdm` | Runs `convert.py` sparse reconstruction. |
 | **`depth_anything`**| 3.10 | PyTorch cu121 | `torchvision`, `gradio`, `matplotlib`, `opencv-python` | Generates dense depth maps via Depth-Anything-V2 ViT-L. |
 | **`seasplat_py310`**| 3.10 | PyTorch cu121 | `diff-gaussian-rasterization`, `simple-knn`, `plyfile` | SeaSplat underwater optical model training. |
-| **`3d-uir`** | 3.10 | PyTorch 2.1.0 (cu118) | `cudatoolkit-dev=11.8`, `tiny-cuda-nn`, `fused-ssim` | 3D-UIR image restoration with depth scaling priors. |
+| **`3d-uir`** | 3.10 | PyTorch 2.1.0 (cu118) | `cudatoolkit-dev=11.8`, `tiny-cuda-nn`, `fused-ssim`, `lpips` | 3D-UIR image restoration with depth scaling priors. |
 | **`gaussianSplashing_env`** | 3.10 | PyTorch cu121 | `diff-gaussian-rasterization_UW`, `simple-knn`, `wandb`, `timm` | Gaussian Splashing direct volumetric rendering (HYB). |
 | **`water_splatting`** | 3.8 | PyTorch 2.1.2 (cu118) | `cuda-toolkit=11.8`, `nerfstudio==1.1.4`, `tiny-cuda-nn` | WaterSplatting Nerfstudio-based volume rendering. |
 | **`rusplatting`** | 3.12 | PyTorch 2.5.1 (cu121) | `diff-gaussian-rasterization`, `simple-knn`, `dearpygui`, `lpips` | RUSplatting sparse-view 3DGS with inverted depth. |
@@ -317,11 +317,27 @@ To configure a clean Ubuntu system with all drivers, runtimes, and models:
 # Run SuGaR mesh extraction using pre-trained SeaSplat prior
 ./Codebase/scripts/run_pipeline.sh --model sugar --gs-output-dir Codebase/3DGS-Water-Approaches/Physics/seasplat-master/output/seasplat_exp/Cormoran
 
-# Run OSCD change detection pipeline
-./Codebase/scripts/run_pipeline.sh --model oscd --dataset Codebase/Dataset/Custom_OSCD_Dataset
+# Preparing Dual-Scene Dataset from Videos for O-SCD
+python Codebase/scripts/prepare_oscd_dataset.py \
+    --video-ref /path/to/table_initial_2_objects.mp4 \
+    --video-inf /path/to/table_modified_1_removed_1_added.mp4 \
+    --output-dir Dataset/Custom_OSCD_Dataset \
+    --fps 4.0 --select-sharpest
+
+# Run OSCD change detection pipeline on custom dataset
+./Codebase/scripts/run_pipeline.sh --model oscd --dataset Dataset/Custom_OSCD_Dataset
 
 # Sequential execution across all 8 models
 ./Codebase/scripts/run_pipeline.sh --all
+```
+
+### Interactive Visualization (Viser 3D Viewer)
+
+After running OSCD, visualize the change detection and the updated 3DGS scene in real time:
+```bash
+conda activate oscd
+cd Codebase/3DGS-Change-Detection/O-SCD-main
+python viewer.py -s ../../../Dataset/Custom_OSCD_Dataset -m output/Custom_OSCD_Dataset/output
 ```
 
 ---

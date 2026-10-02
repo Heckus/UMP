@@ -17,6 +17,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+# shellcheck disable=SC2034
 REPO_ROOT="$(cd "${SCRIPTS_DIR}/../.." && pwd)"
 
 PIPELINE_SCRIPT="${SCRIPTS_DIR}/run_pipeline.sh"
@@ -36,7 +37,7 @@ test_scenario_seasplat_workflow() {
     if ! check_target_script "${PIPELINE_SCRIPT}" "${tname}"; then return 0; fi
 
     setup_test_sandbox "scenario_seasplat"
-    create_mock_submerged3d_dataset "${CURRENT_SANDBOX}/Submerged3D" "complete"
+    create_mock_submerged3d_dataset "${CURRENT_SANDBOX}/Submerged3D" "raw_images_only"
 
     run_and_capture "${PIPELINE_SCRIPT}" --model seasplat --dataset "${CURRENT_SANDBOX}/Submerged3D" --dry-run --skip-verify
     assert_exit_code 0 "${CMD_RC}" "${tname} (exit code 0)"

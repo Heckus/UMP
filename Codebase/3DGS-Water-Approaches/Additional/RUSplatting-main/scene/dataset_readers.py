@@ -128,8 +128,18 @@ def readColmapCameras(cam_extrinsics, cam_intrinsics, images_folder, depth_folde
         depth_path = os.path.join(depth_folder, os.path.basename(extr.name))
         depth_name = os.path.basename(image_path).split("_")[0]
         if os.path.exists(depth_folder):
-            depth = Image.open(depth_path)
-            depth = depth.convert('L')
+            if not os.path.exists(depth_path):
+                base_name = os.path.splitext(os.path.basename(extr.name))[0]
+                for ext in ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG']:
+                    cand = os.path.join(depth_folder, base_name + ext)
+                    if os.path.exists(cand):
+                        depth_path = cand
+                        break
+            if os.path.exists(depth_path):
+                depth = Image.open(depth_path)
+                depth = depth.convert('L')
+            else:
+                depth = None
         else:
             depth = None
         trans = np.array([0.0, 0.0, 0.0])

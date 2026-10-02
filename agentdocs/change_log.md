@@ -1,4 +1,4 @@
-﻿# Final Sweep and Fixes Changelog
+# Final Sweep and Fixes Changelog
 
 During the zero-tolerance final sweep of the 3DGS / OSCD orchestration pipeline (`run_pipeline.sh` and related scripts), the entire data flow was traced from Dataset download and preparation through COLMAP, training, mesh extraction, and quantitative evaluation.
 
@@ -225,3 +225,38 @@ The execution audit of `run_pipeline_complete.log` and `pipeline_errors.log` fro
    - **Fix**: Replaced with `sys.exit(1)` upon non-zero exit codes. Added strict post-condition validation in [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L569) requiring `sparse/0/cameras.bin` or `sparse/0/cameras.txt` to exist before Stage 2 can be marked successful.
 7. **`verify_env.sh` Dynamic Linker Notice Parsing**:
    - **Fix**: Updated regex parsing to `grep -o 'COLMAP [0-9.]*' | head -n 1` so that benign dynamic linker notices on line 1 do not prevent version detection.
+
+## HPC Second Execution Audit & Multi-Model Pipeline Debugging (Job `26185812.aqua`)
+
+Following the submission of `HPC/scripts/run_pipeline.pbs` on QUT Aqua (Job ID `26185812.aqua`), the execution log `run_pipeline_complete.log` and `pipeline_errors.log` were audited. While pre-flight diagnostics, COLMAP, and Depth-Anything-V2 depth generation passed, 13 of 15 model executions encountered failures due to localized bugs in model code, dataset loader assumptions, and CLI invocation paths. All issues have been thoroughly traced and fixed:
+
+1. **SeaSplat Case-Sensitive Image Extension Crash**:
+   - **Bug**: SeaSplat trained 30,000 iterations successfully for ~20-25 minutes per scene, but crashed during test image evaluation in [`metrics.py`](file:///home/hecke/0Github/UMP/Codebase/3DGS-Water-Approaches/Physics/seasplat-master/metrics.py#L62) with `FileNotFoundError`. The script checked `.png` and then hardcoded `img_name + ".JPG"`, whereas Submerged3D images end in lowercase `.jpg`.
+   - **Fix**: Replaced the hardcoded check with multi-extension resolution (`.png`, `.jpg`, `.JPG`, `.jpeg`, `.JPEG`) and a directory glob fallback.
+
+2. **3D-UIR Missing Runtime Dependency (`lpips`)**:
+   - **Bug**: `3d-uir` crashed immediately upon launch with `ModuleNotFoundError: No module named 'lpips'` from `utils/loss_utils.py`.
+   - **Fix**: Added `lpips` to the pip install recipe in [`setup_3d_uir` in `setup_env.sh`](file:///home/hecke/0Github/UMP/Codebase/scripts/setup_env.sh#L724) and added `lpips` to the required extension check in [`verify_env.sh`](file:///home/hecke/0Github/UMP/Codebase/scripts/verify_env.sh#L302).
+
+3. **Gaussian Splashing Omitted Checkpoints & `cfg_args` Missing**:
+   - **Bug**: Gaussian Splashing trained 30k iterations (~16-22 minutes), but SuGaR reported no 3DGS point cloud prior, and Stage 6 `render.py` crashed with `FileNotFoundError: cfg_args`. Tracing `train.py` revealed the upstream author commented out `#scene.save(iteration)` at line 248 with `"Saving was denied by the user"`, and only serialized `cfg_args.json` (not `cfg_args`).
+   - **Fix**: Uncommented `scene.save(iteration)` in [`train.py`](file:///home/hecke/0Github/UMP/Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/train.py#L248) to export `point_cloud/iteration_30000/point_cloud.ply`. Updated `train.py` and `prepare_output` to write `cfg_args` alongside `cfg_args.json`. Enhanced [`arguments/__init__.py`](file:///home/hecke/0Github/UMP/Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/arguments/__init__.py#L252) to handle `cfg_args.json` fallback, and added fallback synchronization in [`run_pipeline.sh`](file:///home/hecke/0Github/UMP/Codebase/scripts/run_pipeline.sh#L735).
+
+4. **WaterSplatting Image Dimension Mismatch (Camera Intrinsics)**:
+   - **Bug**: Nerfstudio datamanager aborted with `AssertionError: The size of image (1280, 720) loaded does not match the camera parameters ((1299, 723))`.
+   - **Fix**: In [`run_pipeline.sh`](file:///home/hecke/0Github/UMP/Codebase/scripts/run_pipeline.sh#L746), corrected `--images-path input` to automatically use `--images-path images` (matching COLMAP's undistorted camera parameters in `sparse/0/cameras.bin`) with fallback to `input` if `images` is not present.
+
+5. **RUSplatting & UW-GS Depth Map Extension Lookup**:
+   - **Bug**: Both models crashed with `FileNotFoundError: .../depthmap/<image>.jpg` because their dataset readers constructed the depth map path using the RGB image filename (`.jpg`), whereas Depth-Anything-V2 outputs `.png` files.
+   - **Fix**: Patched [`dataset_readers.py` in RUSplatting`](file:///home/hecke/0Github/UMP/Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main/scene/dataset_readers.py#L128) and [`dataset_readers.py` in UW-GS](file:///home/hecke/0Github/UMP/Codebase/3DGS-Water-Approaches/Additional/UW-GS-main/scene/dataset_readers.py#L105) to check for existence and test alternative extensions (`.png`, `.jpg`, `.jpeg`). Additionally augmented [`run_pipeline.sh` Stage 3](file:///home/hecke/0Github/UMP/Codebase/scripts/run_pipeline.sh#L695) to create matching symlinks for all input filenames in both `depthmap/` and `depthmap_inverted/`.
+
+6. **SuGaR Prior Ingestion (SH Degree 0 Support) & Exit Code Trap**:
+   - **Bug**: SuGaR falsely reported SUCCESS because `train_full_pipeline.py` invoked `os.system` without checking return codes. In reality, `train.py` crashed on `assert len(extra_f_names)==3*(self.max_sh_degree + 1) ** 2 - 3` because SeaSplat point clouds are trained with `sh_degree = 0` (0 rest features), while SuGaR assumed `sh_degree = 3` (45 rest features).
+   - **Fix**: Patched [`load_ply` in SuGaR's `gaussian_model.py`](file:///home/hecke/0Github/UMP/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/scene/gaussian_model.py#L228) to dynamically infer `max_sh_degree` from the properties in the PLY file (`max_sh_degree = int(np.sqrt(len(extra_f_names) / 3.0 + 1.0)) - 1`), seamlessly loading both SH 0 and SH 3 models. Added exception raising in `train_full_pipeline.py` and output validation in `run_sugar_mesh_stage`.
+
+7. **OSCD Pre-Flight Directory and Image Guard**:
+   - **Bug**: If `reference_scene` was unpopulated or lacked an `input/` folder, Stage 2 COLMAP exited with code 256 (`Check failed: ExistsDir(*image_path)`), crashing OSCD execution.
+   - **Fix**: Added directory normalization and image count validation in Stage 2 and Stage 4 of [`run_pipeline.sh`](file:///home/hecke/0Github/UMP/Codebase/scripts/run_pipeline.sh#L550), skipping gracefully with an informative warning if the dual-scene structure is incomplete.
+
+8. **Zero-Warning ShellCheck & E2E Test Suite**:
+   - Resolved all ShellCheck warnings across all scripts (`run_pipeline.sh`, `verify_env.sh`, and E2E test suites). All 111 test assertions across ShellCheck and Tiers 1-4 pass with 0 errors.

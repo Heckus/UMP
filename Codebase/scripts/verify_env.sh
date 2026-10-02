@@ -89,6 +89,7 @@ log_section() {
 # ------------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+# shellcheck disable=SC2034
 CODEBASE_DIR="${REPO_ROOT}/Codebase"
 DEFAULT_DATASET_DIR="${REPO_ROOT}/Dataset/Submerged3D"
 
@@ -175,7 +176,7 @@ check_system_resources() {
             if [[ -n "${avail_gb}" && "${avail_gb}" =~ ^[0-9]+$ && "${avail_gb}" -lt 15 ]]; then
                 log_warn "Low disk space on '${p}': only ${df_out}!"
             else
-                echo "  ${CLR_GREEN}Ã¢Å“â€œ${CLR_RESET} Storage [${p}]: ${df_out}"
+                echo "  ${CLR_GREEN}✓${CLR_RESET} Storage [${p}]: ${df_out}"
             fi
         fi
     done
@@ -299,7 +300,7 @@ get_env_required_extensions() {
             echo "torch plyfile diff_gaussian_rasterization kornia"
             ;;
         3d-uir)
-            echo "torch diff_gaussian_rasterization simple_knn cv2"
+            echo "torch diff_gaussian_rasterization simple_knn cv2 lpips"
             ;;
         gaussianSplashing_env)
             echo "torch plyfile diff_gaussian_rasterization"
@@ -397,10 +398,10 @@ print(f"OK|Python {py_ver}|Torch {torch_ver}|{cuda_str}|Extensions: OK")
 
     if [[ ${probe_rc} -eq 0 && "${status_line}" == OK* ]]; then
         IFS='|' read -r _status _py _torch _cuda _ext <<< "${status_line}"
-        echo "  ${CLR_GREEN}Ã¢Å“â€œ${CLR_RESET} ${CLR_BOLD}${env_name}${CLR_RESET}: ${_py} | ${_torch} | ${_cuda} | ${_ext}"
+        echo "  ${CLR_GREEN}✓${CLR_RESET} ${CLR_BOLD}${env_name}${CLR_RESET}: ${_py} | ${_torch} | ${_cuda} | ${_ext}"
         return 0
     else
-        echo "  ${CLR_RED}Ã¢Å“â€”${CLR_RESET} ${CLR_BOLD}${env_name}${CLR_RESET}: Deep functional probe FAILED" >&2
+        echo "  ${CLR_RED}✗${CLR_RESET} ${CLR_BOLD}${env_name}${CLR_RESET}: Deep functional probe FAILED" >&2
         echo "    ${CLR_RED}${probe_output}${CLR_RESET}" >&2
         return 2
     fi
@@ -482,7 +483,7 @@ check_all_conda_envs() {
     if [[ ${#missing_envs[@]} -gt 0 ]]; then
         log_error "The following ${#missing_envs[@]} required Conda environment(s) are missing:"
         for missing in "${missing_envs[@]}"; do
-            echo "  ${CLR_RED}Ã¢Å“â€”${CLR_RESET} ${missing}" >&2
+            echo "  ${CLR_RED}✗${CLR_RESET} ${missing}" >&2
         done
         log_error "Action required: Run './Codebase/scripts/setup_env.sh' to provision missing environments, or './Codebase/scripts/setup_env.sh --env <name>' for an individual environment."
         return 2
@@ -491,7 +492,7 @@ check_all_conda_envs() {
     log_success "All environments verified: All ${#REQUIRED_CONDA_ENVS[@]} required Conda environments are installed (OK)."
     for env_name in "${REQUIRED_CONDA_ENVS[@]}"; do
         if [[ "${QUIET}" != "true" ]]; then
-            echo "  ${CLR_GREEN}Ã¢Å“â€œ${CLR_RESET} ${env_name}"
+            echo "  ${CLR_GREEN}✓${CLR_RESET} ${env_name}"
         fi
     done
 
@@ -753,7 +754,7 @@ check_submodules_integrity() {
         local full_path="${REPO_ROOT}/${sub}"
         if [[ -d "${full_path}" ]] && [[ $(find "${full_path}" -maxdepth 2 -type f 2>/dev/null | head -n 1) ]]; then
             if [[ "${QUIET}" != "true" ]]; then
-                echo "  ${CLR_GREEN}Ã¢Å“â€œ${CLR_RESET} Submodule: $(basename "$(dirname "${sub}")")/$(basename "${sub}")"
+                echo "  ${CLR_GREEN}✓${CLR_RESET} Submodule: $(basename "$(dirname "${sub}")")/$(basename "${sub}")"
             fi
         else
             log_error "Submodule missing or uninitialized: ${sub}"

@@ -118,13 +118,15 @@ if __name__ == "__main__":
 
         # Trains a 3DGS scene for 7k iterations
         white_background_str = '-w ' if args.white_background else ''
-        os.system(
+        ret = os.system(
             f"CUDA_VISIBLE_DEVICES={args.gpu} python ./gaussian_splatting/train.py \
                 -s {args.scene_path} \
                 -m {gs_checkpoint_dir} \
                 {white_background_str}\
                 --iterations 7_000"
         )
+        if ret != 0:
+            raise RuntimeError(f"Vanilla 3DGS training failed with exit code {ret}")
     else:
         print("A vanilla 3DGS checkpoint was provided. Skipping the vanilla 3DGS optimization.")
         gs_checkpoint_dir = args.gs_output_dir
@@ -132,7 +134,7 @@ if __name__ == "__main__":
             gs_checkpoint_dir += os.path.sep
     
     # Runs the train.py python script with the given arguments
-    os.system(
+    ret = os.system(
         f"python train.py \
             -s {args.scene_path} \
             -c {gs_checkpoint_dir} \
@@ -159,3 +161,5 @@ if __name__ == "__main__":
             --gpu {args.gpu} \
             --white_background {args.white_background}"
     )
+    if ret != 0:
+        raise RuntimeError(f"SuGaR train.py failed with exit code {ret}")

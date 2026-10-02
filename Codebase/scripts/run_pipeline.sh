@@ -33,6 +33,7 @@ set -euo pipefail
 # ------------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+# shellcheck disable=SC2034
 CODEBASE_DIR="${REPO_ROOT}/Codebase"
 DEFAULT_SUBMERGED_DATASET="${REPO_ROOT}/Dataset/Submerged3D"
 DEFAULT_OSCD_DATASET="${REPO_ROOT}/Dataset/Custom_OSCD_Dataset"
@@ -326,7 +327,8 @@ run_preflight_verification() {
         fi
 
         # Remove duplicates
-        local unique_envs=($(echo "${envs_to_check[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+        local unique_envs=()
+        read -r -a unique_envs <<< "$(echo "${envs_to_check[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')"
         
         for env in "${unique_envs[@]}"; do
             verify_args+=("--env" "${env}")
@@ -366,7 +368,7 @@ run_sugar_mesh_stage() {
             watersplatting) 
                 local ws_base="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/${scene_name}/water-splatting"
                 local ws_export
-                ws_export="$(find "${ws_base}" -type d -name "export" | sort -r | head -n 1 2>/dev/null || true)"
+                ws_export="$(find "${ws_base}" -type d -name "export" 2>/dev/null | sort -r | head -n 1 || true)"
                 if [[ -n "${ws_export}" ]]; then
                     gs_prior="${ws_export}"
                 else
@@ -409,7 +411,18 @@ run_sugar_mesh_stage() {
 
     run_stage_command "sugar" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main" \
         python train_full_pipeline.py -s "${scene_path}" -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir "${gs_prior}"
-    log_info "Exported textured mesh: ${scene_path}/output/refined_mesh/${scene_name}.obj with export_obj=True"
+    local expected_obj="${scene_path}/output/refined_mesh/${scene_name}.obj"
+    if [[ "${DRY_RUN}" != "true" && ! -f "${expected_obj}" ]]; then
+        local found_obj
+        found_obj="$(find "${scene_path}/output" "${REPO_ROOT}/output" -name "*.obj" 2>/dev/null | head -n 1 || true)"
+        if [[ -n "${found_obj}" ]]; then
+            log_info "SuGaR mesh exported to: ${found_obj}"
+        else
+            log_warn "SuGaR execution finished but no .obj file was found at '${expected_obj}'."
+        fi
+    else
+        log_info "Exported textured mesh: ${expected_obj} with export_obj=True"
+    fi
 }
 
 # ------------------------------------------------------------------------------
@@ -543,6 +556,24 @@ execute_model_pipeline() {
                     log_warn "OSCD subscene '${sub_path}' not found. Cannot run COLMAP."
                     continue
                 fi
+                # Folder normalization (images/ -> input/)
+                if [[ -d "${sub_path}/images" && ! -d "${sub_path}/input" ]]; then
+                    if [[ "${DRY_RUN}" == "true" ]]; then
+                        log_dry "Folder normalization: would rename '${sub_path}/images' to '${sub_path}/input'"
+                    else
+                        mv "${sub_path}/images" "${sub_path}/input"
+                    fi
+                fi
+                if [[ ! -d "${sub_path}/input" ]]; then
+                    log_warn "OSCD subscene '${sub_path}' has no input/ directory. Skipping COLMAP for '${oscd_sub}'."
+                    continue
+                fi
+                local img_count
+                img_count="$(find "${sub_path}/input" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.JPG" -o -name "*.png" -o -name "*.jpeg" \) 2>/dev/null | wc -l || true)"
+                if [[ ${img_count} -eq 0 ]]; then
+                    log_warn "OSCD subscene '${sub_path}/input' contains no images. Skipping COLMAP for '${oscd_sub}'."
+                    continue
+                fi
                 if [[ "${STAGE_NAME}" != "colmap" && -d "${sub_path}/sparse/0" && ( -f "${sub_path}/sparse/0/cameras.bin" || -f "${sub_path}/sparse/0/cameras.txt" ) ]]; then
                     log_info "COLMAP sparse reconstruction already exists for OSCD '${oscd_sub}'. Skipping Stage 2 to conserve compute."
                 else
@@ -662,6 +693,28 @@ execute_model_pipeline() {
                     python run.py --encoder vitl --pred-only --grayscale --img-path "${scene_path}/input" --outdir "${scene_path}/depthmap"
             fi
         fi
+
+        # Align depth map filename extensions with input image extensions for seamless loader compatibility
+        if [[ "${DRY_RUN}" != "true" ]]; then
+            for ddir in "${scene_path}/depthmap" "${scene_path}/depthmap_inverted"; do
+                if [[ -d "${ddir}" ]]; then
+                    local img_dir="${scene_path}/input"
+                    [[ ! -d "${img_dir}" && -d "${scene_path}/images" ]] && img_dir="${scene_path}/images"
+                    if [[ -d "${img_dir}" ]]; then
+                        for img_file in "${img_dir}"/*; do
+                            if [[ -f "${img_file}" ]]; then
+                                local bname base_no_ext
+                                bname="$(basename "${img_file}")"
+                                base_no_ext="${bname%.*}"
+                                if [[ -f "${ddir}/${base_no_ext}.png" && ! -f "${ddir}/${bname}" ]]; then
+                                    ln -sfn "${base_no_ext}.png" "${ddir}/${bname}"
+                                fi
+                            fi
+                        done
+                    fi
+                fi
+            done
+        fi
     fi
 
     # --------------------------------------------------------------------------
@@ -681,10 +734,20 @@ execute_model_pipeline() {
             gaussiansplashing)
                 run_stage_command "gaussianSplashing_env" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main" \
                     python train.py -s "${scene_path}" -m "output/${scene_name}" --underwater_processing HYB --eval
+                local gs_out="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/output/${scene_name}"
+                if [[ -d "${gs_out}" ]]; then
+                    if [[ ! -f "${gs_out}/cfg_args" && -f "${gs_out}/cfg_args.json" ]]; then
+                        cp -n "${gs_out}/cfg_args.json" "${gs_out}/cfg_args" 2>/dev/null || true
+                    fi
+                fi
                 ;;
             watersplatting)
+                local ws_img_path="images"
+                if [[ ! -d "${scene_path}/images" && -d "${scene_path}/input" ]]; then
+                    ws_img_path="input"
+                fi
                 run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
-                    ns-train water-splatting --experiment-name "${scene_name}" --vis viewer+wandb colmap --downscale-factor 1 --eval-mode interval --eval-interval 8 --colmap-path sparse/0 --data "${scene_path}" --images-path input
+                    ns-train water-splatting --experiment-name "${scene_name}" --vis viewer+wandb colmap --downscale-factor 1 --eval-mode interval --eval-interval 8 --colmap-path sparse/0 --data "${scene_path}" --images-path "${ws_img_path}"
                 local ws_output_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/${scene_name}/water-splatting"
                 local config_path
                 config_path="$(find "${ws_output_dir}" -name 'config.yml' | sort -r | head -n 1 2>/dev/null || true)"
@@ -709,8 +772,17 @@ execute_model_pipeline() {
                     log_warn "OSCD execution requires '${dataset_path}/reference_scene' and '${dataset_path}/inference_scene'. Dataset missing or incomplete. Skipping OSCD."
                     return 0
                 fi
+                if [[ "${DRY_RUN}" != "true" ]]; then
+                    local ref_img_count
+                    ref_img_count="$(find "${dataset_path}/reference_scene/input" "${dataset_path}/reference_scene/images" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.JPG" -o -name "*.png" -o -name "*.jpeg" \) 2>/dev/null | wc -l || true)"
+                    if [[ ${ref_img_count} -eq 0 ]]; then
+                        log_warn "OSCD reference scene contains no images. Skipping OSCD."
+                        return 0
+                    fi
+                fi
 
-                local oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
+                local oscd_output_base
+                oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
                 local ref_pc="${oscd_output_base}/reference_reconstruction/point_cloud/iteration_30000/point_cloud.ply"
 
                 if [[ -f "${ref_pc}" ]]; then
@@ -759,7 +831,8 @@ execute_model_pipeline() {
     if should_run_stage "eval"; then
         log_info "--- Stage 6: Benchmarking & Metrics Evaluation (eval) (${model}) ---"
         if [[ "${model}" == "oscd" ]]; then
-            local oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
+            local oscd_output_base
+            oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
             log_info "Evaluating novel view synthesis metrics (utils/metrics.py -> results.json):"
             run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
                 python utils/metrics.py -m "${oscd_output_base}/output"
@@ -825,6 +898,17 @@ execute_model_pipeline() {
                     output_path="${eval_dir}/output/${scene_name}"
                     ;;
             esac
+
+            if [[ "${model}" == "gaussiansplashing" && -d "${output_path}" ]]; then
+                if [[ ! -f "${output_path}/cfg_args" && -f "${output_path}/cfg_args.json" ]]; then
+                    cp -n "${output_path}/cfg_args.json" "${output_path}/cfg_args" 2>/dev/null || true
+                fi
+            fi
+
+            if [[ "${DRY_RUN}" != "true" && ! -d "${output_path}" ]]; then
+                log_warn "Output directory '${output_path}' not found. Skipping evaluation for ${model}."
+                return 0
+            fi
 
             log_info "Running held-out novel view synthesis rendering (${render_script}):"
             run_stage_command "${eval_env}" "${eval_dir}" python "${render_script}" -m "${output_path}" --skip_train
@@ -987,15 +1071,10 @@ main() {
 
     # 2. Defensive checks: model or all required
     if [[ "${RUN_ALL}" != "true" && -z "${MODEL_NAME}" ]]; then
-        if [[ "${DRY_RUN}" == "true" ]]; then
-            log_info "No model specified with --dry-run. Defaulting to '--all' execution plan."
-            RUN_ALL=true
-        else
-            log_error "Must specify either --model <name> or --all to run the pipeline."
-            echo "" >&2
-            show_help >&2
-            exit 1
-        fi
+        log_error "Must specify either --model <name> or --all to run the pipeline."
+        echo "" >&2
+        show_help >&2
+        exit 1
     fi
 
     # 3. Validate stage argument

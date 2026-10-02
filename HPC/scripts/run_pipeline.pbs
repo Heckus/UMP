@@ -13,7 +13,7 @@
 # run_pipeline.sh automation suite.
 # ==============================================================================
 
-cd $PBS_O_WORKDIR
+cd "$PBS_O_WORKDIR" || exit 1
 
 # In PBS Pro on Aqua, standard PBS output (-o) is spooled until job completion.
 # To allow real-time monitoring (tail -f) during execution, stream output
@@ -35,7 +35,9 @@ done
 
 # Force CUDA_HOME for PyTorch cpp_extension compilation
 if command -v nvcc >/dev/null 2>&1; then
-    export CUDA_HOME=$(dirname $(dirname $(command -v nvcc)))
+    nvcc_bin="$(command -v nvcc)"
+    CUDA_HOME="$(dirname "$(dirname "${nvcc_bin}")")"
+    export CUDA_HOME
     echo "CUDA_HOME set to: ${CUDA_HOME}"
 else
     for CUDA_PATH in /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/12.1.1 \
@@ -56,8 +58,9 @@ eval "$(conda shell.bash hook)"
 
 # Detect Conda executable and installation root
 if command -v conda >/dev/null 2>&1; then
-    export CONDA_EXE="$(command -v conda)"
-    export CONDA_DIR="$(dirname $(dirname "${CONDA_EXE}"))"
+    CONDA_EXE="$(command -v conda)"
+    CONDA_DIR="$(dirname "$(dirname "${CONDA_EXE}")")"
+    export CONDA_EXE CONDA_DIR
     echo "CONDA_DIR set to: ${CONDA_DIR}"
 fi
 
@@ -88,7 +91,8 @@ echo "Executing Pipeline Automation Suite..."
 # qsub -v ARGS="--model seasplat --scene Cormoran" run_pipeline.pbs
 # Or modify the command below directly.
 
-if [ -n "$ARGS" ]; then
+if [ -n "${ARGS:-}" ]; then
+    # shellcheck disable=SC2086
     bash "$PIPELINE_SCRIPT" $ARGS
 else
     bash "$PIPELINE_SCRIPT" --all
