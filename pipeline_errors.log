@@ -26,3 +26,16 @@
 [2026-09-30 22:37:00] ERROR: Model=uw-gs | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=1m 21s
 [2026-09-30 22:37:05] ERROR: Model=uw-gs | Scene=Tokai | Stage=all | ExitCode=1 | Duration=3s
 [2026-09-30 22:41:22] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=1m 7s
+[2026-10-01 09:05:28] ERROR: Model=seasplat | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=19m 45s
+[2026-10-01 09:30:13] ERROR: Model=seasplat | Scene=Tokai | Stage=all | ExitCode=1 | Duration=24m 43s
+[2026-10-01 09:30:59] ERROR: Model=3d-uir | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=44s
+[2026-10-01 09:31:04] ERROR: Model=3d-uir | Scene=Tokai | Stage=all | ExitCode=1 | Duration=3s
+[2026-10-01 09:48:22] ERROR: Model=gaussiansplashing | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=17m 16s
+[2026-10-01 10:10:49] ERROR: Model=gaussiansplashing | Scene=Tokai | Stage=all | ExitCode=1 | Duration=22m 25s
+[2026-10-01 10:12:46] ERROR: Model=watersplatting | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=1m 55s
+[2026-10-01 10:12:59] ERROR: Model=watersplatting | Scene=Tokai | Stage=all | ExitCode=1 | Duration=11s
+[2026-10-01 10:14:00] ERROR: Model=rusplatting | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=59s
+[2026-10-01 10:14:07] ERROR: Model=rusplatting | Scene=Tokai | Stage=all | ExitCode=1 | Duration=5s
+[2026-10-01 10:14:49] ERROR: Model=uw-gs | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=40s
+[2026-10-01 10:14:53] ERROR: Model=uw-gs | Scene=Tokai | Stage=all | ExitCode=1 | Duration=2s
+[2026-10-01 10:17:23] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=35s
