@@ -57,3 +57,14 @@ To request GPU resources, add the `ngpus` flag to your `select` directive. Becau
 - `qsub -I -l select=...`: Start an interactive job (terminal session on a compute node).
 - `qstat -u $USER`: View the status of your queued and running jobs.
 - `qdel <job_id>`: Delete/cancel a submitted job.
+- `qsig -s 2 <job_id>`: Send `SIGINT` (signal 2, equivalent to `Ctrl+C`) to the running job processes to unfreeze interactive loops.
+
+## 6. Headless Batch Execution & Interactive Viewers
+- **[CRITICAL] No Interactive WebSockets:** Frameworks such as Nerfstudio (WaterSplatting) host an interactive WebSocket/HTTP viewer on port 7007 and block post-training waiting for manual user exit (`Use ctrl+c to quit`). In headless batch jobs, this will burn all remaining walltime.
+- **Enforcing Auto-Termination:** Always configure training commands to run headlessly:
+  - Nerfstudio / WaterSplatting: Use `--vis wandb --viewer.quit-on-train-completion True` and ensure `quit_on_train_completion=True` in `water_splatting_config.py`.
+  - WandB: Always ensure `export WANDB_MODE=offline` (or `disabled`) so headless nodes never prompt for web authentication.
+- **Unfreezing a Hanging Job Without Data Loss:** If a training job has reached 100% and is hanging at `"Use ctrl+c to quit"`:
+  - From the compute node: run `pkill -2 -f ns-train` (or `kill -INT <PID>`). Nerfstudio catches `SIGINT`, exits with status 0, and the pipeline immediately proceeds to `.ply` export, mesh extraction, and evaluation.
+  - From the login node: run `qsig -s 2 <job_id>`.
+

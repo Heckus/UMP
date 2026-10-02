@@ -227,8 +227,9 @@ Executes model-specific training in its respective isolated Conda environment:
    ```
 4. **WaterSplatting** (`water_splatting`):
    ```bash
-   ns-train water-splatting --vis viewer+wandb colmap --downscale-factor 1 --colmap-path sparse/0 --data <scene_path> --images-path images
+   ns-train water-splatting --vis wandb --viewer.quit-on-train-completion True colmap --downscale-factor 1 --colmap-path sparse/0 --data <scene_path> --images-path images
    ```
+   > **[CRITICAL]** In headless HPC / batch environments, Nerfstudio defaults to hosting an interactive 3D web viewer on `localhost:7007` and blocks indefinitely at training completion waiting for `Ctrl+C`. `--vis wandb` eliminates the web viewer, and `--viewer.quit-on-train-completion True` ensures the training process cleanly terminates upon reaching the final iteration (15,000 steps).
 5. **RUSplatting** (`rusplatting`):
    ```bash
    python train.py -s <scene_path> --adaptive --eval

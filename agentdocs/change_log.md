@@ -260,3 +260,11 @@ Following the submission of `HPC/scripts/run_pipeline.pbs` on QUT Aqua (Job ID `
 
 8. **Zero-Warning ShellCheck & E2E Test Suite**:
    - Resolved all ShellCheck warnings across all scripts (`run_pipeline.sh`, `verify_env.sh`, and E2E test suites). All 111 test assertions across ShellCheck and Tiers 1-4 pass with 0 errors.
+
+9. **WaterSplatting Interactive Viewer Headless Hang (PBS Cluster Fix)**:
+   - **Bug**: During `run_pipeline.pbs` execution on QUT Aqua (`aquarius02`), WaterSplatting reached 100% training completion (14,999 iterations), saved checkpoints and `config.yml`, but then froze the entire PBS job for 12+ hours with `"Viewer running locally at: http://localhost:7007 (listening on 0.0.0.0)"` and `"Use ctrl+c to quit"`. Because Nerfstudio defaults to keeping an interactive WebSocket/HTTP viewer alive post-training, the command waited indefinitely for a manual `Ctrl+C`, blocking `ns-export`, SuGaR mesh extraction, evaluation, and remaining models.
+   - **Fix**: 
+     - In [`Codebase/scripts/run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L750), changed `--vis viewer+wandb` to `--vis wandb --viewer.quit-on-train-completion True`. `--vis wandb` removes the local web viewer entirely in headless environments, and `--viewer.quit-on-train-completion True` acts as a fail-safe ensuring Nerfstudio cleanly terminates the process upon completion.
+     - In [`water_splatting_config.py`](file:///s:/GithubRepos/UMP/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/water_splatting/water_splatting_config.py#L92), set `quit_on_train_completion=True` inside `ViewerConfig` for both `water_splatting_method` and `water_splatting_method_big` to prevent hangs even when invoked directly outside the pipeline.
+     - Added checkpoint idempotency detection to WaterSplatting in [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L752): if a valid checkpoint (`nerfstudio_models/*.ckpt`) and `config.yml` exist and `--stage train` was not explicitly requested, the pipeline skips training to avoid repeating completed compute (saving 12+ hours).
+

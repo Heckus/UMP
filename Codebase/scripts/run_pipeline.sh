@@ -746,11 +746,24 @@ execute_model_pipeline() {
                 if [[ ! -d "${scene_path}/images" && -d "${scene_path}/input" ]]; then
                     ws_img_path="input"
                 fi
-                run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
-                    ns-train water-splatting --experiment-name "${scene_name}" --vis viewer+wandb colmap --downscale-factor 1 --eval-mode interval --eval-interval 8 --colmap-path sparse/0 --data "${scene_path}" --images-path "${ws_img_path}"
                 local ws_output_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/${scene_name}/water-splatting"
                 local config_path
-                config_path="$(find "${ws_output_dir}" -name 'config.yml' | sort -r | head -n 1 2>/dev/null || true)"
+                config_path="$(find "${ws_output_dir}" -name 'config.yml' 2>/dev/null | sort -r | head -n 1 || true)"
+                local has_checkpoint=false
+                if [[ -n "${config_path}" && -d "$(dirname "${config_path}")/nerfstudio_models" ]]; then
+                    if find "$(dirname "${config_path}")/nerfstudio_models" -name "*.ckpt" 2>/dev/null | grep -q "\.ckpt"; then
+                        has_checkpoint=true
+                    fi
+                fi
+
+                if [[ "${STAGE_NAME}" != "train" && "${has_checkpoint}" == "true" ]]; then
+                    log_info "WaterSplatting checkpoint already exists at $(dirname "${config_path}"). Skipping training to conserve compute."
+                else
+                    run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
+                        ns-train water-splatting --experiment-name "${scene_name}" --vis wandb --viewer.quit-on-train-completion True colmap --downscale-factor 1 --eval-mode interval --eval-interval 8 --colmap-path sparse/0 --data "${scene_path}" --images-path "${ws_img_path}"
+                    config_path="$(find "${ws_output_dir}" -name 'config.yml' 2>/dev/null | sort -r | head -n 1 || true)"
+                fi
+
                 if [[ -n "${config_path}" ]]; then
                     local run_dir
                     run_dir="$(dirname "${config_path}")"
