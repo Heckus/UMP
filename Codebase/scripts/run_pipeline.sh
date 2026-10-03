@@ -728,7 +728,9 @@ execute_model_pipeline() {
                     python train.py -s "${scene_path}" -m "output/${scene_name}" --do_seathru --seathru_from_iter 10000 --eval
                 ;;
             3d-uir)
-                conda run -n "3d-uir" pip install matplotlib 2>/dev/null || true
+                if [[ "${DRY_RUN}" != "true" ]]; then
+                    conda run -n "3d-uir" pip install matplotlib 2>/dev/null || true
+                fi
                 run_stage_command "3d-uir" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main" \
                     python train.py -s "${scene_path}" -m "output/${scene_name}" -d "${scene_path}/depths" --eval
                 ;;
@@ -769,10 +771,21 @@ execute_model_pipeline() {
                     local run_dir
                     run_dir="$(dirname "${config_path}")"
                     log_info "Exporting WaterSplatting to .ply for visualization and SuGaR:"
-                    # Patch nerfstudio exporter to allow WaterSplattingModel
-                    exporter_path=$(conda run -n water_splatting python -c "import nerfstudio.scripts.exporter as e; print(e.__file__)" 2>/dev/null)
-                    if [[ -f "$exporter_path" ]]; then
-                        sed -i 's/assert isinstance(pipeline.model, SplatfactoModel)/# assert isinstance(pipeline.model, SplatfactoModel)/g' "$exporter_path" || true
+                    if [[ "${DRY_RUN}" != "true" ]]; then
+                        # Patch nerfstudio exporter to allow WaterSplattingModel
+                        local exporter_path=""
+                        for p in "${HOME}/.conda/envs/water_splatting/lib/python"*/site-packages/nerfstudio/scripts/exporter.py; do
+                            if [[ -f "${p}" ]]; then
+                                exporter_path="${p}"
+                                break
+                            fi
+                        done
+                        if [[ -z "${exporter_path}" ]]; then
+                            exporter_path=$(conda run -n water_splatting python -c "import nerfstudio.scripts.exporter as e; print(e.__file__)" 2>/dev/null || true)
+                        fi
+                        if [[ -n "${exporter_path}" && -f "${exporter_path}" ]]; then
+                            sed -i 's/assert isinstance(pipeline.model, SplatfactoModel)/# assert isinstance(pipeline.model, SplatfactoModel)/g' "${exporter_path}" || true
+                        fi
                     fi
                     run_stage_command "water_splatting" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Image/water-splatting-main" \
                         ns-export gaussian-splat --load-config "${config_path}" --output-dir "${run_dir}/export"
