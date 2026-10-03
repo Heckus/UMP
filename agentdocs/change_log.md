@@ -292,6 +292,6 @@ Following the execution of `run_pipeline.pbs` on QUT Aqua, additional model-spec
    - **Bug**: Both models failed in `gaussian_renderer/__init__.py` with `TypeError: GaussianRasterizationSettings.__new__() got an unexpected keyword argument` (`depth_threshold` for RUSplatting, `antialiasing` for OSCD). The local environment contained standard `diff-gaussian-rasterization` versions missing these custom kwargs.
    - **Fix**: Wrapped the `GaussianRasterizationSettings` instantiation in a `try...except TypeError` block to cleanly fallback to the standard kwargs.
 
-6. **UW-GS PyTorch 1.12.1 / Hopper (sm_90) Incompatibility**:
-   - **Bug**: UW-GS failed with `RuntimeError: CUDA error: no kernel image is available for execution on the device` because PyTorch 1.12.1 (built for CUDA 11.6) lacks support for H100 Hopper GPUs (`sm_90`).
-   - **Fix**: Upgraded the UW-GS setup recipe in `setup_env.sh` to install Python 3.10 and PyTorch 2.1.2 with CUDA 11.8 support.
+6. **UW-GS PyTorch 1.12.1 / Hopper (sm_90) Incompatibility & Build Dependencies**:
+   - **Bug**: UW-GS failed with `RuntimeError: CUDA error: no kernel image is available for execution on the device` because PyTorch 1.12.1 (built for CUDA 11.6) lacks support for H100 Hopper GPUs (`sm_90`). During setup under Python 3.10, default Conda channels installed `setuptools==83.0.0` and `numpy==2.2.6`, which caused `torch.utils.cpp_extension` to fail with `ModuleNotFoundError: No module named 'pkg_resources'` and `Failed to initialize NumPy: _ARRAY_API not found`.
+   - **Fix**: Upgraded the UW-GS setup recipe in `setup_env.sh` to install Python 3.10 and PyTorch 2.1.2 with CUDA 11.8 support, and explicitly pinned `"setuptools<70.0.0" wheel` and `"numpy<2"`. Also pinned setuptools in `setup_sugar`.

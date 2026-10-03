@@ -825,9 +825,10 @@ setup_UW_GS() {
     create_conda_env UW-GS python=3.10 -y
     activate_env UW-GS
     run_cmd pip install --upgrade pip ninja
-    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
+    run_cmd pip install "setuptools<70.0.0" wheel  # restores pkg_resources required by torch.utils.cpp_extension
+    run_cmd pip install "numpy<2"
     run_cmd pip install torch==2.1.2+cu118 torchvision==0.16.2+cu118 torchaudio==2.1.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
-    run_cmd pip install plyfile==0.8.1 tqdm imageio==2.27.0 opencv-python imageio-ffmpeg scipy dearpygui lpips
+    run_cmd pip install "numpy<2" plyfile==0.8.1 tqdm imageio==2.27.0 opencv-python imageio-ffmpeg scipy dearpygui lpips
     # PyTorch 2.1.2 use CUDA 11.8 path
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
@@ -859,7 +860,7 @@ setup_sugar() {
     fi
     activate_env sugar
     run_cmd pip install --upgrade pip ninja
-    run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
+    run_cmd pip install "setuptools<70.0.0" wheel  # restores pkg_resources required by torch.utils.cpp_extension
     run_cmd pip install "numpy<2" open3d PyMCubes plyfile==0.8.1 rich plotly
     # PyTorch 2.0.1 was built for CUDA 11.8; point CUDA_HOME at 11.8 to avoid version mismatch
     _saved_cuda_home="${CUDA_HOME:-}"
