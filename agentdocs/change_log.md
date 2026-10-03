@@ -295,3 +295,7 @@ Following the execution of `run_pipeline.pbs` on QUT Aqua, additional model-spec
 6. **UW-GS PyTorch 1.12.1 / Hopper (sm_90) Incompatibility & Build Dependencies**:
    - **Bug**: UW-GS failed with `RuntimeError: CUDA error: no kernel image is available for execution on the device` because PyTorch 1.12.1 (built for CUDA 11.6) lacks support for H100 Hopper GPUs (`sm_90`). During setup under Python 3.10, default Conda channels installed `setuptools==83.0.0` and `numpy==2.2.6`, which caused `torch.utils.cpp_extension` to fail with `ModuleNotFoundError: No module named 'pkg_resources'` and `Failed to initialize NumPy: _ARRAY_API not found`.
    - **Fix**: Upgraded the UW-GS setup recipe in `setup_env.sh` to install Python 3.10 and PyTorch 2.1.2 with CUDA 11.8 support, and explicitly pinned `"setuptools<70.0.0" wheel` and `"numpy<2"`. Also pinned setuptools in `setup_sugar`.
+
+7. **Dry-Run Overhead & Nerfstudio Exporter Path Discovery**:
+   - **Bug**: During `run_pipeline.sh --dry-run`, the script unconditionally invoked `conda run -n water_splatting python -c "import nerfstudio..."` to locate `exporter.py`. Importing Nerfstudio, PyTorch, and CUDA over cluster NFS took 15-30 seconds, causing dry-run to appear to hang.
+   - **Fix**: Wrapped the exporter patch routine in `if [[ "${DRY_RUN}" != "true" ]]; then` and added fast direct filesystem glob discovery (`${HOME}/.conda/envs/water_splatting/.../exporter.py`), eliminating the latency completely.
