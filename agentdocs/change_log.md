@@ -268,3 +268,30 @@ Following the submission of `HPC/scripts/run_pipeline.pbs` on QUT Aqua (Job ID `
      - In [`water_splatting_config.py`](file:///s:/GithubRepos/UMP/Codebase/3DGS-Water-Approaches/Image/water-splatting-main/water_splatting/water_splatting_config.py#L92), set `quit_on_train_completion=True` inside `ViewerConfig` for both `water_splatting_method` and `water_splatting_method_big` to prevent hangs even when invoked directly outside the pipeline.
      - Added checkpoint idempotency detection to WaterSplatting in [`run_pipeline.sh`](file:///s:/GithubRepos/UMP/Codebase/scripts/run_pipeline.sh#L752): if a valid checkpoint (`nerfstudio_models/*.ckpt`) and `config.yml` exist and `--stage train` was not explicitly requested, the pipeline skips training to avoid repeating completed compute (saving 12+ hours).
 
+## Pipeline Script and Render Script Fixes (Job Completion)
+
+Following the execution of `run_pipeline.pbs` on QUT Aqua, additional model-specific crashes were identified in the `run_pipeline_complete.log` and fixed:
+
+1. **SeaSplat (and SuGaR) SH Coordinates Bug**:
+   - **Bug**: SuGaR mesh extraction crashed with `RuntimeError: min(): Expected reduction dim to be specified for input.numel() == 0` in `sugar_trainers/coarse_density_and_dn_consistency.py`. This occurred because models trained with SH degree 0 (like SeaSplat) produce empty `_sh_coordinates_rest` tensors, causing `.min()` to fail.
+   - **Fix**: Added an `if sugar._sh_coordinates_rest.numel() > 0:` guard before printing the statistics.
+
+2. **3D-UIR Missing Dependency (`matplotlib`)**:
+   - **Bug**: 3D-UIR crashed during rendering with `ModuleNotFoundError: No module named 'matplotlib'`.
+   - **Fix**: Injected `conda run -n "3d-uir" pip install matplotlib` directly into `run_pipeline.sh` before training.
+
+3. **Gaussian Splashing `source_path` Attribute Error**:
+   - **Bug**: `render.py` crashed with `AttributeError: 'GroupParams' object has no attribute 'source_path'` because the JSON-based `cfg_args` fallback mechanism failed to parse the dictionary correctly into the argparse namespace, omitting `source_path`.
+   - **Fix**: Augmented the `render.py` invocation in `run_pipeline.sh` to explicitly pass `-s "${scene_path}"`.
+
+4. **WaterSplatting `ns-export` Assertion Error**:
+   - **Bug**: `ns-export` failed with `AssertionError: assert isinstance(pipeline.model, SplatfactoModel)` because WaterSplatting models use a subclass (`WaterSplatModel`) rather than the base `SplatfactoModel`.
+   - **Fix**: Added an automated sed patch in `run_pipeline.sh` to dynamically comment out the assertion in Nerfstudio's `exporter.py` right before export.
+
+5. **RUSplatting and OSCD Custom Rasterizer Kwargs**:
+   - **Bug**: Both models failed in `gaussian_renderer/__init__.py` with `TypeError: GaussianRasterizationSettings.__new__() got an unexpected keyword argument` (`depth_threshold` for RUSplatting, `antialiasing` for OSCD). The local environment contained standard `diff-gaussian-rasterization` versions missing these custom kwargs.
+   - **Fix**: Wrapped the `GaussianRasterizationSettings` instantiation in a `try...except TypeError` block to cleanly fallback to the standard kwargs.
+
+6. **UW-GS PyTorch 1.12.1 / Hopper (sm_90) Incompatibility**:
+   - **Bug**: UW-GS failed with `RuntimeError: CUDA error: no kernel image is available for execution on the device` because PyTorch 1.12.1 (built for CUDA 11.6) lacks support for H100 Hopper GPUs (`sm_90`).
+   - **Fix**: Upgraded the UW-GS setup recipe in `setup_env.sh` to install Python 3.10 and PyTorch 2.1.2 with CUDA 11.8 support.

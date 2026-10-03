@@ -813,7 +813,7 @@ setup_rusplatting() {
 
 # Recipe 8: UW-GS
 setup_UW_GS() {
-    log_section "Provisioning Conda Environment: UW-GS (Python 3.7, Linux Sanitized Recipe)"
+    log_section "Provisioning Conda Environment: UW-GS (Python 3.10, Linux Sanitized Recipe)"
     local repo_dir="${CODEBASE_DIR}/3DGS-Water-Approaches/Additional/UW-GS-main"
     local sub_diff="${repo_dir}/submodules/diff-gaussian-rasterization"
     local sub_knn="${repo_dir}/submodules/simple-knn"
@@ -822,13 +822,13 @@ setup_UW_GS() {
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
     log_info "Creating UW-GS environment (omitting Windows mkl/vc dependencies)..."
-    create_conda_env UW-GS python=3.7 -y
+    create_conda_env UW-GS python=3.10 -y
     activate_env UW-GS
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install setuptools  # restores pkg_resources required by torch.utils.cpp_extension
-    run_cmd pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
+    run_cmd pip install torch==2.1.2+cu118 torchvision==0.16.2+cu118 torchaudio==2.1.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
     run_cmd pip install plyfile==0.8.1 tqdm imageio==2.27.0 opencv-python imageio-ffmpeg scipy dearpygui lpips
-    # PyTorch 1.12.1 was built for CUDA 11.6; use CUDA 11.8 path (backward compatible) to avoid mismatch
+    # PyTorch 2.1.2 use CUDA 11.8 path
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
