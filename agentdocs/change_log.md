@@ -343,3 +343,31 @@ Following the execution of `run_pipeline.pbs` on QUT Aqua (Job ID `26300478.aqua
    - **Bug**: Baseline reference training crashed at iteration 0 with `ValueError: not enough values to unpack (expected 3, got 2)` in `Codebase/Tools/gaussian-splatting-main/gaussian_renderer/__init__.py`.
    - **Root Cause**: Lines 107 and 118 unpacked 3 values `rendered_image, radii, depth_image = rasterizer(...)`, but the installed rasterizer returned a 2-tuple `(rendered_image, radii)`.
    - **Fix**: Updated `gaussian-splatting-main/gaussian_renderer/__init__.py` to unpack flexibly, cleanly accommodating both 2-tuple and 3-tuple return values.
+
+## Fourth Setup Job Audit & SuGaR Environment Provisioning Fix (`setup_env_complete.log`)
+
+Following the execution of `HPC/scripts/setup_env.pbs` (Job ID `26340565.aqua`, walltime 46m 16s), 10 out of 11 environments (`colmap_runner`, `depth_anything`, `seasplat_py310`, `3d-uir`, `gaussianSplashing_env`, `water_splatting`, `rusplatting`, `UW-GS`, `oscd`, `3dgs`) were successfully recreated with correct Python versions, compiled C++ extensions, and custom rasterizers. However, `sugar` failed with `ModuleNotFoundError: No module named 'torch'` during rasterizer wheel building.
+
+1. **Root Cause**:
+   - In `Codebase/scripts/setup_env.sh`, `setup_sugar` gated PyTorch and PyTorch3D installation with:
+     ```bash
+     if [[ "${RECREATE_ENV}" == "true" ]] || ! conda list -n sugar pytorch3d >/dev/null 2>&1; then
+     ```
+   - When `create_conda_env` recreated `sugar` from Python 3.11 to Python 3.9, `RECREATE_ENV` was unset (as it was not passed on the CLI).
+   - In Conda, `conda list <package>` searches the environment and outputs matching packages, but **exits with return code 0 even if 0 packages match**.
+   - Consequently, `! conda list -n sugar pytorch3d` evaluated to `false`, causing the setup script to completely skip installing `pytorch=2.0.1` and `pytorch3d==0.7.4`. When pip proceeded to install `diff-gaussian-rasterization --no-build-isolation`, `setup.py` failed immediately with `ModuleNotFoundError: No module named 'torch'`.
+   - The same latent bug existed in `setup_water_splatting` with `! conda list -n water_splatting cuda-toolkit`.
+
+2. **Resolution Applied**:
+   - In `Codebase/scripts/setup_env.sh`:
+     - Updated `create_conda_env` to set `ENV_WAS_RECREATED=true` whenever an environment is created fresh or recreated due to Python version mismatch or missing/broken Python.
+     - Updated `setup_sugar` to check `if [[ "${RECREATE_ENV}" == "true" ]] || [[ "${ENV_WAS_RECREATED:-false}" == "true" ]] || ! python -c "import torch, pytorch3d" >/dev/null 2>&1; then`.
+     - Injected fast pip installation using official Meta pre-compiled wheels:
+       `pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118`
+       `pip install fvcore iopath`
+       `pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/download.html`
+       with automatic fallback to `conda install -c pytorch3d pytorch3d==0.7.4` if pip fails.
+     - Updated `setup_water_splatting` to check package presence via `grep -q "^cuda-toolkit[[:space:]]"` instead of raw exit code.
+   - In `HPC/scripts/setup_env.pbs`:
+     - Allowed passing `TARGET_ENV` via PBS environment variables (`${TARGET_ENV:-colmap_runner ...}`), allowing users to provision or re-run a single environment (e.g., `qsub -v TARGET_ENV=sugar HPC/scripts/setup_env.pbs`) in minutes without re-looping all environments.
+

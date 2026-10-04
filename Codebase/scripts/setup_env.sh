@@ -615,6 +615,7 @@ create_conda_env() {
         fi
     fi
 
+    ENV_WAS_RECREATED=false
     if [[ "${env_exists}" == "true" ]]; then
         local req_py=""
         for arg in "$@"; do
@@ -628,17 +629,19 @@ create_conda_env() {
             cur_py="$("${conda_bin}" run -n "${env_name}" python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null || echo "")"
         fi
 
-        if [[ "${RECREATE_ENV}" == "true" ]] || [[ -n "${req_py}" && -n "${cur_py}" && "${req_py}" != "${cur_py}" ]]; then
-            log_info "Recreating Conda environment '${env_name}' (requested python=${req_py:-auto}, existing python=${cur_py:-unknown})..."
+        if [[ "${RECREATE_ENV}" == "true" ]] || [[ -z "${cur_py}" ]] || [[ -n "${req_py}" && "${req_py}" != "${cur_py}" ]]; then
+            log_info "Recreating Conda environment '${env_name}' (requested python=${req_py:-auto}, existing python=${cur_py:-missing/broken})..."
             run_cmd conda env remove -n "${env_name}" -y
             log_info "Creating fresh Conda environment '${env_name}'..."
             run_cmd conda create -n "${env_name}" "$@"
+            ENV_WAS_RECREATED=true
         else
             log_info "Conda environment '${env_name}' already exists (Python ${cur_py:-ok}). Reusing environment (run with --recreate to wipe and reinstall)."
         fi
     else
         log_info "Creating Conda environment '${env_name}'..."
         run_cmd conda create -n "${env_name}" "$@"
+        ENV_WAS_RECREATED=true
     fi
 }
 
@@ -779,8 +782,10 @@ setup_water_splatting() {
     ensure_submodule "${repo_dir}/water_splatting/cuda/csrc/third_party/glm" "https://github.com/g-truc/glm.git"
 
     create_conda_env water_splatting python=3.8 -y
-    if [[ "${RECREATE_ENV}" == "true" ]] || ! conda list -n water_splatting cuda-toolkit >/dev/null 2>&1; then
-        run_cmd conda install -y -n water_splatting -c "nvidia/label/cuda-11.8.0" cuda-toolkit
+    local conda_bin
+    conda_bin="$(get_conda_exe 2>/dev/null || echo "conda")"
+    if [[ "${RECREATE_ENV}" == "true" ]] || [[ "${ENV_WAS_RECREATED:-false}" == "true" ]] || ! "${conda_bin}" list -n water_splatting 2>/dev/null | grep -q "^cuda-toolkit[[:space:]]"; then
+        run_cmd conda install -y -n water_splatting -c "nvidia/label/cuda-11.8.0" cuda-toolkit || true
     fi
     activate_env water_splatting
     run_cmd pip install --upgrade pip
@@ -869,14 +874,23 @@ setup_sugar() {
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
     create_conda_env sugar python=3.9 -y
-    if [[ "${RECREATE_ENV}" == "true" ]] || ! conda list -n sugar pytorch3d >/dev/null 2>&1; then
-        run_cmd conda install -y -n sugar pytorch=2.0.1 torchvision=0.15.2 torchaudio=2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
-        run_cmd conda install -y -n sugar -c fvcore -c iopath -c conda-forge fvcore iopath
-        run_cmd conda install -y -n sugar -c pytorch3d pytorch3d==0.7.4
-    fi
     activate_env sugar
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install "setuptools<70.0.0" wheel  # restores pkg_resources required by torch.utils.cpp_extension
+
+    if [[ "${RECREATE_ENV}" == "true" ]] || [[ "${ENV_WAS_RECREATED:-false}" == "true" ]] || ! python -c "import torch, pytorch3d" >/dev/null 2>&1; then
+        log_info "Installing PyTorch 2.0.1 (CUDA 11.8) and PyTorch3D in 'sugar'..."
+        if ! run_cmd pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118; then
+            log_warn "pip install for PyTorch 2.0.1 failed, falling back to conda install..."
+            run_cmd conda install -y -n sugar pytorch=2.0.1 torchvision=0.15.2 torchaudio=2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+        fi
+        run_cmd pip install fvcore iopath
+        if ! run_cmd pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/download.html; then
+            log_warn "pip install for PyTorch3D wheel failed, falling back to conda install..."
+            run_cmd conda install -y -n sugar -c pytorch3d pytorch3d==0.7.4
+        fi
+    fi
+
     run_cmd pip install "numpy<2" open3d PyMCubes plyfile==0.8.1 rich plotly
     # PyTorch 2.0.1 was built for CUDA 11.8; point CUDA_HOME at 11.8 to avoid version mismatch
     _saved_cuda_home="${CUDA_HOME:-}"
@@ -884,8 +898,8 @@ setup_sugar() {
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
         [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
+    run_cmd pip install "${sub_knn}" --no-build-isolation --force-reinstall --no-deps
     [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
     log_success "Environment 'sugar' successfully provisioned."

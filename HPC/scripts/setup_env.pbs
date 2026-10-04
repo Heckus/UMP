@@ -90,7 +90,7 @@ FAILED_ENVS=()
 # Provision each environment independently to bypass system dependency checks.
 # Healthy existing environments are verified and reused quickly;
 # water_splatting will complete its pending package installation.
-for ENV_NAME in colmap_runner depth_anything seasplat_py310 3d-uir gaussianSplashing_env water_splatting rusplatting UW-GS sugar oscd 3dgs; do
+for ENV_NAME in ${TARGET_ENV:-colmap_runner depth_anything seasplat_py310 3d-uir gaussianSplashing_env water_splatting rusplatting UW-GS sugar oscd 3dgs}; do
     echo "======================================================================"
     echo " Provisioning Conda Environment: ${ENV_NAME}"
     echo "======================================================================"
