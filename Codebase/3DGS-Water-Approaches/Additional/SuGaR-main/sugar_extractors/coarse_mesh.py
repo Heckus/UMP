@@ -1,4 +1,5 @@
 import os
+import math
 import numpy as np
 import open3d as o3d
 import torch
@@ -167,20 +168,29 @@ def extract_mesh_from_coarse_sugar(args):
     else:
         CONSOLE.print(f"\nLoading the coarse SuGaR model from path {sugar_checkpoint_path}...")
         checkpoint = torch.load(sugar_checkpoint_path, map_location=nerfmodel.device)
-        colors = SH2RGB(checkpoint['state_dict']['_sh_coordinates_dc'][:, 0, :])
+        state_dict = checkpoint['state_dict']
+        if '_sh_coordinates_rest' in state_dict and state_dict['_sh_coordinates_rest'].numel() > 0:
+            num_rest = state_dict['_sh_coordinates_rest'].shape[1]
+            sh_levels = int(math.isqrt(num_rest + 1))
+        elif '_sh_coordinates_rest' in state_dict and state_dict['_sh_coordinates_rest'].shape[1] == 0:
+            sh_levels = 1
+        else:
+            sh_levels = nerfmodel.gaussians.active_sh_degree + 1
+
+        colors = SH2RGB(state_dict['_sh_coordinates_dc'][:, 0, :])
         sugar = SuGaR(
             nerfmodel=nerfmodel,
-            points=checkpoint['state_dict']['_points'],
+            points=state_dict['_points'],
             colors=colors,
             initialize=True,
-            sh_levels=nerfmodel.gaussians.active_sh_degree+1,
+            sh_levels=sh_levels,
             keep_track_of_knn=True,
             knn_to_track=16,
             beta_mode='average',  # 'learnable', 'average', 'weighted_average'
             primitive_types='diamond',  # 'diamond', 'square'
             surface_mesh_to_bind=None,  # Open3D mesh
             )
-        sugar.load_state_dict(checkpoint['state_dict'])
+        sugar.load_state_dict(state_dict)
     sugar.eval()
     
     CONSOLE.print("Coarse model loaded.")

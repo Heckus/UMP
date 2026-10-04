@@ -31,7 +31,21 @@ def load_gs_cameras(source_path, gs_output_path, image_resolution=1,
     """
     image_dir = os.path.join(source_path, 'images')
     
-    with open(gs_output_path + 'cameras.json') as f:
+    cam_json_candidates = [
+        os.path.join(gs_output_path, 'cameras.json'),
+        (gs_output_path + 'cameras.json') if not gs_output_path.endswith('/') else (gs_output_path + 'cameras.json'),
+        os.path.join(os.path.dirname(gs_output_path.rstrip('/\\')), 'cameras.json'),
+        os.path.join(source_path, 'cameras.json'),
+    ]
+    cam_json_path = None
+    for cand in cam_json_candidates:
+        if os.path.exists(cand):
+            cam_json_path = cand
+            break
+    if cam_json_path is None:
+        raise FileNotFoundError(f"Could not find cameras.json in any candidate location: {cam_json_candidates}")
+
+    with open(cam_json_path) as f:
         unsorted_camera_transforms = json.load(f)
         
     # Remove indices

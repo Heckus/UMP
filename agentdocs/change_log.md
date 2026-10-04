@@ -299,3 +299,47 @@ Following the execution of `run_pipeline.pbs` on QUT Aqua, additional model-spec
 7. **Dry-Run Overhead & Nerfstudio Exporter Path Discovery**:
    - **Bug**: During `run_pipeline.sh --dry-run`, the script unconditionally invoked `conda run -n water_splatting python -c "import nerfstudio..."` to locate `exporter.py`. Importing Nerfstudio, PyTorch, and CUDA over cluster NFS took 15-30 seconds, causing dry-run to appear to hang.
    - **Fix**: Wrapped the exporter patch routine in `if [[ "${DRY_RUN}" != "true" ]]; then` and added fast direct filesystem glob discovery (`${HOME}/.conda/envs/water_splatting/.../exporter.py`), eliminating the latency completely.
+
+## Third Pipeline Execution Audit & Comprehensive 15-Execution Failure Resolution (`run_pipeline_complete.log`)
+
+Following the execution of `run_pipeline.pbs` on QUT Aqua (Job ID `26300478.aqua`, 9h 53m walltime), all 15 sequential executions were audited from `run_pipeline_complete.log`. Zero executions succeeded out of 15 due to 7 core runtime issues across models and pipeline orchestration. All 7 root causes were identified and fixed:
+
+1. **SuGaR Out-of-Bounds Illegal CUDA Memory Access (Executions 1 & 5: SeaSplat Kwaj & GaussianSplashing Kwaj)**:
+   - **Bug**: During coarse training at iteration ~13,000, training crashed with `RuntimeError: CUDA error: operation not supported on global/shared address space` and `CUDA error: an illegal memory access was encountered` right after logging `Resetting neighbors...`.
+   - **Root Cause**: In `sugar_trainers/coarse_density_and_dn_consistency.py`, lines 669-671 sampled a subset of neighbors `neighbor_idx` (100k rows) and indexed it using `neighbor_idx[visibility_filter]`, where `visibility_filter` had the size of the full point cloud (~843k elements). Indexing a 100k tensor with an 843k boolean mask accessed unallocated CUDA memory, crashing the CUDA device. The variable `neighbor_idx` was completely unused dead code (marked `# TODO: REMOVE THIS PART` / `# TODO: Error here`).
+   - **Fix**: Completely removed the unused, buggy `neighbor_idx` indexing lines from `coarse_density_and_dn_consistency.py`.
+
+2. **SuGaR Refined Model SH Coordinates Size Mismatch (Executions 2, 13, 14: SeaSplat Tokai, SuGaR Kwaj, SuGaR Tokai)**:
+   - **Bug**: Refined mesh texture extraction crashed with `RuntimeError: Error(s) in loading state_dict for SuGaR: size mismatch for _sh_coordinates_rest: copying a param with shape torch.Size([N, 15, 3]) from checkpoint, the shape in current model is torch.Size([N, 0, 3])`.
+   - **Root Cause**: In `sugar_extractors/refined_mesh.py` (and `coarse_mesh.py`, `metrics.py`), `SuGaR` was initialized with `sh_levels=nerfmodel.gaussians.active_sh_degree + 1`. For models with `active_sh_degree=0` (such as SeaSplat), this set `sh_levels=1` (`_sh_coordinates_rest` shape `[N, 0, 3]`), while the refined checkpoint was saved with `sh_levels=4` (15 channels, `[N, 15, 3]`).
+   - **Fix**: Dynamically deduce `sh_levels` from the checkpoint's `_sh_coordinates_rest.shape[1]` (`sh_levels = int(math.isqrt(num_rest + 1))`), ensuring the model instance matches the saved state dict.
+
+3. **3D-UIR Missing `kornia` Runtime Dependency (Executions 3 & 4: 3D-UIR Kwaj & Tokai)**:
+   - **Bug**: 3D-UIR crashed at iteration 0 with `ModuleNotFoundError: No module named 'kornia'`.
+   - **Root Cause**: `3D-UIR-main/utils/general_utils.py` imports `kornia.color as colors`, but `kornia` was missing from `setup_3d_uir` in `setup_env.sh`.
+   - **Fix**: Added `kornia` (and `matplotlib`) to `setup_3d_uir` in `setup_env.sh` and injected pre-flight pip installation into `run_pipeline.sh`.
+
+4. **GaussianSplashing AttributeError on `sh_degree` (Execution 6: GaussianSplashing Tokai)**:
+   - **Bug**: Stage 6 evaluation crashed with `AttributeError: 'GroupParams' object has no attribute 'sh_degree'` in `render.py`.
+   - **Root Cause**: `ParamGroup.extract()` only populated attributes that were explicitly provided and non-`None` in parsed arguments. When `get_combined_args` failed to parse `cfg_args`, defaults in `ModelParams` were not transferred to `GroupParams`.
+   - **Fix**: Initialized `GroupParams` with all defaults from `self` before applying parsed argument overrides in `arguments/__init__.py`, added robust JSON parsing fallback for `cfg_args.json`, and added `getattr(dataset, 'sh_degree', 3)` in `render.py`.
+
+5. **WaterSplatting / SuGaR Missing `cameras.json` (Executions 7 & 8: WaterSplatting Kwaj & Tokai)**:
+   - **Bug**: Stage 5 SuGaR mesh extraction failed with `FileNotFoundError: No such file or directory: '.../export/cameras.json'`.
+   - **Root Cause**: WaterSplatting exports via Nerfstudio (`ns-export gaussian-splat`), which generates `splat.ply` but not COLMAP-format `cameras.json`. SuGaR's `load_gs_cameras()` hardcodes looking for `cameras.json` in the export folder.
+   - **Fix**: Augmented `run_sugar_mesh_stage` in `run_pipeline.sh` to automatically locate and symlink the scene's `cameras.json` (from sibling models or scene folder) into `${gs_prior}/cameras.json`, and updated `sugar_scene/cameras.py` to search fallback candidate paths. Also updated `.obj` export detection to locate `sugarfine_*.obj` and copy it to `${expected_obj}`.
+
+6. **RUSplatting & UW-GS Custom Rasterizer Missing (`colors_precomp_clean` / `factor`) (Executions 9, 10, 11, 12)**:
+   - **Bug**: RUSplatting crashed at iteration 0 with `TypeError: GaussianRasterizer.forward() got an unexpected keyword argument 'colors_precomp_clean'`.
+   - **Root Cause**: Both RUSplatting and UW-GS rely on custom 6-output differentiable rasterizers with custom kwargs (`colors_precomp_clean`, `factor`). In `setup_env.sh`, `ensure_submodule` had overwritten the custom submodule trees with generic Inria 3DGS from GitHub.
+   - **Fix**: Restored the custom `diff-gaussian-rasterization` source trees for both `RUSplatting-main` and `UW-GS-main`, updated `setup_env.sh` to compile with `--force-reinstall --no-deps`, and preserved local custom rasterizer directories.
+
+7. **UW-GS PyTorch / NumPy Dtype Inference & Outdated Conda Env (Executions 11 & 12: UW-GS Kwaj & Tokai)**:
+   - **Bug**: UW-GS failed at camera loading with `RuntimeError: Could not infer dtype of numpy.float32`.
+   - **Root Cause**: Older PyTorch 1.12.1 in the cluster's un-recreated `UW-GS` environment failed on `torch.tensor(getWorld2View2(...))`. Furthermore, the cluster environment was stuck on Python 3.7 / PyTorch 1.12.1 because `create_conda_env` did not check Python version mismatches when reusing environments.
+   - **Fix**: In `UW-GS-main/scene/dataset_readers.py`, explicitly converted via `torch.from_numpy(np.asarray(getWorld2View2(...), dtype=np.float32))`. In `setup_env.sh`, added automatic environment recreation to `create_conda_env` whenever the existing environment's Python version mismatches the requested recipe.
+
+8. **OSCD 3DGS Rasterizer Unpacking ValueError (Execution 15: OSCD baseline reconstruction)**:
+   - **Bug**: Baseline reference training crashed at iteration 0 with `ValueError: not enough values to unpack (expected 3, got 2)` in `Codebase/Tools/gaussian-splatting-main/gaussian_renderer/__init__.py`.
+   - **Root Cause**: Lines 107 and 118 unpacked 3 values `rendered_image, radii, depth_image = rasterizer(...)`, but the installed rasterizer returned a 2-tuple `(rendered_image, radii)`.
+   - **Fix**: Updated `gaussian-splatting-main/gaussian_renderer/__init__.py` to unpack flexibly, cleanly accommodating both 2-tuple and 3-tuple return values.

@@ -1,4 +1,5 @@
 import argparse
+import math
 import os
 import json
 import open3d as o3d
@@ -341,19 +342,28 @@ if __name__ == "__main__":
                             refined_sugar_path = os.path.join(refined_sugar_path, f'{refinement_iterations}.pt')
                             CONSOLE.print(f"Loading SuGaR model config {refined_sugar_path}...")
                             checkpoint = torch.load(refined_sugar_path, map_location=nerfmodel_30k.device)
+                            state_dict = checkpoint['state_dict']
+                            if '_sh_coordinates_rest' in state_dict and state_dict['_sh_coordinates_rest'].numel() > 0:
+                                num_rest = state_dict['_sh_coordinates_rest'].shape[1]
+                                sh_levels = int(math.isqrt(num_rest + 1))
+                            elif '_sh_coordinates_rest' in state_dict and state_dict['_sh_coordinates_rest'].shape[1] == 0:
+                                sh_levels = 1
+                            else:
+                                sh_levels = nerfmodel_30k.gaussians.active_sh_degree + 1
+
                             refined_sugar = SuGaR(
                                 nerfmodel=nerfmodel_30k,
-                                points=checkpoint['state_dict']['_points'],
-                                colors=SH2RGB(checkpoint['state_dict']['_sh_coordinates_dc'][:, 0, :]),
+                                points=state_dict['_points'],
+                                colors=SH2RGB(state_dict['_sh_coordinates_dc'][:, 0, :]),
                                 initialize=False,
-                                sh_levels=nerfmodel_30k.gaussians.active_sh_degree+1,
+                                sh_levels=sh_levels,
                                 keep_track_of_knn=False,
                                 knn_to_track=0,
                                 beta_mode='average',
                                 surface_mesh_to_bind=o3d_mesh,
                                 n_gaussians_per_surface_triangle=n_gaussians_per_surface_triangle,
                                 )
-                            refined_sugar.load_state_dict(checkpoint['state_dict'])
+                            refined_sugar.load_state_dict(state_dict)
                             refined_sugar.eval()
                         
                         # Evaluating SuGaR

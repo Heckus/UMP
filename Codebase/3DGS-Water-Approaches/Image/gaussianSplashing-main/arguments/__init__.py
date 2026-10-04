@@ -124,8 +124,11 @@ class ParamGroup:
 
     def extract(self, args):
         group = GroupParams()
+        for key, value in vars(self).items():
+            clean_key = key[1:] if key.startswith("_") else key
+            setattr(group, clean_key, value)
         for arg in vars(args).items():
-            if arg[0] in vars(self) or ("_" + arg[0]) in vars(self):
+            if (arg[0] in vars(self) or ("_" + arg[0]) in vars(self)) and arg[1] is not None:
                 setattr(group, arg[0], arg[1])
         return group
 
@@ -246,30 +249,46 @@ def add_general_params(parser):
     
 def get_combined_args(parser : ArgumentParser):
     cmdlne_string = sys.argv[1:]
-    cfgfile_string = "Namespace()"
     args_cmdline = parser.parse_args(cmdlne_string)
 
+    args_cfgfile = Namespace()
     try:
         cfgfilepath = os.path.join(args_cmdline.model_path, "cfg_args")
-        print("Looking for config file in", cfgfilepath)
-        if not os.path.exists(cfgfilepath) and os.path.exists(os.path.join(args_cmdline.model_path, "cfg_args.json")):
-            cfgfilepath = os.path.join(args_cmdline.model_path, "cfg_args.json")
+        jsonfilepath = os.path.join(args_cmdline.model_path, "cfg_args.json")
+        loaded = False
+
         if os.path.exists(cfgfilepath):
-            with open(cfgfilepath) as cfg_file:
+            try:
+                print("Looking for config file in", cfgfilepath)
+                with open(cfgfilepath) as cfg_file:
+                    cfgfile_string = cfg_file.read()
                 print("Config file found: {}".format(cfgfilepath))
-                cfgfile_string = cfg_file.read()
-        else:
-            print("Config file not found at", cfgfilepath)
+                args_cfgfile = eval(cfgfile_string)
+                loaded = True
+            except Exception:
+                pass
+
+        if not loaded and os.path.exists(jsonfilepath):
+            try:
+                print("Falling back to JSON config:", jsonfilepath)
+                with open(jsonfilepath) as jf:
+                    data = json.load(jf)
+                flat_dict = {}
+                for k, v in data.items():
+                    if isinstance(v, dict):
+                        flat_dict.update(v)
+                    else:
+                        flat_dict[k] = v
+                args_cfgfile = Namespace(**flat_dict)
+                loaded = True
+            except Exception:
+                pass
     except Exception as e:
         print("Config file error:", e)
         pass
-    try:
-        args_cfgfile = eval(cfgfile_string)
-    except Exception:
-        args_cfgfile = Namespace()
 
     merged_dict = vars(args_cfgfile).copy()
     for k,v in vars(args_cmdline).items():
-        if v != None:
+        if v is not None:
             merged_dict[k] = v
     return Namespace(**merged_dict)

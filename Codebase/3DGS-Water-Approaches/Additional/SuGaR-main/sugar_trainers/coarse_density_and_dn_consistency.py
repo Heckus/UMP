@@ -666,9 +666,6 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                         if (iteration >= start_reset_neighbors_from) and ((iteration == regularize_from + 1) or (iteration % reset_neighbors_every == 0)):
                             CONSOLE.print("\n---INFO---\nResetting neighbors...")
                             sugar.reset_neighbors()
-                        neighbor_idx = sugar.get_neighbors_of_random_points(num_samples=regularity_samples,)  # TODO: REMOVE THIS PART
-                        if visibility_filter is not None:
-                            neighbor_idx = neighbor_idx[visibility_filter]  # TODO: Error here
 
                         if regularize_sdf and iteration > start_sdf_regularization_from:
                             if iteration == start_sdf_regularization_from + 1:

@@ -120,7 +120,8 @@ def readColmapCameras(cam_extrinsics, cam_intrinsics, images_folder, depth_folde
         else:
             depth = None
         trans = np.array([0.0, 0.0, 0.0])
-        world_view_transform = torch.tensor(getWorld2View2(R, T, trans, scale=1.0)).transpose(0, 1)
+        w2v = np.asarray(getWorld2View2(R, T, trans, scale=1.0), dtype=np.float32)
+        world_view_transform = torch.from_numpy(w2v).transpose(0, 1)
         camera_center = world_view_transform.inverse()[3, :3].numpy()
         cam_info = CameraInfo(uid=uid, R=R, T=T, FovY=FovY, FovX=FovX, image=image, depth=depth,
                               image_path=image_path, depth_path=depth_path, image_name= image_name, depth_name=depth_name, width=width, height=height, camera_center=camera_center)

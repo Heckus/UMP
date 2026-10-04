@@ -407,16 +407,32 @@ run_sugar_mesh_stage() {
                 return 0
             fi
         fi
+
+        # Ensure cameras.json is present in gs_prior (critical for WaterSplatting / Nerfstudio exports)
+        local target_cam="${gs_prior}/cameras.json"
+        if [[ ! -f "${target_cam}" ]]; then
+            local found_cam=""
+            found_cam="$(find "${gs_prior}/.." "${REPO_ROOT}/Codebase/3DGS-Water-Approaches" "${scene_path}" -maxdepth 4 -path "*${scene_name}*" -name "cameras.json" 2>/dev/null | head -n 1 || true)"
+            if [[ -n "${found_cam}" && -f "${found_cam}" ]]; then
+                log_info "SuGaR compatibility fix: Symlinking ${found_cam} to ${target_cam}"
+                ln -sfn "${found_cam}" "${target_cam}"
+            fi
+        fi
     fi
 
     run_stage_command "sugar" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main" \
         python train_full_pipeline.py -s "${scene_path}" -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir "${gs_prior}"
     local expected_obj="${scene_path}/output/refined_mesh/${scene_name}.obj"
-    if [[ "${DRY_RUN}" != "true" && ! -f "${expected_obj}" ]]; then
-        local found_obj
-        found_obj="$(find "${scene_path}/output" "${REPO_ROOT}/output" -name "*.obj" 2>/dev/null | head -n 1 || true)"
-        if [[ -n "${found_obj}" ]]; then
-            log_info "SuGaR mesh exported to: ${found_obj}"
+    if [[ "${DRY_RUN}" != "true" ]]; then
+        local sugar_repo_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main"
+        local found_obj=""
+        found_obj="$(find "${sugar_repo_dir}/output" "${scene_path}/output" "${REPO_ROOT}/output" -name "*.obj" 2>/dev/null | sort -r | head -n 1 || true)"
+        if [[ -n "${found_obj}" && -f "${found_obj}" ]]; then
+            mkdir -p "$(dirname "${expected_obj}")"
+            if [[ "${found_obj}" != "${expected_obj}" ]]; then
+                cp -f "${found_obj}" "${expected_obj}" 2>/dev/null || ln -sfn "${found_obj}" "${expected_obj}"
+            fi
+            log_info "SuGaR mesh verified and exported to: ${expected_obj} (source: ${found_obj})"
         else
             log_warn "SuGaR execution finished but no .obj file was found at '${expected_obj}'."
         fi
@@ -729,7 +745,7 @@ execute_model_pipeline() {
                 ;;
             3d-uir)
                 if [[ "${DRY_RUN}" != "true" ]]; then
-                    conda run -n "3d-uir" pip install matplotlib 2>/dev/null || true
+                    conda run -n "3d-uir" pip install matplotlib kornia 2>/dev/null || true
                 fi
                 run_stage_command "3d-uir" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main" \
                     python train.py -s "${scene_path}" -m "output/${scene_name}" -d "${scene_path}/depths" --eval

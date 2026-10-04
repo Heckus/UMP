@@ -616,13 +616,25 @@ create_conda_env() {
     fi
 
     if [[ "${env_exists}" == "true" ]]; then
-        if [[ "${RECREATE_ENV}" == "true" ]]; then
-            log_info "Removing existing Conda environment '${env_name}' (--recreate requested)..."
+        local req_py=""
+        for arg in "$@"; do
+            if [[ "${arg}" =~ ^python=([0-9]+\.[0-9]+) ]]; then
+                req_py="${BASH_REMATCH[1]}"
+                break
+            fi
+        done
+        local cur_py=""
+        if [[ -n "${req_py}" ]]; then
+            cur_py="$("${conda_bin}" run -n "${env_name}" python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null || echo "")"
+        fi
+
+        if [[ "${RECREATE_ENV}" == "true" ]] || [[ -n "${req_py}" && -n "${cur_py}" && "${req_py}" != "${cur_py}" ]]; then
+            log_info "Recreating Conda environment '${env_name}' (requested python=${req_py:-auto}, existing python=${cur_py:-unknown})..."
             run_cmd conda env remove -n "${env_name}" -y
             log_info "Creating fresh Conda environment '${env_name}'..."
             run_cmd conda create -n "${env_name}" "$@"
         else
-            log_info "Conda environment '${env_name}' already exists. Reusing environment (run with --recreate to wipe and reinstall)."
+            log_info "Conda environment '${env_name}' already exists (Python ${cur_py:-ok}). Reusing environment (run with --recreate to wipe and reinstall)."
         fi
     else
         log_info "Creating Conda environment '${env_name}'..."
@@ -721,7 +733,7 @@ setup_3d_uir() {
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install "setuptools<70.0.0" wheel  # pkg_resources was removed in setuptools 70, required by old torch
     run_cmd pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
-    run_cmd pip install "numpy<2" plyfile tqdm opencv-python joblib lpips
+    run_cmd pip install "numpy<2" plyfile tqdm opencv-python joblib lpips kornia matplotlib
     # Override CUDA_HOME to match PyTorch's CUDA 11.8 build to avoid version mismatch during compilation
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
@@ -797,7 +809,9 @@ setup_rusplatting() {
     local sub_diff="${repo_dir}/submodules/diff-gaussian-rasterization"
     local sub_knn="${repo_dir}/submodules/simple-knn"
 
-    ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
+    if [[ ! -f "${sub_diff}/setup.py" ]]; then
+        ensure_submodule "${sub_diff}" "https://github.com/theflash987/RUSplatting.git"
+    fi
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
     create_conda_env rusplatting python=3.12 -y
@@ -805,7 +819,7 @@ setup_rusplatting() {
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile tqdm opencv-python joblib scipy imageio imageio-ffmpeg dearpygui lpips
-    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
     run_cmd pip install "${sub_knn}" --no-build-isolation
     deactivate_env
     log_success "Environment 'rusplatting' successfully provisioned."
@@ -818,7 +832,9 @@ setup_UW_GS() {
     local sub_diff="${repo_dir}/submodules/diff-gaussian-rasterization"
     local sub_knn="${repo_dir}/submodules/simple-knn"
 
-    ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
+    if [[ ! -f "${sub_diff}/setup.py" ]]; then
+        ensure_submodule "${sub_diff}" "https://github.com/WangHaoran16/UW-GS.git"
+    fi
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
 
     log_info "Creating UW-GS environment (omitting Windows mkl/vc dependencies)..."
@@ -835,7 +851,7 @@ setup_UW_GS() {
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
         [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
     run_cmd pip install "${sub_knn}" --no-build-isolation
     [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
     deactivate_env
