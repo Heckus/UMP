@@ -2,7 +2,6 @@ Loading Anaconda3 and CUDA modules...
 Loaded CUDA/12.4.0
 CUDA_HOME set to: /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/12.4.0
 Conda environment 'global_tools' is already present. Ensuring openimageio is installed...
-Retrieving notices: ...working... done
 Channels:
  - conda-forge
  - defaults
@@ -10,40 +9,8 @@ Platform: linux-64
 Collecting package metadata (repodata.json): ...working... done
 Solving environment: ...working... done
 
-## Package Plan ##
+# All requested packages already installed.
 
-  environment location: /home/n11585382/.conda/envs/global_tools
-
-  added / updated specs:
-    - openimageio
-
-
-The following packages will be downloaded:
-
-    package                    |            build
-    ---------------------------|-----------------
-    libopencolorio-2.6.0       |       h6cf799e_5         2.3 MB  conda-forge
-    libopenimageio-3.2.1.1     |       hf311b84_0         3.8 MB  conda-forge
-    libpng-1.6.59              |       h922cc85_0         309 KB  conda-forge
-    openimageio-3.2.1.1        |       h05a5a94_0          19 KB  conda-forge
-    openimageio-tools-3.2.1.1  |       h6e91ef3_0         731 KB  conda-forge
-    ------------------------------------------------------------
-                                           Total:         7.2 MB
-
-The following packages will be UPDATED:
-
-  libopencolorio                           2.5.2-h74a46e4_5 --> 2.6.0-h6cf799e_5 
-  libopenimageio                        3.1.17.0-hf311b84_0 --> 3.2.1.1-hf311b84_0 
-  libpng                                  1.6.58-h922cc85_1 --> 1.6.59-h922cc85_0 
-  openimageio                           3.1.17.0-hba600ca_0 --> 3.2.1.1-h05a5a94_0 
-  openimageio-tools                     3.1.17.0-he3285ae_0 --> 3.2.1.1-h6e91ef3_0 
-
-
-
-Downloading and Extracting Packages: ...working... done
-Preparing transaction: ...working... done
-Verifying transaction: ...working... done
-Executing transaction: ...working... done
 Provisioning Environments...
 ======================================================================
  Provisioning Conda Environment: colmap_runner
@@ -244,33 +211,33 @@ Collecting fsspec (from torch)
   Using cached fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
 Collecting nvidia-cuda-nvrtc-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 60.6 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 6.0 MB/s  0:00:03
 Collecting nvidia-cuda-runtime-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 231.6 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 217.3 MB/s  0:00:00
 Collecting nvidia-cuda-cupti-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 113.5 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 12.3 MB/s  0:00:01
 Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch)
   Using cached nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)
 Collecting nvidia-cublas-cu12==12.1.3.1 (from torch)
   Downloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 104.8 MB/s  0:00:03
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 67.7 MB/s  0:00:07
 Collecting nvidia-cufft-cu12==11.0.2.54 (from torch)
   Downloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 106.4 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 35.1 MB/s  0:00:03
 Collecting nvidia-curand-cu12==10.3.2.106 (from torch)
   Downloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 107.4 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 21.2 MB/s  0:00:02
 Collecting nvidia-cusolver-cu12==11.4.5.107 (from torch)
   Downloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 106.1 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 29.7 MB/s  0:00:04
 Collecting nvidia-cusparse-cu12==12.1.0.106 (from torch)
   Downloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 107.2 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 37.9 MB/s  0:00:05
 Collecting nvidia-nccl-cu12==2.21.5 (from torch)
   Downloading nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl (188.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 106.5 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 36.2 MB/s  0:00:05
 Collecting nvidia-nvtx-cu12==12.1.105 (from torch)
   Downloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)
 Collecting triton==3.1.0 (from torch)
@@ -279,7 +246,7 @@ Collecting sympy==1.13.1 (from torch)
   Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
 Collecting nvidia-nvjitlink-cu12 (from nvidia-cusolver-cu12==11.4.5.107->torch)
   Downloading nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 85.3 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 14.5 MB/s  0:00:02
 Collecting mpmath<1.4,>=1.1.0 (from sympy==1.13.1->torch)
   Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
 Collecting numpy (from torchvision)
@@ -305,7 +272,7 @@ Successfully installed MarkupSafe-3.0.3 filelock-3.32.3 fsspec-2026.7.0 jinja2-3
 Collecting gradio_imageslider (from -r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 1))
   Using cached gradio_imageslider-0.0.20-py3-none-any.whl.metadata (10 kB)
 Collecting gradio (from -r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
-  Downloading gradio-6.29.1-py3-none-any.whl.metadata (16 kB)
+  Using cached gradio-6.29.1-py3-none-any.whl.metadata (16 kB)
 Collecting matplotlib (from -r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 3))
   Using cached matplotlib-3.10.9-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (52 kB)
 Collecting opencv-python (from -r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 4))
@@ -318,9 +285,9 @@ Collecting anyio<5.0,>=3.0 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM73
 Collecting brotli>=1.1.0 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached brotli-1.2.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.1 kB)
 Collecting fastapi<1.0,>=0.115.2 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
-  Downloading fastapi-0.142.2-py3-none-any.whl.metadata (27 kB)
+  Using cached fastapi-0.142.2-py3-none-any.whl.metadata (27 kB)
 Collecting gradio-client==2.7.2 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
-  Downloading gradio_client-2.7.2-py3-none-any.whl.metadata (7.1 kB)
+  Using cached gradio_client-2.7.2-py3-none-any.whl.metadata (7.1 kB)
 Collecting groovy~=0.1 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached groovy-0.1.2-py3-none-any.whl.metadata (6.1 kB)
 Collecting hf-gradio<1.0,>=0.4.1 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
@@ -328,7 +295,7 @@ Collecting hf-gradio<1.0,>=0.4.1 (from gradio->-r /mnt/hpccs01/home/n11585382/EU
 Collecting httpx<1.0,>=0.24.1 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
 Collecting huggingface-hub<3.0,>=1.16.0 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
-  Downloading huggingface_hub-2.1.1-py3-none-any.whl.metadata (16 kB)
+  Using cached huggingface_hub-2.1.1-py3-none-any.whl.metadata (16 kB)
 Requirement already satisfied: jinja2<4.0 in /mnt/hpccs01/home/n11585382/.conda/envs/depth_anything/lib/python3.10/site-packages (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2)) (3.1.6)
 Requirement already satisfied: markupsafe<4.0,>=2.0 in /mnt/hpccs01/home/n11585382/.conda/envs/depth_anything/lib/python3.10/site-packages (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2)) (3.0.3)
 Requirement already satisfied: numpy<3.0,>=1.0 in /mnt/hpccs01/home/n11585382/.conda/envs/depth_anything/lib/python3.10/site-packages (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2)) (2.2.6)
@@ -344,7 +311,7 @@ Collecting pydub<1.0 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP
 Collecting python-multipart<1.0,>=0.0.18 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached python_multipart-0.0.32-py3-none-any.whl.metadata (2.1 kB)
 Collecting pytz>=2017.2 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
-  Downloading pytz-2026.5-py2.py3-none-any.whl.metadata (22 kB)
+  Using cached pytz-2026.5-py2.py3-none-any.whl.metadata (22 kB)
 Collecting pyyaml<7.0,>=5.0 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached pyyaml-6.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
 Collecting safehttpx<0.2.0,>=0.1.7 (from gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
@@ -395,7 +362,7 @@ Collecting truststore>=0.10 (from httpx2<3,>=2.0.0->huggingface-hub<3.0,>=1.16.0
 Collecting python-dateutil>=2.8.2 (from pandas<4.0,>=1.0->gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
 Collecting tzdata>=2022.7 (from pandas<4.0,>=1.0->gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
-  Downloading tzdata-2026.5-py2.py3-none-any.whl.metadata (1.4 kB)
+  Using cached tzdata-2026.5-py2.py3-none-any.whl.metadata (1.4 kB)
 Collecting annotated-types>=0.6.0 (from pydantic<=3.0,>=2.0->gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
 Collecting pydantic-core==2.46.5 (from pydantic<=3.0,>=2.0->gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
@@ -439,17 +406,15 @@ Collecting pygments<3.0.0,>=2.13.0 (from rich>=13.8.0->typer<1.0,>=0.12->gradio-
 Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.8.0->typer<1.0,>=0.12->gradio->-r /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/Tools/Depth-Anything-V2-main/requirements.txt (line 2))
   Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
 Using cached gradio_imageslider-0.0.20-py3-none-any.whl (101 kB)
-Downloading gradio-6.29.1-py3-none-any.whl (31.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 31.4/31.4 MB 179.5 MB/s  0:00:00
-Downloading gradio_client-2.7.2-py3-none-any.whl (64 kB)
+Using cached gradio-6.29.1-py3-none-any.whl (31.4 MB)
+Using cached gradio_client-2.7.2-py3-none-any.whl (64 kB)
 Using cached anyio-4.15.1-py3-none-any.whl (132 kB)
-Downloading fastapi-0.142.2-py3-none-any.whl (144 kB)
+Using cached fastapi-0.142.2-py3-none-any.whl (144 kB)
 Using cached groovy-0.1.2-py3-none-any.whl (14 kB)
 Using cached hf_gradio-0.4.1-py3-none-any.whl (4.5 kB)
 Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
 Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
-Downloading huggingface_hub-2.1.1-py3-none-any.whl (838 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 838.0/838.0 kB 12.9 MB/s  0:00:00
+Using cached huggingface_hub-2.1.1-py3-none-any.whl (838 kB)
 Using cached click-8.5.0-py3-none-any.whl (125 kB)
 Using cached hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.5 MB)
 Using cached httpx2-2.13.1-py3-none-any.whl (95 kB)
@@ -481,7 +446,7 @@ Using cached kiwisolver-1.5.1-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x8
 Using cached opentelemetry_api-1.45.0-py3-none-any.whl (60 kB)
 Using cached pyparsing-3.3.3-py3-none-any.whl (126 kB)
 Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
-Downloading pytz-2026.5-py2.py3-none-any.whl (506 kB)
+Using cached pytz-2026.5-py2.py3-none-any.whl (506 kB)
 Using cached rich-15.0.0-py3-none-any.whl (310 kB)
 Using cached pygments-2.21.0-py3-none-any.whl (1.3 MB)
 Using cached markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
@@ -492,7 +457,7 @@ Using cached tomli-2.4.1-py3-none-any.whl (14 kB)
 Using cached tqdm-4.70.1-py3-none-any.whl (80 kB)
 Using cached truststore-0.10.4-py3-none-any.whl (18 kB)
 Using cached typing_inspection-0.4.4-py3-none-any.whl (14 kB)
-Downloading tzdata-2026.5-py2.py3-none-any.whl (347 kB)
+Using cached tzdata-2026.5-py2.py3-none-any.whl (347 kB)
 Using cached uvicorn-0.54.0-py3-none-any.whl (87 kB)
 Using cached certifi-2026.7.22-py3-none-any.whl (136 kB)
 Installing collected packages: pytz, pydub, brotli, tzdata, typing-inspection, truststore, tqdm, tomlkit, tomli, six, shellingham, semantic-version, pyyaml, python-multipart, pyparsing, pygments, pydantic-core, orjson, opentelemetry-api, opencv-python, mdurl, kiwisolver, idna, hf-xet, h11, groovy, fonttools, exceptiongroup, cycler, contourpy, click, certifi, annotated-types, annotated-doc, uvicorn, python-dateutil, pydantic, markdown-it-py, httpcore2, httpcore, anyio, starlette, rich, pandas, matplotlib, httpx2, httpx, typer, safehttpx, huggingface-hub, fastapi, gradio-client, hf-gradio, gradio, gradio_imageslider
@@ -609,33 +574,33 @@ Collecting fsspec (from torch)
   Using cached fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
 Collecting nvidia-cuda-nvrtc-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 75.3 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 61.6 MB/s  0:00:00
 Collecting nvidia-cuda-runtime-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 216.1 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 108.7 MB/s  0:00:00
 Collecting nvidia-cuda-cupti-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 100.5 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 110.5 MB/s  0:00:00
 Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch)
   Using cached nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)
 Collecting nvidia-cublas-cu12==12.1.3.1 (from torch)
   Downloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 104.6 MB/s  0:00:03
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 80.9 MB/s  0:00:04
 Collecting nvidia-cufft-cu12==11.0.2.54 (from torch)
   Downloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 84.0 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 100.2 MB/s  0:00:01
 Collecting nvidia-curand-cu12==10.3.2.106 (from torch)
   Downloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 97.3 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 107.8 MB/s  0:00:00
 Collecting nvidia-cusolver-cu12==11.4.5.107 (from torch)
   Downloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 109.4 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 91.6 MB/s  0:00:01
 Collecting nvidia-cusparse-cu12==12.1.0.106 (from torch)
   Downloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 103.5 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 85.9 MB/s  0:00:02
 Collecting nvidia-nccl-cu12==2.21.5 (from torch)
   Downloading nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl (188.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 102.1 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 64.2 MB/s  0:00:02
 Collecting nvidia-nvtx-cu12==12.1.105 (from torch)
   Downloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)
 Collecting triton==3.1.0 (from torch)
@@ -644,7 +609,7 @@ Collecting sympy==1.13.1 (from torch)
   Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
 Collecting nvidia-nvjitlink-cu12 (from nvidia-cusolver-cu12==11.4.5.107->torch)
   Downloading nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 99.7 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 104.3 MB/s  0:00:00
 Collecting mpmath<1.4,>=1.1.0 (from sympy==1.13.1->torch)
   Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
 Collecting numpy (from torchvision)
@@ -747,8 +712,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Physics/seasplat-master/submodules/d
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (pyproject.toml): started
   Building wheel for diff_gaussian_rasterization (pyproject.toml): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=683515 sha256=47b647b6c44f7efd000b53dcc91a033a3932fc4dc224ffba2a760995f05dcd94
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-2oljmd07/wheels/23/bb/26/0f742d08700c5a49fcd55b3f703153cc90d2f07c4a2292e02e
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=683515 sha256=b2947a5817cb16f0a0beb31dca4ea33fcdb7284bdb0a28e760fd5e0c1caa79cf
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-gmxulhrf/wheels/23/bb/26/0f742d08700c5a49fcd55b3f703153cc90d2f07c4a2292e02e
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
 Successfully installed diff_gaussian_rasterization-0.0.0
@@ -759,8 +724,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Physics/seasplat-master/submodules/s
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (pyproject.toml): started
   Building wheel for simple_knn (pyproject.toml): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=566666 sha256=26425c408a4211e2a6422ae136c9f62bfd7bb07ef5af5ae98e27a29a7b8e41d0
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-65egwed8/wheels/14/7b/e4/1bcca18190183c22366e57fac098d8e4126ce1decf6e09b3a5
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=566667 sha256=132def8db8c28ada96700af26948426d6e4e12750a71e1732544f8860f808759
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-uoj9gh75/wheels/14/7b/e4/1bcca18190183c22366e57fac098d8e4126ce1decf6e09b3a5
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
@@ -944,8 +909,8 @@ Collecting matplotlib
   Using cached matplotlib-3.10.9-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (52 kB)
 INFO: pip is looking at multiple versions of plyfile to determine which version is compatible with other requirements. This could take a while.
 Collecting plyfile
-  Downloading plyfile-1.1.4-py3-none-any.whl.metadata (43 kB)
-  Downloading plyfile-1.1.3-py3-none-any.whl.metadata (43 kB)
+  Using cached plyfile-1.1.4-py3-none-any.whl.metadata (43 kB)
+  Using cached plyfile-1.1.3-py3-none-any.whl.metadata (43 kB)
 INFO: pip is looking at multiple versions of opencv-python to determine which version is compatible with other requirements. This could take a while.
 Collecting opencv-python
   Using cached opencv_python-4.14.0.94-cp37-abi3-manylinux_2_28_x86_64.whl.metadata (19 kB)
@@ -992,7 +957,7 @@ Requirement already satisfied: urllib3<1.27,>=1.21.1 in /mnt/hpccs01/home/n11585
 Requirement already satisfied: certifi>=2017.4.17 in /mnt/hpccs01/home/n11585382/.conda/envs/3d-uir/lib/python3.10/site-packages (from requests->torchvision>=0.2.1->lpips) (2022.12.7)
 Requirement already satisfied: mpmath<1.4,>=1.1.0 in /mnt/hpccs01/home/n11585382/.conda/envs/3d-uir/lib/python3.10/site-packages (from sympy->torch>=0.4.0->lpips) (1.3.0)
 Using cached numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
-Downloading plyfile-1.1.3-py3-none-any.whl (36 kB)
+Using cached plyfile-1.1.3-py3-none-any.whl (36 kB)
 Using cached tqdm-4.70.1-py3-none-any.whl (80 kB)
 Using cached opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (63.0 MB)
 Using cached joblib-1.6.0-py3-none-any.whl (306 kB)
@@ -1023,8 +988,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/diff-
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (pyproject.toml): started
   Building wheel for diff_gaussian_rasterization (pyproject.toml): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=473906 sha256=9a06b2db55d34e9934f6f4e42dec1ca400f65df58f0c6b91788163b6d8d5a7af
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-4qb_0zfb/wheels/72/04/5a/230337e34159e1b8064572a077864880cc04e6a36fe180e1a3
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=473906 sha256=838ad960d3c5e693ec7166a105951e6cdedb4717d0f532720f38dc669e0dff6a
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-c1bedh5t/wheels/72/04/5a/230337e34159e1b8064572a077864880cc04e6a36fe180e1a3
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
 Successfully installed diff_gaussian_rasterization-0.0.0
@@ -1035,8 +1000,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/simpl
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (pyproject.toml): started
   Building wheel for simple_knn (pyproject.toml): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=534972 sha256=82f953d7dbe6aa246def7914d37fe398d762677a9745a3277e53450d44457aa8
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-k_cn6ov2/wheels/c3/84/a5/3a81c9ba51241c4d6a0812d0baf389f7b7aa5a8dd068f96a4f
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=534972 sha256=5b3c57d3e3645ae19554525b71ad58e4ea13df875bd7ffa4d0ae85bba4256000
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-htnh7w44/wheels/c3/84/a5/3a81c9ba51241c4d6a0812d0baf389f7b7aa5a8dd068f96a4f
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
@@ -1057,15 +1022,15 @@ Requirement already satisfied: mpmath<1.4,>=1.1.0 in /mnt/hpccs01/home/n11585382
 Building wheels for collected packages: fused-ssim
   Building wheel for fused-ssim (pyproject.toml): started
   Building wheel for fused-ssim (pyproject.toml): finished with status 'done'
-  Created wheel for fused-ssim: filename=fused_ssim-1.0.0-cp310-cp310-linux_x86_64.whl size=136112 sha256=a740b76a5dbc039a9ccebca45712635fa5565aad7711e1ffaaffc7e0de81465a
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-zbitvcse/wheels/c3/a6/48/3245026e32aa4c22a1586a52398e9a4afa68be80145888d133
+  Created wheel for fused-ssim: filename=fused_ssim-1.0.0-cp310-cp310-linux_x86_64.whl size=136112 sha256=1a045e3dfd760484802e427856cea07a65440a06833308bf4351fafd9a5a6f0d
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-0hexfs49/wheels/c3/a6/48/3245026e32aa4c22a1586a52398e9a4afa68be80145888d133
 Successfully built fused-ssim
 Installing collected packages: fused-ssim
 Successfully installed fused-ssim-1.0.0
 [INFO] Running: pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch --no-build-isolation
 Collecting git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
-  Cloning https://github.com/NVlabs/tiny-cuda-nn/ to /tmp/pbs.26340565.aqua/pip-req-build-2ke117rg
-  Running command git clone --filter=blob:none --quiet https://github.com/NVlabs/tiny-cuda-nn/ /tmp/pbs.26340565.aqua/pip-req-build-2ke117rg
+  Cloning https://github.com/NVlabs/tiny-cuda-nn/ to /tmp/pbs.26342207.aqua/pip-req-build-phfu6aty
+  Running command git clone --filter=blob:none --quiet https://github.com/NVlabs/tiny-cuda-nn/ /tmp/pbs.26342207.aqua/pip-req-build-phfu6aty
   Resolved https://github.com/NVlabs/tiny-cuda-nn/ to commit 3daa6e5b8b8e0fa17971a1a20acfbb3754494b38
   Running command git submodule update --init --recursive -q
   Preparing metadata (pyproject.toml): started
@@ -1074,8 +1039,8 @@ Building wheels for collected packages: tinycudann
   Building wheel for tinycudann (pyproject.toml): started
   Building wheel for tinycudann (pyproject.toml): still running...
   Building wheel for tinycudann (pyproject.toml): finished with status 'done'
-  Created wheel for tinycudann: filename=tinycudann-2.0-cp310-cp310-linux_x86_64.whl size=21761580 sha256=f8411494b7f7efe0fa03034a3b63947d601e8bffd6061d05a68d43e6a35c194b
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-mkyxb6wr/wheels/32/d8/5e/dc94eca0794af9e09a6d97f19cf15dfe9bbbc4d56ae4db4aa2
+  Created wheel for tinycudann: filename=tinycudann-2.0-cp310-cp310-linux_x86_64.whl size=21761429 sha256=0a9c6393c81ef9e4c89efda0d04b9c42dead91ae72fb2adc412da5a87ada9e7f
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-mp94sr8l/wheels/32/d8/5e/dc94eca0794af9e09a6d97f19cf15dfe9bbbc4d56ae4db4aa2
 Successfully built tinycudann
 Installing collected packages: tinycudann
 Successfully installed tinycudann-2.0
@@ -1229,33 +1194,33 @@ Collecting fsspec (from torch)
   Using cached fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
 Collecting nvidia-cuda-nvrtc-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 79.7 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 70.5 MB/s  0:00:00
 Collecting nvidia-cuda-runtime-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 228.6 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 193.8 MB/s  0:00:00
 Collecting nvidia-cuda-cupti-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 138.3 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 86.8 MB/s  0:00:00
 Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch)
   Using cached nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)
 Collecting nvidia-cublas-cu12==12.1.3.1 (from torch)
   Downloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 118.3 MB/s  0:00:03
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 97.6 MB/s  0:00:04
 Collecting nvidia-cufft-cu12==11.0.2.54 (from torch)
   Downloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 121.9 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 93.4 MB/s  0:00:01
 Collecting nvidia-curand-cu12==10.3.2.106 (from torch)
   Downloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 124.5 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 88.3 MB/s  0:00:00
 Collecting nvidia-cusolver-cu12==11.4.5.107 (from torch)
   Downloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 126.7 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 104.7 MB/s  0:00:01
 Collecting nvidia-cusparse-cu12==12.1.0.106 (from torch)
   Downloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 125.0 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 93.9 MB/s  0:00:02
 Collecting nvidia-nccl-cu12==2.21.5 (from torch)
   Downloading nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl (188.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 106.0 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 82.0 MB/s  0:00:02
 Collecting nvidia-nvtx-cu12==12.1.105 (from torch)
   Downloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)
 Collecting triton==3.1.0 (from torch)
@@ -1264,7 +1229,7 @@ Collecting sympy==1.13.1 (from torch)
   Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
 Collecting nvidia-nvjitlink-cu12 (from nvidia-cusolver-cu12==11.4.5.107->torch)
   Downloading nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 100.9 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 80.4 MB/s  0:00:00
 Collecting mpmath<1.4,>=1.1.0 (from sympy==1.13.1->torch)
   Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
 Requirement already satisfied: numpy in /mnt/hpccs01/home/n11585382/.conda/envs/gaussianSplashing_env/lib/python3.10/site-packages (from torchvision) (2.2.6)
@@ -1323,7 +1288,7 @@ Collecting opentelemetry-exporter-otlp-proto-http>=1.43.0 (from wandb)
 Collecting opentelemetry-sdk>=1.43.0 (from wandb)
   Using cached opentelemetry_sdk-1.45.0-py3-none-any.whl.metadata (1.6 kB)
 Collecting platformdirs (from wandb)
-  Downloading platformdirs-4.12.3-py3-none-any.whl.metadata (5.5 kB)
+  Using cached platformdirs-4.12.3-py3-none-any.whl.metadata (5.5 kB)
 Collecting protobuf!=5.28.0,!=5.29.0,<8,>=5 (from wandb)
   Using cached protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
 Collecting pydantic<3,>=2.6 (from wandb)
@@ -1373,7 +1338,7 @@ Collecting opencv-python
 Collecting cloudpickle>=3.0 (from joblib>=1.2.0->scikit-learn)
   Using cached cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
 Collecting googleapis-common-protos~=1.52 (from opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb)
-  Downloading googleapis_common_protos-1.75.5-py3-none-any.whl.metadata (8.5 kB)
+  Using cached googleapis_common_protos-1.75.5-py3-none-any.whl.metadata (8.5 kB)
 Collecting opentelemetry-exporter-http-transport==0.66b0 (from opentelemetry-exporter-http-transport[urllib3]==0.66b0->opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb)
   Using cached opentelemetry_exporter_http_transport-0.66b0-py3-none-any.whl.metadata (2.3 kB)
 Collecting opentelemetry-exporter-otlp-common==0.66b0 (from opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb)
@@ -1453,7 +1418,7 @@ Using cached opentelemetry_exporter_http_transport-0.66b0-py3-none-any.whl (12 k
 Using cached opentelemetry_exporter_otlp_common-0.66b0-py3-none-any.whl (12 kB)
 Using cached opentelemetry_exporter_otlp_proto_common-1.45.0-py3-none-any.whl (15 kB)
 Using cached opentelemetry_proto-1.45.0-py3-none-any.whl (72 kB)
-Downloading googleapis_common_protos-1.75.5-py3-none-any.whl (307 kB)
+Using cached googleapis_common_protos-1.75.5-py3-none-any.whl (307 kB)
 Using cached opentelemetry_sdk-1.45.0-py3-none-any.whl (140 kB)
 Using cached opentelemetry_semantic_conventions-0.66b0-py3-none-any.whl (206 kB)
 Using cached pyparsing-3.3.3-py3-none-any.whl (126 kB)
@@ -1472,7 +1437,7 @@ Using cached exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
 Using cached h11-0.16.0-py3-none-any.whl (37 kB)
 Using cached tomli-2.4.1-py3-none-any.whl (14 kB)
 Using cached truststore-0.10.4-py3-none-any.whl (18 kB)
-Downloading platformdirs-4.12.3-py3-none-any.whl (32 kB)
+Using cached platformdirs-4.12.3-py3-none-any.whl (32 kB)
 Using cached safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (516 kB)
 Installing collected packages: xxhash, urllib3, typing-inspection, truststore, tomli, threadpoolctl, six, safetensors, pyyaml, pyparsing, pydantic-core, protobuf, platformdirs, opentelemetry-api, numpy, kiwisolver, idna, hf-xet, h11, fonttools, exceptiongroup, cycler, cloudpickle, click, charset_normalizer, certifi, annotated-types, scipy, requests, python-dateutil, pydantic, opentelemetry-semantic-conventions, opentelemetry-proto, opentelemetry-exporter-http-transport, opencv-python, joblib, httpcore2, googleapis-common-protos, contourpy, anyio, scikit-learn, opentelemetry-sdk, opentelemetry-exporter-otlp-proto-common, matplotlib, httpx2, pdc-dp-means, opentelemetry-exporter-otlp-common, huggingface_hub, timm, opentelemetry-exporter-otlp-proto-http, wandb
   Attempting uninstall: numpy
@@ -1488,8 +1453,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/submodu
 Building wheels for collected packages: diff_gaussian_rasterization_UW
   Building wheel for diff_gaussian_rasterization_UW (pyproject.toml): started
   Building wheel for diff_gaussian_rasterization_UW (pyproject.toml): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization_UW: filename=diff_gaussian_rasterization_uw-0.0.0-cp310-cp310-linux_x86_64.whl size=737204 sha256=52c52464c4e08db8a3075c752b973c643b376e464df291876eff8f3529b2dbe8
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-ik455kme/wheels/06/39/25/3dbe1ab41fd7eb39c890aa228722b21123e941e925dc832d65
+  Created wheel for diff_gaussian_rasterization_UW: filename=diff_gaussian_rasterization_uw-0.0.0-cp310-cp310-linux_x86_64.whl size=737204 sha256=e0ea9ee6ff7e65e088ef349ea6dc497aa020daf7c73bdae43aa46c33151c7d7a
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-6zr5sa4c/wheels/06/39/25/3dbe1ab41fd7eb39c890aa228722b21123e941e925dc832d65
 Successfully built diff_gaussian_rasterization_UW
 Installing collected packages: diff_gaussian_rasterization_UW
 Successfully installed diff_gaussian_rasterization_UW-0.0.0
@@ -1500,8 +1465,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/submodu
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (pyproject.toml): started
   Building wheel for simple_knn (pyproject.toml): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=602617 sha256=35ede618a8f6dbb07bf4114b960f6b317be68de0bb9c04422e919ab3be1a8d8d
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-pg4djfwd/wheels/33/c3/6a/498c60ab3ee26052d1fc744a5676db1f5e8c7ba8389bb23134
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=602617 sha256=c2a34973ab62c56dad1972f3860475763990ba1b632fb50f63c663e67ed4a94f
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-edvqkaqo/wheels/33/c3/6a/498c60ab3ee26052d1fc744a5676db1f5e8c7ba8389bb23134
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
@@ -1586,6 +1551,97 @@ Executing transaction: ...working... done
 #
 #     $ conda deactivate
 
+[INFO] Running: conda install -y -n water_splatting -c nvidia/label/cuda-11.8.0 cuda-toolkit
+Channels:
+ - nvidia/label/cuda-11.8.0
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /home/n11585382/.conda/envs/water_splatting
+
+  added / updated specs:
+    - cuda-toolkit
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    cuda-cudart-11.8.89        |                0         197 KB  nvidia/label/cuda-11.8.0
+    cuda-cupti-11.8.87         |                0        25.3 MB  nvidia/label/cuda-11.8.0
+    cuda-libraries-11.8.0      |                0           1 KB  nvidia/label/cuda-11.8.0
+    cuda-nvrtc-11.8.89         |                0        19.1 MB  nvidia/label/cuda-11.8.0
+    cuda-nvtx-11.8.86          |                0          57 KB  nvidia/label/cuda-11.8.0
+    libcublas-11.11.3.6        |                0       364.0 MB  nvidia/label/cuda-11.8.0
+    libcufft-10.9.0.58         |                0       142.8 MB  nvidia/label/cuda-11.8.0
+    libcusolver-11.4.1.48      |                0        96.5 MB  nvidia/label/cuda-11.8.0
+    libcusparse-11.7.5.86      |                0       176.3 MB  nvidia/label/cuda-11.8.0
+    libnpp-11.8.0.86           |                0       147.8 MB  nvidia/label/cuda-11.8.0
+    libnvjpeg-11.9.0.86        |                0         2.4 MB  nvidia/label/cuda-11.8.0
+    ------------------------------------------------------------
+                                           Total:       974.4 MB
+
+The following NEW packages will be INSTALLED:
+
+  cuda-cccl          nvidia/label/cuda-11.8.0/linux-64::cuda-cccl-11.8.89-0 
+  cuda-command-line~ nvidia/label/cuda-11.8.0/linux-64::cuda-command-line-tools-11.8.0-0 
+  cuda-compiler      nvidia/label/cuda-11.8.0/linux-64::cuda-compiler-11.8.0-0 
+  cuda-cudart        nvidia/label/cuda-11.8.0/linux-64::cuda-cudart-11.8.89-0 
+  cuda-cudart-dev    nvidia/label/cuda-11.8.0/linux-64::cuda-cudart-dev-11.8.89-0 
+  cuda-cuobjdump     nvidia/label/cuda-11.8.0/linux-64::cuda-cuobjdump-11.8.86-0 
+  cuda-cupti         nvidia/label/cuda-11.8.0/linux-64::cuda-cupti-11.8.87-0 
+  cuda-cuxxfilt      nvidia/label/cuda-11.8.0/linux-64::cuda-cuxxfilt-11.8.86-0 
+  cuda-documentation nvidia/label/cuda-11.8.0/linux-64::cuda-documentation-11.8.86-0 
+  cuda-driver-dev    nvidia/label/cuda-11.8.0/linux-64::cuda-driver-dev-11.8.89-0 
+  cuda-gdb           nvidia/label/cuda-11.8.0/linux-64::cuda-gdb-11.8.86-0 
+  cuda-libraries     nvidia/label/cuda-11.8.0/linux-64::cuda-libraries-11.8.0-0 
+  cuda-libraries-dev nvidia/label/cuda-11.8.0/linux-64::cuda-libraries-dev-11.8.0-0 
+  cuda-memcheck      nvidia/label/cuda-11.8.0/linux-64::cuda-memcheck-11.8.86-0 
+  cuda-nsight        nvidia/label/cuda-11.8.0/linux-64::cuda-nsight-11.8.86-0 
+  cuda-nsight-compu~ nvidia/label/cuda-11.8.0/linux-64::cuda-nsight-compute-11.8.0-0 
+  cuda-nvcc          nvidia/label/cuda-11.8.0/linux-64::cuda-nvcc-11.8.89-0 
+  cuda-nvdisasm      nvidia/label/cuda-11.8.0/linux-64::cuda-nvdisasm-11.8.86-0 
+  cuda-nvml-dev      nvidia/label/cuda-11.8.0/linux-64::cuda-nvml-dev-11.8.86-0 
+  cuda-nvprof        nvidia/label/cuda-11.8.0/linux-64::cuda-nvprof-11.8.87-0 
+  cuda-nvprune       nvidia/label/cuda-11.8.0/linux-64::cuda-nvprune-11.8.86-0 
+  cuda-nvrtc         nvidia/label/cuda-11.8.0/linux-64::cuda-nvrtc-11.8.89-0 
+  cuda-nvrtc-dev     nvidia/label/cuda-11.8.0/linux-64::cuda-nvrtc-dev-11.8.89-0 
+  cuda-nvtx          nvidia/label/cuda-11.8.0/linux-64::cuda-nvtx-11.8.86-0 
+  cuda-nvvp          nvidia/label/cuda-11.8.0/linux-64::cuda-nvvp-11.8.87-0 
+  cuda-profiler-api  nvidia/label/cuda-11.8.0/linux-64::cuda-profiler-api-11.8.86-0 
+  cuda-sanitizer-api nvidia/label/cuda-11.8.0/linux-64::cuda-sanitizer-api-11.8.86-0 
+  cuda-toolkit       nvidia/label/cuda-11.8.0/linux-64::cuda-toolkit-11.8.0-0 
+  cuda-tools         nvidia/label/cuda-11.8.0/linux-64::cuda-tools-11.8.0-0 
+  cuda-visual-tools  nvidia/label/cuda-11.8.0/linux-64::cuda-visual-tools-11.8.0-0 
+  gds-tools          nvidia/label/cuda-11.8.0/linux-64::gds-tools-1.4.0.31-0 
+  libcublas          nvidia/label/cuda-11.8.0/linux-64::libcublas-11.11.3.6-0 
+  libcublas-dev      nvidia/label/cuda-11.8.0/linux-64::libcublas-dev-11.11.3.6-0 
+  libcufft           nvidia/label/cuda-11.8.0/linux-64::libcufft-10.9.0.58-0 
+  libcufft-dev       nvidia/label/cuda-11.8.0/linux-64::libcufft-dev-10.9.0.58-0 
+  libcufile          nvidia/label/cuda-11.8.0/linux-64::libcufile-1.4.0.31-0 
+  libcufile-dev      nvidia/label/cuda-11.8.0/linux-64::libcufile-dev-1.4.0.31-0 
+  libcurand          nvidia/label/cuda-11.8.0/linux-64::libcurand-10.3.0.86-0 
+  libcurand-dev      nvidia/label/cuda-11.8.0/linux-64::libcurand-dev-10.3.0.86-0 
+  libcusolver        nvidia/label/cuda-11.8.0/linux-64::libcusolver-11.4.1.48-0 
+  libcusolver-dev    nvidia/label/cuda-11.8.0/linux-64::libcusolver-dev-11.4.1.48-0 
+  libcusparse        nvidia/label/cuda-11.8.0/linux-64::libcusparse-11.7.5.86-0 
+  libcusparse-dev    nvidia/label/cuda-11.8.0/linux-64::libcusparse-dev-11.7.5.86-0 
+  libnpp             nvidia/label/cuda-11.8.0/linux-64::libnpp-11.8.0.86-0 
+  libnpp-dev         nvidia/label/cuda-11.8.0/linux-64::libnpp-dev-11.8.0.86-0 
+  libnvjpeg          nvidia/label/cuda-11.8.0/linux-64::libnvjpeg-11.9.0.86-0 
+  libnvjpeg-dev      nvidia/label/cuda-11.8.0/linux-64::libnvjpeg-dev-11.9.0.86-0 
+  nsight-compute     nvidia/label/cuda-11.8.0/linux-64::nsight-compute-2022.3.0.22-0 
+
+
+
+Downloading and Extracting Packages: ...working... done
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
 [INFO] Active environment: water_splatting
 [INFO] Running: pip install --upgrade pip
 Requirement already satisfied: pip in /mnt/hpccs01/home/n11585382/.conda/envs/water_splatting/lib/python3.8/site-packages (24.2)
@@ -1638,7 +1694,7 @@ Collecting pillow!=8.3.*,>=5.3.0 (from torchvision==0.16.2+cu118)
 Collecting MarkupSafe>=2.0 (from jinja2->torch==2.1.2+cu118)
   Using cached https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (26 kB)
 Collecting charset_normalizer<4,>=2 (from requests->torchvision==0.16.2+cu118)
-  Downloading charset_normalizer-3.5.2-cp37-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (46 kB)
+  Using cached charset_normalizer-3.5.2-cp37-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (46 kB)
 Collecting idna<4,>=2.5 (from requests->torchvision==0.16.2+cu118)
   Using cached idna-3.15-py3-none-any.whl.metadata (7.7 kB)
 Collecting urllib3<3,>=1.21.1 (from requests->torchvision==0.16.2+cu118)
@@ -1657,7 +1713,7 @@ Using cached requests-2.32.4-py3-none-any.whl (64 kB)
 Using cached sympy-1.13.3-py3-none-any.whl (6.2 MB)
 Using cached typing_extensions-4.13.2-py3-none-any.whl (45 kB)
 Using cached certifi-2026.7.22-py3-none-any.whl (136 kB)
-Downloading charset_normalizer-3.5.2-cp37-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (253 kB)
+Using cached charset_normalizer-3.5.2-cp37-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (253 kB)
 Using cached idna-3.15-py3-none-any.whl (72 kB)
 Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
 Using cached urllib3-2.2.3-py3-none-any.whl (126 kB)
@@ -1665,8 +1721,8 @@ Installing collected packages: mpmath, urllib3, typing-extensions, sympy, pillow
 Successfully installed MarkupSafe-2.1.5 certifi-2026.7.22 charset_normalizer-3.5.2 filelock-3.16.1 fsspec-2025.3.0 idna-3.15 jinja2-3.1.6 mpmath-1.3.0 networkx-3.1 numpy-1.24.4 pillow-10.4.0 requests-2.32.4 sympy-1.13.3 torch-2.1.2+cu118 torchvision-0.16.2+cu118 triton-2.1.0 typing-extensions-4.13.2 urllib3-2.2.3
 [INFO] Running: pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
 Collecting git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
-  Cloning https://github.com/NVlabs/tiny-cuda-nn/ to /tmp/pbs.26340565.aqua/pip-req-build-w8oshzt7
-  Running command git clone --filter=blob:none --quiet https://github.com/NVlabs/tiny-cuda-nn/ /tmp/pbs.26340565.aqua/pip-req-build-w8oshzt7
+  Cloning https://github.com/NVlabs/tiny-cuda-nn/ to /tmp/pbs.26342207.aqua/pip-req-build-igny0ugw
+  Running command git clone --filter=blob:none --quiet https://github.com/NVlabs/tiny-cuda-nn/ /tmp/pbs.26342207.aqua/pip-req-build-igny0ugw
   Resolved https://github.com/NVlabs/tiny-cuda-nn/ to commit 3daa6e5b8b8e0fa17971a1a20acfbb3754494b38
   Running command git submodule update --init --recursive -q
   Preparing metadata (setup.py): started
@@ -1680,8 +1736,8 @@ Building wheels for collected packages: tinycudann
   Building wheel for tinycudann (setup.py): still running...
   Building wheel for tinycudann (setup.py): still running...
   Building wheel for tinycudann (setup.py): finished with status 'done'
-  Created wheel for tinycudann: filename=tinycudann-2.0-cp38-cp38-linux_x86_64.whl size=25779163 sha256=08f483af694db006fc8892e20ae25b2beacc9e0f0efefcc944266e6ed1b94c70
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-mnz_8ooe/wheels/97/6e/c0/8979c809da09536d89298d5801aaf445afd74572d9c5ad53d0
+  Created wheel for tinycudann: filename=tinycudann-2.0-cp38-cp38-linux_x86_64.whl size=25779652 sha256=ba7d6a3ceb3256494e82210281e1388d10ef69e220d872b1e42385d2ad72547d
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-6yxv_vqf/wheels/97/6e/c0/8979c809da09536d89298d5801aaf445afd74572d9c5ad53d0
 Successfully built tinycudann
 Installing collected packages: tinycudann, ninja
 Successfully installed ninja-1.13.2 tinycudann-2.0
@@ -1955,7 +2011,7 @@ Collecting eval-type-backport>=0.1.3 (from tyro>=0.6.6->nerfstudio==1.1.4)
 Collecting click>=8.0.1 (from wandb>=0.13.3->nerfstudio==1.1.4)
   Using cached click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
 Collecting gitpython!=3.1.29,>=1.0.0 (from wandb>=0.13.3->nerfstudio==1.1.4)
-  Downloading gitpython-3.2.0-py3-none-any.whl.metadata (13 kB)
+  Using cached gitpython-3.2.0-py3-none-any.whl.metadata (13 kB)
 Collecting platformdirs (from wandb>=0.13.3->nerfstudio==1.1.4)
   Using cached platformdirs-4.3.6-py3-none-any.whl.metadata (11 kB)
 Collecting pydantic<3 (from wandb>=0.13.3->nerfstudio==1.1.4)
@@ -2230,7 +2286,7 @@ Using cached eval_type_backport-0.4.0-py3-none-any.whl (6.4 kB)
 Using cached everett-3.1.0-py2.py3-none-any.whl (35 kB)
 Using cached flask-3.0.3-py3-none-any.whl (101 kB)
 Using cached fonttools-4.57.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.7 MB)
-Downloading gitpython-3.2.0-py3-none-any.whl (228 kB)
+Using cached gitpython-3.2.0-py3-none-any.whl (228 kB)
 Using cached google_auth-2.50.0-py3-none-any.whl (246 kB)
 Using cached google_auth_oauthlib-1.0.0-py2.py3-none-any.whl (18 kB)
 Using cached grpcio-1.70.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (6.0 MB)
@@ -2404,7 +2460,7 @@ Collecting pytest (from water-splatting==0.0.1)
 Collecting pyright (from water-splatting==0.0.1)
   Using cached pyright-1.1.414-py3-none-any.whl.metadata (6.9 kB)
 Collecting ruff (from water-splatting==0.0.1)
-  Downloading ruff-0.16.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (20 kB)
+  Using cached ruff-0.16.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (20 kB)
 Collecting black (from water-splatting==0.0.1)
   Using cached black-24.8.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl.metadata (78 kB)
 Collecting sphinx (from water-splatting==0.0.1)
@@ -2698,8 +2754,7 @@ Requirement already satisfied: backports.zoneinfo==0.2.1 in /mnt/hpccs01/home/n1
 Using cached black-24.8.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
 Using cached pyright-1.1.414-py3-none-any.whl (6.2 MB)
 Using cached pytest-8.3.5-py3-none-any.whl (343 kB)
-Downloading ruff-0.16.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.4/10.4 MB 155.8 MB/s eta 0:00:00
+Using cached ruff-0.16.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.4 MB)
 Using cached sphinx-7.1.2-py3-none-any.whl (3.2 MB)
 Using cached sphinx_rtd_theme-3.1.0-py2.py3-none-any.whl (7.7 MB)
 Using cached sphinxcontrib_bibtex-2.6.3-py3-none-any.whl (40 kB)
@@ -2761,14 +2816,6 @@ Solving environment: ...working... done
   added / updated specs:
     - python=3.12
 
-
-The following packages will be downloaded:
-
-    package                    |            build
-    ---------------------------|-----------------
-    python-3.12.15             |       hcd0331c_0        30.4 MB
-    ------------------------------------------------------------
-                                           Total:        30.4 MB
 
 The following NEW packages will be INSTALLED:
 
@@ -2847,33 +2894,33 @@ Collecting fsspec (from torch==2.5.1)
   Using cached fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
 Collecting nvidia-cuda-nvrtc-cu12==12.1.105 (from torch==2.5.1)
   Downloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 77.7 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 67.8 MB/s  0:00:00
 Collecting nvidia-cuda-runtime-cu12==12.1.105 (from torch==2.5.1)
   Downloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 221.2 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 110.3 MB/s  0:00:00
 Collecting nvidia-cuda-cupti-cu12==12.1.105 (from torch==2.5.1)
   Downloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 136.6 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 77.8 MB/s  0:00:00
 Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch==2.5.1)
   Using cached nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)
 Collecting nvidia-cublas-cu12==12.1.3.1 (from torch==2.5.1)
   Downloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 112.1 MB/s  0:00:03
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 61.5 MB/s  0:00:05
 Collecting nvidia-cufft-cu12==11.0.2.54 (from torch==2.5.1)
   Downloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 116.9 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 85.2 MB/s  0:00:01
 Collecting nvidia-curand-cu12==10.3.2.106 (from torch==2.5.1)
   Downloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 109.5 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 107.0 MB/s  0:00:00
 Collecting nvidia-cusolver-cu12==11.4.5.107 (from torch==2.5.1)
   Downloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 114.9 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 68.9 MB/s  0:00:01
 Collecting nvidia-cusparse-cu12==12.1.0.106 (from torch==2.5.1)
   Downloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 121.1 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 88.2 MB/s  0:00:02
 Collecting nvidia-nccl-cu12==2.21.5 (from torch==2.5.1)
   Downloading nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl (188.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 115.7 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 69.1 MB/s  0:00:02
 Collecting nvidia-nvtx-cu12==12.1.105 (from torch==2.5.1)
   Downloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)
 Collecting triton==3.1.0 (from torch==2.5.1)
@@ -2883,7 +2930,7 @@ Collecting sympy==1.13.1 (from torch==2.5.1)
   Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
 Collecting nvidia-nvjitlink-cu12 (from nvidia-cusolver-cu12==11.4.5.107->torch==2.5.1)
   Downloading nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 106.3 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 93.8 MB/s  0:00:00
 Collecting mpmath<1.4,>=1.1.0 (from sympy==1.13.1->torch==2.5.1)
   Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
 Collecting numpy (from torchvision)
@@ -2972,8 +3019,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main/submodul
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (pyproject.toml): started
   Building wheel for diff_gaussian_rasterization (pyproject.toml): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=689140 sha256=8e727b4eb7890811d5d8ff1dc710e7e4df81ff20f0e37eca4c1353b7a2876078
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-sddg3msq/wheels/c6/e6/9e/79aca54c764c86a431e6b2d082b9343579b879dfcfa2b4f378
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=689145 sha256=5847f6ceb2f6d8ae8eb45fcc4f3f7ddffba4048ba2d909f2ca824ed29d8f3ae1
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-l8dg2z6o/wheels/c6/e6/9e/79aca54c764c86a431e6b2d082b9343579b879dfcfa2b4f378
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
 Successfully installed diff_gaussian_rasterization-0.0.0
@@ -2984,8 +3031,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main/submodul
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (pyproject.toml): started
   Building wheel for simple_knn (pyproject.toml): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=568328 sha256=45e926c16a103c1d25798832accd5818d5f65b9843d4a806bf45dc450ab44c4d
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-4znmcz3w/wheels/03/df/b1/df4adb234c94337aecafd5d71bea08b8d59eb74300369bf1c9
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=568327 sha256=1454feb605de6c62607065354cd185e9adb27bbae2e314e7c03f3297bf54c6f7
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-n98k7t93/wheels/03/df/b1/df4adb234c94337aecafd5d71bea08b8d59eb74300369bf1c9
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
@@ -3111,7 +3158,7 @@ Collecting torchvision==0.16.2+cu118
 Collecting torchaudio==2.1.2+cu118
   Using cached torchaudio-2.1.2%2Bcu118-cp310-cp310-linux_x86_64.whl (3.2 MB)
 Collecting filelock (from torch==2.1.2+cu118)
-  Downloading filelock-4.0.10-py3-none-any.whl.metadata (2.0 kB)
+  Using cached filelock-4.0.10-py3-none-any.whl.metadata (2.0 kB)
 Collecting typing-extensions (from torch==2.1.2+cu118)
   Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
 Collecting sympy (from torch==2.1.2+cu118)
@@ -3142,7 +3189,7 @@ Collecting certifi>=2023.5.7 (from requests->torchvision==0.16.2+cu118)
 Collecting mpmath<1.4,>=1.1.0 (from sympy->torch==2.1.2+cu118)
   Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
 Using cached pillow-12.3.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
-Downloading filelock-4.0.10-py3-none-any.whl (111 kB)
+Using cached filelock-4.0.10-py3-none-any.whl (111 kB)
 Using cached fsspec-2026.9.0-py3-none-any.whl (221 kB)
 Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
 Using cached markupsafe-3.0.4-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
@@ -3218,8 +3265,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Additional/UW-GS-main/submodules/dif
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (pyproject.toml): started
   Building wheel for diff_gaussian_rasterization (pyproject.toml): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=479640 sha256=20708b9925d3ad9b48f9c62896d5683490d2e8c3782a2eeed833e20f848e59e4
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-63ua57if/wheels/40/da/cb/45b42437f2d008e06d133e11336cef6fc6afe343eecb636a0c
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=479640 sha256=13526e4bd1286d1992bdfb30b21addcdbd1a99026ffa9fc6017a3777c32d6884
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-ojl227sp/wheels/40/da/cb/45b42437f2d008e06d133e11336cef6fc6afe343eecb636a0c
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
 Successfully installed diff_gaussian_rasterization-0.0.0
@@ -3230,8 +3277,8 @@ Processing ./Codebase/3DGS-Water-Approaches/Additional/UW-GS-main/submodules/sim
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (pyproject.toml): started
   Building wheel for simple_knn (pyproject.toml): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=534915 sha256=495671fbf226c5ddda2f1bb7c1af006d895696adc107d825b89e4a2843d73974
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-osn_5l6s/wheels/57/74/ef/fbe56bc745e409ca15d928a459d7d3e5bc8a79022a668e5bcc
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=534915 sha256=6141bea0a3593edf965a58de99751a97f3d9a62d3416ab86dcd470e9130c0698
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-4322x1b1/wheels/57/74/ef/fbe56bc745e409ca15d928a459d7d3e5bc8a79022a668e5bcc
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
@@ -3341,6 +3388,142 @@ Installing collected packages: setuptools
     Uninstalling setuptools-80.9.0:
       Successfully uninstalled setuptools-80.9.0
 Successfully installed setuptools-69.5.1
+[INFO] Installing PyTorch 2.0.1 (CUDA 11.8) and PyTorch3D in 'sugar'...
+[INFO] Running: pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cu118
+Collecting torch==2.0.1+cu118
+  Downloading https://download-r2.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp39-cp39-linux_x86_64.whl (2267.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 GB 69.2 MB/s  0:00:12
+Collecting torchvision==0.15.2+cu118
+  Downloading https://download-r2.pytorch.org/whl/cu118/torchvision-0.15.2%2Bcu118-cp39-cp39-linux_x86_64.whl (6.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.1/6.1 MB 23.5 MB/s  0:00:00
+Collecting torchaudio==2.0.2+cu118
+  Downloading https://download-r2.pytorch.org/whl/cu118/torchaudio-2.0.2%2Bcu118-cp39-cp39-linux_x86_64.whl (4.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 25.5 MB/s  0:00:00
+Collecting filelock (from torch==2.0.1+cu118)
+  Downloading filelock-3.19.1-py3-none-any.whl.metadata (2.1 kB)
+Collecting typing-extensions (from torch==2.0.1+cu118)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting sympy (from torch==2.0.1+cu118)
+  Using cached sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx (from torch==2.0.1+cu118)
+  Downloading networkx-3.2.1-py3-none-any.whl.metadata (5.2 kB)
+Collecting jinja2 (from torch==2.0.1+cu118)
+  Using cached https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting triton==2.0.0 (from torch==2.0.1+cu118)
+  Downloading https://download-r2.pytorch.org/whl/triton-2.0.0-1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (63.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 63.3/63.3 MB 139.5 MB/s  0:00:00
+Collecting numpy (from torchvision==0.15.2+cu118)
+  Using cached numpy-2.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (60 kB)
+Collecting requests (from torchvision==0.15.2+cu118)
+  Using cached requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Collecting pillow!=8.3.*,>=5.3.0 (from torchvision==0.15.2+cu118)
+  Using cached pillow-11.3.0-cp39-cp39-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.0 kB)
+Collecting cmake (from triton==2.0.0->torch==2.0.1+cu118)
+  Using cached cmake-4.4.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (7.0 kB)
+Collecting lit (from triton==2.0.0->torch==2.0.1+cu118)
+  Downloading lit-23.1.2-py3-none-any.whl.metadata (2.7 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch==2.0.1+cu118)
+  Using cached markupsafe-3.0.4-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting charset_normalizer<4,>=2 (from requests->torchvision==0.15.2+cu118)
+  Using cached charset_normalizer-3.5.2-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+Collecting idna<4,>=2.5 (from requests->torchvision==0.15.2+cu118)
+  Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting urllib3<3,>=1.21.1 (from requests->torchvision==0.15.2+cu118)
+  Using cached urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+Collecting certifi>=2017.4.17 (from requests->torchvision==0.15.2+cu118)
+  Using cached certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy->torch==2.0.1+cu118)
+  Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Using cached pillow-11.3.0-cp39-cp39-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.6 MB)
+Using cached cmake-4.4.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (30.2 MB)
+Downloading filelock-3.19.1-py3-none-any.whl (15 kB)
+Using cached https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached markupsafe-3.0.4-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
+Downloading lit-23.1.2-py3-none-any.whl (111 kB)
+Downloading networkx-3.2.1-py3-none-any.whl (1.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 35.7 MB/s  0:00:00
+Using cached numpy-2.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (19.5 MB)
+Using cached requests-2.32.5-py3-none-any.whl (64 kB)
+Using cached charset_normalizer-3.5.2-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (271 kB)
+Using cached idna-3.20-py3-none-any.whl (69 kB)
+Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+Using cached certifi-2026.7.22-py3-none-any.whl (136 kB)
+Using cached sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Installing collected packages: mpmath, lit, urllib3, typing-extensions, sympy, pillow, numpy, networkx, MarkupSafe, idna, filelock, cmake, charset_normalizer, certifi, requests, jinja2, triton, torch, torchvision, torchaudio
+
+Successfully installed MarkupSafe-3.0.4 certifi-2026.7.22 charset_normalizer-3.5.2 cmake-4.4.3 filelock-3.19.1 idna-3.20 jinja2-3.1.6 lit-23.1.2 mpmath-1.3.0 networkx-3.2.1 numpy-2.0.2 pillow-11.3.0 requests-2.32.5 sympy-1.14.0 torch-2.0.1+cu118 torchaudio-2.0.2+cu118 torchvision-0.15.2+cu118 triton-2.0.0 typing-extensions-4.16.0 urllib3-2.6.3
+[INFO] Running: pip install fvcore iopath
+Collecting fvcore
+  Downloading fvcore-0.1.5.post20221221.tar.gz (50 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting iopath
+  Downloading iopath-0.1.10.tar.gz (42 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: numpy in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore) (2.0.2)
+Collecting yacs>=0.1.6 (from fvcore)
+  Downloading yacs-0.1.8-py3-none-any.whl.metadata (639 bytes)
+Collecting pyyaml>=5.1 (from fvcore)
+  Using cached pyyaml-6.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting tqdm (from fvcore)
+  Using cached tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting termcolor>=1.1 (from fvcore)
+  Downloading termcolor-3.1.0-py3-none-any.whl.metadata (6.4 kB)
+Requirement already satisfied: Pillow in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore) (11.3.0)
+Collecting tabulate (from fvcore)
+  Downloading tabulate-0.9.0-py3-none-any.whl.metadata (34 kB)
+Requirement already satisfied: typing_extensions in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from iopath) (4.16.0)
+Collecting portalocker (from iopath)
+  Downloading portalocker-3.2.0-py3-none-any.whl.metadata (8.7 kB)
+Using cached pyyaml-6.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (750 kB)
+Downloading termcolor-3.1.0-py3-none-any.whl (7.7 kB)
+Downloading yacs-0.1.8-py3-none-any.whl (14 kB)
+Downloading portalocker-3.2.0-py3-none-any.whl (22 kB)
+Downloading tabulate-0.9.0-py3-none-any.whl (35 kB)
+Using cached tqdm-4.70.1-py3-none-any.whl (80 kB)
+Building wheels for collected packages: fvcore, iopath
+  Building wheel for fvcore (pyproject.toml): started
+  Building wheel for fvcore (pyproject.toml): finished with status 'done'
+  Created wheel for fvcore: filename=fvcore-0.1.5.post20221221-py3-none-any.whl size=61443 sha256=ce6d3e59c6490ec2bf165830efade8590a90aee3ef5273be982f279a4b7d57c5
+  Stored in directory: /mnt/hpccs01/home/n11585382/.cache/pip/wheels/83/42/02/66178d16e5c44dc26d309931834956baeda371956e86fbd876
+  Building wheel for iopath (pyproject.toml): started
+  Building wheel for iopath (pyproject.toml): finished with status 'done'
+  Created wheel for iopath: filename=iopath-0.1.10-py3-none-any.whl size=31596 sha256=a89196124564c5ec648146e9d69f1bf329f847c38c79be8c260a491b226f927d
+  Stored in directory: /mnt/hpccs01/home/n11585382/.cache/pip/wheels/c1/13/6d/441d8f2af76ee6d2a3e67eebb1d0c556fefcee0a8b32266a8e
+Successfully built fvcore iopath
+Installing collected packages: tqdm, termcolor, tabulate, pyyaml, portalocker, yacs, iopath, fvcore
+
+Successfully installed fvcore-0.1.5.post20221221 iopath-0.1.10 portalocker-3.2.0 pyyaml-6.0.3 tabulate-0.9.0 termcolor-3.1.0 tqdm-4.70.1 yacs-0.1.8
+[INFO] Running: pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/download.html
+Looking in links: https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/download.html
+Collecting pytorch3d
+  Downloading https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/pytorch3d-0.7.4-cp39-cp39-linux_x86_64.whl (20.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20.1/20.1 MB 17.7 MB/s  0:00:01
+Requirement already satisfied: fvcore in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from pytorch3d) (0.1.5.post20221221)
+Requirement already satisfied: iopath in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from pytorch3d) (0.1.10)
+Requirement already satisfied: numpy in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore->pytorch3d) (2.0.2)
+Requirement already satisfied: yacs>=0.1.6 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore->pytorch3d) (0.1.8)
+Requirement already satisfied: pyyaml>=5.1 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore->pytorch3d) (6.0.3)
+Requirement already satisfied: tqdm in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore->pytorch3d) (4.70.1)
+Requirement already satisfied: termcolor>=1.1 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore->pytorch3d) (3.1.0)
+Requirement already satisfied: Pillow in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore->pytorch3d) (11.3.0)
+Requirement already satisfied: tabulate in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from fvcore->pytorch3d) (0.9.0)
+Requirement already satisfied: typing_extensions in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from iopath->pytorch3d) (4.16.0)
+Requirement already satisfied: portalocker in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from iopath->pytorch3d) (3.2.0)
+Installing collected packages: pytorch3d
+Successfully installed pytorch3d-0.7.4
 [INFO] Running: pip install numpy<2 open3d PyMCubes plyfile==0.8.1 rich plotly
 Collecting numpy<2
   Using cached numpy-1.26.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (61 kB)
@@ -3368,18 +3551,15 @@ Collecting ipywidgets>=8.0.4 (from open3d)
   Using cached ipywidgets-8.1.9-py3-none-any.whl.metadata (2.4 kB)
 Collecting addict (from open3d)
   Using cached addict-2.4.0-py3-none-any.whl.metadata (1.0 kB)
-Collecting pillow>=9.3.0 (from open3d)
-  Downloading pillow-11.3.0-cp39-cp39-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.0 kB)
+Requirement already satisfied: pillow>=9.3.0 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from open3d) (11.3.0)
 Collecting matplotlib>=3 (from open3d)
   Using cached matplotlib-3.9.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
 Collecting pandas>=1.0 (from open3d)
   Using cached pandas-2.3.3-cp39-cp39-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)
-Collecting pyyaml>=5.4.1 (from open3d)
-  Downloading pyyaml-6.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Requirement already satisfied: pyyaml>=5.4.1 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from open3d) (6.0.3)
 Collecting scikit-learn>=0.21 (from open3d)
   Using cached scikit_learn-1.6.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
-Collecting tqdm (from open3d)
-  Using cached tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Requirement already satisfied: tqdm in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from open3d) (4.70.1)
 Collecting pyquaternion (from open3d)
   Using cached pyquaternion-0.9.9-py3-none-any.whl.metadata (1.4 kB)
 Collecting scipy>=1.0.0 (from PyMCubes)
@@ -3394,10 +3574,8 @@ Collecting packaging (from plotly)
   Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
 Collecting importlib-metadata (from dash>=2.6.0->open3d)
   Using cached importlib_metadata-8.7.1-py3-none-any.whl.metadata (4.7 kB)
-Collecting typing_extensions>=4.1.1 (from dash>=2.6.0->open3d)
-  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
-Collecting requests (from dash>=2.6.0->open3d)
-  Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Requirement already satisfied: typing_extensions>=4.1.1 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from dash>=2.6.0->open3d) (4.16.0)
+Requirement already satisfied: requests in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from dash>=2.6.0->open3d) (2.32.5)
 Collecting retrying (from dash>=2.6.0->open3d)
   Using cached retrying-1.4.2-py3-none-any.whl.metadata (5.5 kB)
 Collecting nest-asyncio (from dash>=2.6.0->open3d)
@@ -3415,10 +3593,8 @@ Collecting click>=8.1.3 (from flask>=3.0.0->open3d)
   Using cached click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
 Collecting itsdangerous>=2.2.0 (from flask>=3.0.0->open3d)
   Using cached itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
-Collecting jinja2>=3.1.2 (from flask>=3.0.0->open3d)
-  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
-Collecting markupsafe>=2.1.1 (from flask>=3.0.0->open3d)
-  Downloading markupsafe-3.0.4-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Requirement already satisfied: jinja2>=3.1.2 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from flask>=3.0.0->open3d) (3.1.6)
+Requirement already satisfied: markupsafe>=2.1.1 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from flask>=3.0.0->open3d) (3.0.4)
 Collecting zipp>=3.20 (from importlib-metadata->dash>=2.6.0->open3d)
   Using cached zipp-3.23.1-py3-none-any.whl.metadata (3.6 kB)
 Collecting ipython>=6.1.0 (from ipywidgets>=8.0.4->open3d)
@@ -3497,14 +3673,10 @@ Collecting joblib>=1.2.0 (from scikit-learn>=0.21->open3d)
   Using cached joblib-1.5.3-py3-none-any.whl.metadata (5.5 kB)
 Collecting threadpoolctl>=3.1.0 (from scikit-learn>=0.21->open3d)
   Using cached threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
-Collecting charset_normalizer<4,>=2 (from requests->dash>=2.6.0->open3d)
-  Downloading charset_normalizer-3.5.2-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
-Collecting idna<4,>=2.5 (from requests->dash>=2.6.0->open3d)
-  Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
-Collecting urllib3<3,>=1.21.1 (from requests->dash>=2.6.0->open3d)
-  Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
-Collecting certifi>=2017.4.17 (from requests->dash>=2.6.0->open3d)
-  Using cached certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+Requirement already satisfied: charset_normalizer<4,>=2 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from requests->dash>=2.6.0->open3d) (3.5.2)
+Requirement already satisfied: idna<4,>=2.5 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from requests->dash>=2.6.0->open3d) (3.20)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from requests->dash>=2.6.0->open3d) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in /mnt/hpccs01/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages (from requests->dash>=2.6.0->open3d) (2026.7.22)
 Collecting executing>=1.2.0 (from stack-data->ipython>=6.1.0->ipywidgets>=8.0.4->open3d)
   Using cached executing-2.2.1-py2.py3-none-any.whl.metadata (8.9 kB)
 Collecting asttokens>=2.1.0 (from stack-data->ipython>=6.1.0->ipywidgets>=8.0.4->open3d)
@@ -3534,10 +3706,8 @@ Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
 Using cached janus-2.0.0-py3-none-any.whl (12 kB)
 Using cached jedi-0.19.2-py2.py3-none-any.whl (1.6 MB)
 Using cached parso-0.8.7-py2.py3-none-any.whl (107 kB)
-Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
 Using cached markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
 Using cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)
-Downloading markupsafe-3.0.4-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
 Using cached matplotlib-3.9.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (8.3 MB)
 Using cached contourpy-1.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (321 kB)
 Using cached cycler-0.12.1-py3-none-any.whl (8.3 kB)
@@ -3554,8 +3724,6 @@ Using cached jupyter_core-5.8.1-py3-none-any.whl (28 kB)
 Using cached packaging-26.3-py3-none-any.whl (129 kB)
 Using cached pandas-2.3.3-cp39-cp39-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.8 MB)
 Using cached pexpect-4.9.0-py2.py3-none-any.whl (63 kB)
-Downloading pillow-11.3.0-cp39-cp39-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.6 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 69.0 MB/s  0:00:00
 Using cached platformdirs-4.4.0-py3-none-any.whl (18 kB)
 Using cached ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
 Using cached pydantic-2.13.5-py3-none-any.whl (472 kB)
@@ -3564,8 +3732,6 @@ Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
 Using cached pyparsing-3.3.3-py3-none-any.whl (126 kB)
 Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
 Using cached pytz-2026.5-py2.py3-none-any.whl (506 kB)
-Downloading pyyaml-6.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (750 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 750.8/750.8 kB 2.3 MB/s  0:00:00
 Using cached referencing-0.36.2-py3-none-any.whl (26 kB)
 Using cached rpds_py-0.27.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (384 kB)
 Using cached scikit_learn-1.6.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (13.5 MB)
@@ -3574,7 +3740,6 @@ Using cached scipy-1.13.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.w
 Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
 Using cached threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
 Using cached traitlets-5.15.1-py3-none-any.whl (85 kB)
-Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
 Using cached typing_inspection-0.4.2-py3-none-any.whl (14 kB)
 Using cached tzdata-2026.5-py2.py3-none-any.whl (347 kB)
 Using cached zipp-3.23.1-py3-none-any.whl (10 kB)
@@ -3585,56 +3750,48 @@ Using cached exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
 Using cached matplotlib_inline-0.2.2-py3-none-any.whl (9.5 kB)
 Using cached nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
 Using cached pyquaternion-0.9.9-py3-none-any.whl (14 kB)
-Downloading requests-2.32.5-py3-none-any.whl (64 kB)
-Downloading charset_normalizer-3.5.2-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (271 kB)
-Using cached idna-3.20-py3-none-any.whl (69 kB)
-Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
-Using cached certifi-2026.7.22-py3-none-any.whl (136 kB)
 Using cached retrying-1.4.2-py3-none-any.whl (10 kB)
 Using cached stack_data-0.6.3-py3-none-any.whl (24 kB)
 Using cached asttokens-3.0.2-py3-none-any.whl (28 kB)
 Using cached executing-2.2.1-py2.py3-none-any.whl (28 kB)
 Using cached pure_eval-0.2.4-py3-none-any.whl (11 kB)
-Using cached tqdm-4.70.1-py3-none-any.whl (80 kB)
 Using cached wcwidth-0.9.1-py3-none-any.whl (300 kB)
-Installing collected packages: pytz, pure-eval, ptyprocess, fastjsonschema, addict, zipp, widgetsnbextension, wcwidth, urllib3, tzdata, typing_extensions, traitlets, tqdm, threadpoolctl, six, rpds-py, retrying, pyyaml, pyparsing, pygments, platformdirs, pillow, pexpect, parso, packaging, numpy, nest-asyncio, narwhals, mdurl, markupsafe, kiwisolver, jupyterlab_widgets, joblib, janus, itsdangerous, idna, fonttools, executing, decorator, cycler, configargparse, comm, click, charset_normalizer, certifi, blinker, attrs, asttokens, annotated-types, werkzeug, typing-inspection, stack-data, scipy, requests, referencing, python-dateutil, pyquaternion, pydantic-core, prompt-toolkit, plyfile, plotly, matplotlib-inline, markdown-it-py, jupyter-core, jinja2, jedi, importlib-resources, importlib-metadata, exceptiongroup, contourpy, scikit-learn, rich, PyMCubes, pydantic, pandas, matplotlib, jsonschema-specifications, ipython, flask, jsonschema, ipywidgets, dash, nbformat, open3d
+Installing collected packages: pytz, pure-eval, ptyprocess, fastjsonschema, addict, zipp, widgetsnbextension, werkzeug, wcwidth, tzdata, typing-inspection, traitlets, threadpoolctl, six, rpds-py, retrying, pyparsing, pygments, pydantic-core, platformdirs, pexpect, parso, packaging, numpy, nest-asyncio, narwhals, mdurl, kiwisolver, jupyterlab_widgets, joblib, janus, itsdangerous, fonttools, executing, exceptiongroup, decorator, cycler, configargparse, comm, click, blinker, attrs, asttokens, annotated-types, stack-data, scipy, referencing, python-dateutil, pyquaternion, pydantic, prompt-toolkit, plyfile, plotly, matplotlib-inline, markdown-it-py, jupyter-core, jedi, importlib-resources, importlib-metadata, contourpy, scikit-learn, rich, PyMCubes, pandas, matplotlib, jsonschema-specifications, ipython, flask, jsonschema, ipywidgets, dash, nbformat, open3d
+  Attempting uninstall: numpy
+    Found existing installation: numpy 2.0.2
+    Uninstalling numpy-2.0.2:
+      Successfully uninstalled numpy-2.0.2
 
-Successfully installed PyMCubes-0.1.6 addict-2.4.0 annotated-types-0.7.0 asttokens-3.0.2 attrs-26.1.0 blinker-1.9.0 certifi-2026.7.22 charset_normalizer-3.5.2 click-8.1.8 comm-0.2.3 configargparse-1.8.0 contourpy-1.3.0 cycler-0.12.1 dash-4.4.1 decorator-5.3.1 exceptiongroup-1.3.1 executing-2.2.1 fastjsonschema-2.21.2 flask-3.1.3 fonttools-4.60.2 idna-3.20 importlib-metadata-8.7.1 importlib-resources-6.5.2 ipython-8.18.1 ipywidgets-8.1.9 itsdangerous-2.2.0 janus-2.0.0 jedi-0.19.2 jinja2-3.1.6 joblib-1.5.3 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 jupyter-core-5.8.1 jupyterlab_widgets-3.0.17 kiwisolver-1.4.7 markdown-it-py-3.0.0 markupsafe-3.0.4 matplotlib-3.9.4 matplotlib-inline-0.2.2 mdurl-0.1.2 narwhals-2.21.0 nbformat-5.10.4 nest-asyncio-1.6.0 numpy-1.26.4 open3d-0.19.0 packaging-26.3 pandas-2.3.3 parso-0.8.7 pexpect-4.9.0 pillow-11.3.0 platformdirs-4.4.0 plotly-7.1.0 plyfile-0.8.1 prompt-toolkit-3.0.52 ptyprocess-0.7.0 pure-eval-0.2.4 pydantic-2.13.5 pydantic-core-2.46.5 pygments-2.21.0 pyparsing-3.3.3 pyquaternion-0.9.9 python-dateutil-2.9.0.post0 pytz-2026.5 pyyaml-6.0.3 referencing-0.36.2 requests-2.32.5 retrying-1.4.2 rich-15.0.0 rpds-py-0.27.1 scikit-learn-1.6.1 scipy-1.13.1 six-1.17.0 stack-data-0.6.3 threadpoolctl-3.7.0 tqdm-4.70.1 traitlets-5.15.1 typing-inspection-0.4.2 typing_extensions-4.16.0 tzdata-2026.5 urllib3-2.6.3 wcwidth-0.9.1 werkzeug-3.1.9 widgetsnbextension-4.0.16 zipp-3.23.1
-[INFO] Running: pip install /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/submodules/diff-gaussian-rasterization --no-build-isolation
+Successfully installed PyMCubes-0.1.6 addict-2.4.0 annotated-types-0.7.0 asttokens-3.0.2 attrs-26.1.0 blinker-1.9.0 click-8.1.8 comm-0.2.3 configargparse-1.8.0 contourpy-1.3.0 cycler-0.12.1 dash-4.4.1 decorator-5.3.1 exceptiongroup-1.3.1 executing-2.2.1 fastjsonschema-2.21.2 flask-3.1.3 fonttools-4.60.2 importlib-metadata-8.7.1 importlib-resources-6.5.2 ipython-8.18.1 ipywidgets-8.1.9 itsdangerous-2.2.0 janus-2.0.0 jedi-0.19.2 joblib-1.5.3 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 jupyter-core-5.8.1 jupyterlab_widgets-3.0.17 kiwisolver-1.4.7 markdown-it-py-3.0.0 matplotlib-3.9.4 matplotlib-inline-0.2.2 mdurl-0.1.2 narwhals-2.21.0 nbformat-5.10.4 nest-asyncio-1.6.0 numpy-1.26.4 open3d-0.19.0 packaging-26.3 pandas-2.3.3 parso-0.8.7 pexpect-4.9.0 platformdirs-4.4.0 plotly-7.1.0 plyfile-0.8.1 prompt-toolkit-3.0.52 ptyprocess-0.7.0 pure-eval-0.2.4 pydantic-2.13.5 pydantic-core-2.46.5 pygments-2.21.0 pyparsing-3.3.3 pyquaternion-0.9.9 python-dateutil-2.9.0.post0 pytz-2026.5 referencing-0.36.2 retrying-1.4.2 rich-15.0.0 rpds-py-0.27.1 scikit-learn-1.6.1 scipy-1.13.1 six-1.17.0 stack-data-0.6.3 threadpoolctl-3.7.0 traitlets-5.15.1 typing-inspection-0.4.2 tzdata-2026.5 wcwidth-0.9.1 werkzeug-3.1.9 widgetsnbextension-4.0.16 zipp-3.23.1
+[INFO] Running: pip install /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/submodules/diff-gaussian-rasterization --no-build-isolation --force-reinstall --no-deps
 Processing ./Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/submodules/diff-gaussian-rasterization
   Preparing metadata (pyproject.toml): started
-  Preparing metadata (pyproject.toml): finished with status 'error'
-  error: subprocess-exited-with-error
-  
-  × Preparing metadata (pyproject.toml) did not run successfully.
-  │ exit code: 1
-  ╰─> [15 lines of output]
-      Traceback (most recent call last):
-        File "/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
-          main()
-        File "/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
-          json_out["return_val"] = hook(**hook_input["kwargs"])
-        File "/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 175, in prepare_metadata_for_build_wheel
-          return hook(metadata_directory, config_settings)
-        File "/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages/setuptools/build_meta.py", line 366, in prepare_metadata_for_build_wheel
-          self.run_setup()
-        File "/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages/setuptools/build_meta.py", line 487, in run_setup
-          super().run_setup(setup_script=setup_script)
-        File "/home/n11585382/.conda/envs/sugar/lib/python3.9/site-packages/setuptools/build_meta.py", line 311, in run_setup
-          exec(code, locals())
-        File "<string>", line 13, in <module>
-      ModuleNotFoundError: No module named 'torch'
-      [end of output]
-  
-  note: This error originates from a subprocess, and is likely not a problem with pip.
-error: metadata-generation-failed
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: diff_gaussian_rasterization
+  Building wheel for diff_gaussian_rasterization (pyproject.toml): started
+  Building wheel for diff_gaussian_rasterization (pyproject.toml): finished with status 'done'
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp39-cp39-linux_x86_64.whl size=464138 sha256=145c218714b7343b9924d1cde7b478591d887872050d7f6debb5e0c961fb6555
+  Stored in directory: /mnt/hpccs01/home/n11585382/.cache/pip/wheels/1e/41/cd/f69eb2512750b74da08d6bdd7ffdfc18ce0bc70a3723e11fd7
+Successfully built diff_gaussian_rasterization
+Installing collected packages: diff_gaussian_rasterization
+Successfully installed diff_gaussian_rasterization-0.0.0
+[INFO] Running: pip install /mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/submodules/simple-knn --no-build-isolation --force-reinstall --no-deps
+Processing ./Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/submodules/simple-knn
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: simple_knn
+  Building wheel for simple_knn (pyproject.toml): started
+  Building wheel for simple_knn (pyproject.toml): finished with status 'done'
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp39-cp39-linux_x86_64.whl size=525822 sha256=f0e0b6921456cad234b395fbbe572f9db92bd4f3f286d4fc37340a9d4d32910e
+  Stored in directory: /mnt/hpccs01/home/n11585382/.cache/pip/wheels/ef/b1/b8/8cc04a9800f9be6e731533fb2ab159615de0c67d34dd8a93ba
+Successfully built simple_knn
+Installing collected packages: simple_knn
+Successfully installed simple_knn-0.0.0
+[SUCCESS] Environment 'sugar' successfully provisioned.
 
-× Encountered error while generating package metadata.
-╰─> from file:///mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/submodules/diff-gaussian-rasterization
-
-note: This is an issue with the package mentioned above, not pip.
-hint: See above for details.
-ERROR: Failed to provision sugar
+======================================================================
+ Setup Execution Completed Successfully
+======================================================================
 ======================================================================
  Provisioning Conda Environment: oscd
 ======================================================================
@@ -3746,33 +3903,33 @@ Collecting fsspec (from torch)
   Using cached fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
 Collecting nvidia-cuda-nvrtc-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 81.6 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 49.6 MB/s  0:00:00
 Collecting nvidia-cuda-runtime-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 212.2 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 216.8 MB/s  0:00:00
 Collecting nvidia-cuda-cupti-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 89.5 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 109.0 MB/s  0:00:00
 Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch)
   Using cached nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)
 Collecting nvidia-cublas-cu12==12.1.3.1 (from torch)
   Downloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 108.3 MB/s  0:00:03
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 85.5 MB/s  0:00:04
 Collecting nvidia-cufft-cu12==11.0.2.54 (from torch)
   Downloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 104.8 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 79.5 MB/s  0:00:01
 Collecting nvidia-curand-cu12==10.3.2.106 (from torch)
   Downloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 104.7 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 100.9 MB/s  0:00:00
 Collecting nvidia-cusolver-cu12==11.4.5.107 (from torch)
   Downloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 112.7 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 96.0 MB/s  0:00:01
 Collecting nvidia-cusparse-cu12==12.1.0.106 (from torch)
   Downloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 117.3 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 80.8 MB/s  0:00:02
 Collecting nvidia-nccl-cu12==2.21.5 (from torch)
   Downloading nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl (188.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 123.4 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 95.1 MB/s  0:00:01
 Collecting nvidia-nvtx-cu12==12.1.105 (from torch)
   Downloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)
 Collecting triton==3.1.0 (from torch)
@@ -3782,7 +3939,7 @@ Collecting sympy==1.13.1 (from torch)
   Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
 Collecting nvidia-nvjitlink-cu12 (from nvidia-cusolver-cu12==11.4.5.107->torch)
   Downloading nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 127.1 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 95.8 MB/s  0:00:00
 Collecting mpmath<1.4,>=1.1.0 (from sympy==1.13.1->torch)
   Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
 Collecting numpy (from torchvision)
@@ -3810,9 +3967,9 @@ Collecting cupy-cuda12x
   Using cached cupy_cuda12x-14.2.0-cp312-cp312-manylinux2014_x86_64.whl.metadata (2.8 kB)
 Requirement already satisfied: numpy<2.6,>=2.0 in /home/n11585382/.conda/envs/oscd/lib/python3.12/site-packages (from cupy-cuda12x) (2.5.2)
 Collecting cuda-pathfinder==1.*,>=1.3.4 (from cupy-cuda12x)
-  Downloading cuda_pathfinder-1.8.3-py3-none-any.whl.metadata (1.9 kB)
+  Using cached cuda_pathfinder-1.8.3-py3-none-any.whl.metadata (1.9 kB)
 Using cached cupy_cuda12x-14.2.0-cp312-cp312-manylinux2014_x86_64.whl (136.1 MB)
-Downloading cuda_pathfinder-1.8.3-py3-none-any.whl (62 kB)
+Using cached cuda_pathfinder-1.8.3-py3-none-any.whl (62 kB)
 Installing collected packages: cuda-pathfinder, cupy-cuda12x
 
 Successfully installed cuda-pathfinder-1.8.3 cupy-cuda12x-14.2.0
@@ -3859,18 +4016,18 @@ Collecting lightning-utilities>=0.15.3 (from torchmetrics)
 Collecting imageio<3.0.0,>=2.0.0 (from viser)
   Using cached imageio-2.38.0-py3-none-any.whl.metadata (9.7 kB)
 Collecting msgspec<1.0.0,>=0.18.6 (from viser)
-  Downloading msgspec-0.22.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.0 kB)
+  Using cached msgspec-0.22.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.0 kB)
 Collecting rich<15.0.0,>=13.3.3 (from viser)
   Using cached rich-14.3.4-py3-none-any.whl.metadata (18 kB)
 Collecting trimesh<6.0.0,>=3.21.7 (from viser)
-  Downloading trimesh-5.1.1-py3-none-any.whl.metadata (13 kB)
+  Using cached trimesh-5.1.1-py3-none-any.whl.metadata (13 kB)
 Collecting websockets<17.0.0,>=13.1 (from viser)
   Using cached websockets-16.1.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
 Collecting zstandard<1.0.0,>=0.20.0 (from viser)
   Using cached zstandard-0.25.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.3 kB)
 Requirement already satisfied: pillow>=8.3.2 in /home/n11585382/.conda/envs/oscd/lib/python3.12/site-packages (from imageio<3.0.0,>=2.0.0->viser) (12.3.0)
 Collecting charset_normalizer<4,>=2 (from requests->transformers==4.56.1)
-  Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+  Using cached charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
 Collecting idna<4,>=2.5 (from requests->transformers==4.56.1)
   Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
 Collecting urllib3<3,>=1.26 (from requests->transformers==4.56.1)
@@ -3913,14 +4070,13 @@ Using cached lpips-0.1.4-py3-none-any.whl (53 kB)
 Using cached torchmetrics-1.9.0-py3-none-any.whl (983 kB)
 Using cached viser-1.1.1-py3-none-any.whl (3.6 MB)
 Using cached imageio-2.38.0-py3-none-any.whl (328 kB)
-Downloading msgspec-0.22.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (230 kB)
+Using cached msgspec-0.22.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (230 kB)
 Using cached requests-2.34.2-py3-none-any.whl (73 kB)
-Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (257 kB)
+Using cached charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (257 kB)
 Using cached idna-3.20-py3-none-any.whl (69 kB)
 Using cached rich-14.3.4-py3-none-any.whl (310 kB)
 Using cached pygments-2.21.0-py3-none-any.whl (1.3 MB)
-Downloading trimesh-5.1.1-py3-none-any.whl (750 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 750.4/750.4 kB 11.9 MB/s  0:00:00
+Using cached trimesh-5.1.1-py3-none-any.whl (750 kB)
 Using cached urllib3-2.8.0-py3-none-any.whl (135 kB)
 Using cached websockets-16.1.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (187 kB)
 Using cached zstandard-0.25.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.5 MB)
@@ -3942,8 +4098,8 @@ Processing ./Codebase/3DGS-Change-Detection/O-SCD-main/submodules/diff-gaussian-
 Building wheels for collected packages: diff_gaussian_rasterization_fastgs
   Building wheel for diff_gaussian_rasterization_fastgs (pyproject.toml): started
   Building wheel for diff_gaussian_rasterization_fastgs (pyproject.toml): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization_fastgs: filename=diff_gaussian_rasterization_fastgs-0.0.0-cp312-cp312-linux_x86_64.whl size=728658 sha256=17a509a0201f06116c8f015a1a051671ac0c080aa608499ee778692dc2d85071
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-4oizduru/wheels/85/a8/b7/2a5115ff97f0b445cc8dee52a50c5a29738643ebbd5d6358dd
+  Created wheel for diff_gaussian_rasterization_fastgs: filename=diff_gaussian_rasterization_fastgs-0.0.0-cp312-cp312-linux_x86_64.whl size=728657 sha256=d600468834c5da469ee0abe5d33a8646ad2a3679f3d74f057824948d91cae9c7
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-ft0ceda8/wheels/85/a8/b7/2a5115ff97f0b445cc8dee52a50c5a29738643ebbd5d6358dd
 Successfully built diff_gaussian_rasterization_fastgs
 Installing collected packages: diff_gaussian_rasterization_fastgs
 Successfully installed diff_gaussian_rasterization_fastgs-0.0.0
@@ -3977,8 +4133,8 @@ Requirement already satisfied: MarkupSafe>=2.0 in /home/n11585382/.conda/envs/os
 Building wheels for collected packages: fused-ssim
   Building wheel for fused-ssim (pyproject.toml): started
   Building wheel for fused-ssim (pyproject.toml): finished with status 'done'
-  Created wheel for fused-ssim: filename=fused_ssim-1.0.0-cp312-cp312-linux_x86_64.whl size=139672 sha256=0f5cff44cf91c9c467b1162ef1df7c3cb8aee945313788fc90be8fae4abdeabd
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-atna1e21/wheels/43/74/7e/34c4363725e6ea56b2dfb2cc79bbd3f782a2695190eb30551c
+  Created wheel for fused-ssim: filename=fused_ssim-1.0.0-cp312-cp312-linux_x86_64.whl size=139671 sha256=976b81b468ce20d120eb6e5dbbdead84adc1afef5745c877ec165598aee4e14f
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-4obebo__/wheels/43/74/7e/34c4363725e6ea56b2dfb2cc79bbd3f782a2695190eb30551c
 Successfully built fused-ssim
 Installing collected packages: fused-ssim
 Successfully installed fused-ssim-1.0.0
@@ -3989,8 +4145,8 @@ Processing ./Codebase/3DGS-Change-Detection/O-SCD-main/submodules/simple-knn
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (pyproject.toml): started
   Building wheel for simple_knn (pyproject.toml): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=568354 sha256=25630e5fb4a39e5cf5ab4a4f3946ec4e14bf4a6c1e790c81980f8e833198221d
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-i3s4a160/wheels/74/b1/26/0d0120b1977882b7c495748812942e71cad4e6a0cef585510d
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=568351 sha256=90d92fbe6de53208a6e129af11a95c7a6ac7ffade2524a2d7b09ab6a47c0dc0d
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-6ifge58v/wheels/74/b1/26/0d0120b1977882b7c495748812942e71cad4e6a0cef585510d
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
@@ -4105,33 +4261,33 @@ Collecting fsspec (from torch)
   Using cached fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
 Collecting nvidia-cuda-nvrtc-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 64.2 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 57.6 MB/s  0:00:00
 Collecting nvidia-cuda-runtime-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 130.8 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 198.4 MB/s  0:00:00
 Collecting nvidia-cuda-cupti-cu12==12.1.105 (from torch)
   Downloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 99.9 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 109.9 MB/s  0:00:00
 Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch)
   Using cached nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)
 Collecting nvidia-cublas-cu12==12.1.3.1 (from torch)
   Downloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 90.2 MB/s  0:00:04
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 99.5 MB/s  0:00:04
 Collecting nvidia-cufft-cu12==11.0.2.54 (from torch)
   Downloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 78.0 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 102.0 MB/s  0:00:01
 Collecting nvidia-curand-cu12==10.3.2.106 (from torch)
   Downloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 84.4 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 92.2 MB/s  0:00:00
 Collecting nvidia-cusolver-cu12==11.4.5.107 (from torch)
   Downloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 97.9 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 96.1 MB/s  0:00:01
 Collecting nvidia-cusparse-cu12==12.1.0.106 (from torch)
   Downloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 95.8 MB/s  0:00:02
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 99.4 MB/s  0:00:01
 Collecting nvidia-nccl-cu12==2.21.5 (from torch)
   Downloading nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl (188.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 95.6 MB/s  0:00:01
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 106.1 MB/s  0:00:01
 Collecting nvidia-nvtx-cu12==12.1.105 (from torch)
   Downloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)
 Collecting triton==3.1.0 (from torch)
@@ -4140,7 +4296,7 @@ Collecting sympy==1.13.1 (from torch)
   Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
 Collecting nvidia-nvjitlink-cu12 (from nvidia-cusolver-cu12==11.4.5.107->torch)
   Downloading nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.7 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 106.8 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 91.9 MB/s  0:00:00
 Collecting mpmath<1.4,>=1.1.0 (from sympy==1.13.1->torch)
   Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
 Collecting numpy (from torchvision)
@@ -4189,8 +4345,8 @@ Processing ./Codebase/Tools/gaussian-splatting-main/submodules/diff-gaussian-ras
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (pyproject.toml): started
   Building wheel for diff_gaussian_rasterization (pyproject.toml): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=700839 sha256=d87cc3ca54a76f2c942573877b41006b030df137672bdf8a32d22f710cc825ef
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-36yeopxx/wheels/2c/75/9f/904f4b7c9924b0532e4ebd6cab04fbb3964fee9807c71ee302
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp310-cp310-linux_x86_64.whl size=700839 sha256=da1086c32a932c868106a1cab11224d151dad6692ddf095edc7a471d711d8083
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-2o2_yphw/wheels/2c/75/9f/904f4b7c9924b0532e4ebd6cab04fbb3964fee9807c71ee302
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
 Successfully installed diff_gaussian_rasterization-0.0.0
@@ -4201,8 +4357,8 @@ Processing ./Codebase/Tools/gaussian-splatting-main/submodules/simple-knn
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (pyproject.toml): started
   Building wheel for simple_knn (pyproject.toml): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=602631 sha256=f3e318cd81095e44015e17f45daaa907656be87b6b06a7136ab106e6cbd2998b
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-zjsh1tzi/wheels/ad/ce/a2/d58ee21bdab6e697a6d365332d63b56237a6305cf6a5846a17
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp310-cp310-linux_x86_64.whl size=602631 sha256=54a9fccece088eeb7d81ebf54782f94b5581acd3b544ccfcde3bf148003fd3fe
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-l6bv5u1u/wheels/ad/ce/a2/d58ee21bdab6e697a6d365332d63b56237a6305cf6a5846a17
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
@@ -4235,8 +4391,8 @@ Requirement already satisfied: MarkupSafe>=2.0 in /mnt/hpccs01/home/n11585382/.c
 Building wheels for collected packages: fused-ssim
   Building wheel for fused-ssim (pyproject.toml): started
   Building wheel for fused-ssim (pyproject.toml): finished with status 'done'
-  Created wheel for fused-ssim: filename=fused_ssim-1.0.0-cp310-cp310-linux_x86_64.whl size=135411 sha256=fd06f1ea0281929861be60f757b455d95841149e19d96d1a1b322c8818e45ea2
-  Stored in directory: /tmp/pbs.26340565.aqua/pip-ephem-wheel-cache-aiauxzbd/wheels/95/8e/b2/df54d1a8c1b489b048b24f7f1731029a86e887e549cf87a182
+  Created wheel for fused-ssim: filename=fused_ssim-1.0.0-cp310-cp310-linux_x86_64.whl size=135411 sha256=bb057be5eb6ec4ee161837bac741517dfd71421b01e8ffeec3fe37628a24cb33
+  Stored in directory: /tmp/pbs.26342207.aqua/pip-ephem-wheel-cache-4rgusatq/wheels/95/8e/b2/df54d1a8c1b489b048b24f7f1731029a86e887e549cf87a182
 Successfully built fused-ssim
 Installing collected packages: fused-ssim
 Successfully installed fused-ssim-1.0.0
@@ -4246,46 +4402,45 @@ Successfully installed fused-ssim-1.0.0
  Setup Execution Completed Successfully
 ======================================================================
 ======================================================================
- SETUP FAILED: The following environment(s) failed to provision:
-  - sugar
+ All Environments Setup Complete and Verified!
 ======================================================================
 
-PBS Job 26340565.aqua
-CPU time         : 00:43:19
-Wall time        : 00:46:16
-Mem usage        : 5211368kb
+PBS Job 26342207.aqua
+CPU time         : 00:44:19
+Wall time        : 00:48:14
+Mem usage        : 5897732kb
 
---- Job Runtime Information at 2026-10-04T13:21:48.831044---
-id               : 26340565.aqua
+--- Job Runtime Information at 2026-10-04T14:53:08.492077---
+id               : 26342207.aqua
 Job_Name         : ump_setup_env
 Job_Owner        : n11585382@aquarius02.ib0.hpc.qut.edu.au
-resources_used   : cput=00:43:19,mem=5211368kb,walltime=00:46:16,ncpus=42,cpupercent=178,vmem=23036168kb,cpus="0,1,2,3,5,6,15,16,17,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,96,97,98,99,100,101",ngpus=0
+resources_used   : cput=00:44:19,mem=5897732kb,walltime=00:48:14,ncpus=42,cpupercent=156,vmem=23835052kb,cpus="55,56,57,58,59,60,61,62,63,69,70,71,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,144,145,146,147,148,149,150,151,152,153",ngpus=0
 job_state        : 5
 queue            : gpu_batch_exec
 server           : aqua
-devices          : /dev/nvidia1
+devices          : /dev/nvidia2
 Checkpoint       : u
-Error_Path       : aquarius02.ib0.hpc.qut.edu.au:/mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/ump_setup_env.e26340565
-exec_host2       : gpu1n008.ib0.hpc.qut.edu.au:15002/0*42
-exec_vnode       : (gpu1n008[0]:ncpus=42:ngpus=1:mem=243gb:nfpgas=0)
+Error_Path       : aquarius02.ib0.hpc.qut.edu.au:/mnt/hpccs01/home/n11585382/EUAPGM7346/UMP/ump_setup_env.e26342207
+exec_host2       : gpu1n007.ib0.hpc.qut.edu.au:15002/3*42
+exec_vnode       : (gpu1n007[1]:ncpus=42:ngpus=1:mem=243gb:nfpgas=0)
 Join_Path        : oe
 Keep_Files       : n
-mtime            : 2026-10-04T12:35:31
+mtime            : 2026-10-04T14:04:53
 Output_Path      : aquarius02.ib0.hpc.qut.edu.au:/home/n11585382/EUAPGM7346/UMP/setup_env_complete.log
 Resource_List    : mem=243gb,walltime=02:00:00,ncpus=42,place=free
 schedselect      : 1:ncpus=42:ngpus=1:mem=243gb:gpu_id=H100:nfpgas=0:cpu_id=any:qlist=gpu_batch_exec
-stime            : 2026-10-04T12:35:29
-session_id       : 1116562
+stime            : 2026-10-04T14:04:51
+session_id       : 1980864
 substate         : 50
 Variable_List    : PBS_O_HOME=/home/n11585382,PBS_O_LANG=en_US.UTF-8,PBS_O_LOGNAME=n11585382,PBS_O_PATH=/mnt/weka/pkg/rhel94/AuthenticAMD-25/software/Anaconda3/2024.02-1/bin:/mnt/weka/pkg/rhel94/AuthenticAMD-25/software/Anaconda3/2024.02-1/condabin:/home/n11585382/.local/bin:/home/n11585382/bin:/opt/clmgr/sbin:/opt/clmgr/bin:/opt/sgi/sbin:/opt/sgi/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/c3/bin:/opt/pbs/bin:/sbin:/bin,PBS_O_MAIL=/var/spool/mail/n11585382,PBS_O_SHELL=/usr/local/qutsh/bin/qutsh,PBS_O_INTERACTIVE_AUTH_METHOD=resvport,PBS_O_HOST=aquarius02.ib0.hpc.qut.edu.au,PBS_O_WORKDIR=/mnt/hpccs01/home/n11585382/EUAPGM7346/UMP,PBS_O_SYSTEM=Linux,PBS_O_QUEUE=gpu_batch
 euser            : n11585382
 egroup           : default
-hashname         : 26340565.aqua
+hashname         : 26342207.aqua
 run_count        : 1
 job_kill_delay   : 10
-Exit_status      : 1
+Exit_status      : 0
 project          : EUAPGM7346
 run_version      : 1
 Submit_Host      : aquarius02.ib0.hpc.qut.edu.au
 Submit_arguments : HPC/scripts/setup_env.pbs 
-ctime            : 2026-10-04T12:10:12
+ctime            : 2026-10-04T13:59:14
