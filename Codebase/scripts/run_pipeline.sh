@@ -412,7 +412,11 @@ run_sugar_mesh_stage() {
         local target_cam="${gs_prior}/cameras.json"
         if [[ ! -f "${target_cam}" ]]; then
             local found_cam=""
-            found_cam="$(find "${gs_prior}/.." "${REPO_ROOT}/Codebase/3DGS-Water-Approaches" "${scene_path}" -maxdepth 4 -path "*${scene_name}*" -name "cameras.json" 2>/dev/null | head -n 1 || true)"
+            found_cam="$(find "${gs_prior}/.." "${REPO_ROOT}/Codebase/3DGS-Water-Approaches" "${scene_path}" -maxdepth 5 -path "*${scene_name}*" -name "cameras.json" 2>/dev/null | head -n 1 || true)"
+            if [[ -z "${found_cam}" || ! -f "${found_cam}" ]]; then
+                # Search anywhere in Codebase for matching scene's cameras.json
+                found_cam="$(find "${REPO_ROOT}/Codebase" -maxdepth 6 -path "*${scene_name}*" -name "cameras.json" 2>/dev/null | head -n 1 || true)"
+            fi
             if [[ -n "${found_cam}" && -f "${found_cam}" ]]; then
                 log_info "SuGaR compatibility fix: Symlinking ${found_cam} to ${target_cam}"
                 ln -sfn "${found_cam}" "${target_cam}"

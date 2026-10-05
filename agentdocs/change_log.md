@@ -371,3 +371,40 @@ Following the execution of `HPC/scripts/setup_env.pbs` (Job ID `26340565.aqua`, 
    - In `HPC/scripts/setup_env.pbs`:
      - Allowed passing `TARGET_ENV` via PBS environment variables (`${TARGET_ENV:-colmap_runner ...}`), allowing users to provision or re-run a single environment (e.g., `qsub -v TARGET_ENV=sugar HPC/scripts/setup_env.pbs`) in minutes without re-looping all environments.
 
+
+## Fifth Pipeline Execution Audit & Comprehensive 11-Failure Fixes (`run_pipeline_complete.log`)
+
+Following the 4th run of `HPC/scripts/run_pipeline.pbs` on Aqua (H100 GPU node, Job ID `26344195.aqua`), 4 executions succeeded (`rusplatting` Kwaj/Tokai and standalone `sugar` Kwaj/Tokai), while 11 executions failed. Comprehensive root-cause analysis was conducted across all 11 failures, with targeted code fixes applied across the repository:
+
+### Detailed Root Cause & Applied Fixes
+
+1. **3D-UIR Antialiasing Keyword Argument Error (Executions 3 & 4: 3D-UIR Kwaj & Tokai)**:
+   - **Bug**: 3D-UIR failed at iteration 0 with `TypeError: GaussianRasterizationSettings.__new__() got an unexpected keyword argument 'antialiasing'`.
+   - **Root Cause**: `3D-UIR-main/gaussian_renderer/__init__.py` calls `GaussianRasterizationSettings(..., antialiasing=pipe.antialiasing)`. The vanilla Inria rasterizer lacks antialiasing (`dr_aa` branch) support. In `setup_env.sh`, `ensure_submodule` cloned standard Inria master branch.
+   - **Fix**: Replaced 3D-UIR's submodules with the official Graphdeco `dr_aa` antialiased differentiable rasterizer (`submodules/diff-gaussian-rasterization`). Updated `setup_env.sh` to preserve the vendored rasterizer directory and specify branch `dr_aa` during any fallback re-clone.
+
+2. **GaussianSplashing Render Return Tuple Unpack Mismatch (Execution 6: GaussianSplashing Tokai)**:
+   - **Bug**: Novel view rendering crashed with `ValueError: too many values to unpack (expected 3)` at `rendered_image, radii, rendered_depth = rasterizer(...)`.
+   - **Root Cause**: In `render.py`, `render_set()` called `render(..., uw_flag="OFF")` by default. Under the custom underwater rasterizer compiled for `gaussianSplashing_env`, the rasterizer always returns 5 tensors (`rendered_image, radii, rendered_depth, rendered_J, rendered_backscattering`), but the non-HYB branch expected 3 return values.
+   - **Fix**: Updated `render.py` in `gaussianSplashing-main` to pass `uw_flag="HYB"` explicitly in `render_set()` and `render_sets()`, matching the model's training configuration.
+
+3. **WaterSplatting Missing `cameras.json` in SuGaR Prior (Executions 7 & 8: WaterSplatting Kwaj & Tokai)**:
+   - **Bug**: Stage 5 mesh extraction failed with `FileNotFoundError: Could not find cameras.json in any candidate location`.
+   - **Root Cause**: WaterSplatting exports via Nerfstudio (`ns-export gaussian-splat`) to `export/` containing `splat.ply`, but Nerfstudio does not output COLMAP-style `cameras.json`. The previous `find` command only searched up to 4 directory levels and failed if sibling models had not yet completed or differed in path layout.
+   - **Fix**: 
+     - In `Codebase/scripts/run_pipeline.sh`, widened the fallback `cameras.json` scan across all sibling outputs under `Codebase/`.
+     - In `sugar_scene/cameras.py`, enhanced `load_gs_cameras()` to scan sibling model directories and, if still missing, automatically synthesize `cameras.json` directly from the COLMAP reconstruction (`sparse/0/cameras.bin` / `cameras.txt` and `images.bin` / `images.txt`).
+
+4. **UW-GS Missing `colors_precomp_clean` Parameter (Executions 11 & 12: UW-GS Kwaj & Tokai)**:
+   - **Bug**: UW-GS failed at iteration 0 with `RuntimeError: CUDA error: an illegal memory access was encountered` at line 113 of `gaussian_renderer/__init__.py`.
+   - **Root Cause**: The custom UW-GS differentiable rasterizer kernel always reads and blends `colors_precomp_clean`. In `UW-GS-main/gaussian_renderer/__init__.py`, `colors_precomp_clean` was not passed to `rasterizer()`, passing an uninitialized or empty tensor to the CUDA kernel and causing an illegal memory access during forward tile rasterization.
+   - **Fix**: In `UW-GS-main/gaussian_renderer/__init__.py`, computed `colors_precomp_clean` from spherical harmonics and explicitly passed `colors_precomp_clean=colors_precomp_clean` to `rasterizer()`.
+
+5. **OSCD FastGS Class Import Naming Mismatch (Execution 15: OSCD Change Detection)**:
+   - **Bug**: Stage 4 change detection failed with `ImportError: cannot import name 'GaussianRasterizationSettingsFastGS' from 'diff_gaussian_rasterization_fastgs'`.
+   - **Root Cause**: `diff-gaussian-rasterization_fastgs` exports `GaussianRasterizationSettings` and `GaussianRasterizer` (un-suffixed), whereas `O-SCD-main/gaussian_renderer/__init__.py` imported `GaussianRasterizationSettingsFastGS` and `GaussianRasterizerFastGS`.
+   - **Fix**: Wrapped the import in `O-SCD-main/gaussian_renderer/__init__.py` with a fallback `try...except ImportError` to import `GaussianRasterizationSettings as GaussianRasterizationSettingsFastGS` and `GaussianRasterizer as GaussianRasterizerFastGS`.
+
+6. **Missing sm_90 (Hopper H100) Architecture Flag in Setup Scripts**:
+   - **Root Cause**: `setup_env.pbs` and `setup_env.sh` did not export `TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0+PTX"`, which could lead to missing sm_90 native instructions or asynchronous CUDA memory exceptions when executing on H100 nodes.
+   - **Fix**: Exported `TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-8.0;8.6;8.9;9.0+PTX}"` in both `setup_env.pbs` and `setup_env.sh`.

@@ -37,13 +37,99 @@ def load_gs_cameras(source_path, gs_output_path, image_resolution=1,
         os.path.join(os.path.dirname(gs_output_path.rstrip('/\\')), 'cameras.json'),
         os.path.join(source_path, 'cameras.json'),
     ]
+    # Scan sibling model outputs for matching scene cameras.json if not in prior export
+    scene_basename = os.path.basename(source_path.rstrip('/\\'))
+    for root_dir, dirs, files in os.walk(os.path.join(source_path, '..', '..')):
+        if 'cameras.json' in files and scene_basename in root_dir:
+            cam_json_candidates.append(os.path.join(root_dir, 'cameras.json'))
+
     cam_json_path = None
     for cand in cam_json_candidates:
         if os.path.exists(cand):
             cam_json_path = cand
             break
+
+    # If still not found, automatically synthesize cameras.json from COLMAP sparse reconstruction
     if cam_json_path is None:
-        raise FileNotFoundError(f"Could not find cameras.json in any candidate location: {cam_json_candidates}")
+        colmap_sparse_candidates = [
+            os.path.join(source_path, 'sparse', '0'),
+            os.path.join(source_path, 'sparse'),
+            os.path.join(source_path, 'colmap', 'sparse', '0'),
+        ]
+        for colmap_dir in colmap_sparse_candidates:
+            if os.path.exists(os.path.join(colmap_dir, 'cameras.bin')) or os.path.exists(os.path.join(colmap_dir, 'cameras.txt')):
+                synthesized_cam_path = os.path.join(gs_output_path, 'cameras.json')
+                try:
+                    import sys
+                    sugar_gs_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'gaussian_splatting'))
+                    if sugar_gs_dir not in sys.path:
+                        sys.path.insert(0, sugar_gs_dir)
+                    from scene.colmap_loader import read_extrinsics_binary, read_intrinsics_binary, read_extrinsics_text, read_intrinsics_text, qvec2rotmat
+                    from utils.graphics_utils import focal2fov, fov2focal
+
+                    try:
+                        cam_extr = read_extrinsics_binary(os.path.join(colmap_dir, 'images.bin'))
+                        cam_intr = read_intrinsics_binary(os.path.join(colmap_dir, 'cameras.bin'))
+                    except Exception:
+                        cam_extr = read_extrinsics_text(os.path.join(colmap_dir, 'images.txt'))
+                        cam_intr = read_intrinsics_text(os.path.join(colmap_dir, 'cameras.txt'))
+
+                    json_cams = []
+                    for id_idx, key in enumerate(cam_extr):
+                        extr = cam_extr[key]
+                        intr = cam_intr[extr.camera_id]
+                        height = intr.height
+                        width = intr.width
+                        R = np.transpose(qvec2rotmat(extr.qvec))
+                        T = np.array(extr.tvec)
+
+                        if intr.model == 'SIMPLE_PINHOLE':
+                            focal_length_x = intr.params[0]
+                            focal_length_y = intr.params[0]
+                        elif intr.model == 'PINHOLE':
+                            focal_length_x = intr.params[0]
+                            focal_length_y = intr.params[1]
+                        else:
+                            focal_length_x = intr.params[0]
+                            focal_length_y = intr.params[0]
+
+                        FovY = focal2fov(focal_length_y, height)
+                        FovX = focal2fov(focal_length_x, width)
+
+                        Rt = np.zeros((4, 4))
+                        Rt[:3, :3] = R.transpose()
+                        Rt[:3, 3] = T
+                        Rt[3, 3] = 1.0
+
+                        W2C = np.linalg.inv(Rt)
+                        pos = W2C[:3, 3]
+                        rot = W2C[:3, :3]
+                        serializable_array_2d = [x.tolist() for x in rot]
+                        image_name = os.path.splitext(os.path.basename(extr.name))[0]
+
+                        camera_entry = {
+                            'id': id_idx,
+                            'img_name': image_name,
+                            'width': width,
+                            'height': height,
+                            'position': pos.tolist(),
+                            'rotation': serializable_array_2d,
+                            'fy': fov2focal(FovY, height),
+                            'fx': fov2focal(FovX, width)
+                        }
+                        json_cams.append(camera_entry)
+
+                    os.makedirs(os.path.dirname(os.path.abspath(synthesized_cam_path)), exist_ok=True)
+                    with open(synthesized_cam_path, 'w') as f:
+                        json.dump(json_cams, f, indent=2)
+                    cam_json_path = synthesized_cam_path
+                    print(f'Synthesized cameras.json from COLMAP at {colmap_dir} into {synthesized_cam_path}')
+                    break
+                except Exception as ex:
+                    print(f'Warning: Failed to synthesize cameras.json from {colmap_dir}: {ex}')
+
+    if cam_json_path is None:
+        raise FileNotFoundError(f'Could not find cameras.json in any candidate location: {cam_json_candidates}')
 
     with open(cam_json_path) as f:
         unsorted_camera_transforms = json.load(f)

@@ -13,7 +13,13 @@ import torch
 import math
 from scene.gaussian_model import GaussianModel
 from utils.sh_utils import eval_sh
-from diff_gaussian_rasterization_fastgs import GaussianRasterizationSettingsFastGS, GaussianRasterizerFastGS
+try:
+    from diff_gaussian_rasterization_fastgs import GaussianRasterizationSettingsFastGS, GaussianRasterizerFastGS
+except ImportError:
+    # The published FastGS rasterizer package (fastgs/FastGS, crimson-and-clover fork) exports the same
+    # classes under the un-suffixed names (identical `mult`/`get_flag`/`metric_map` API).
+    from diff_gaussian_rasterization_fastgs import GaussianRasterizationSettings as GaussianRasterizationSettingsFastGS
+    from diff_gaussian_rasterization_fastgs import GaussianRasterizer as GaussianRasterizerFastGS
 
 def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, mult=0.5, scaling_modifier = 1.0, override_color = None, get_flag=None, metric_map = None):
     """

@@ -176,7 +176,7 @@ def create_video_set(scene, gaussians, pipe, bg, uw_flag, n_frames=10, save_str=
         create_video_from_images(image_directory, output_video_file, fps=10)
         
 
-def render_set(model_path, name, iteration, views, gaussians, pipeline, background):
+def render_set(model_path, name, iteration, views, gaussians, pipeline, background, uw_flag="HYB"):
     render_path = os.path.join(model_path, name, "ours_{}".format(iteration), "renders")
     gts_path = os.path.join(model_path, name, "ours_{}".format(iteration), "gt")
 
@@ -184,7 +184,7 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
     makedirs(gts_path, exist_ok=True)
 
     for idx, view in enumerate(tqdm(views, desc="Rendering progress")):
-        rendering = render(view, gaussians, pipeline, background)["render"]
+        rendering = render(view, gaussians, pipeline, background, uw_flag=uw_flag)["render"]
         gt = view.original_image[0:3, :, :]
         torchvision.utils.save_image(rendering, os.path.join(render_path, '{0:05d}'.format(idx) + ".png"))
         torchvision.utils.save_image(gt, os.path.join(gts_path, '{0:05d}'.format(idx) + ".png"))
@@ -192,7 +192,12 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
 def render_sets(dataset : ModelParams, iteration : int, pipeline : PipelineParams, skip_train : bool, skip_test : bool):
     with torch.no_grad():
         sh_deg = getattr(dataset, 'sh_degree', 3)
-        gaussians = GaussianModel(sh_deg)
+        # The UW rasterizer always returns the 5-tuple (image, radii, depth, J, backscatter), and the pipeline
+        # always trains with --underwater_processing HYB. Never fall back to the OFF code path here.
+        uw_flag = getattr(dataset, 'underwater_processing', None)
+        if not isinstance(uw_flag, str) or not uw_flag.startswith("HYB"):
+            uw_flag = "HYB"
+        gaussians = GaussianModel(sh_deg, uw_flag)
         scene = Scene(dataset, gaussians, load_iteration=iteration, shuffle=False)
 
         white_bg = getattr(dataset, 'white_background', False)
@@ -200,10 +205,10 @@ def render_sets(dataset : ModelParams, iteration : int, pipeline : PipelineParam
         background = torch.tensor(bg_color, dtype=torch.float32, device="cuda")
 
         if not skip_train:
-             render_set(dataset.model_path, "train", scene.loaded_iter, scene.getTrainCameras(), gaussians, pipeline, background)
+             render_set(dataset.model_path, "train", scene.loaded_iter, scene.getTrainCameras(), gaussians, pipeline, background, uw_flag)
 
         if not skip_test:
-             render_set(dataset.model_path, "test", scene.loaded_iter, scene.getTestCameras(), gaussians, pipeline, background)
+             render_set(dataset.model_path, "test", scene.loaded_iter, scene.getTestCameras(), gaussians, pipeline, background, uw_flag)
 
 if __name__ == "__main__":
     # Set up command line argument parser

@@ -19,6 +19,10 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 CODEBASE_DIR="${REPO_ROOT}/Codebase"
 CONDA_DIR="${CONDA_DIR:-$HOME/miniconda3}"
 
+# Hopper H100 (sm_90) and Ampere/Ada target architectures for PyTorch CUDA extension compilation
+export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-8.0;8.6;8.9;9.0+PTX}"
+
+
 # ------------------------------------------------------------------------------
 # CUDA_HOME Auto-Detection
 # Ensures CUDA_HOME is set for PyTorch cpp_extension (diff-gaussian-rasterization
@@ -560,7 +564,7 @@ ensure_all_submodules() {
     ensure_submodule_with_fallback "${tools_gs_dir}/simple-knn" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
     ensure_submodule "${tools_gs_dir}/fused-ssim" "https://github.com/rahul-goel/fused-ssim.git"
 
-    ensure_submodule "${uir_dir}/diff-gaussian-rasterization" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
+    if [[ ! -f "${uir_dir}/diff-gaussian-rasterization/setup.py" ]]; then ensure_submodule "${uir_dir}/diff-gaussian-rasterization" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git" "dr_aa"; fi
     ensure_submodule_with_fallback "${uir_dir}/simple-knn" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
     ensure_submodule "${uir_dir}/fused-ssim" "https://github.com/rahul-goel/fused-ssim.git"
 
@@ -726,7 +730,7 @@ setup_3d_uir() {
     local sub_knn="${repo_dir}/submodules/simple-knn"
     local sub_ssim="${repo_dir}/submodules/fused-ssim"
 
-    ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
+    if [[ ! -f "${sub_diff}/setup.py" ]]; then ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git" "dr_aa"; fi
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
     ensure_submodule "${sub_ssim}" "https://github.com/rahul-goel/fused-ssim.git"
 
