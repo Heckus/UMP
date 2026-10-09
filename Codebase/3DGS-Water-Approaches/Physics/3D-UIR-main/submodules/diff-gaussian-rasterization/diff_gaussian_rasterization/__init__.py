@@ -8,6 +8,7 @@
 #
 # For inquiries contact  george.drettakis@inria.fr
 #
+__version__ = "0.1.0+homodirectional"
 
 from typing import NamedTuple
 import torch.nn as nn

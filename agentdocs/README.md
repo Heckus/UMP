@@ -42,3 +42,4 @@ After creating a new file, you **must** immediately update the index in this `RE
 - [**Pipeline & Automation Scripts**](./pipeline_and_scripts.md): Technical documentation for the one-shot bash automation suite, Conda environments, execution stages, and diagnostic tools.
 - [**Change Log**](./change_log.md): Chronological timeline of significant project updates, architecture changes, and file movements.
 - [**HPC Guide**](./HPC_Guide.md): Master reference for cluster operations, PBS job submission, GPU requests, and Conda management on the QUT Aqua cluster.
+- [**Attempt 5 Failure Analysis**](./attempt_5_failure_analysis.md): Comprehensive forensic audit and root-cause diagnostic of all 15 failed executions in Attempt 5, with exact code-level fixes for Attempt 6.

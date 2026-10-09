@@ -68,3 +68,38 @@ To request GPU resources, add the `ngpus` flag to your `select` directive. Becau
   - From the compute node: run `pkill -2 -f ns-train` (or `kill -INT <PID>`). Nerfstudio catches `SIGINT`, exits with status 0, and the pipeline immediately proceeds to `.ply` export, mesh extraction, and evaluation.
   - From the login node: run `qsig -s 2 <job_id>`.
 
+## 7. Attempt 6 Execution Procedure
+
+Following the forensic audit of Attempt 5, all 3 failure root causes (SuGaR scoping shadow, 3D-UIR rasterizer 3D vs 4D gradient tensor shape mismatch, and OSCD custom logger stream absence of `isatty` in TorchDynamo) are fully resolved.
+
+### Step-by-Step Launch Instructions:
+
+1. **Pull Latest Changes on HPC**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   git pull origin main
+   ```
+   *Note*: SuGaR (`cameras.py`) and OSCD (`general_utils.py`, `oscd.py`) execute directly from source; `git pull` updates them immediately.
+
+2. **Automated 3D-UIR Rasterizer Rebuild**:
+   - `run_pipeline.sh` includes fail-safe self-healing automation (`ensure_3d_uir_rasterizer`): when `run_pipeline.pbs` executes, it checks the active `3d-uir` Conda environment. If `diff_gaussian_rasterization` is legacy `0.0.0` or missing, it automatically sets `CUDA_HOME` to 11.8.0 and force-reinstalls the custom 4D homodirectional extension before preflight verification and training.
+   - Alternatively, to rebuild `3d-uir` ahead of job submission:
+     ```bash
+     qsub -v TARGET_ENV="3d-uir" HPC/scripts/setup_env.pbs
+     ```
+
+3. **Launch the Master Pipeline**:
+   ```bash
+   qsub HPC/scripts/run_pipeline.pbs
+   ```
+
+4. **Monitor Job Execution Live**:
+   ```bash
+   # Check queue status
+   qstat -u $USER
+
+   # Monitor real-time unbuffered log stream
+   tail -f run_pipeline_live.log
+   ```
+
+

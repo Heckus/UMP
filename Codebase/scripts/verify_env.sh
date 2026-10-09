@@ -355,7 +355,10 @@ cuda_str = "N/A"
 missing_exts = []
 for ext in req_exts:
     try:
-        __import__(ext)
+        mod = __import__(ext)
+        if env_name == "3d-uir" and ext == "diff_gaussian_rasterization":
+            if getattr(mod, '__version__', '') != '0.1.0+homodirectional':
+                missing_exts.append(f"{ext} (needs homodirectional 4D rebuild: v{getattr(mod, '__version__', 'legacy')})")
     except Exception as e:
         missing_exts.append(f"{ext} ({e})")
 

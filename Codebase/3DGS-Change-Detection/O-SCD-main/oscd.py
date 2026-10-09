@@ -152,9 +152,12 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
     change_masks = {}
 
     model = Sam2Model.from_pretrained("facebook/sam2.1-hiera-tiny").half().to("cuda")   
-    model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='max-autotune')
-    # model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='reduce-overhead')
-    # model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='default')
+    import torch._dynamo
+    torch._dynamo.config.suppress_errors = True
+    try:
+        model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='default')
+    except Exception as e:
+        print(f"Warning: torch.compile failed ({e}), continuing in eager mode.")
 
 
     

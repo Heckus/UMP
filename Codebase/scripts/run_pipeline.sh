@@ -41,6 +41,7 @@ CONDA_DIR="${CONDA_DIR:-$HOME/miniconda3}"
 ERROR_LOG="${REPO_ROOT}/pipeline_errors.log"
 export WANDB_MODE="${WANDB_MODE:-offline}"
 export PYTHONUNBUFFERED=1
+export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-8.0;8.6;8.9;9.0+PTX}"
 declare -a PIPELINE_SUMMARY=()
 
 # Auto-detect global_tools conda environment if colmap/ffmpeg are missing from PATH
@@ -273,11 +274,59 @@ ensure_depth_anything_checkpoint() {
 }
 
 # ------------------------------------------------------------------------------
+# 3D-UIR Custom Extension Integrity Verification & On-Demand Rebuild
+# ------------------------------------------------------------------------------
+ensure_3d_uir_rasterizer() {
+    local sub_diff="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/diff-gaussian-rasterization"
+    if [[ ! -d "${sub_diff}" || ! -f "${sub_diff}/setup.py" ]]; then
+        return 0
+    fi
+    if [[ "${DRY_RUN}" == "true" ]]; then
+        log_dry "Verify 3D-UIR custom 4D homodirectional rasterizer in '3d-uir' environment"
+        return 0
+    fi
+
+    # Probe 3d-uir environment for 0.1.0+homodirectional version
+    local version_ok=false
+    if (
+        activate_conda_env "3d-uir"
+        python -c "import diff_gaussian_rasterization as d; assert getattr(d, '__version__', '') == '0.1.0+homodirectional'"
+    ) >/dev/null 2>&1; then
+        version_ok=true
+    fi
+
+    if [[ "${version_ok}" != "true" ]]; then
+        log_warn "Conda environment '3d-uir' has missing or outdated diff-gaussian-rasterization (requires 4D homodirectional gradient support)."
+        log_info "Rebuilding and reinstalling custom diff-gaussian-rasterization for 3d-uir now..."
+        local _saved_cuda="${CUDA_HOME:-}"
+        for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
+                   /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
+            [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+        done
+        (
+            activate_conda_env "3d-uir"
+            pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
+        ) || {
+            log_error "Failed to rebuild diff-gaussian-rasterization for 3d-uir."
+            [[ -n "${_saved_cuda}" ]] && export CUDA_HOME="${_saved_cuda}"
+            return 1
+        }
+        [[ -n "${_saved_cuda}" ]] && export CUDA_HOME="${_saved_cuda}"
+        log_success "Successfully rebuilt diff-gaussian-rasterization (v0.1.0+homodirectional) in 3d-uir environment."
+    fi
+    return 0
+}
+
+# ------------------------------------------------------------------------------
 # Pre-execution Diagnostic Verification
 # ------------------------------------------------------------------------------
 run_preflight_verification() {
     local target_model="$1"
     local dataset_to_check="$2"
+
+    if [[ "${RUN_ALL}" == "true" ]] || [[ "${target_model}" == "3d-uir" ]]; then
+        ensure_3d_uir_rasterizer || true
+    fi
 
     if [[ "${SKIP_VERIFY}" == "true" ]]; then
         log_info "Skipping pre-execution verification (--skip-verify)."
@@ -750,6 +799,7 @@ execute_model_pipeline() {
             3d-uir)
                 if [[ "${DRY_RUN}" != "true" ]]; then
                     conda run -n "3d-uir" pip install matplotlib kornia 2>/dev/null || true
+                    ensure_3d_uir_rasterizer
                 fi
                 run_stage_command "3d-uir" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main" \
                     python train.py -s "${scene_path}" -m "output/${scene_name}" -d "${scene_path}/depths" --eval

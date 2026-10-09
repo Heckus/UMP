@@ -65,7 +65,6 @@ def load_gs_cameras(source_path, gs_output_path, image_resolution=1,
                     if sugar_gs_dir not in sys.path:
                         sys.path.insert(0, sugar_gs_dir)
                     from scene.colmap_loader import read_extrinsics_binary, read_intrinsics_binary, read_extrinsics_text, read_intrinsics_text, qvec2rotmat
-                    from utils.graphics_utils import focal2fov, fov2focal
 
                     try:
                         cam_extr = read_extrinsics_binary(os.path.join(colmap_dir, 'images.bin'))

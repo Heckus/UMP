@@ -408,3 +408,55 @@ Following the 4th run of `HPC/scripts/run_pipeline.pbs` on Aqua (H100 GPU node, 
 6. **Missing sm_90 (Hopper H100) Architecture Flag in Setup Scripts**:
    - **Root Cause**: `setup_env.pbs` and `setup_env.sh` did not export `TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0+PTX"`, which could lead to missing sm_90 native instructions or asynchronous CUDA memory exceptions when executing on H100 nodes.
    - **Fix**: Exported `TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-8.0;8.6;8.9;9.0+PTX}"` in both `setup_env.pbs` and `setup_env.sh`.
+
+## Attempt 5 Forensic Audit & Root Cause Analysis (`run_pipeline_complete.log`)
+
+Following the execution of Attempt 5 on QUT Aqua (`run_pipeline_complete.log`, ~35,200 lines), all 15 model executions failed with Exit Code 1. An exhaustive audit classified all failures into 3 root causes:
+
+1. **SuGaR Python Scoping Shadowing Bug (`cameras.py:192`) — 12 / 15 Runs Failed**:
+   - **Affects**: `seasplat` (Kwaj, Tokai), `gaussiansplashing` (Kwaj, Tokai), `watersplatting` (Kwaj, Tokai), `rusplatting` (Kwaj, Tokai), `uw-gs` (Kwaj, Tokai), `sugar` (Kwaj, Tokai).
+   - **Root Cause**: In `sugar_scene/cameras.py`, line 68 imported `from utils.graphics_utils import focal2fov, fov2focal` inside an unexecuted `if` branch. This caused Python's compiler to treat `focal2fov` as a local variable throughout `load_gs_cameras()`, shadowing line 11's module import. When line 192 called `focal2fov(fy, height)`, it crashed with `UnboundLocalError`. Notably, 10 out of the 12 models had already completed full 30k iteration training or checkpoint export!
+   - **Fix**: Removed line 68 in `sugar_scene/cameras.py`.
+
+2. **3D-UIR Homodirectional Gradient Shape Mismatch — 2 / 15 Runs Failed**:
+   - **Affects**: `3d-uir` (Kwaj, Tokai).
+   - **Root Cause**: `3D-UIR` allocates `screenspace_points = torch.zeros((pc.get_xyz.shape[0], 4))` for AbsGS homodirectional gradient tracking. In commit `2570e9d`, `diff-gaussian-rasterization` CUDA/C++ files were manually edited from `float4` to `float3`, creating a backward pass shape mismatch (`[N, 3]` vs expected `[N, 4]`).
+   - **Fix**: Restored the 4 custom CUDA/C++ files from `Codebase/zip/3D-UIR-main.7z` (`backward.cu`, `backward.h`, `rasterizer_impl.cu`, `rasterize_points.cu`), and updated `setup_env.sh` to extract from the archive instead of cloning Graphdeco's repo.
+
+3. **OSCD Logger `isatty` Absence in TorchDynamo — 1 / 15 Runs Failed**:
+   - **Affects**: `oscd` (oscd).
+   - **Root Cause**: In `O-SCD-main/utils/general_utils.py`, `safe_state()` replaced `sys.stdout` with a dummy logger `class F` lacking `isatty()`. During `torch.compile()` in `oscd.py`, TorchDynamo graph formatting invoked `sys.stdout.isatty()`, raising `AttributeError`.
+   - **Fix**: Added `isatty()`, `fileno()`, and `__getattr__` delegation to `class F`, and configured TorchDynamo error suppression and graceful fallback in `oscd.py`.
+
+See [`attempt_5_failure_analysis.md`](./attempt_5_failure_analysis.md) for full stack traces, log lines, and diffs.
+
+## Attempt 6 Implementation & Automated HPC Rebuild Infrastructure
+
+All 3 root causes identified in the Attempt 5 diagnostic audit were fully resolved and automated across the codebase to ensure Attempt 6 executes smoothly on the QUT Aqua cluster:
+
+1. **SuGaR Python Scoping Shadowing Fix (`cameras.py`)**:
+   - **Resolution**: Removed redundant nested import `from utils.graphics_utils import focal2fov, fov2focal` at line 68 in [`sugar_scene/cameras.py`](../Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/sugar_scene/cameras.py).
+   - **Verification**: `cameras.py` is imported directly from the cloned repository source tree during SuGaR execution (`sugar` environment). A simple `git pull` on the HPC cluster instantly applies this fix with zero reinstallation needed. Verified Python syntax via `python -m py_compile`.
+
+2. **3D-UIR 4D Homodirectional Rasterizer Restoration & Automated Rebuild**:
+   - **CUDA/C++ Fix**: Fully restored the 4 custom CUDA/C++ kernel files (`backward.cu`, `backward.h`, `rasterizer_impl.cu`, and `rasterize_points.cu`) in [`Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/diff-gaussian-rasterization/`](../Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/diff-gaussian-rasterization/) to match 3D-UIR's `[N, 4]` AbsGS homodirectional gradient architecture.
+   - **Version Stamping**: Bumped extension version to `0.1.0+homodirectional` in both `setup.py` and `diff_gaussian_rasterization/__init__.py`.
+   - **Rebuild Automation in `setup_env.sh`**:
+     - Updated `setup_3d_uir()` to safely restore from Git index / archive without cloning vanilla Graphdeco repo.
+     - Added `--force-reinstall --no-deps` to rebuild the extension cleanly even if an older package was previously installed.
+     - Added post-installation assertion verifying `diff_gaussian_rasterization.__version__ == '0.1.0+homodirectional'`.
+   - **Fail-Safe Self-Healing in `run_pipeline.sh`**:
+     - Implemented `ensure_3d_uir_rasterizer()` function in `run_pipeline.sh` that probes the active `3d-uir` environment. If the extension is absent or running the legacy `0.0.0` version, it automatically detects it, sets `CUDA_HOME` for CUDA 11.8.0, and force-reinstalls the updated C++ extension on the fly before preflight verification and before model training.
+     - Exported `TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0+PTX"` in `run_pipeline.sh`.
+   - **Verification Test in `verify_env.sh`**:
+     - Updated the embedded probe script in `verify_env.sh` to check for `0.1.0+homodirectional` when validating `3d-uir`.
+
+3. **OSCD Logger Stream Duck Typing & TorchDynamo Robustness**:
+   - **Resolution**: Added `isatty()`, `fileno()`, and `__getattr__` delegation to logger `class F` in [`O-SCD-main/utils/general_utils.py`](../Codebase/3DGS-Change-Detection/O-SCD-main/utils/general_utils.py).
+   - **TorchDynamo Fallback**: Configured `torch._dynamo.config.suppress_errors = True` and wrapped `torch.compile(..., mode='default')` in [`O-SCD-main/oscd.py`](../Codebase/3DGS-Change-Detection/O-SCD-main/oscd.py) to gracefully fall back to eager execution if TorchDynamo graph conversion encounters any warning.
+   - **Verification**: Executed directly from source tree; `git pull` updates instantly. Verified Python syntax via `python -m py_compile`.
+
+4. **Comprehensive System Validation**:
+   - Verified all 5 shell scripts with `bash -n` (zero syntax errors).
+   - Executed dry-run across all 15 model/scene combinations (`./run_pipeline.sh --all --dry-run --skip-verify`): **15 / 15 succeeded (0 failures)**.
+

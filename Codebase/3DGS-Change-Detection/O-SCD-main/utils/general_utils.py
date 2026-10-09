@@ -125,6 +125,15 @@ def safe_state(silent):
         def flush(self):
             old_f.flush()
 
+        def isatty(self):
+            return getattr(old_f, 'isatty', lambda: False)()
+
+        def fileno(self):
+            return getattr(old_f, 'fileno', lambda: 1)()
+
+        def __getattr__(self, name):
+            return getattr(old_f, name)
+
     sys.stdout = F(silent)
 
     random.seed(0)
