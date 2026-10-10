@@ -1015,7 +1015,7 @@ execute_model_pipeline() {
             log_info "Running held-out novel view synthesis rendering (${render_script}):"
             run_stage_command "${eval_env}" "${eval_dir}" python "${render_script}" -m "${output_path}" -s "${scene_path}" --skip_train
             log_info "Computing quantitative metrics (metrics.py):"
-            run_stage_command "${eval_env}" "${eval_dir}" python metrics.py -m "${output_path}"
+            run_stage_command "${eval_env}" "${eval_dir}" python metrics.py -m "${output_path}" -s "${scene_path}"
             log_info "Evaluation metrics computed: results.json (PSNR, SSIM, LPIPS) in ${output_path}"
         fi
     fi

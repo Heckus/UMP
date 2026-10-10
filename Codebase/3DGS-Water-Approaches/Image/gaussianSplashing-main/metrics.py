@@ -86,16 +86,34 @@ def evaluate(scene_dir, top_left_x=550, top_left_y=175, width=275, height=150):
 
         
         #for set_name in ["train"]:
+        available_sets = []
+        for cand in ["eval", "test"]:
+            cand_path = Path(scene_dir) / cand
+            if cand_path.exists():
+                available_sets.append(cand)
+        if not available_sets:
+            available_sets = ["eval"]
+
         for red_flag in [False, True]:
-            for set_name in ["eval"]:#["train", "eval"]:
+            for set_name in available_sets:
                 print("Set:", set_name)
                 set_key = set_name + '_!redsquare!' if red_flag else set_name
                 full_dict[scene_dir][set_key] = {}
                 per_view_dict[scene_dir][set_key] = {}
 
                 set_dir = Path(scene_dir) / set_name
-                gt_dir = set_dir/ "gt"
-                renders_dir = set_dir / "renders"
+                if (set_dir / "gt").exists():
+                    gt_dir = set_dir / "gt"
+                    renders_dir = set_dir / "renders"
+                else:
+                    subdirs = list(set_dir.glob("ours_*"))
+                    if subdirs and (subdirs[0] / "gt").exists():
+                        gt_dir = subdirs[0] / "gt"
+                        renders_dir = subdirs[0] / "renders"
+                    else:
+                        gt_dir = set_dir / "gt"
+                        renders_dir = set_dir / "renders"
+
                 print("  Red flag:", red_flag)
                 # Make sure renders have the same size as gt images
                 # (This will resize images in renders_dir to match those in gt_dir, based on corresponding filenames)
@@ -111,7 +129,6 @@ def evaluate(scene_dir, top_left_x=550, top_left_y=175, width=275, height=150):
                                 render_img.save(render_image_path)
 
                 if red_flag:
-                    
                     draw_box(gt_dir, top_left_x, top_left_y, width, height)
                     draw_box(renders_dir, top_left_x, top_left_y, width, height)
                 eval_images(scene_dir, top_left_x, top_left_y, width, height, full_dict, per_view_dict, red_flag, set_key, gt_dir, renders_dir)
@@ -123,8 +140,8 @@ def evaluate(scene_dir, top_left_x=550, top_left_y=175, width=275, height=150):
             json.dump(full_dict[scene_dir], fp, indent=True)
         with open(per_view_file, 'w') as fp:
             json.dump(per_view_dict[scene_dir], fp, indent=True)
-    except:
-        print("Unable to compute metrics for model", scene_dir)
+    except Exception as e:
+        print(f"Unable to compute metrics for model {scene_dir}: {e}")
 
 def eval_images(scene_dir, top_left_x, top_left_y, width, height, full_dict, per_view_dict, red_flag, set_key, gt_dir, renders_dir):
     
@@ -163,6 +180,8 @@ if __name__ == "__main__":
 
     # Set up command line argument parser
     parser = ArgumentParser(description="Training script parameters")
-    parser.add_argument('--scene_dir', '-s', required=True, nargs="+", type=str, default=[])
+    parser.add_argument('--model_paths', '-m', '--scene_dir', dest='model_paths', required=False, nargs="+", type=str, default=[])
+    parser.add_argument('--source_path', '-s', required=False, type=str, default=None)
     args = parser.parse_args()
-    evaluate(args.scene_dir)
+    target_dirs = args.model_paths if args.model_paths else ([args.source_path] if args.source_path else [])
+    evaluate(target_dirs)

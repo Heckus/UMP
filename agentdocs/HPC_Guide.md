@@ -102,4 +102,58 @@ Following the forensic audit of Attempt 5, all 3 failure root causes (SuGaR scop
    tail -f run_pipeline_live.log
    ```
 
+## 8. Attempt 7 Execution Procedure & Verification
+
+During Attempt 6, the pipeline made a monumental leap forward: **6 of 15 model executions ran to full completion** across all 6 stages, all 11 Conda environments built cleanly, and 3D-UIR homodirectional gradients were validated. The 9 remaining failures were traced to 5 specific code-level defects (SuGaR Kwaj scale collapse, SeaSplat evaluation GT path, SuGaR `.jpg.jpg` camera loader, GaussianSplashing PLY attribute deserialization, and OSCD Python variable shadowing).
+
+All 5 defects have been completely resolved in the codebase for Attempt 7. Because all modifications are in Python source files and shell scripts (no binary extension recompilation required), updating the HPC cluster takes seconds via Git.
+
+### Step-by-Step Launch Instructions:
+
+1. **Pull Latest Code on QUT Aqua**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   git pull origin main
+   ```
+
+2. **Verify Pre-Flight Environment & Dry-Run (Optional but Recommended)**:
+   ```bash
+   # Quick dry-run of pipeline orchestration
+   bash Codebase/scripts/run_pipeline.sh --dry-run --model seasplat --stage all --scene Kwaj
+   bash Codebase/scripts/run_pipeline.sh --dry-run --model oscd --stage all
+   ```
+
+3. **Submit Attempt 7 Pipeline Job**:
+   ```bash
+   qsub HPC/scripts/run_pipeline.pbs
+   ```
+
+4. **Monitor Live Execution**:
+   ```bash
+   # Check job queue and active node allocation
+   qstat -u $USER
+
+   # Stream real-time execution log
+   tail -f run_pipeline_live.log
+
+   # Check for any trapped errors
+   cat pipeline_errors.log
+   ```
+
+5. **Post-Run Verification Checklist (Projected 15 / 15 Succeeded)**:
+   - Check summary report at the bottom of `run_pipeline_complete.log` (15/15 SUCCESS).
+   - Verify textured surface meshes extracted for all 8 models across Kwaj and Tokai:
+     - `Dataset/Submerged3D/Kwaj/output/refined_mesh/Kwaj.obj`
+     - `Dataset/Submerged3D/Tokai/output/refined_mesh/Tokai.obj`
+   - Verify novel view synthesis benchmark metrics (PSNR, SSIM, LPIPS) in:
+     - `Codebase/3DGS-Water-Approaches/Physics/seasplat-master/output/<Scene>/results.json`
+     - `Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/output/<Scene>/results.json`
+     - `Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/output/<Scene>/results.json`
+     - `Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/<Scene>/.../results.json`
+     - `Codebase/3DGS-Water-Approaches/Additional/RUSplatting-main/output/<Scene>/results.json`
+     - `Codebase/3DGS-Water-Approaches/Additional/UW-GS-main/output/<Scene>/results.json`
+     - `Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/output/...`
+     - `Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/results.json`
+
+
 

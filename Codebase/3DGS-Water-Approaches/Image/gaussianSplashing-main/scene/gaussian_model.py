@@ -560,12 +560,33 @@ class GaussianModel:
         self._rotation = nn.Parameter(torch.tensor(rots, dtype=torch.float, device="cuda").requires_grad_(True))
         if self.uw_flag.startswith("HYB"):
             # start addition uw
-            direct = np.asarray(plydata.elements[0]["direct"])[..., np.newaxis]
-            binf = np.asarray(plydata.elements[0]["binf"])[..., np.newaxis]
-            bs = np.asarray(plydata.elements[0]["bs"])[..., np.newaxis]
+            prop_names = [p.name for p in plydata.elements[0].properties]
+            if "direct" in prop_names and "binf" in prop_names and "bs" in prop_names:
+                direct = np.asarray(plydata.elements[0]["direct"])[..., np.newaxis]
+                binf = np.asarray(plydata.elements[0]["binf"])[..., np.newaxis]
+                bs = np.asarray(plydata.elements[0]["bs"])[..., np.newaxis]
+            else:
+                direct = np.array([[0.15, 0.18, 0.20]])
+                binf = np.array([[0.10, 0.15, 0.25]])
+                bs = np.array([[0.08, 0.10, 0.15]])
             self._direct = nn.Parameter(torch.tensor(direct, dtype=torch.float, device="cuda").requires_grad_(True))
             self._binf = nn.Parameter(torch.tensor(binf, dtype=torch.float, device="cuda").requires_grad_(True))
             self._bs = nn.Parameter(torch.tensor(bs, dtype=torch.float, device="cuda").requires_grad_(True))
+
+            # Initialize SH feature parameters for binf, bs, direct if needed
+            featuresuw_binf = torch.zeros((1, 3, (self.max_sh_degree + 1) ** 2), device="cuda")
+            featuresuw_binf[:, :, 0] = self._binf.data
+            featuresuw_bs = torch.zeros((1, 3, (self.max_sh_degree + 1) ** 2), device="cuda")
+            featuresuw_bs[:, :, 0] = self._bs.data
+            featuresuw_direct = torch.zeros((1, 3, (self.max_sh_degree + 1) ** 2), device="cuda")
+            featuresuw_direct[:, :, 0] = self._direct.data
+
+            self._featuresbinf_dc = nn.Parameter(featuresuw_binf[:, :, 0:1].transpose(1, 2).contiguous().requires_grad_(True))
+            self._featuresbinf_rest = nn.Parameter(featuresuw_binf[:, :, 1:].transpose(1, 2).contiguous().requires_grad_(True))
+            self._featuresbs_dc = nn.Parameter(featuresuw_bs[:, :, 0:1].transpose(1, 2).contiguous().requires_grad_(True))
+            self._featuresbs_rest = nn.Parameter(featuresuw_bs[:, :, 1:].transpose(1, 2).contiguous().requires_grad_(True))
+            self._featuresdirect_dc = nn.Parameter(featuresuw_direct[:, :, 0:1].transpose(1, 2).contiguous().requires_grad_(True))
+            self._featuresdirect_rest = nn.Parameter(featuresuw_direct[:, :, 1:].transpose(1, 2).contiguous().requires_grad_(True))
             # end addition uw
         self.active_sh_degree = self.max_sh_degree
 

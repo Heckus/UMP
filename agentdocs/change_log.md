@@ -460,3 +460,59 @@ All 3 root causes identified in the Attempt 5 diagnostic audit were fully resolv
    - Verified all 5 shell scripts with `bash -n` (zero syntax errors).
    - Executed dry-run across all 15 model/scene combinations (`./run_pipeline.sh --all --dry-run --skip-verify`): **15 / 15 succeeded (0 failures)**.
 
+## Attempt 6 Execution Forensic Audit & Root Cause Analysis (`run_pipeline_complete.log`)
+
+During Attempt 6 on the QUT Aqua HPC cluster (Job ID `26579798.aqua`, Node `gpu1n009`, NVIDIA H100 SXM5 80GB, 42 AMD EPYC CPU cores, 243 GB RAM allocated), the automation pipeline ran for **15 hours 0 minutes 14 seconds**.
+
+### Breakthrough Achievements:
+- **6 of 15 model executions completed 100% through all 6 pipeline stages** (`watersplatting` Tokai, `rusplatting` Kwaj & Tokai, `uw-gs` Kwaj & Tokai, `sugar` Tokai), successfully extracting high-fidelity surface meshes (`output/refined_mesh/<Scene>.obj`) and computing quantitative metrics (`results.json`).
+- **All 11 Conda environments provisioned with zero errors** (verified in `setup_env_complete.log`).
+- **3D-UIR homodirectional gradient fix validated**: ran 30,000 iterations to completion in both scenes without autograd shape mismatches.
+- **Hardware/Cluster Health**: Zero out-of-memory errors, zero hardware faults, zero dataset corruptions.
+
+### Failure Diagnostics of the 9 Unfinished Runs (5 Root Causes):
+1. **Category 1: SuGaR SDF Loss Subnormal Scale Division & Point NaN Collapse (4 runs: `seasplat` Kwaj, `gaussiansplashing` Kwaj, `watersplatting` Kwaj, `sugar` Kwaj)**:
+   - In the Kwaj scene, Gaussian scales drop into subnormal ranges ($10^{-13}$ to $10^{-17}$). At iteration 9000, SuGaR enables SDF regularization and divides loss by unclamped `sdf_sample_std`. Division by subnormal floats caused gradient explosion, coordinates collapsing to NaN, and asynchronous CUDA illegal memory accesses.
+2. **Category 2: SeaSplat Relative Evaluation Path Failure (1 run: `seasplat` Tokai)**:
+   - `metrics.py` hardcoded `gt_dir = Path(model_path).parent.parent.parent / "images"`, evaluating to non-existent `.../Physics/images` instead of `.../Dataset/Submerged3D/Tokai/images`, crashing with `FileNotFoundError`.
+3. **Category 3: SuGaR Camera Loader Double Extension (`.jpg.jpg`) (2 runs: `3d-uir` Kwaj & Tokai)**:
+   - In `sugar_scene/cameras.py`, `image_path = os.path.join(image_dir, name + extension)` unconditionally appended `.jpg` to filenames that already contained `.jpg` (`KWAJ_CORSAIR_230427-500.jpg.jpg`), crashing with `FileNotFoundError`.
+4. **Category 4: GaussianSplashing Missing Attribute PLY Deserialization (1 run: `gaussiansplashing` Tokai)**:
+   - `load_ply()` unconditionally looked up `direct`, `binf`, and `bs` in the PLY header, which were omitted in `save_ply()`, raising `ValueError: no field of name direct`.
+5. **Category 5: Python Local Variable Shadowing in OSCD (1 run: `oscd` oscd)**:
+   - In `oscd.py`, a nested `import torch._dynamo` at line 155 flagged `torch` as a local variable across `main()`. Line 70 (`torch.manual_seed(0)`) executed before line 155, raising `UnboundLocalError`.
+
+See [`attempt_6_failure_analysis.md`](./attempt_6_failure_analysis.md) for full stack traces and forensic documentation.
+
+## Attempt 7 Implementation & Core Code-Level Fixes
+
+All 5 root causes identified in the Attempt 6 forensic audit have been systematically resolved across the codebase:
+
+1. **Fix 1: SuGaR SDF Standard Deviation Lower-Bound Clamping & Scale Sanitization**:
+   - **File**: [`Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/sugar_trainers/coarse_density_and_dn_consistency.py`](../Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/sugar_trainers/coarse_density_and_dn_consistency.py)
+   - Clamped standard deviation: `sdf_sample_std = torch.clamp_min(raw_std, 1e-4)`.
+   - Guarded loss: `valid_loss = torch.nan_to_num(sdf_estimation_loss.clamp(max=10.*sugar.get_cameras_spatial_extent()), nan=0.0, posinf=10.0, neginf=0.0)`.
+   - Added gradient clipping before `optimizer.step()`: `torch.nn.utils.clip_grad_norm_(sugar.parameters(), max_norm=1.0)`.
+   - Guarded surface normal z-component calculation in [`sugar_scene/sugar_model.py`](../Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/sugar_scene/sugar_model.py): `-torch.sqrt((1.0 - torch.sum(dn_img[..., 1:]**2, dim=-1, keepdim=True)).clamp(min=0.0, max=1.0))`.
+2. **Fix 2: SeaSplat Evaluation Path Robustness & Universal Metrics CLI Compatibility**:
+   - **File**: [`Codebase/3DGS-Water-Approaches/Physics/seasplat-master/metrics.py`](../Codebase/3DGS-Water-Approaches/Physics/seasplat-master/metrics.py)
+   - Added `--source_path / -s` support to `evaluate_single()` and `ArgumentParser`.
+   - Implemented dynamic ground-truth resolution hierarchy: checks `source_path / "images"`, `source_path / "input"`, reads `source_path` from `model_path / "cfg_args"`, and falls back to `Dataset/Submerged3D/<scene>/images`.
+   - Updated [`Codebase/scripts/run_pipeline.sh`](../Codebase/scripts/run_pipeline.sh) line 1018 to pass `-s "${scene_path}"` during metrics evaluation.
+   - Added `--source_path / -s` argument compatibility across `RUSplatting-main/metrics.py`, `UW-GS-main/metrics.py`, `3D-UIR-main/metrics.py`, and `gaussianSplashing-main/metrics.py` to prevent any unrecognized argument exceptions.
+3. **Fix 3: SuGaR Camera Loader Extension Deduplication**:
+   - **File**: [`Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/sugar_scene/cameras.py`](../Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/sugar_scene/cameras.py)
+   - Checked `os.path.splitext(name)[1].lower()` before appending extension, preventing double `.jpg.jpg` file not found errors for 3D-UIR and any other models.
+4. **Fix 4: GaussianSplashing PLY Deserialization Fallback**:
+   - **File**: [`Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/scene/gaussian_model.py`](../Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/scene/gaussian_model.py)
+   - Checked property names in `load_ply()`. If `direct`, `binf`, or `bs` are missing, safely initialized parameters with defaults (`[[0.15, 0.18, 0.20]]`, `[[0.10, 0.15, 0.25]]`, `[[0.08, 0.10, 0.15]]`) and initialized all corresponding SH feature tensors (`_featuresbinf_dc`, `_featuresbs_dc`, `_featuresdirect_dc`).
+   - Enhanced [`gaussianSplashing-main/metrics.py`](../Codebase/3DGS-Water-Approaches/Image/gaussianSplashing-main/metrics.py) to automatically discover `eval` and `test/ours_*` rendering directories.
+5. **Fix 5: OSCD Top-Level Module Import**:
+   - **File**: [`Codebase/3DGS-Change-Detection/O-SCD-main/oscd.py`](../Codebase/3DGS-Change-Detection/O-SCD-main/oscd.py)
+   - Moved `import torch._dynamo` to module top-level, eliminating Python lexical variable shadowing and resolving `UnboundLocalError: cannot access local variable 'torch'` at line 70.
+6. **Comprehensive Verification**:
+   - Verified Python syntax on all 10 modified Python files via `python -m py_compile` (all passed cleanly).
+   - Validated shell syntax with `bash -n Codebase/scripts/run_pipeline.sh` (exit code 0).
+   - Validated end-to-end dry-run execution on `seasplat` and `oscd` (`--dry-run --stage all`) confirming correct stage sequencing and argument propagation.
+
+

@@ -2381,7 +2381,7 @@ class SuGaR(nn.Module):
         # And we compute the z component from the x and y components
         normal_img = torch.cat([
             -dn_img[..., 1:], 
-            -torch.sqrt(1 - torch.sum(dn_img[..., 1:]**2, dim=-1, keepdim=True).clamp_max(1.0))
+            -torch.sqrt((1.0 - torch.sum(dn_img[..., 1:]**2, dim=-1, keepdim=True)).clamp(min=0.0, max=1.0))
         ], dim=-1)
         
         return depth_img, normal_img

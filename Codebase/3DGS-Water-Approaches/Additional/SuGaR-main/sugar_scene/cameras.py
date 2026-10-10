@@ -194,7 +194,10 @@ def load_gs_cameras(source_path, gs_output_path, image_resolution=1,
         # GT data
         id = camera_transform['id']
         name = camera_transform['img_name']
-        image_path = os.path.join(image_dir,  name + extension)
+        if os.path.splitext(name)[1].lower() in ['.jpg', '.png', '.jpeg', '.JPG', '.PNG', '.JPEG']:
+            image_path = os.path.join(image_dir, name)
+        else:
+            image_path = os.path.join(image_dir, name + extension)
         
         if load_gt_images:
             image = Image.open(image_path)

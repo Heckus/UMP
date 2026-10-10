@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import torch
+import torch._dynamo
 torch.backends.cuda.benchmark = True
 import random
 from random import randint
@@ -152,7 +153,6 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
     change_masks = {}
 
     model = Sam2Model.from_pretrained("facebook/sam2.1-hiera-tiny").half().to("cuda")   
-    import torch._dynamo
     torch._dynamo.config.suppress_errors = True
     try:
         model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='default')

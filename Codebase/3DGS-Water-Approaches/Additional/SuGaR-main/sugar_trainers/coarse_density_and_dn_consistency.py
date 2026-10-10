@@ -768,7 +768,8 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                                     
                                     with torch.no_grad():
                                         if normalize_by_sdf_std:
-                                            sdf_sample_std = gaussian_standard_deviations[sdf_gaussian_idx][proj_mask]
+                                            raw_std = gaussian_standard_deviations[sdf_gaussian_idx][proj_mask]
+                                            sdf_sample_std = torch.clamp_min(raw_std, 1e-4)
                                         else:
                                             sdf_sample_std = sugar.get_cameras_spatial_extent() / 10.
                                     
@@ -779,7 +780,8 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                                                 sdf_estimation_loss = ((sdf_values - sdf_estimation.abs()) / sdf_sample_std).pow(2)
                                             else:
                                                 sdf_estimation_loss = (sdf_values - sdf_estimation.abs()).abs() / sdf_sample_std
-                                            loss = loss + sdf_estimation_factor * sdf_estimation_loss.clamp(max=10.*sugar.get_cameras_spatial_extent()).mean()
+                                            valid_loss = torch.nan_to_num(sdf_estimation_loss.clamp(max=10.*sugar.get_cameras_spatial_extent()), nan=0.0, posinf=10.0, neginf=0.0)
+                                            loss = loss + sdf_estimation_factor * valid_loss.mean()
                                         elif sdf_estimation_mode == 'density':
                                             beta = fields['beta'][proj_mask]
                                             densities = fields['density'][proj_mask]
@@ -788,7 +790,8 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                                                 sdf_estimation_loss = ((densities - target_densities)).pow(2)
                                             else:
                                                 sdf_estimation_loss = (densities - target_densities).abs()
-                                            loss = loss + sdf_estimation_factor * sdf_estimation_loss.mean()
+                                            valid_loss = torch.nan_to_num(sdf_estimation_loss, nan=0.0, posinf=10.0, neginf=0.0)
+                                            loss = loss + sdf_estimation_factor * valid_loss.mean()
                                         else:
                                             raise ValueError(f"Unknown sdf_estimation_mode: {sdf_estimation_mode}")
 
@@ -797,7 +800,8 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                                             samples_on_surface_loss = (sdf_estimation / sdf_sample_std).pow(2)
                                         else:
                                             samples_on_surface_loss = sdf_estimation.abs() / sdf_sample_std
-                                        loss = loss + samples_on_surface_factor * samples_on_surface_loss.clamp(max=10.*sugar.get_cameras_spatial_extent()).mean()
+                                        valid_samples_loss = torch.nan_to_num(samples_on_surface_loss.clamp(max=10.*sugar.get_cameras_spatial_extent()), nan=0.0, posinf=10.0, neginf=0.0)
+                                        loss = loss + samples_on_surface_factor * valid_samples_loss.mean()
                                         
                                 if use_sdf_better_normal_loss and (iteration > start_sdf_better_normal_from):
                                     if iteration == start_sdf_better_normal_from + 1:
@@ -868,6 +872,7 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                         CONSOLE.print("Opacity reset.")
             
             # Optimization step
+            torch.nn.utils.clip_grad_norm_(sugar.parameters(), max_norm=1.0)
             optimizer.step()
             optimizer.zero_grad(set_to_none = True)
             

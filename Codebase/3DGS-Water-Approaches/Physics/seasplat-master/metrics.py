@@ -147,7 +147,7 @@ def evaluate(model_paths):
         except:
             print("Unable to compute metrics for model", scene_dir)
 
-def evaluate_single(model_path, comparison_dir="with_water", skip_train=False):
+def evaluate_single(model_path, comparison_dir="with_water", skip_train=False, source_path=None):
     print("Scene:", model_path)
     results = {}
 
@@ -203,7 +203,60 @@ def evaluate_single(model_path, comparison_dir="with_water", skip_train=False):
     else:
         test_dir = Path(model_path) / "test" / comparison_dir
         train_dir = Path(model_path) / "train" / comparison_dir
-        gt_dir = Path(model_path).parent.parent.parent / "images"
+
+        gt_dir = None
+        # 1. If source_path passed directly, check images and input
+        if source_path:
+            sp = Path(source_path)
+            if (sp / "images").exists():
+                gt_dir = sp / "images"
+            elif (sp / "input").exists():
+                gt_dir = sp / "input"
+            elif sp.exists() and sp.is_dir():
+                gt_dir = sp
+
+        # 2. Try to read source_path from cfg_args if available
+        if gt_dir is None:
+            cfg_file = Path(model_path) / "cfg_args"
+            if cfg_file.exists():
+                try:
+                    with open(cfg_file, "r") as f:
+                        content = f.read()
+                    import re
+                    m = re.search(r"source_path=['\"]([^'\"]+)['\"]", content)
+                    if m:
+                        extracted_sp = Path(m.group(1))
+                        if (extracted_sp / "images").exists():
+                            gt_dir = extracted_sp / "images"
+                        elif (extracted_sp / "input").exists():
+                            gt_dir = extracted_sp / "input"
+                        elif extracted_sp.exists() and extracted_sp.is_dir():
+                            gt_dir = extracted_sp
+                except Exception as e:
+                    print(f"Warning reading cfg_args: {e}")
+
+        # 3. Check original relative path
+        if gt_dir is None:
+            rel_cand = Path(model_path).parent.parent.parent / "images"
+            if rel_cand.exists():
+                gt_dir = rel_cand
+
+        # 4. Fallback search for Dataset/Submerged3D/<scene>/images
+        if gt_dir is None:
+            scene_name = Path(model_path).name
+            cur = Path(model_path).resolve()
+            for parent in [cur] + list(cur.parents):
+                candidate = parent / "Dataset" / "Submerged3D" / scene_name / "images"
+                if candidate.exists():
+                    gt_dir = candidate
+                    break
+                candidate_input = parent / "Dataset" / "Submerged3D" / scene_name / "input"
+                if candidate_input.exists():
+                    gt_dir = candidate_input
+                    break
+
+        if gt_dir is None:
+            gt_dir = Path(model_path).parent.parent.parent / "images"
 
         if os.path.exists(test_dir):
             dirs.append(test_dir)
@@ -261,8 +314,9 @@ if __name__ == "__main__":
     parser.add_argument('--model_paths', '-m', required=True, nargs="+", type=str, default=[])
     parser.add_argument('--comparison_dir', required=False, type=str, default="with_water")
     parser.add_argument('--skip_train', required=False, action='store_true')
+    parser.add_argument('--source_path', '-s', required=False, type=str, default=None)
     args = parser.parse_args()
     if len(args.model_paths) == 1:
-        evaluate_single(args.model_paths[0], args.comparison_dir, args.skip_train)
+        evaluate_single(args.model_paths[0], args.comparison_dir, args.skip_train, args.source_path)
     else:
         evaluate(args.model_paths)
