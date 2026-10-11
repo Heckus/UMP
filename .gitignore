@@ -69,6 +69,9 @@ Codebase/**/outputs/**/nerfstudio_models/
 Codebase/**/outputs/**/export/
 wandb/
 .wandb/
+Codebase/3DGS-Change-Detection/O-SCD-main/submodules/accelerated_features/
+Codebase/3DGS-Change-Detection/O-SCD-main/models/cache/
+Codebase/3DGS-Change-Detection/O-SCD-main/models/weights/
 
 # Always whitelist and preserve quantitative benchmark results
 !**/results.json

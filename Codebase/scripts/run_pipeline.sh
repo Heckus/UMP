@@ -42,6 +42,7 @@ ERROR_LOG="${REPO_ROOT}/pipeline_errors.log"
 export WANDB_MODE="${WANDB_MODE:-offline}"
 export PYTHONUNBUFFERED=1
 export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-8.0;8.6;8.9;9.0+PTX}"
+export TORCH_HOME="${TORCH_HOME:-$HOME/.cache/torch}"
 declare -a PIPELINE_SUMMARY=()
 
 # Auto-detect global_tools conda environment if colmap/ffmpeg are missing from PATH
@@ -271,6 +272,38 @@ ensure_depth_anything_checkpoint() {
         return 1
     fi
     log_success "Depth-Anything-V2 checkpoint verified: ${chk_file}"
+}
+
+ensure_oscd_xfeat() {
+    local oscd_dir="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main"
+    local xfeat_submodule="${oscd_dir}/submodules/accelerated_features"
+    local xfeat_weights="${oscd_dir}/models/weights/xfeat.pt"
+
+    if [[ -d "${xfeat_submodule}" && -f "${xfeat_weights}" ]]; then
+        return 0
+    fi
+
+    if [[ "${DRY_RUN}" == "true" ]]; then
+        log_dry "Would verify OSCD XFeat offline submodule and weights at ${xfeat_submodule}"
+        return 0
+    fi
+
+    mkdir -p "${oscd_dir}/models/weights"
+    if [[ ! -d "${xfeat_submodule}" ]]; then
+        log_info "Cloning XFeat submodule for offline OSCD execution..."
+        git clone --recursive --depth 1 "https://github.com/verlab/accelerated_features.git" "${xfeat_submodule}" 2>/dev/null || true
+    fi
+
+    if [[ ! -f "${xfeat_weights}" ]]; then
+        if [[ -f "${xfeat_submodule}/weights/xfeat.pt" ]]; then
+            cp "${xfeat_submodule}/weights/xfeat.pt" "${xfeat_weights}"
+        elif command -v curl >/dev/null 2>&1; then
+            curl -sSL -f "https://github.com/verlab/accelerated_features/raw/main/weights/xfeat.pt" -o "${xfeat_weights}" 2>/dev/null || true
+        elif command -v wget >/dev/null 2>&1; then
+            wget -q -O "${xfeat_weights}" "https://github.com/verlab/accelerated_features/raw/main/weights/xfeat.pt" 2>/dev/null || true
+        fi
+    fi
+    log_info "OSCD XFeat offline assets verified: ${xfeat_weights}"
 }
 
 # ------------------------------------------------------------------------------
@@ -906,6 +939,7 @@ execute_model_pipeline() {
                     fi
                 fi
 
+                ensure_oscd_xfeat
                 log_info "Step 2: Online Scene Change Detection (oscd.py in O-SCD-main):"
                 run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
                     python oscd.py -s "${dataset_path}" -m "${oscd_output_base}/output" --resolution 1 --test_hold 5 --refine

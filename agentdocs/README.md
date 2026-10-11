@@ -44,3 +44,4 @@ After creating a new file, you **must** immediately update the index in this `RE
 - [**HPC Guide**](./HPC_Guide.md): Master reference for cluster operations, PBS job submission, GPU requests, and Conda management on the QUT Aqua cluster.
 - [**Attempt 5 Failure Analysis**](./attempt_5_failure_analysis.md): Comprehensive forensic audit and root-cause diagnostic of all 15 failed executions in Attempt 5, with exact code-level fixes for Attempt 6.
 - [**Attempt 6 Failure Analysis**](./attempt_6_failure_analysis.md): Comprehensive forensic audit, verification of the 6 full-lifecycle successful runs, root-cause diagnostics of all 9 failed runs in Attempt 6, and exact code-level blueprint for Attempt 7.
+- [**Attempt 7 Failure Analysis**](./attempt_7_failure_analysis.md): Comprehensive forensic audit, verification of the 10 full-lifecycle successful runs, root-cause diagnostics of the 5 failed runs in Attempt 7, and exact code-level blueprint for Attempt 8.

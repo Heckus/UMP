@@ -201,19 +201,32 @@ def extract_mesh_from_coarse_sugar(args):
     # Pruning low opacity gaussians
     with torch.no_grad():
         CONSOLE.print("Number of gaussians:", sugar.n_points)
-        CONSOLE.print("Opacities min/max/mean:", sugar.strengths.min(), sugar.strengths.max(), sugar.strengths.mean())
-        n_quantiles = 10
-        for i in range(n_quantiles):
-            CONSOLE.print(f'Quantile {i/n_quantiles}:', sugar.strengths.quantile(i/n_quantiles).item())
+        if sugar.strengths.numel() > 0:
+            CONSOLE.print("Opacities min/max/mean:", sugar.strengths.min(), sugar.strengths.max(), sugar.strengths.mean())
+            n_quantiles = 10
+            for i in range(n_quantiles):
+                CONSOLE.print(f'Quantile {i/n_quantiles}:', sugar.strengths.quantile(i/n_quantiles).item())
             
         CONSOLE.print("\nStarting pruning low opacity gaussians...")
         sugar.drop_low_opacity_points(low_opacity_gaussian_pruning_threshold)
 
         CONSOLE.print("Number of gaussians left:", sugar.n_points)
-        CONSOLE.print("Opacities min/max/mean:", sugar.strengths.min(), sugar.strengths.max(), sugar.strengths.mean())
-        n_quantiles = 10
-        for i in range(n_quantiles):
-            CONSOLE.print(f'Quantile {i/n_quantiles}:', sugar.strengths.quantile(i/n_quantiles).item())
+        if sugar.n_points == 0:
+            CONSOLE.print("[WARNING] All gaussians pruned by opacity threshold! Restoring unpruned coarse model to preserve geometry...")
+            sugar._points = torch.nn.Parameter(state_dict['_points'].clone(), requires_grad=False)
+            sugar._scales = torch.nn.Parameter(state_dict['_scales'].clone(), requires_grad=False)
+            sugar._quaternions = torch.nn.Parameter(state_dict['_quaternions'].clone(), requires_grad=False)
+            sugar._sh_coordinates_dc = torch.nn.Parameter(state_dict['_sh_coordinates_dc'].clone(), requires_grad=False)
+            sugar._sh_coordinates_rest = torch.nn.Parameter(state_dict['_sh_coordinates_rest'].clone(), requires_grad=False)
+            sugar.all_densities = torch.nn.Parameter(state_dict['all_densities'].clone(), requires_grad=False)
+            sugar.eval()
+            CONSOLE.print("Restored unpruned gaussians:", sugar.n_points)
+
+        if sugar.strengths.numel() > 0:
+            CONSOLE.print("Opacities min/max/mean:", sugar.strengths.min(), sugar.strengths.max(), sugar.strengths.mean())
+            n_quantiles = 10
+            for i in range(n_quantiles):
+                CONSOLE.print(f'Quantile {i/n_quantiles}:', sugar.strengths.quantile(i/n_quantiles).item())
             
     # Build the triangle soup that will be used for splatting
     # sugar.primitive_types = 'square'

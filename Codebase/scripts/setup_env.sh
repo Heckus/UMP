@@ -937,11 +937,27 @@ setup_oscd() {
     local sub_fastgs="${repo_dir}/submodules/diff-gaussian-rasterization_fastgs"
     local sub_ssim="${repo_dir}/submodules/fused-ssim"
     local sub_knn="${repo_dir}/submodules/simple-knn"
+    local sub_xfeat="${repo_dir}/submodules/accelerated_features"
 
     ensure_submodule "${sub_diff}" "https://github.com/graphdeco-inria/diff-gaussian-rasterization.git"
     ensure_submodule "${sub_fastgs}" "https://github.com/crimson-and-clover/diff-gaussian-rasterization_fastgs.git"
     ensure_submodule "${sub_ssim}" "https://github.com/rahul-goel/fused-ssim.git"
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
+    ensure_submodule "${sub_xfeat}" "https://github.com/verlab/accelerated_features.git"
+
+    # Pre-provision XFeat pre-trained weights for offline compute node execution
+    mkdir -p "${repo_dir}/models/weights"
+    if [[ ! -f "${repo_dir}/models/weights/xfeat.pt" ]]; then
+        if [[ -f "${sub_xfeat}/weights/xfeat.pt" ]]; then
+            log_info "Copying XFeat weights from submodule to ${repo_dir}/models/weights/xfeat.pt..."
+            cp "${sub_xfeat}/weights/xfeat.pt" "${repo_dir}/models/weights/xfeat.pt"
+        else
+            log_info "Pre-downloading XFeat weights to ${repo_dir}/models/weights/xfeat.pt..."
+            run_cmd curl -sSL -f "https://github.com/verlab/accelerated_features/raw/main/weights/xfeat.pt" -o "${repo_dir}/models/weights/xfeat.pt" || \
+            run_cmd wget -q -O "${repo_dir}/models/weights/xfeat.pt" "https://github.com/verlab/accelerated_features/raw/main/weights/xfeat.pt" || \
+            log_warn "Failed to download xfeat.pt via curl/wget. Submodule weights may be used if available."
+        fi
+    fi
 
     create_conda_env oscd python=3.12 -y
     activate_env oscd

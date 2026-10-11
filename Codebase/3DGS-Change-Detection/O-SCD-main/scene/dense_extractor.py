@@ -26,7 +26,29 @@ class DenseExtractor():
         if os.path.exists(cache_path):
             self.extractor = torch.jit.load(cache_path)
         else:
-            self.extractor = torch.hub.load('verlab/accelerated_features', 'XFeat', pretrained = True, top_k = 4096)
+            repo_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            local_xfeat_repo = os.path.join(repo_base, "submodules", "accelerated_features")
+            local_weights = os.path.join(local_xfeat_repo, "weights", "xfeat.pt")
+            if not os.path.exists(local_weights):
+                local_weights = os.path.join(repo_base, "models", "weights", "xfeat.pt")
+            
+            if os.path.exists(local_xfeat_repo):
+                import sys
+                if local_xfeat_repo not in sys.path:
+                    sys.path.insert(0, local_xfeat_repo)
+                from modules.xfeat import XFeat
+                weights_arg = local_weights if os.path.exists(local_weights) else None
+                self.extractor = XFeat(weights=weights_arg, top_k=4096)
+            else:
+                try:
+                    self.extractor = torch.hub.load('verlab/accelerated_features', 'XFeat', pretrained=True, top_k=4096)
+                except Exception as e:
+                    torch_hub_cache = os.path.expanduser("~/.cache/torch/hub/verlab_accelerated_features_main")
+                    if os.path.exists(torch_hub_cache):
+                        self.extractor = torch.hub.load(torch_hub_cache, 'XFeat', source='local', pretrained=True, top_k=4096)
+                    else:
+                        raise RuntimeError(f"Failed to load XFeat online and local repository not found at {local_xfeat_repo}: {e}")
+
             self.extractor = self.extractor.half().cuda().eval()
 
             state_dict = copy.deepcopy(self.extractor.state_dict())
@@ -55,8 +77,8 @@ class DenseExtractor():
 
             self.extractor = torch.jit.trace(self.extractor, [dummy_img])
             self.extractor = torch.jit.script(self.extractor)
-            # os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-            # torch.jit.save(self.extractor, cache_path)
+            os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+            torch.jit.save(self.extractor, cache_path)
 
         self.extractor(torch.rand_like(dummy_img))
 

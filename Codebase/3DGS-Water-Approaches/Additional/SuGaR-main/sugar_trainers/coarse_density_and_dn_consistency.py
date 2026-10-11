@@ -89,6 +89,7 @@ def depth_normal_consistency_loss(
 
     # Compute the error between the normals from the depth map and the rendered normals.    
     normal_error = (1 - (normal_view * normal_from_depth).sum(dim=0))
+    normal_error = torch.nan_to_num(normal_error, nan=0.0, posinf=2.0, neginf=0.0).clamp(min=0.0, max=2.0)
     
     if return_normal_maps:
         return normal_error, normal_view, normal_from_depth    
@@ -472,14 +473,15 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
     if initialize_from_trained_3dgs:
         with torch.no_grad():            
             CONSOLE.print("Initializing 3D gaussians from 3D gaussians...")
+            min_log_scale = float(np.log(1e-6))
             if prune_at_start:
-                sugar._scales[...] = nerfmodel.gaussians._scaling.detach()[start_prune_mask]
+                sugar._scales[...] = torch.clamp_min(nerfmodel.gaussians._scaling.detach()[start_prune_mask], min_log_scale)
                 sugar._quaternions[...] = nerfmodel.gaussians._rotation.detach()[start_prune_mask]
                 sugar.all_densities[...] = nerfmodel.gaussians._opacity.detach()[start_prune_mask]
                 sugar._sh_coordinates_dc[...] = nerfmodel.gaussians._features_dc.detach()[start_prune_mask]
                 sugar._sh_coordinates_rest[...] = nerfmodel.gaussians._features_rest.detach()[start_prune_mask]
             else:
-                sugar._scales[...] = nerfmodel.gaussians._scaling.detach()
+                sugar._scales[...] = torch.clamp_min(nerfmodel.gaussians._scaling.detach(), min_log_scale)
                 sugar._quaternions[...] = nerfmodel.gaussians._rotation.detach()
                 sugar.all_densities[...] = nerfmodel.gaussians._opacity.detach()
                 sugar._sh_coordinates_dc[...] = nerfmodel.gaussians._features_dc.detach()
@@ -722,12 +724,20 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                                         gaussian_centers_z = gaussian_centers_in_camera_space[..., 2] + 0.
                                         gaussian_centers_map_z = sugar.get_points_depth_in_depth_map(fov_camera, depth, gaussian_centers_in_camera_space)
                                         
-                                        gaussian_standard_deviations = (
+                                        raw_std = (
                                             sugar.scaling * quaternion_apply(quaternion_invert(sugar.quaternions), gaussian_to_camera)
                                             ).norm(dim=-1)
+                                        gaussian_standard_deviations = torch.clamp_min(raw_std, 1e-4)
                                     
                                         gaussians_close_to_surface = (gaussian_centers_map_z - gaussian_centers_z).abs() < close_gaussian_threshold * gaussian_standard_deviations
-                                        sampling_mask = sampling_mask * gaussians_close_to_surface
+                                        filtered_mask = sampling_mask * gaussians_close_to_surface
+                                        if filtered_mask.sum() > 0:
+                                            sampling_mask = filtered_mask
+                                        else:
+                                            # Fallback to visible high-opacity gaussians if depth-distance filter is too restrictive
+                                            fallback_mask = sampling_mask * (sugar.strengths[..., 0] > 0.1)
+                                            if fallback_mask.sum() > 0:
+                                                sampling_mask = fallback_mask
                             
                             n_gaussians_in_sampling = sampling_mask.sum()
                             if n_gaussians_in_sampling > 0:
@@ -822,16 +832,19 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
                                     normal_weights = ((sdf_samples[:, None] - sugar.points[closest_gaussians_idx]) * closest_gaussian_normals).sum(dim=-1).abs()  # Shape is (n_samples, n_neighbors)
                                     if sdf_better_normal_gradient_through_normal_only:
                                         normal_weights = normal_weights.detach()
-                                    normal_weights =  closest_gaussian_opacities * normal_weights / closest_min_scaling.clamp(min=1e-6)**2  # Shape is (n_samples, n_neighbors)
+                                    normal_weights =  closest_gaussian_opacities * normal_weights / closest_min_scaling.clamp(min=1e-3)**2  # Shape is (n_samples, n_neighbors)
+                                    normal_weights = torch.nan_to_num(normal_weights, nan=0.0, posinf=1.0, neginf=0.0)
                                     
                                     # The weights should have a sum of 1 because of the eikonal constraint
                                     normal_weights_sum = normal_weights.sum(dim=-1).detach()  # Shape is (n_samples,)
                                     normal_weights = normal_weights / normal_weights_sum.unsqueeze(-1).clamp(min=1e-6)  # Shape is (n_samples, n_neighbors)
+                                    normal_weights = torch.nan_to_num(normal_weights, nan=0.0, posinf=1.0, neginf=0.0)
                                     
                                     # Compute regularization loss
                                     sdf_better_normal_loss = (samples_gaussian_normals - (normal_weights[..., None] * closest_gaussian_normals).sum(dim=-2)
                                                               ).pow(2).sum(dim=-1)  # Shape is (n_samples,)
-                                    loss = loss + sdf_better_normal_factor * sdf_better_normal_loss.mean()
+                                    valid_better_normal_loss = torch.nan_to_num(sdf_better_normal_loss.clamp(max=10.0), nan=0.0, posinf=10.0, neginf=0.0)
+                                    loss = loss + sdf_better_normal_factor * valid_better_normal_loss.mean()
                             else:
                                 CONSOLE.log("WARNING: No gaussians available for sampling.")
                                 

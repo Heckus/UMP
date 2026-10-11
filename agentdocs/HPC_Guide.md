@@ -155,5 +155,59 @@ All 5 defects have been completely resolved in the codebase for Attempt 7. Becau
      - `Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/output/...`
      - `Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/results.json`
 
+---
+
+## 9. Attempt 8 Execution Procedure & Verification
+
+In Attempt 7 on QUT Aqua (Job ID `26596089.aqua`, Node `gpu1n012`, NVIDIA H100 SXM5 80GB), **10 of 15 model executions reached 100% full-lifecycle completion** across all 6 stages. The remaining 5 failures partitioned into two code-level root causes:
+1. SuGaR subnormal scale ingestion ($10^{-16}$ to $10^{-23}$), causing empty surface sampling (`WARNING: No gaussians available for sampling`), singular covariance gradients, opacities collapsing to NaN, and 100% point pruning ending in an empty tensor reduction crash on `sugar.strengths.min()`. Affected: `3d-uir` (Kwaj & Tokai), `gaussiansplashing` (Kwaj), and `watersplatting` (Kwaj).
+2. Offline compute node network isolation in OSCD: `torch.hub.load('verlab/accelerated_features', 'XFeat', pretrained=True)` failed with HTTP 504 Gateway Time-out.
+
+All code-level fixes, numerical stability guards, and offline asset provisioning have been implemented for Attempt 8.
+
+### Step-by-Step Launch Instructions:
+
+1. **Pull Latest Code on QUT Aqua Login Node**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   git pull origin main
+   ```
+
+2. **Verify Conda Environments & Pre-Provision Offline Assets (Login Node)**:
+   ```bash
+   # Run environment setup if any dependencies or submodules need initialization
+   bash Codebase/scripts/setup_env.sh --env oscd
+   ```
+   This ensures `Codebase/3DGS-Change-Detection/O-SCD-main/submodules/accelerated_features` is present and `models/weights/xfeat.pt` is downloaded on the internet-connected login node.
+
+3. **Verify Pipeline Dry-Run**:
+   ```bash
+   bash Codebase/scripts/run_pipeline.sh --dry-run --model 3d-uir --stage all --scene Kwaj
+   bash Codebase/scripts/run_pipeline.sh --dry-run --model oscd --stage all
+   ```
+
+4. **Submit Attempt 8 Pipeline Job**:
+   ```bash
+   qsub HPC/scripts/run_pipeline.pbs
+   ```
+
+5. **Monitor Live Execution**:
+   ```bash
+   # Check job queue and node status
+   qstat -u $USER
+
+   # Follow live unbuffered execution log
+   tail -f run_pipeline_live.log
+
+   # Check error log (should remain empty)
+   cat pipeline_errors.log
+   ```
+
+6. **Post-Run Verification Checklist (Target: 15 / 15 [100%] Success)**:
+   - Check master summary report at the bottom of `run_pipeline_complete.log` for **15/15 SUCCESS**.
+   - Verify textured surface meshes in `Dataset/Submerged3D/<Scene>/output/refined_mesh/<Scene>.obj` across both Kwaj and Tokai for all 7 underwater models, plus `Dataset/Custom_OSCD_Dataset/output/updated_scene.ply` for OSCD.
+   - Verify novel view synthesis benchmark metrics (`results.json`) exist with non-zero PSNR, SSIM, and LPIPS for all models.
+
+
 
 

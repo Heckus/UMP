@@ -439,9 +439,9 @@ class SuGaR(nn.Module):
     @property
     def scaling(self):
         if not self.binded_to_surface_mesh:
-            scales = self.scale_activation(self._scales)
+            scales = torch.clamp_min(self.scale_activation(self._scales), 1e-7)
         else:
-            plane_scales = self.scale_activation(self._scales)
+            plane_scales = torch.clamp_min(self.scale_activation(self._scales), 1e-7)
             if self.editable:
                 if use_old_method:
                     # Old method described in the original SuGaR paper
@@ -457,13 +457,13 @@ class SuGaR(nn.Module):
                     else:
                         quaternions, scales = self.get_edited_quaternions_and_scales()
                         self.edited_cache = quaternions
-                    return scales
+                    return torch.clamp_min(scales, 1e-7)
 
             scales = torch.cat([
                 self.surface_mesh_thickness * torch.ones(len(self._scales), 1, device=self.device), 
                 plane_scales,
                 ], dim=-1)
-        return scales
+        return torch.clamp_min(scales, 1e-7)
     
     @property
     def quaternions(self):
@@ -828,6 +828,9 @@ class SuGaR(nn.Module):
         
     def drop_low_opacity_points(self, opacity_threshold=0.5):
         mask = self.strengths[..., 0] > opacity_threshold  # 1e-3, 0.5
+        if mask.sum() == 0:
+            print(f"[WARNING] Pruning with threshold {opacity_threshold} would remove all points! Keeping all points.")
+            return
         self.prune_points(mask)
         
     def forward(self, **kwargs):
