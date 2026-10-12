@@ -22,6 +22,20 @@ LIVE_LOG="$PBS_O_WORKDIR/run_pipeline_live.log"
 exec > >(tee "${LIVE_LOG}") 2>&1
 export PYTHONUNBUFFERED=1
 
+# Ensure that whenever the job exits, stdout/stderr are flushed and
+# the complete log file is synchronized from the live log.
+_LOGS_SYNCED=0
+sync_logs() {
+    [ "${_LOGS_SYNCED:-0}" -eq 1 ] && return 0
+    _LOGS_SYNCED=1
+    exec 1>&- 2>&-
+    wait 2>/dev/null || true
+    if [ -n "${LIVE_LOG:-}" ] && [ -f "${LIVE_LOG:-}" ]; then
+        cp -f "${LIVE_LOG}" "$PBS_O_WORKDIR/run_pipeline_complete.log" 2>/dev/null || true
+    fi
+}
+trap sync_logs EXIT
+
 echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
 
@@ -109,5 +123,8 @@ else
     echo " Check pipeline_errors.log and run_pipeline_complete.log for details."
     echo "======================================================================"
 fi
+
+# Flush and synchronize complete log before job terminates
+sync_logs
 
 exit ${PIPE_EXIT}

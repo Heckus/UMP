@@ -23,6 +23,20 @@ LIVE_LOG="$PBS_O_WORKDIR/setup_env_live.log"
 exec > >(tee "${LIVE_LOG}") 2>&1
 export PYTHONUNBUFFERED=1
 
+# Ensure that whenever the job exits, stdout/stderr are flushed and
+# the complete log file is synchronized from the live log.
+_LOGS_SYNCED=0
+sync_logs() {
+    [ "${_LOGS_SYNCED:-0}" -eq 1 ] && return 0
+    _LOGS_SYNCED=1
+    exec 1>&- 2>&-
+    wait 2>/dev/null || true
+    if [ -n "${LIVE_LOG:-}" ] && [ -f "${LIVE_LOG:-}" ]; then
+        cp -f "${LIVE_LOG}" "$PBS_O_WORKDIR/setup_env_complete.log" 2>/dev/null || true
+    fi
+}
+trap sync_logs EXIT
+
 echo "Loading Anaconda3 and CUDA modules..."
 module load Anaconda3/2024.02-1
 
@@ -110,9 +124,13 @@ if [ ${#FAILED_ENVS[@]} -ne 0 ]; then
         echo "  - ${F_ENV}"
     done
     echo "======================================================================"
+    sync_logs
     exit 1
 fi
 
 echo "======================================================================"
 echo " All Environments Setup Complete and Verified!"
 echo "======================================================================"
+
+sync_logs
+exit 0

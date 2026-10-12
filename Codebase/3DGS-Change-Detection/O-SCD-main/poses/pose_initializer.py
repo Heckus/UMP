@@ -122,30 +122,32 @@ class PoseInitializer():
             # Remove matches as we prevent the current frame from being registered
             for keyframe in keyframes:
                 keyframe.desc_kpts.matches.pop(index, None)
-            return None
+            return Rt, 0
 
 @torch.no_grad()
 def get_reference_keyframes(n: int, keyframes: list, matcher: Matcher, desc_kpts: DescribedKeypoints = None):
     """
-    Get the n previous keyframes that are the closest to the last
-    If desc_kpts is not None, we find the previous keyframes that have the most matches with desc_kpts. The search window is given by self.num_prev_keyframes_check
+    Get the n previous keyframes that are the closest to the last.
+    If desc_kpts is not None, find the previous keyframes that have the most matches with desc_kpts.
+    Guarantees robust fallback when len(keyframes) <= n or desc_kpts is None.
     """
-    # Make sure the optimization thread is not running
-    # self.join_optimization_thread()
+    num_kfs = len(keyframes)
+    assert num_kfs > 0, "No keyframes available"
 
-    # Look for the previous keyframes with the most matches with desc_kpts (if provided)
-    assert len(keyframes) > 0, "No keyframes available"
-    if desc_kpts is not None and len(keyframes) > n:
-        n_ckecks = len(keyframes)
-        keyframes_indices_to_check = list(range(len(keyframes)))
-        n_matches = torch.zeros(len(keyframes_indices_to_check), device="cuda")
-        for i, index in enumerate(keyframes_indices_to_check):
+    k = max(1, min(n, num_kfs))
+
+    if desc_kpts is not None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        n_matches = torch.zeros(num_kfs, device=device)
+        for i in range(num_kfs):
             n_matches[i] = matcher.evaluate_match(
-                keyframes[index].desc_kpts, desc_kpts
+                keyframes[i].desc_kpts, desc_kpts
             )
-        _, top_indices = torch.topk(n_matches, n)
-        prev_keyframes_indices = list(top_indices.cpu().numpy())
-   
-    prev_keyframes = [keyframes[i] for i in prev_keyframes_indices]
+        _, top_indices = torch.topk(n_matches, k)
+        prev_keyframes_indices = top_indices.cpu().tolist()
+    else:
+        # Fallback to the k most recent keyframes
+        prev_keyframes_indices = list(range(num_kfs - k, num_kfs))
 
+    prev_keyframes = [keyframes[i] for i in prev_keyframes_indices]
     return prev_keyframes

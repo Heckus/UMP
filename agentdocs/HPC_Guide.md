@@ -208,6 +208,69 @@ All code-level fixes, numerical stability guards, and offline asset provisioning
    - Verify textured surface meshes in `Dataset/Submerged3D/<Scene>/output/refined_mesh/<Scene>.obj` across both Kwaj and Tokai for all 7 underwater models, plus `Dataset/Custom_OSCD_Dataset/output/updated_scene.ply` for OSCD.
    - Verify novel view synthesis benchmark metrics (`results.json`) exist with non-zero PSNR, SSIM, and LPIPS for all models.
 
+---
 
+## 10. Attempt 9 Execution Procedure & Verification
 
+In Attempt 8 on QUT Aqua (NVIDIA H100 SXM5 80GB GPU, walltime 18h 19m 54s), **14 of 15 model executions reached 100% full-lifecycle completion** across all 6 stages (93.3% success rate). All SuGaR scale collapse issues from Attempt 7 were 100% resolved. The singular remaining failure was `oscd` due to `UnboundLocalError: cannot access local variable 'prev_keyframes_indices'` in `pose_initializer.py:149`, which skipped variable assignment when candidate keyframes count $len(keyframes) \le n$.
 
+All code-level fixes, mathematical edge-case guards, and PBS log synchronization mechanisms have been implemented for Attempt 9 to achieve a **flawless 15 / 15 (100%) success rate**.
+
+### Key Code Fixes Deployed for Attempt 9:
+1. **Robust Keyframe Selection (`Codebase/3DGS-Change-Detection/O-SCD-main/poses/pose_initializer.py`)**:
+   - Implemented mathematically robust `get_reference_keyframes(n, keyframes, matcher, desc_kpts=None)`.
+   - Dynamically clamps $k = \max(1, \min(n, len(keyframes)))$.
+   - When `desc_kpts` is present, evaluates match scores across all available keyframes on CUDA and extracts top-$k$ indices via `torch.topk(n_matches, k)`.
+   - When `desc_kpts` is `None`, falls back to the $k$ most recent keyframes.
+   - Guarantees `prev_keyframes_indices` is always defined under all branch conditions, eliminating `UnboundLocalError`.
+   - Hardened `init_inference_pose` fallback to safely return `(Rt, 0)` under low inlier conditions.
+2. **PBS Log Synchronization Epilogue (`HPC/scripts/run_pipeline.pbs` & `setup_env.pbs`)**:
+   - Added `sync_logs()` and `trap sync_logs EXIT` to flush stdout/stderr descriptors, wait for the background `tee` process, and explicitly copy `LIVE_LOG` to `$PBS_O_WORKDIR/run_pipeline_complete.log` upon job exit.
+
+### Step-by-Step Launch Instructions:
+
+1. **Pull Latest Code on QUT Aqua Login Node**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   git pull origin main
+   ```
+
+2. **Targeted Verification of OSCD (Single Model Run)**:
+   To quickly verify that the `oscd` keyframe fix succeeds before launching the full 15-model benchmark, execute either interactively or via PBS:
+   ```bash
+   # Option A: Interactive command (on compute node or interactive session)
+   bash Codebase/scripts/run_pipeline.sh --model oscd --stage all
+
+   # Option B: Single-model PBS batch submission
+   qsub -v ARGS="--model oscd --stage all" HPC/scripts/run_pipeline.pbs
+   ```
+
+3. **Submit Full Attempt 9 Benchmark Pipeline (Target: 15 / 15 Success)**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   qsub HPC/scripts/run_pipeline.pbs
+   ```
+   *(Note: This automatically launches `bash Codebase/scripts/run_pipeline.sh --all` under 48-hour walltime on an H100 node).*
+
+4. **Monitor Live Execution**:
+   ```bash
+   # Check job queue and allocated compute node
+   qstat -u $USER
+
+   # Follow live unbuffered execution log
+   tail -f run_pipeline_live.log
+
+   # Check error log (must remain 0 bytes / empty)
+   cat pipeline_errors.log
+   ```
+
+5. **Post-Run Verification Checklist (Target: 15 / 15 [100%] Success)**:
+   - Check master summary report at the bottom of `run_pipeline_complete.log` and `run_pipeline_live.log`:
+     ```
+     Total Executions: 15 | Succeeded: 15 | Failed: 0
+     [SUCCESS] All pipeline runs executed without errors.
+     ```
+   - Verify `pipeline_errors.log` contains **zero error entries**.
+   - Confirm `Dataset/Custom_OSCD_Dataset/output/updated_scene.ply` and `results.json` are created for OSCD.
+   - Confirm all 14 textured meshes exist in `Dataset/Submerged3D/<Scene>/output/refined_mesh/<Scene>.obj`.
+   - Confirm quantitative NVS metrics (PSNR, SSIM, LPIPS) in `results.json` across all benchmark directories.
