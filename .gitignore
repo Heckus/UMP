@@ -84,3 +84,14 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# ==============================================================================
+# Model Outputs Workspace (Exclude all data, archives, meshes, and point clouds)
+# ==============================================================================
+Model_Outputs/**
+!Model_Outputs/
+!Model_Outputs/*.py
+!Model_Outputs/*.sh
+!Model_Outputs/*.md
+!Model_Outputs/.gitignore
+

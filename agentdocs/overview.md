@@ -2,43 +2,147 @@
 
 This repository is the central workspace for a QUT (Queensland University of Technology) Engineering project/thesis, focusing on the **"Investigation of Primitive-Space Scene Change Detection in Under-water 3D Gaussian Splatting Models"**.
 
-## **[KEY-CONCEPT]** Core Objective
+---
 
-The primary objective of this project is to investigate and develop methods for detecting scene changes directly within the primitive space (the Gaussians themselves) of 3D Gaussian Splatting (3DGS) models, with a specific focus on challenging underwater environments. This involves analyzing existing 3DGS architectures, adapting them for underwater optical properties, and implementing robust change detection algorithms.
+## 1. **[KEY-CONCEPT]** Core Research Objective
 
-## Repository Structure
+The primary objective of this project is to investigate and develop methods for detecting scene changes directly within the **primitive space** (the 3D Gaussians themselves) of 3D Gaussian Splatting (3DGS) models, with a specific focus on challenging underwater environments. This involves:
+1. Analyzing existing 3DGS architectures and adapting them for underwater optical degradation (wavelength-dependent absorption, backscatter, haze).
+2. Regularizing 3D Gaussian representations onto physical surfaces using signed distance fields (SuGaR) to eliminate floating artifacts and extract watertight surface meshes (`.obj`).
+3. Implementing primitive-space Online Scene Change Detection (O-SCD) to track, segment, and update 3D Gaussians across temporal states without retraining the entire representation from scratch.
 
-The repository is organized into distinct sections to support both the academic and software development components of the thesis:
+---
 
-- **`1A/` & `1B/`**: Contain academic submissions. `1A` houses the Literature Review (Assessment 1A), and `1B` contains the Project Proposal. Both include LaTeX source files and the resulting compiled PDFs.
-- **`Codebase/`**: The main directory for software development and experiments. It includes:
-  - `3DGS-Change-Detection/`: Source code and experiments specifically for scene change detection in 3DGS.
-  - `3DGS-Water-Approaches/`: Code adapting 3DGS for underwater environments (addressing turbidity, lighting, etc.).
-  - `scripts/`: Production-grade bash automation suite for environment provisioning, multi-model training pipelines, and pre-flight validation (`setup_env.sh`, `run_pipeline.sh`, `verify_env.sh`). Detailed documentation is available in [`pipeline_and_scripts.md`](./pipeline_and_scripts.md).
-  - `Tools/` & `src/`: Utility scripts and core source code.
-  - `open_source_models.md`: A curated reference list of relevant open-source 3DGS models and repositories.
-- **`Dataset/`**: Storage for datasets used in training and evaluation.
-- **`HPC/`**: High-Performance Computing resources, including `HPC/Guides/` for interacting with cluster environments.
-- **`Literature/`**: A comprehensive collection of research papers (PDFs) and the master bibliography (`references.bib`) covering 3DGS, underwater imaging, and change detection.
-- **`QUT_Thesis_Template_DO_NOT_TOUCH/`**: The official LaTeX template for the final QUT thesis document.
-- **`agentdocs/`**: The living documentation system maintained by AI agents to preserve project context and provide instructions for future development sessions.
+## 2. **[KEY-CONCEPT]** The 5-Phase Operational Lifecycle
 
-## **[KEY-CONCEPT]** Automation Scripts Suite (`Codebase/scripts/`)
+The entire pipeline is structured into a reproducible 5-phase lifecycle:
 
-To support reproducible training, data preparation, and evaluation across diverse 3DGS and OSCD architectures, a production-grade one-shot bash scripting suite is maintained in `Codebase/scripts/`:
+```
+┌──────────────┐     ┌──────────────┐     ┌───────────────┐     ┌────────────────┐     ┌───────────────┐
+│   1. SETUP   │ ──> │    2. RUN    │ ──> │  3. EXTRACT   │ ──> │  4. ORGANISE   │ ──> │   5. REVIEW   │
+│ Provision    │     │ Orchestrate  │     │ Bundle & Sync │     │ Standardize    │     │ Visualize     │
+│ 11 Envs & GPU│     │ 6-Stage Pipe │     │ from Cluster  │     │ for Supervisor │     │ Splats/Meshes │
+└──────────────┘     └──────────────┘     └───────────────┘     └────────────────┘     └───────────────┘
+```
 
-- **`setup_env.sh` (Automated Environment Setup)**:
-  Provisions Ubuntu system dependencies (`apt-get`), NVIDIA proprietary drivers (`ubuntu-drivers autoinstall`), Miniconda3 bootstrap, Git submodule repair (cloning missing rasterizers and CUDA kernels), and automated creation of 11 isolated Conda environments with sanitized Linux recipes. Supports `--all`, `--system-deps`, `--drivers`, `--conda`, `--env <name>`, `--dry-run`, and `-y`.
-- **`run_pipeline.sh` (Master Orchestration Pipeline)**:
-  Orchestrates the complete 6-stage end-to-end execution workflow: (1) Data Preparation & Download, (2) COLMAP Sparse Reconstruction, (3) Depth Map Estimation & Inversion (Depth-Anything-V2 / RIFE), (4) Model Training (supporting 8 models: SeaSplat, 3D-UIR, Gaussian Splashing, WaterSplatting, RUSplatting, UW-GS, SuGaR, OSCD), (5) Surface Mesh Extraction (SuGaR), and (6) Benchmarking & Metrics Evaluation (`results.json`). Supports `--model <name>`, `--all`, `--dataset <path>`, `--scene <name>`, `--stage <stage>`, `--dry-run`, `--skip-verify`, and `--skip-gpu`.
-- **`verify_env.sh` (Pre-execution Test Suite & Flight Diagnostics)**:
-  Performs pre-flight diagnostic validation across GPU compute capabilities, NVIDIA driver health, Conda environment integrity (single or all 11 environments), dataset hierarchy structures (Submerged3D and OSCD dual-scene formats), and essential system binaries. Employs standardized exit codes (`0`: Success, `1`: GPU failure, `2`: Conda failure, `3`: Dataset failure, `4`: System tool missing) and integrates automatically with `run_pipeline.sh`.
+1. **Setup (`setup_env.sh` & `verify_env.sh`):** Installs system dependencies, provisions CUDA/rasterizer submodules, creates 11 isolated Conda environments, and performs pre-flight GPU/dataset sanity checks.
+2. **Run (`run_pipeline.sh` / `run_pipeline.pbs`):** Executes the 6-stage pipeline (Data Preparation, COLMAP, Depth Estimation/Inversion, Model Training, SuGaR Mesh Extraction, Benchmarking).
+3. **Extract (`package_outputs.sh` & `rsync`):** Packages verified evaluation artifacts on the HPC cluster using dynamic manifests and transfers them to the local Ubuntu desktop via the dedicated Data Transfer Node (`eresdtn01.qut.edu.au`).
+4. **Organise (`Model_Outputs/organize_outputs.py`):** Reorders raw outputs into a 5-domain academic hierarchy (`01_Physics_Based_3DGS`, `02_Image_Restoration_3DGS`, etc.) with cleaned, supervisor-friendly naming and a clickable `PORTFOLIO_INDEX.md`.
+5. **Review & Evaluate (`Model_Outputs/collect_metrics.py` & `view_outputs.py`):**
+   - Compiles master benchmark tables in LaTeX (`master_benchmark_table.tex`), Markdown, CSV, and JSON.
+   - Interactively visualizes 3D splats (CloudCompare / SuperSplat WebGL), surface meshes (MeshLab / Blender), and 2D change masks.
 
-For in-depth technical details, configuration parameters, Conda environment recipes, and usage workflows, refer to [Pipeline and Automation Scripts](pipeline_and_scripts.md).
+---
 
-### **[KEY-CONCEPT]** 15 / 15 Benchmark Execution Status (100% Success Milestone)
-As of Attempt 10 (October 13, 2026), all 15 benchmark targets across 8 models and 3 datasets have achieved **100% full-lifecycle execution** across all 6 stages (data preparation, COLMAP, monocular depth estimation, model training, SuGaR textured mesh extraction, and quantitative benchmarking). See [`attempt_10_verification.md`](./attempt_10_verification.md) and [`HPC_Guide.md`](./HPC_Guide.md) for full benchmark metrics and output extraction instructions.
+## 3. **[KEY-CONCEPT]** Dataset Ingestion: Supported & Custom Workflows
 
-## **[CRITICAL]** Project Context
+The repository supports both built-in benchmarks and arbitrary user-provided datasets:
 
-This is an active academic research repository. AI agents assisting in this project should be prepared to handle both rigorous academic writing tasks (LaTeX formatting, citations) and complex computer vision/graphics programming (typically Python and CUDA for 3DGS) within the codebase.
+### A. Pre-Configured Benchmark Datasets
+- **Submerged3D (`Dataset/Submerged3D/`):** Real-world underwater shipwreck photogrammetry across two primary scenes: `Kwaj` (Kwajalein Prince Eugen shipwreck) and `Tokai` (Tokai Maru shipwreck).
+- **Custom OSCD Dataset (`Dataset/Custom_OSCD_Dataset/`):** A dual-scene change detection dataset captured with a smartphone camera depicting a table scene where objects were added and removed between passes (`reference_scene` vs `inference_scene`).
+
+### B. Ingesting ANY Custom Underwater Dataset
+New users can ingest arbitrary underwater video or multi-view photo sets by structuring images as:
+```text
+Dataset/<Custom_Underwater_Dataset>/
+└── <Scene_Name>/
+    └── input/
+        ├── frame_00001.jpg
+        └── ... (overlapping underwater images)
+```
+Run the master pipeline:
+```bash
+bash Codebase/scripts/run_pipeline.sh --model seasplat --dataset Dataset/<Custom_Underwater_Dataset> --scene <Scene_Name>
+```
+
+### C. Ingesting ANY Custom Dual-Photo Change Detection Dataset
+New users can detect physical scene changes between any two states (baseline vs modified):
+1. **From Video (`prepare_oscd_dataset.py`):** Record two videos (`video_ref.mp4` and `video_inf.mp4`) and run:
+   ```bash
+   python Codebase/scripts/prepare_oscd_dataset.py --video-ref ref.mp4 --video-inf inf.mp4 --output-dir Dataset/<Custom_OSCD> --fps 4.0 --select-sharpest
+   ```
+2. **From Photo Sets:** Place images into `reference_scene/input/` and `inference_scene/input/`.
+3. **Run Pipeline:**
+   ```bash
+   bash Codebase/scripts/run_pipeline.sh --model oscd --dataset Dataset/<Custom_OSCD>
+   ```
+
+---
+
+## 4. **[CRITICAL]** Future Work Architecture: Temporal Underwater OSCD
+
+The ultimate research vision for this repository is uniting underwater optical compensation with primitive-space change detection for **temporal underwater monitoring**:
+
+```
+========================================================================================
+                      FUTURE WORK ARCHITECTURAL PARADIGM:
+              TEMPORAL UNDERWATER PRIMITIVE-SPACE CHANGE DETECTION
+========================================================================================
+
+ [Temporal Capture T0: Baseline Site]             [Temporal Capture T1: Inspection Site]
+  - Raw images with turbidity & haze               - Raw images with different turbidity
+                │                                                    │
+                ▼                                                    ▼
+  ┌───────────────────────────────┐                                  │
+  │   Underwater-Optimised 3DGS   │                                  │
+  │ (SeaSplat / 3D-UIR / Splashing)│                                 │
+  └───────────────┬───────────────┘                                  │
+                  ▼                                                  │
+  ┌───────────────────────────────┐                                  │
+  │    SuGaR Surface Extraction   │                                  │
+  │  - Enforce SDF / Normal Prior │                                  │
+  │  - Prune Turbidity Floaters   │                                  │
+  └───────────────┬───────────────┘                                  │
+                  ▼                                                  │
+       Clean Geometry-Anchored                                       │
+        Turbidity-Free 3DGS Prior                                    │
+                  │                                                  │
+                  └───────────────────────┬──────────────────────────┘
+                                          ▼
+                         ┌─────────────────────────────────┐
+                         │   Primitive-Space OSCD Engine   │
+                         │  - Track T1 against T0 prior    │
+                         │  - Invariant to water haze      │
+                         │  - Detect genuine physical shift│
+                         └────────────────┬────────────────┘
+                                          ▼
+                      ┌───────────────────────────────────────┐
+                      │    Differential 3D Analysis & Mesh    │
+                      │  - Quantitative Volumetric Change     │
+                      │  - Marine Biofouling / Coral Growth   │
+                      │  - Structural Defect Detection        │
+                      └───────────────────────────────────────┘
+========================================================================================
+```
+
+### Theoretical Mechanism:
+1. **The Marine Problem:** In multi-temporal underwater monitoring (coral reef growth/bleaching, marine pipeline erosion, subsea infrastructure damage), surveys at timestamp $T_0$ (baseline) and $T_1$ (inspection) suffer from different water turbidity, floating marine snow, and seasonal ambient light. Standard change detection models falsely register these water column variations as structural changes.
+2. **The Integrated Solution:**
+   - **Step 1 ($T_0$ Baseline):** Run the $T_0$ underwater image set through an **underwater-optimised 3DGS model** (SeaSplat, 3D-UIR, or WaterSplatting) to invert optical attenuation. Then run **SuGaR** to regularize Gaussians onto true physical surfaces, stripping away all floating water-column primitives.
+   - **Step 2 ($T_1$ Inspection):** Ingest the $T_1$ images into **OSCD**, using the restored $T_0$ Gaussian model as the reference geometry prior.
+   - **Step 3 (Primitive Delta):** Because the $T_0$ prior is optically clean and surface-bounded, OSCD detects **genuine physical modifications** directly in primitive space without false positives caused by water haze.
+   - **Step 4 (Volumetric Quantitation):** Run SuGaR on the updated scene delta to extract exact volumetric and surface-area change measurements ($cm^3$ or $m^2$).
+
+---
+
+## 5. **[KEY-CONCEPT]** Master 15 / 15 Benchmark Milestone
+
+As of Attempt 10 (October 13, 2026), all 15 benchmark targets across 8 models and 3 datasets have achieved **100% full-lifecycle execution** across all 6 stages. Full details are documented in [`attempt_10_verification.md`](./attempt_10_verification.md) and [`HPC_Guide.md`](./HPC_Guide.md).
+
+---
+
+## 6. Repository Structure
+
+- **`1A/` & `1B/`**: Academic submissions (Literature Review Assessment 1A, Project Proposal 1B).
+- **`Codebase/`**: Core implementations:
+  - `3DGS-Change-Detection/`: Source code and experiments for scene change detection (O-SCD).
+  - `3DGS-Water-Approaches/`: Underwater 3DGS models (Physics, Image Restoration, SuGaR).
+  - `scripts/`: Production-grade bash automation suite (`run_pipeline.sh`, `setup_env.sh`, `verify_env.sh`, `prepare_oscd_dataset.py`).
+  - `Tools/`: Utility scripts and COLMAP photogrammetry converters.
+- **`Dataset/`**: Storage for `Submerged3D` and `Custom_OSCD_Dataset`.
+- **`HPC/`**: High-Performance Computing scripts (`run_pipeline.pbs`, `package_outputs.sh`) and Aqua cluster documentation (`HPC/Guides/`).
+- **`Model_Outputs/`**: Local evaluation, reordering, and visualization toolchain (`organize_outputs.py`, `collect_metrics.py`, `view_outputs.py`).
+- **`Literature/`**: Research papers and master bibliography (`references.bib`).
+- **`agentdocs/`**: Living documentation brain maintained by AI agents to preserve project context.

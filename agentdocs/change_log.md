@@ -709,5 +709,38 @@ All 6 surgical fixes documented in [`attempt_9_failure_analysis.md`](attempt_9_f
     - **PSNR**: `27.0773735` dB
     - **LPIPS**: `0.3440086`
   - Results saved to `Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/results.json` and `evaluation.json`.
-- **Documentation**: Documented comprehensive post-run analysis and master extraction protocol in [`agentdocs/attempt_10_verification.md`](./attempt_10_verification.md) and [`agentdocs/HPC_Guide.md`](./HPC_Guide.md).
+- **Documentation & Presentation Suite**:
+  - Documented comprehensive post-run analysis and master extraction protocol in [`agentdocs/attempt_10_verification.md`](./attempt_10_verification.md) and [`agentdocs/HPC_Guide.md`](./HPC_Guide.md).
+  - Created [`Model_Outputs/`](../Model_Outputs/README.md) workspace with:
+    - `organize_outputs.py`: Automatically standardizes, renames, and symlinks raw outputs into a 5-domain supervisor hierarchy with clickable `PORTFOLIO_INDEX.md`.
+    - `collect_metrics.py`: Compiles master benchmark tables in LaTeX (`booktabs`), Markdown, CSV, and JSON across all 15 models.
+    - `view_outputs.py`: Interactive CLI/GUI viewer for 3D Gaussian splats (`.ply`), textured meshes (`.obj`), and OSCD change masks (`.png`) on Ubuntu Desktop.
+    - Updated `.gitignore` to strictly exclude all heavy data files (`.ply`, `.obj`, `.png`, `.tar.gz`, `raw/`, `organized/`) while tracking scripts.
 
+---
+
+## [2026-10-13] — Master Repository Manual & Temporal Underwater OSCD Roadmap
+
+- **Root `README.md` Creation**: Created production-grade, supervisor-ready [`README.md`](../README.md) at the repository root covering the full 5-phase operational lifecycle (**Setup -> Run -> Extract -> Organise -> Review**).
+- **Comprehensive Dataset Ingestion Manual**:
+  - Detailed pre-configured datasets: Submerged3D (`Kwaj`, `Tokai`) and smartphone-captured `Custom_OSCD_Dataset`.
+  - Documented onboarding for arbitrary custom underwater datasets (`Dataset/<Name>/<Scene>/input/`).
+  - Documented onboarding for arbitrary dual-photo change detection datasets via video extraction (`prepare_oscd_dataset.py`) and photo sets (`reference_scene/input/` and `inference_scene/input/`).
+- **Future Work Architectural Paradigm Documented**:
+  - Articulated the integration roadmap for **Temporal Underwater Primitive-Space Change Detection**:
+    1. Training underwater-optimised 3DGS (SeaSplat/3D-UIR/WaterSplatting) on $T_0$ baseline images to mathematically remove turbidity, light absorption, and backscatter.
+    2. SuGaR surface regularisation to bind Gaussians to signed distance fields, export clean geometry, and prune water-column floaters.
+    3. Ingesting $T_1$ inspection frames into O-SCD using the restored $T_0$ prior to track genuine physical modifications (coral growth/bleaching, structural defects, biofouling) invariant to water haze.
+    4. Differential SuGaR mesh extraction for exact volumetric ($cm^3$) and surface area ($m^2$) change metrics.
+- **`agentdocs/` Living Brain Synchronization**: Updated [`overview.md`](./overview.md), [`pipeline_and_scripts.md`](./pipeline_and_scripts.md), [`HPC_Guide.md`](./HPC_Guide.md), and [`README.md`](./README.md) with custom dataset onboarding, cluster batch submission examples, and future work architecture.
+- **Robust Output Versioning & Asset Binding (`organize_outputs.py` & `view_outputs.py`)**:
+  - Dynamically parses multi-iteration checkpoints (`iteration_7000`, `12000`, `15000`, `30000`, `updated_scene.ply`, `splat.ply`), selects the true highest-iteration output as the primary point cloud (`[Model]_[Scene]_point_cloud.ply`), and neatly archives intermediate checkpoints into `checkpoints/`.
+  - Simplifies 90-character SuGaR mesh filenames (`sugarfine_3Dgs7000_...gaussperface1.{obj,mtl,png}`) into clean supervisor-facing aliases (`[Model]_[Scene]_refined_mesh.obj`) while preserving all original texture maps and materials in a dedicated `mesh/` subfolder.
+  - Automatically generates synthetic `.mtl` companions for single-export custom/inference scenes to guarantee 100% texture rendering in MeshLab and Blender.
+  - Links texture files under both clean aliases and original filenames in parent folders to prevent broken relative texture lookups in external 3D software.
+- **Metric Aggregation & Photorealistic Visualization Fixes (`collect_metrics.py` & `view_outputs.py`)**:
+  - Fixed metric extraction across all 13 model results (`ours_30000`, `ours_15000`, `Test`, `test`, `updated_scene`), converting `--` placeholders into fully verified quantitative values (PSNR, SSIM, LPIPS) across LaTeX (`booktabs`), Markdown, CSV, and JSON tables.
+  - Revamped `view_outputs.py` to distinguish between **SuperSplat WebGL** (photorealistic 3DGS rasterizer with real-time covariance and spherical harmonics rendering in browser at 60 FPS) and **CloudCompare** (raw point coordinate / scalar field inspector), and silenced background GTK/Qt socket warnings from hijacking the terminal.
+- **3D & Video Change Heatmap Synthesizer (`generate_change_heatmaps.py`)**:
+  - Engineered spatial KD-tree differential analysis between reference and updated 3DGS point clouds to project change probabilities into spherical harmonics color fields, outputting `O-SCD_3D_Change_Heatmap_Hybrid.ply` (photorealistic background + glowing incandescent flame red on changed primitives) and `O-SCD_3D_Change_Heatmap_Turbo.ply` (scientific thermal gradient) viewable at 60 FPS in SuperSplat.
+  - Synthesized synchronized full-resolution MP4 videos (`oscd_change_heatmap_overlay.mp4` and `oscd_change_comparison_3panel.mp4`) blending 122 inspection frames with dynamic thermal colormaps, glowing contours, and HUD telemetry, alongside multi-view comparison strips (`oscd_change_keyframe_strip.png`).

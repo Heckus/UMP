@@ -381,3 +381,14 @@ Per `HPC/Guides/hpc-transferring-files-tofrom-hpc.md` and `HPC/Guides/hpc-filesy
      - WebGL (Browser): Open Google Chrome / Firefox and drag `.ply` directly into **[SuperSplat](https://playcanvas.com/supersplat/editor)**.
      - Standalone: Install CloudCompare (`sudo snap install cloudcompare`).
    - **Change Masks & Metrics**: Inspect `.png` mask renders with `eog` or native viewer; parse all `results.json` files for paper/thesis benchmarking.
+
+5. **Submitting Custom Datasets as PBS Batch Jobs on Aqua**:
+   To run any custom underwater or change detection dataset on the cluster's GPU nodes:
+   ```bash
+   # Option A: Custom Underwater Dataset (e.g. SeaSplat on Zone1)
+   qsub -v ARGS="--model seasplat --dataset Dataset/My_Custom_Underwater --scene Zone1 --stage all" HPC/scripts/run_pipeline.pbs
+
+   # Option B: Custom Dual-Photo Change Detection Dataset (O-SCD)
+   qsub -v ARGS="--model oscd --dataset Dataset/My_Custom_Change_Scene --stage all" HPC/scripts/run_pipeline.pbs
+   ```
+

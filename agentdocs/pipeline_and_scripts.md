@@ -360,3 +360,53 @@ bash tests/e2e/test_runner.sh --tier 4            # Real-world multi-stage scena
 ```
 
 For detailed test harness architecture and mock sandboxing details, refer to `TEST_INFRA.md` and `TEST_READY.md`.
+
+---
+
+## 7. Custom Dataset Ingestion & Evaluation Toolchain
+
+### 7.1 Ingesting Arbitrary Custom Underwater Datasets
+To evaluate any custom underwater multi-view photo set:
+1. Place images in:
+   ```text
+   Dataset/<Custom_Dataset_Name>/<Scene_Name>/input/
+   ```
+2. Execute the automation pipeline:
+   ```bash
+   bash Codebase/scripts/run_pipeline.sh --model seasplat --dataset Dataset/<Custom_Dataset_Name> --scene <Scene_Name>
+   ```
+
+### 7.2 Ingesting Arbitrary Dual-Photo Change Detection Datasets
+To evaluate physical scene modifications:
+1. **From Video (`prepare_oscd_dataset.py`):**
+   ```bash
+   python Codebase/scripts/prepare_oscd_dataset.py \
+       --video-ref /path/to/baseline.mp4 \
+       --video-inf /path/to/modified.mp4 \
+       --output-dir Dataset/<Custom_Scene_Name> \
+       --fps 4.0 --select-sharpest
+   ```
+2. **From Multi-View Photos:**
+   Structure as `reference_scene/input/` and `inference_scene/input/`.
+3. **Execute Pipeline:**
+   ```bash
+   bash Codebase/scripts/run_pipeline.sh --model oscd --dataset Dataset/<Custom_Scene_Name>
+   ```
+
+### 7.3 Model Outputs Presentation & Evaluation Workspace (`Model_Outputs/`)
+The repository includes automated tools for local evaluation on Ubuntu Desktop:
+- **`organize_outputs.py`**: Standardizes outputs into a 5-domain supervisor hierarchy (`Model_Outputs/organized/`) with clear naming and `PORTFOLIO_INDEX.md`.
+- **`collect_metrics.py`**: Compiles master benchmark comparison tables in LaTeX (`master_benchmark_table.tex`), Markdown, CSV, and JSON across all 15 models.
+- **`view_outputs.py`**: Interactive 3D visualizer for splats (`.ply` in CloudCompare / SuperSplat WebGL), surface meshes (`.obj` in MeshLab / Blender), and 2D change masks.
+
+---
+
+## 8. **[KEY-CONCEPT]** Future Architectural Bridge: Underwater-Optimised + SuGaR Prior -> OSCD
+
+The target research trajectory for this codebase merges underwater optical compensation with primitive-space change detection:
+1. **$T_0$ Baseline Underwater Splatting:** Train an underwater model (e.g., SeaSplat or 3D-UIR) on the $T_0$ baseline images to mathematically remove turbidity, light absorption, and backscatter.
+2. **SuGaR Geometric Regularization:** Bind the underwater Gaussians to signed distance fields and extract a watertight surface mesh (`.obj`), pruning all floating water-column artifacts.
+3. **OSCD Primitive-Space Change Tracking:** Ingest subsequent $T_1$ inspection frames into O-SCD using the restored, surface-bounded $T_0$ Gaussian model as the reference geometry prior.
+4. **Turbidity-Invariant Change Detection:** Because the $T_0$ prior is optically clean and surface-anchored, OSCD detects genuine physical structural modifications without false positives caused by temporal variations in water clarity or lighting.
+5. **Differential Volumetric Measurement:** Re-run SuGaR on the updated scene delta to extract exact physical volume and surface-area change measurements.
+

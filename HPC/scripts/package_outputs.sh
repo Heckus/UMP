@@ -29,11 +29,12 @@ find Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/output -type f \( -nam
 find Codebase -type f \( -name "results.json" -o -name "evaluation.json" \) 2>/dev/null >> "${MANIFEST}" || true
 
 # 3. 3D Gaussian Splatting Point Clouds (.ply)
-find Codebase -type f \( -name "point_cloud.ply" -o -name "updated_scene.ply" -o -name "splat.ply" \) \
+find Codebase -type f \( -name "point_cloud.ply" -o -name "updated_scene.ply" -o -name "change.ply" -o -name "splat.ply" \) \
     ! -path "*/submodules/*" ! -path "*/.cache/*" ! -path "*/checkpoint*" 2>/dev/null >> "${MANIFEST}" || true
 
-# 4. Change Detection Rendered Masks
+# 4. Change Detection Rendered Masks & Cameras
 find Codebase/3DGS-Change-Detection/O-SCD-main/output -path "*/renders/change_mask/*.png" 2>/dev/null >> "${MANIFEST}" || true
+find Codebase/3DGS-Change-Detection/O-SCD-main/output -name "cameras.json" 2>/dev/null >> "${MANIFEST}" || true
 
 # 5. Pipeline Execution Logs
 find . -maxdepth 1 -type f \( -name "run_pipeline*.log" -o -name "pipeline_errors.log" \) 2>/dev/null >> "${MANIFEST}" || true
