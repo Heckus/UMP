@@ -117,3 +117,8 @@
 [2026-10-11 09:30:34] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=2m 0s
 [2026-10-12 19:14:21] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=2m 26s
 [2026-10-13 05:17:31] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=2m 9s
+[2026-10-13 11:29:19] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=5s
+[2026-10-13 11:34:33] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=4s
+[2026-10-13 14:05:53] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=1h 16m 47s
+[2026-10-13 14:45:39] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=12m 39s
+[2026-10-13 16:26:20] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=58m 30s
