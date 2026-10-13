@@ -36,6 +36,9 @@ To support reproducible training, data preparation, and evaluation across divers
 
 For in-depth technical details, configuration parameters, Conda environment recipes, and usage workflows, refer to [Pipeline and Automation Scripts](pipeline_and_scripts.md).
 
+### **[KEY-CONCEPT]** 15 / 15 Benchmark Execution Status (100% Success Milestone)
+As of Attempt 10 (October 13, 2026), all 15 benchmark targets across 8 models and 3 datasets have achieved **100% full-lifecycle execution** across all 6 stages (data preparation, COLMAP, monocular depth estimation, model training, SuGaR textured mesh extraction, and quantitative benchmarking). See [`attempt_10_verification.md`](./attempt_10_verification.md) and [`HPC_Guide.md`](./HPC_Guide.md) for full benchmark metrics and output extraction instructions.
+
 ## **[CRITICAL]** Project Context
 
 This is an active academic research repository. AI agents assisting in this project should be prepared to handle both rigorous academic writing tasks (LaTeX formatting, citations) and complex computer vision/graphics programming (typically Python and CUDA for 3DGS) within the codebase.

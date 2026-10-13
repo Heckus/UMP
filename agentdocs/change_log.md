@@ -695,3 +695,19 @@ All 6 surgical fixes documented in [`attempt_9_failure_analysis.md`](attempt_9_f
    - Added non-dry-run checkpoint skip checks for OSCD Step 2 (`oscd.py`) and Step 3 (`update.py`) in `Codebase/scripts/run_pipeline.sh` (lines 1105–1123) when `renders/change_mask/*.png` and `updated_scene.ply` already exist, and fixed the `find -name` directory-separator warning in `run_sugar_mesh_stage`.
    - Added Gaussian finiteness/scale sanitization (`update.py`, `gaussian_model.py`, `coarse_density_and_dn_consistency.py`), `<30 GiB` GPU VRAM optimizations across `SuGaR` (`sugar_scene/cameras.py`, `sugar_scene/gs_model.py`, `coarse_density_and_dn_consistency.py`, `coarse_mesh.py`, `train.py` with top-level `import gc, torch`), and sub-stage checkpoint skip guards in `coarse_density_and_dn_consistency.py`, `coarse_mesh.py`, and `refine.py` so completed `15000.pt` checkpoints and `.ply` coarse meshes are immediately reused on re-runs.
 
+---
+
+## [2026-10-13] — Attempt 10 Final Verification: 15 / 15 (100%) Benchmark Completion Milestone
+
+- **Context & Execution**: Live interactive compute session execution on QUT Aqua (`gpu0n004`, NVIDIA A100-SXM4-40GB GPU) running `bash Codebase/scripts/run_pipeline.sh --model oscd --stage all`.
+- **Outcome**: **100% SUCCESS (Code 0)** across all 6 stages (`Total Duration: 1h 4m 6s`, `Succeeded: 1`, `Failed: 0`).
+- **Global Project Milestone**: All 15 model benchmark executions across the repository (`seasplat`, `3d-uir`, `gaussiansplashing`, `watersplatting`, `rusplatting`, `uw-gs`, `sugar` on `Kwaj` & `Tokai`, and `oscd` on `Custom_OSCD_Dataset`) have now achieved **100% full-lifecycle completion**!
+- **Key Artifacts & Metrics**:
+  - `oscd` SuGaR mesh extracted and verified: `Dataset/Custom_OSCD_Dataset/output/refined_mesh/oscd.obj`.
+  - Novel view synthesis benchmarking on 25 held-out novel view cameras (`updated_scene.ply`):
+    - **SSIM**: `0.8314773`
+    - **PSNR**: `27.0773735` dB
+    - **LPIPS**: `0.3440086`
+  - Results saved to `Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/results.json` and `evaluation.json`.
+- **Documentation**: Documented comprehensive post-run analysis and master extraction protocol in [`agentdocs/attempt_10_verification.md`](./attempt_10_verification.md) and [`agentdocs/HPC_Guide.md`](./HPC_Guide.md).
+

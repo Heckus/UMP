@@ -317,3 +317,83 @@ All 6 root causes have been fixed for Attempt 10, and Stage 5 SuGaR mesh extract
    ls -lh Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/updated_scene/evaluation.json
    find Dataset/Custom_OSCD_Dataset/inference_scene/output -name "*.obj" -ls
    ```
+
+---
+
+## 12. Attempt 10 Full Completion & Master 15/15 Output Extraction Protocol
+
+In Attempt 10 on QUT Aqua (`gpu0n004`, NVIDIA A100-SXM4-40GB GPU), `oscd` on `Custom_OSCD_Dataset` ran to **100% full-lifecycle completion** in a live interactive compute session (`Duration: 1h 4m 6s`), achieving **SUCCESS (Code 0)** across all 6 stages.
+
+### **[KEY-CONCEPT]** 15 / 15 (100%) Project Benchmark Milestone
+Combined with the 14 full-lifecycle completions from Attempt 8 (`seasplat`, `3d-uir`, `gaussiansplashing`, `watersplatting`, `rusplatting`, `uw-gs`, and `sugar` across both `Kwaj` and `Tokai`), **all 15 target models across all datasets have officially succeeded without errors**.
+
+### OSCD Final Quantitative Metrics (`updated_scene.ply` on 25 held-out novel views):
+- **SSIM**: `0.8314773`
+- **PSNR**: `27.0773735` dB
+- **LPIPS**: `0.3440086`
+- **SuGaR Mesh**: Verified and exported to `Dataset/Custom_OSCD_Dataset/output/refined_mesh/oscd.obj`
+- **Metrics**: Saved to `Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/results.json` & `evaluation.json`.
+
+### Best & Most Efficient Method to Extract All 15 Outputs onto Local Computer:
+
+Per `HPC/Guides/hpc-transferring-files-tofrom-hpc.md` and `HPC/Guides/hpc-filesystem.md`:
+1. **Do NOT copy loose directories over SMB/SFTP**: 3DGS produces tens of thousands of intermediate files. Direct directory syncing is slow and prone to stalling.
+2. **Step 1: Bundle on HPC Login Node**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   tar -czvf ump_15_outputs.tar.gz \
+       --wildcards \
+       --exclude="*cameras.bin" \
+       --exclude="*points3D.bin" \
+       --exclude="*depthmap*" \
+       "Dataset/Submerged3D/*/output/refined_mesh/*" \
+       "Dataset/Custom_OSCD_Dataset/output/refined_mesh/*" \
+       "Dataset/Custom_OSCD_Dataset/inference_scene/output/refined_mesh/*" \
+       "Codebase/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
+       "Codebase/*/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
+       "Codebase/*/*/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
+       "Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/*/*/*/splat.ply" \
+       "Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/updated_scene.ply" \
+       "Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/renders/change_mask/*.png" \
+       "Codebase/**/results.json" \
+       "Codebase/**/evaluation.json" \
+       "run_pipeline_live*.log" \
+       "run_pipeline_complete.log"
+   ```
+3. **Step 2: Transfer to Local Ubuntu Desktop via Dedicated Data Transfer Node (`eresdtn01.qut.edu.au`)**:
+   - **Primary Workflow (Ubuntu Desktop over VPN via `rsync` — Recommended)**:
+     With QUT VPN active, execute from your local Ubuntu terminal:
+     ```bash
+     # Single compressed archive download with progress, compression, and resume capability:
+     rsync -avzP n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz ~/Downloads/
+     ```
+   - **Alternative: Direct Live Extraction via `rsync` (Without Archiving First)**:
+     If you prefer not creating `ump_15_outputs.tar.gz` on the HPC, you can filter and sync the exact 15 outputs directly into a local folder:
+     ```bash
+     mkdir -p ~/UMP_15_outputs
+     rsync -avzP --include="*/" \
+         --include="*refined_mesh***" \
+         --include="*.obj" --include="*.mtl" \
+         --include="*iteration_30000/point_cloud.ply" \
+         --include="*updated_scene.ply" \
+         --include="*splat.ply" \
+         --include="*results.json" --include="*evaluation.json" \
+         --include="*change_mask/*.png" \
+         --exclude="*" \
+         n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ ~/UMP_15_outputs/
+     ```
+   - **Standard `scp` Transfer**:
+     ```bash
+     scp n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz ~/Downloads/
+     ```
+
+4. **Local Evaluation & 3D Visualization on Ubuntu Desktop**:
+   - **Extract the archive**:
+     ```bash
+     cd ~/Downloads && tar -xzvf ump_15_outputs.tar.gz -C ~/UMP_15_outputs/
+     ```
+   - **Textured Surface Meshes (`.obj` / `.mtl`)**: Open via MeshLab (`sudo apt install meshlab && meshlab oscd.obj`) or Blender (`sudo snap install blender --classic`).
+   - **3D Gaussian Splats (`.ply`)**:
+     - WebGL (Browser): Open Google Chrome / Firefox and drag `.ply` directly into **[SuperSplat](https://playcanvas.com/supersplat/editor)**.
+     - Standalone: Install CloudCompare (`sudo snap install cloudcompare`).
+   - **Change Masks & Metrics**: Inspect `.png` mask renders with `eog` or native viewer; parse all `results.json` files for paper/thesis benchmarking.
