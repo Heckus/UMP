@@ -109,26 +109,9 @@ Per `HPC/Guides/hpc-transferring-files-tofrom-hpc.md` and `HPC/Guides/hpc-filesy
 
 ```bash
 cd ~/EUAPGM7346/UMP
-
-tar -czvf ump_15_outputs.tar.gz \
-    --wildcards \
-    --exclude="*cameras.bin" \
-    --exclude="*points3D.bin" \
-    --exclude="*depthmap*" \
-    "Dataset/Submerged3D/*/output/refined_mesh/*" \
-    "Dataset/Custom_OSCD_Dataset/output/refined_mesh/*" \
-    "Dataset/Custom_OSCD_Dataset/inference_scene/output/refined_mesh/*" \
-    "Codebase/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
-    "Codebase/*/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
-    "Codebase/*/*/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
-    "Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/*/*/*/splat.ply" \
-    "Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/updated_scene.ply" \
-    "Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/renders/change_mask/*.png" \
-    "Codebase/**/results.json" \
-    "Codebase/**/evaluation.json" \
-    "run_pipeline_live*.log" \
-    "run_pipeline_complete.log"
+bash HPC/scripts/package_outputs.sh
 ```
+*(The script dynamically locates and bundles all 15 models' `.obj` meshes, `.mtl`, texture maps, `results.json`, `evaluation.json`, `point_cloud.ply`, `updated_scene.ply`, `splat.ply`, `change_mask/*.png`, and execution logs into `ump_15_outputs.tar.gz` with zero wildcard errors).*
 
 ### Step 2: Download Archive to Local Ubuntu Desktop via Data Transfer Node
 

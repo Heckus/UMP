@@ -338,28 +338,12 @@ Combined with the 14 full-lifecycle completions from Attempt 8 (`seasplat`, `3d-
 
 Per `HPC/Guides/hpc-transferring-files-tofrom-hpc.md` and `HPC/Guides/hpc-filesystem.md`:
 1. **Do NOT copy loose directories over SMB/SFTP**: 3DGS produces tens of thousands of intermediate files. Direct directory syncing is slow and prone to stalling.
-2. **Step 1: Bundle on HPC Login Node**:
+2. **Step 1: Bundle on HPC Login Node (`package_outputs.sh`)**:
    ```bash
    cd ~/EUAPGM7346/UMP
-   tar -czvf ump_15_outputs.tar.gz \
-       --wildcards \
-       --exclude="*cameras.bin" \
-       --exclude="*points3D.bin" \
-       --exclude="*depthmap*" \
-       "Dataset/Submerged3D/*/output/refined_mesh/*" \
-       "Dataset/Custom_OSCD_Dataset/output/refined_mesh/*" \
-       "Dataset/Custom_OSCD_Dataset/inference_scene/output/refined_mesh/*" \
-       "Codebase/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
-       "Codebase/*/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
-       "Codebase/*/*/*/output/*/point_cloud/iteration_30000/point_cloud.ply" \
-       "Codebase/3DGS-Water-Approaches/Image/water-splatting-main/outputs/*/*/*/splat.ply" \
-       "Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/updated_scene.ply" \
-       "Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/output/renders/change_mask/*.png" \
-       "Codebase/**/results.json" \
-       "Codebase/**/evaluation.json" \
-       "run_pipeline_live*.log" \
-       "run_pipeline_complete.log"
+   bash HPC/scripts/package_outputs.sh
    ```
+   *(The script uses dynamic `find` manifests to discover and bundle all 15 models' `.obj` meshes, `.mtl`, texture maps, `results.json`, `evaluation.json`, `point_cloud.ply`, `updated_scene.ply`, `splat.ply`, `change_mask/*.png`, and execution logs into `ump_15_outputs.tar.gz` with zero wildcard errors).*
 3. **Step 2: Transfer to Local Ubuntu Desktop via Dedicated Data Transfer Node (`eresdtn01.qut.edu.au`)**:
    - **Primary Workflow (Ubuntu Desktop over VPN via `rsync` — Recommended)**:
      With QUT VPN active, execute from your local Ubuntu terminal:
