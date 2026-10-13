@@ -107,6 +107,15 @@ def extract_mesh_from_coarse_sugar(args):
     use_centers_to_extract_mesh = args.use_centers_to_extract_mesh
     use_marching_cubes = args.use_marching_cubes
     use_vanilla_3dgs = args.use_vanilla_3dgs
+
+    if not use_marching_cubes and not use_centers_to_extract_mesh and not use_vanilla_3dgs:
+        expected_coarse_ply = os.path.join(
+            mesh_output_dir,
+            'sugarmesh_' + sugar_checkpoint_path.split('/')[-2].replace('sugarcoarse_', '') + '_levelZZ_decimAA.ply'
+        ).replace('ZZ', str(surface_levels[0]).replace('.', '')).replace('AA', str(decimation_targets[0]).replace('.', ''))
+        if os.path.isfile(expected_coarse_ply) and os.path.getsize(expected_coarse_ply) > 1024:
+            CONSOLE.print(f"Found existing extracted coarse SuGaR mesh at {expected_coarse_ply}. Skipping coarse mesh extraction.")
+            return [expected_coarse_ply]
             
     CONSOLE.print("-----Parameters-----")
     CONSOLE.print("Source path:", source_path)

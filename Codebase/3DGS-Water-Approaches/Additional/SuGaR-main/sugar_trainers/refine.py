@@ -275,6 +275,11 @@ def refined_training(args):
         ).replace(
         'YY', str(n_gaussians_per_surface_triangle).replace('.', '')
         )
+
+    final_refined_ckpt = os.path.join(sugar_checkpoint_path, f'{num_iterations}.pt')
+    if os.path.isfile(final_refined_ckpt) and os.path.getsize(final_refined_ckpt) > 1024:
+        CONSOLE.print(f"Found existing completed refined SuGaR model at {final_refined_ckpt}. Skipping refinement training.")
+        return final_refined_ckpt
         
     if use_custom_bbox:
         fg_bbox_min = args.bboxmin
@@ -824,7 +829,8 @@ def refined_training(args):
                     CONSOLE.print("Scaling factors:", sugar.scaling.min().item(), sugar.scaling.max().item(), sugar.scaling.mean().item(), sugar.scaling.std().item(), sep='   ')
                     CONSOLE.print("Quaternions:", sugar.quaternions.min().item(), sugar.quaternions.max().item(), sugar.quaternions.mean().item(), sugar.quaternions.std().item(), sep='   ')
                     CONSOLE.print("Sh coordinates dc:", sugar._sh_coordinates_dc.min().item(), sugar._sh_coordinates_dc.max().item(), sugar._sh_coordinates_dc.mean().item(), sugar._sh_coordinates_dc.std().item(), sep='   ')
-                    CONSOLE.print("Sh coordinates rest:", sugar._sh_coordinates_rest.min().item(), sugar._sh_coordinates_rest.max().item(), sugar._sh_coordinates_rest.mean().item(), sugar._sh_coordinates_rest.std().item(), sep='   ')
+                    if sugar._sh_coordinates_rest.numel() > 0:
+                        CONSOLE.print("Sh coordinates rest:", sugar._sh_coordinates_rest.min().item(), sugar._sh_coordinates_rest.max().item(), sugar._sh_coordinates_rest.mean().item(), sugar._sh_coordinates_rest.std().item(), sep='   ')
                     CONSOLE.print("Opacities:", sugar.strengths.min().item(), sugar.strengths.max().item(), sugar.strengths.mean().item(), sugar.strengths.std().item(), sep='   ')
                     if regularize_sdf and iteration > start_sdf_regularization_from:
                         CONSOLE.print("Number of gaussians used for sampling in SDF regularization:", n_gaussians_in_sampling)

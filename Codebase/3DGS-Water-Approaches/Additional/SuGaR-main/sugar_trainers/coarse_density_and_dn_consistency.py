@@ -338,6 +338,11 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
         ).replace(
             'YY', str(sdf_better_normal_factor).replace('.', '')
             )
+
+    final_coarse_ckpt = os.path.join(sugar_checkpoint_path, f'{num_iterations}.pt')
+    if os.path.isfile(final_coarse_ckpt) and os.path.getsize(final_coarse_ckpt) > 1024:
+        CONSOLE.print(f"Found existing completed coarse SuGaR model at {final_coarse_ckpt}. Skipping coarse training.")
+        return final_coarse_ckpt
     
     use_eval_split = args.eval
     use_white_background = args.white_background

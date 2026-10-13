@@ -1,4 +1,6 @@
 import argparse
+import gc
+import torch
 from sugar_utils.general_utils import str2bool
 from sugar_trainers.coarse_density import coarse_training_with_density_regularization
 from sugar_trainers.coarse_sdf import coarse_training_with_sdf_regularization
@@ -134,7 +136,6 @@ if __name__ == "__main__":
     else:
         raise ValueError(f'Unknown regularization type: {args.regularization_type}')
     
-    import gc
     gc.collect()
     torch.cuda.empty_cache()
     
