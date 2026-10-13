@@ -98,6 +98,121 @@ if os.path.isdir(sparse_root):
         if len(candidates) > 1:
             print(f"[INFO] Multiple COLMAP sub-models found in {sparse_root}; selected {best_submodel} ({candidates[0][0]} bytes)")
 
+def _python_undistort_fallback(source_path, submodel_dir):
+    """
+    Pure-Python fallback for `colmap image_undistorter` when a valid sparse
+    reconstruction already exists in `submodel_dir` (e.g. distorted/sparse/1)
+    and the C++ colmap binary fails due to cluster shared library issues.
+    Converts camera intrinsics to PINHOLE (model_id=1) in sparse/0/cameras.bin,
+    copies images.bin and points3D.bin to sparse/0/, and populates images/.
+    """
+    import struct
+    from scene.colmap_loader import read_intrinsics_binary, read_extrinsics_binary
+
+    cam_bin_in = os.path.join(submodel_dir, "cameras.bin")
+    img_bin_in = os.path.join(submodel_dir, "images.bin")
+    pts_bin_in = os.path.join(submodel_dir, "points3D.bin")
+    if not (os.path.isfile(cam_bin_in) and os.path.isfile(img_bin_in) and os.path.isfile(pts_bin_in)):
+        return False
+
+    print(f"[INFO] Running pure-Python image_undistorter fallback from {submodel_dir}...")
+    cameras = read_intrinsics_binary(cam_bin_in)
+    images = read_extrinsics_binary(img_bin_in)
+
+    sparse_zero_dir = os.path.join(source_path, "sparse", "0")
+    images_out_dir = os.path.join(source_path, "images")
+    input_dir = os.path.join(source_path, "input")
+    os.makedirs(sparse_zero_dir, exist_ok=True)
+    os.makedirs(images_out_dir, exist_ok=True)
+
+    # 1. Write PINHOLE (model_id=1) cameras.bin
+    cam_bin_out = os.path.join(sparse_zero_dir, "cameras.bin")
+    single_radial_models = {
+        "SIMPLE_PINHOLE",
+        "SIMPLE_RADIAL",
+        "RADIAL",
+        "SIMPLE_RADIAL_FISHEYE",
+        "RADIAL_FISHEYE",
+    }
+    with open(cam_bin_out, "wb") as fid:
+        fid.write(struct.pack("<Q", len(cameras)))
+        for cam_id, cam in cameras.items():
+            if cam.model in single_radial_models or len(cam.params) < 4:
+                fx = float(cam.params[0])
+                fy = float(cam.params[0])
+                cx = float(cam.params[1])
+                cy = float(cam.params[2])
+            else:
+                fx = float(cam.params[0])
+                fy = float(cam.params[1])
+                cx = float(cam.params[2])
+                cy = float(cam.params[3])
+            # model_id = 1 is PINHOLE (4 params: fx, fy, cx, cy)
+            fid.write(
+                struct.pack(
+                    "<iiQQdddd",
+                    int(cam.id),
+                    1,
+                    int(cam.width),
+                    int(cam.height),
+                    fx,
+                    fy,
+                    cx,
+                    cy,
+                )
+            )
+
+    # 2. Copy images.bin and points3D.bin into sparse/0/
+    shutil.copy2(img_bin_in, os.path.join(sparse_zero_dir, "images.bin"))
+    shutil.copy2(pts_bin_in, os.path.join(sparse_zero_dir, "points3D.bin"))
+
+    # 3. Undistort (if cv2 is available) or copy each registered image into images/
+    has_cv2 = False
+    try:
+        import cv2
+        import numpy as np
+        has_cv2 = True
+    except Exception:
+        has_cv2 = False
+
+    undist_maps = {}
+    if has_cv2:
+        for cam_id, cam in cameras.items():
+            if cam.model == "OPENCV" and len(cam.params) >= 8:
+                fx, fy, cx, cy, k1, k2, p1, p2 = [float(x) for x in cam.params[:8]]
+                if abs(k1) > 1e-7 or abs(k2) > 1e-7 or abs(p1) > 1e-7 or abs(p2) > 1e-7:
+                    K = np.array([[fx, 0.0, cx], [0.0, fy, cy], [0.0, 0.0, 1.0]], dtype=np.float64)
+                    dist = np.array([k1, k2, p1, p2], dtype=np.float64)
+                    map1, map2 = cv2.initUndistortRectifyMap(
+                        K, dist, None, K, (int(cam.width), int(cam.height)), cv2.CV_32FC1
+                    )
+                    undist_maps[cam_id] = (map1, map2)
+
+    copied_count = 0
+    for img in images.values():
+        src_img = os.path.join(input_dir, img.name)
+        dst_img = os.path.join(images_out_dir, img.name)
+        if not os.path.isfile(src_img):
+            continue
+        os.makedirs(os.path.dirname(dst_img), exist_ok=True)
+        if has_cv2 and img.camera_id in undist_maps:
+            raw = cv2.imread(src_img, cv2.IMREAD_COLOR)
+            if raw is not None:
+                map1, map2 = undist_maps[img.camera_id]
+                undist = cv2.remap(raw, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+                cv2.imwrite(dst_img, undist)
+                copied_count += 1
+                continue
+        shutil.copy2(src_img, dst_img)
+        copied_count += 1
+
+    print(
+        f"[INFO] Pure-Python image_undistorter fallback succeeded: "
+        f"{copied_count}/{len(images)} images prepared in {images_out_dir} and PINHOLE model written to {sparse_zero_dir}."
+    )
+    return copied_count > 0
+
+
 img_undist_cmd = (colmap_command + " image_undistorter \
     --image_path " + args.source_path + "/input \
     --input_path " + best_submodel + " \
@@ -105,18 +220,24 @@ img_undist_cmd = (colmap_command + " image_undistorter \
     --output_type COLMAP")
 exit_code = os.system(img_undist_cmd)
 if exit_code != 0:
-    logging.error(f"Mapper failed with code {exit_code}. Exiting.")
-    sys.exit(1)
-
-files = os.listdir(args.source_path + "/sparse")
-os.makedirs(args.source_path + "/sparse/0", exist_ok=True)
-# Copy each file from the source directory to the destination directory
-for file in files:
-    if file == '0':
-        continue
-    source_file = os.path.join(args.source_path, "sparse", file)
-    destination_file = os.path.join(args.source_path, "sparse", "0", file)
-    shutil.move(source_file, destination_file)
+    logging.warning(f"colmap image_undistorter exited with code {exit_code}. Attempting pure-Python undistortion fallback...")
+    try:
+        if not _python_undistort_fallback(args.source_path, best_submodel):
+            logging.error(f"Mapper failed with code {exit_code}. Exiting.")
+            sys.exit(1)
+    except Exception as exc:
+        logging.error(f"Pure-Python undistortion fallback failed ({exc}); original code {exit_code}. Exiting.")
+        sys.exit(1)
+else:
+    files = os.listdir(args.source_path + "/sparse")
+    os.makedirs(args.source_path + "/sparse/0", exist_ok=True)
+    # Copy each file from the source directory to the destination directory
+    for file in files:
+        if file == '0':
+            continue
+        source_file = os.path.join(args.source_path, "sparse", file)
+        destination_file = os.path.join(args.source_path, "sparse", "0", file)
+        shutil.move(source_file, destination_file)
 
 if(args.resize):
     print("Copying and resizing...")

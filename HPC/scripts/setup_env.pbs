@@ -76,10 +76,12 @@ eval "$(conda shell.bash hook)"
 # Provision global system tools (colmap, ffmpeg, openimageio) securely via Conda if missing
 if ! conda env list 2>/dev/null | grep -E '^[[:space:]]*global_tools[[:space:]]' >/dev/null 2>&1; then
     echo "Provisioning global system tools (colmap, ffmpeg, openimageio) via Conda..."
-    conda create -n global_tools -c conda-forge colmap ffmpeg openimageio -y
+    conda create -n global_tools -c conda-forge colmap ffmpeg "libopenimageio=3.1*" openimageio -y
+elif [ ! -e "$HOME/.conda/envs/global_tools/lib/libOpenImageIO.so.3.1" ]; then
+    echo "Conda environment 'global_tools' is missing libOpenImageIO.so.3.1. Installing libopenimageio=3.1*..."
+    conda install -n global_tools -c conda-forge "libopenimageio=3.1*" openimageio -y || true
 else
-    echo "Conda environment 'global_tools' is already present. Ensuring openimageio is installed..."
-    conda install -n global_tools -c conda-forge openimageio -y
+    echo "Conda environment 'global_tools' and libOpenImageIO.so.3.1 are already present."
 fi
 
 # Hopper H100 architecture target for PyTorch JIT and wheel compilation

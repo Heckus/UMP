@@ -39,6 +39,31 @@ fi
 # Prepend global_tools/lib to LD_LIBRARY_PATH for the lifetime of this colmap call
 if [[ -n "${GT_LIB}" && -d "${GT_LIB}" ]]; then
     export LD_LIBRARY_PATH="${GT_LIB}:${LD_LIBRARY_PATH:-}"
+
+    # Self-heal SONAME version mismatches in global_tools/lib (e.g. libOpenImageIO.so.3.1)
+    if command -v ldd >/dev/null 2>&1; then
+        while IFS= read -r _missing_so; do
+            [[ -z "${_missing_so}" ]] && continue
+            if [[ ! -e "${GT_LIB}/${_missing_so}" ]]; then
+                _base_prefix="${_missing_so%%.so*}.so"
+                _found_so=""
+                # 1. Check same global_tools/lib directory for a different SONAME version
+                for _cand_so in "${GT_LIB}/${_base_prefix}"*; do
+                    if [[ -f "${_cand_so}" ]]; then
+                        _found_so="${_cand_so}"
+                        break
+                    fi
+                done
+                # 2. Check conda pkgs cache or sibling environments if not in global_tools/lib
+                if [[ -z "${_found_so}" ]]; then
+                    _found_so="$(find "${HOME}/.conda/pkgs" "${HOME}/.conda/envs" -maxdepth 4 -name "${_base_prefix}*" -type f 2>/dev/null | head -n 1 || true)"
+                fi
+                if [[ -n "${_found_so}" && -f "${_found_so}" ]]; then
+                    ln -sf "${_found_so}" "${GT_LIB}/${_missing_so}" 2>/dev/null || true
+                fi
+            fi
+        done < <(ldd "${COLMAP_BIN}" 2>/dev/null | awk '/not found/ {print $1}' || true)
+    fi
 fi
 
 # Modern COLMAP (3.13+ / 4.x) argument translation:

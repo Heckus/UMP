@@ -677,3 +677,9 @@ All 6 surgical fixes documented in [`attempt_9_failure_analysis.md`](attempt_9_f
 6. **Stage 6 `sys.path` Resolution & PBS `CONDA_DIR` Fix (`utils/metrics.py`, `utils/evaluate.py`, `HPC/scripts/run_pipeline.pbs`)**:
    - Prepended both `utils/` and `O-SCD-main/` root to `sys.path` in `utils/metrics.py` and `utils/evaluate.py`.
    - Updated `HPC/scripts/run_pipeline.pbs` to preserve `CONDA_EXE` from `conda shell.bash hook` or resolve via `type -P conda`.
+
+7. **Pure-Python `image_undistorter` Fallback & `libOpenImageIO.so.3.1` SONAME Self-Healing (`convert.py`, `colmap_wrapper.sh`, `setup_env.pbs`, `setup_env.sh`)**:
+   - In `Codebase/Tools/gaussian-splatting-main/convert.py`, added `_python_undistort_fallback(source_path, best_submodel)` so that if `colmap image_undistorter` exits non-zero (e.g., code `32512` due to `libOpenImageIO.so.3.1` missing in `global_tools` on an offline compute node), Python directly reads `best_submodel/{cameras.bin,images.bin,points3D.bin}`, converts camera intrinsics to `PINHOLE` (`model_id=1`) in `sparse/0/cameras.bin`, copies `images.bin` and `points3D.bin` to `sparse/0/`, and undistorts/copies all 121 registered images into `images/`.
+   - In `Codebase/scripts/colmap_wrapper.sh`, added an `ldd` pre-flight loop that detects any `not found` shared libraries (such as `libOpenImageIO.so.3.1`) and automatically symlinks available matching `.so*` files from `global_tools/lib` or `~/.conda/pkgs`.
+   - In `HPC/scripts/setup_env.pbs` and `Codebase/scripts/setup_env.sh`, explicitly pinned `"libopenimageio=3.1*"` when provisioning or repairing `global_tools`.
+
