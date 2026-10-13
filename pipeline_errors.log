@@ -116,3 +116,4 @@
 [2026-10-11 03:46:48] ERROR: Model=watersplatting | Scene=Kwaj | Stage=all | ExitCode=1 | Duration=16m 44s
 [2026-10-11 09:30:34] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=2m 0s
 [2026-10-12 19:14:21] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=2m 26s
+[2026-10-13 05:17:31] ERROR: Model=oscd | Scene=oscd | Stage=all | ExitCode=1 | Duration=2m 9s
