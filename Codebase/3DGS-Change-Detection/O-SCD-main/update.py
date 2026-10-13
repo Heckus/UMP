@@ -276,6 +276,8 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
             change_masks[view.image_name] = change_mask
 
     pbar_inf.close()
+    del reference_keyframes, model, dense_extractor, detector, matcher, pose_initializer, triangulator, dummy_image, change_masks
+    torch.cuda.empty_cache()
 
     pbar_finetuning = tqdm(range(total_iterations, 3000), desc="Refining.....", disable=True)
 
@@ -317,6 +319,11 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
                 gaussians_change.reset_opacity()
 
     pbar_finetuning.close()
+    for view in viewpoints:
+        view.candidate_map = None
+    for view in viewpoints_test:
+        view.candidate_map = None
+    torch.cuda.empty_cache()
 
     with torch.no_grad():
             for view in viewpoints:
@@ -340,14 +347,14 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
             kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2*r+1, 2*r+1))
             change_mask = cv2.dilate(change_mask.cpu().numpy().astype(np.uint8), kernel, iterations = 1)
             change_mask = (change_mask > 0).astype(np.float32)
-            mask = torch.tensor(change_mask, device="cuda").unsqueeze(0).repeat(3,1,1)
+            mask = torch.tensor(change_mask, device="cuda").unsqueeze(0)
             view.change_mask_dilated = mask
             masked_gt = view.original_image[:3, ...] * mask
             view.masked_gt = masked_gt
 
             c_mask = cv2.erode(c_mask.cpu().numpy().astype(np.uint8), kernel, iterations = 1)
             c_mask = (c_mask > 0).astype(np.float32)
-            c_mask = torch.tensor(c_mask, device="cuda").unsqueeze(0).repeat(3,1,1)
+            c_mask = torch.tensor(c_mask, device="cuda").unsqueeze(0)
             view.change_mask_eroded = c_mask
 
     del gaussians_change._features_dc
@@ -407,29 +414,38 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
             gaussians_change.optimizer_step(iteration)
 
     pbar_selective_reconstruction.close()
+    for view in viewpoints:
+        view.masked_gt = None
+    gaussians_change.optimizer = None
+    gaussians_change.shoptimizer = None
     torch.cuda.synchronize()
-
-    my_viewpoint_stack = viewpoints.copy()
-    camlist = sampling_cameras(my_viewpoint_stack, n=len(viewpoints))
-    score = compute_gaussian_score_fastgs_pixel_changed(camlist, gaussians_rgb, pipe, background, opt, mask_change = "eroded")
-
-    prune_mask = score > 1
-    gaussians_rgb.prune_points(prune_mask)   
-
-    new_xyz = gaussians_change._xyz.detach().clone()
-    new_features_dc = gaussians_change._features_dc.detach().clone()
-    new_features_rest = gaussians_change._features_rest.detach().clone()
-    new_opacity = gaussians_change._opacity.detach().clone()
-    new_scaling = gaussians_change._scaling.detach().clone()
-    new_rotations = gaussians_change._rotation.detach().clone()
-
-    del gaussians_change
-    torch.cuda.empty_cache()   
-
-    gaussians_rgb.densification_postfix_fastgs(new_xyz, new_features_dc, new_features_rest, new_opacity, new_scaling, new_rotations, None)
-
-    del new_xyz, new_features_dc, new_features_rest, new_opacity, new_scaling, new_rotations
     torch.cuda.empty_cache()
+
+    with torch.no_grad():
+        my_viewpoint_stack = viewpoints.copy()
+        camlist = sampling_cameras(my_viewpoint_stack, n=len(viewpoints))
+        score = compute_gaussian_score_fastgs_pixel_changed(camlist, gaussians_rgb, pipe, background, opt, mask_change = "eroded")
+
+        prune_mask = score > 1
+        gaussians_rgb.prune_points(prune_mask)
+        del score, prune_mask
+        for view in viewpoints:
+            view.change_mask_eroded = None
+
+        new_xyz = gaussians_change._xyz.detach().clone()
+        new_features_dc = gaussians_change._features_dc.detach().clone()
+        new_features_rest = gaussians_change._features_rest.detach().clone()
+        new_opacity = gaussians_change._opacity.detach().clone()
+        new_scaling = gaussians_change._scaling.detach().clone()
+        new_rotations = gaussians_change._rotation.detach().clone()
+
+        del gaussians_change
+        torch.cuda.empty_cache()   
+
+        gaussians_rgb.densification_postfix_fastgs(new_xyz, new_features_dc, new_features_rest, new_opacity, new_scaling, new_rotations, None)
+
+        del new_xyz, new_features_dc, new_features_rest, new_opacity, new_scaling, new_rotations
+        torch.cuda.empty_cache()
 
     pbar_global_op = tqdm(range(0, 5000), desc="Running Global Optimization")
     ema_loss_for_log = 0.0

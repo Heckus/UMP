@@ -20,10 +20,11 @@ def sampling_cameras(my_viewpoint_stack, n=10):
 
 def get_loss(reconstructed_image, original_image):
     l1_loss = torch.mean(torch.abs(reconstructed_image - original_image), 0).detach()
-    l1_loss_norm = (l1_loss - torch.min(l1_loss)) / (torch.max(l1_loss) - torch.min(l1_loss))
+    l1_loss_norm = (l1_loss - torch.min(l1_loss)) / (torch.max(l1_loss) - torch.min(l1_loss) + 1e-8)
 
     return l1_loss_norm
 
+@torch.no_grad()
 def compute_photometric_loss(viewpoint_cam, image):
     gt_image = viewpoint_cam.original_image.cuda()
     Ll1 = l1_loss(image, gt_image)
@@ -42,6 +43,7 @@ def normalize(config_value, value_tensor):
 
     return ret_value
 
+@torch.no_grad()
 def compute_gaussian_score_fastgs(camlist, gaussians, pipe, bg, args, DENSIFY = False):
     """Compute multi-view consistency scores for Gaussians to guide densification.
 
@@ -79,11 +81,11 @@ def compute_gaussian_score_fastgs(camlist, gaussians, pipe, bg, args, DENSIFY = 
         get_flag = True
         l1_loss_norm = get_loss(render_image, gt_image)
         
-        metric_map = (l1_loss_norm > args.loss_thresh).int()
+        metric_map = (l1_loss_norm > args.loss_thresh).int().contiguous()
 
         render_pkg = render_fastgs(my_viewpoint_cam, gaussians, pipe, bg, args.mult, get_flag = get_flag, metric_map = metric_map)
 
-        accum_loss_counts = render_pkg["accum_metric_counts"]
+        accum_loss_counts = render_pkg["accum_metric_counts"].detach()
 
         if DENSIFY:
             if full_metric_counts is None:
@@ -92,11 +94,13 @@ def compute_gaussian_score_fastgs(camlist, gaussians, pipe, bg, args, DENSIFY = 
                 full_metric_counts += accum_loss_counts
 
         if full_metric_score is None:
-            full_metric_score = photometric_loss * accum_loss_counts.clone()
+            full_metric_score = photometric_loss.detach() * accum_loss_counts.clone()
         else:
-            full_metric_score += photometric_loss * accum_loss_counts
+            full_metric_score += photometric_loss.detach() * accum_loss_counts
 
-    pruning_score = (full_metric_score - torch.min(full_metric_score)) / (torch.max(full_metric_score) - torch.min(full_metric_score))
+        del render_pkg, render_image, l1_loss_norm, metric_map, accum_loss_counts
+
+    pruning_score = (full_metric_score - torch.min(full_metric_score)) / (torch.max(full_metric_score) - torch.min(full_metric_score) + 1e-8)
     
     if DENSIFY:
         importance_score = torch.div(full_metric_counts, len(camlist), rounding_mode='floor')
@@ -104,6 +108,7 @@ def compute_gaussian_score_fastgs(camlist, gaussians, pipe, bg, args, DENSIFY = 
         importance_score = None
     return importance_score, pruning_score
 
+@torch.no_grad()
 def compute_gaussian_score_fastgs_pixel_changed(camlist, gaussians, pipe, bg, args, mask_change, DENSIFY = False ):
 
     full_metric_counts = None
@@ -113,21 +118,21 @@ def compute_gaussian_score_fastgs_pixel_changed(camlist, gaussians, pipe, bg, ar
         get_flag = True
         
         if mask_change == "eroded":
-            metric_map = my_viewpoint_cam.change_mask_eroded.mean(dim=0).int()
+            metric_map = my_viewpoint_cam.change_mask_eroded.mean(dim=0).int().contiguous()
         elif mask_change == "dilated":
-            metric_map = my_viewpoint_cam.change_mask_dilated.mean(dim=0).int()
+            metric_map = my_viewpoint_cam.change_mask_dilated.mean(dim=0).int().contiguous()
         else:
             raise ValueError("Invalid mask_change value")
 
         render_pkg = render_fastgs(my_viewpoint_cam, gaussians, pipe, bg, args.mult, get_flag = get_flag, metric_map = metric_map)
 
-        accum_loss_counts = render_pkg["accum_metric_counts"]
+        accum_loss_counts = render_pkg["accum_metric_counts"].detach()
 
         if full_metric_counts is None:
             full_metric_counts = accum_loss_counts.clone()
         else:
             full_metric_counts += accum_loss_counts
 
+        del render_pkg, metric_map, accum_loss_counts
+
     return full_metric_counts
-
-

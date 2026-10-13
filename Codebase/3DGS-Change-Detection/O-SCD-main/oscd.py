@@ -266,6 +266,8 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
             change_masks[view.image_name] = change_mask
 
     pbar_inf.close()
+    del reference_keyframes, model, dense_extractor, detector, matcher, pose_initializer, triangulator, dummy_image
+    torch.cuda.empty_cache()
     
     if args.refine:
         pbar_finetuning = tqdm(range(total_iterations, 3000), desc="Refining Change Mask")

@@ -999,7 +999,7 @@ execute_model_pipeline() {
                     fi
                     local ref_cam_count=0
                     if [[ -f "${oscd_output_base}/reference_reconstruction/cameras.json" ]]; then
-                        ref_cam_count="$(grep -c '"img_name"' "${oscd_output_base}/reference_reconstruction/cameras.json" 2>/dev/null || true)"
+                        ref_cam_count="$(grep -o '"img_name"' "${oscd_output_base}/reference_reconstruction/cameras.json" 2>/dev/null | wc -l | tr -d '[:space:]' || true)"
                     fi
                     if [[ ${ref_undist_count} -ge 10 && ${ref_cam_count} -gt 0 && $(( ref_cam_count * 2 )) -lt ${ref_undist_count} ]]; then
                         log_warn "OSCD reference_reconstruction was trained on only ${ref_cam_count} cameras (expected ~${ref_undist_count}). Removing stale reference_reconstruction..."
