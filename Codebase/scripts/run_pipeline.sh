@@ -438,6 +438,11 @@ run_sugar_mesh_stage() {
     local scene_name="$2"
     local current_model="$3"
     local gs_prior="${GS_OUTPUT_DIR:-}"
+    local sugar_scene_path="${scene_path}"
+
+    if [[ "${current_model}" == "oscd" ]] || [[ ! -d "${scene_path}/images" && -d "${scene_path}/inference_scene" ]]; then
+        sugar_scene_path="${scene_path}/inference_scene"
+    fi
 
     if [[ -z "${gs_prior}" ]]; then
         # Dynamically determine the prior based on the current model being executed
@@ -494,7 +499,7 @@ run_sugar_mesh_stage() {
         local target_cam="${gs_prior}/cameras.json"
         if [[ ! -f "${target_cam}" ]]; then
             local found_cam=""
-            found_cam="$(find "${gs_prior}/.." "${REPO_ROOT}/Codebase/3DGS-Water-Approaches" "${scene_path}" -maxdepth 5 -path "*${scene_name}*" -name "cameras.json" 2>/dev/null | head -n 1 || true)"
+            found_cam="$(find "${gs_prior}/.." "${REPO_ROOT}/Codebase/3DGS-Water-Approaches" "${sugar_scene_path}" "${scene_path}" -maxdepth 5 -path "*${scene_name}*" -name "cameras.json" 2>/dev/null | head -n 1 || true)"
             if [[ -z "${found_cam}" || ! -f "${found_cam}" ]]; then
                 # Search anywhere in Codebase for matching scene's cameras.json
                 found_cam="$(find "${REPO_ROOT}/Codebase" -maxdepth 6 -path "*${scene_name}*" -name "cameras.json" 2>/dev/null | head -n 1 || true)"
@@ -504,15 +509,25 @@ run_sugar_mesh_stage() {
                 ln -sfn "${found_cam}" "${target_cam}"
             fi
         fi
+
+        # Ensure cfg_args is present in gs_prior (needed for OSCD updated_scene output directory)
+        local target_cfg="${gs_prior}/cfg_args"
+        if [[ ! -f "${target_cfg}" ]]; then
+            if [[ -f "${gs_prior}/../reference_reconstruction/cfg_args" ]]; then
+                sed "s|reference_scene|inference_scene|g" "${gs_prior}/../reference_reconstruction/cfg_args" > "${target_cfg}" 2>/dev/null || cp -f "${gs_prior}/../reference_reconstruction/cfg_args" "${target_cfg}" 2>/dev/null || true
+            else
+                printf "Namespace(data_device='cuda', eval=False, images='images', model_path='%s', resolution=-1, sh_degree=3, source_path='%s', white_background=False)\n" "${gs_prior}" "${sugar_scene_path}" > "${target_cfg}" 2>/dev/null || true
+            fi
+        fi
     fi
 
     run_stage_command "sugar" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main" \
-        python train_full_pipeline.py -s "${scene_path}" -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir "${gs_prior}"
+        python train_full_pipeline.py -s "${sugar_scene_path}" -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir "${gs_prior}"
     local expected_obj="${scene_path}/output/refined_mesh/${scene_name}.obj"
     if [[ "${DRY_RUN}" != "true" ]]; then
         local sugar_repo_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main"
         local found_obj=""
-        found_obj="$(find "${sugar_repo_dir}/output" "${scene_path}/output" "${REPO_ROOT}/output" -name "*.obj" 2>/dev/null | sort -r | head -n 1 || true)"
+        found_obj="$(find "${sugar_repo_dir}/output" "${sugar_scene_path}/output" "${scene_path}/output" "${REPO_ROOT}/output" -name "*.obj" 2>/dev/null | sort -r | head -n 1 || true)"
         if [[ -n "${found_obj}" && -f "${found_obj}" ]]; then
             mkdir -p "$(dirname "${expected_obj}")"
             if [[ "${found_obj}" != "${expected_obj}" ]]; then
@@ -676,12 +691,50 @@ execute_model_pipeline() {
                     log_warn "OSCD subscene '${sub_path}/input' contains no images. Skipping COLMAP for '${oscd_sub}'."
                     continue
                 fi
-                if [[ "${STAGE_NAME}" != "colmap" && -d "${sub_path}/sparse/0" && ( -f "${sub_path}/sparse/0/cameras.bin" || -f "${sub_path}/sparse/0/cameras.txt" ) ]]; then
-                    log_info "COLMAP sparse reconstruction already exists for OSCD '${oscd_sub}'. Skipping Stage 2 to conserve compute."
+                local undist_count=0
+                if [[ -d "${sub_path}/images" ]]; then
+                    undist_count="$(find "${sub_path}/images" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.JPG" -o -name "*.png" -o -name "*.jpeg" \) 2>/dev/null | wc -l || true)"
+                fi
+                local colmap_valid=false
+                if [[ -d "${sub_path}/sparse/0" && ( -f "${sub_path}/sparse/0/cameras.bin" || -f "${sub_path}/sparse/0/cameras.txt" ) ]]; then
+                    if [[ "${DRY_RUN}" == "true" ]]; then
+                        colmap_valid=true
+                    elif [[ ${img_count} -le 4 && ${undist_count} -gt 0 ]]; then
+                        colmap_valid=true
+                    elif [[ ${undist_count} -ge 10 && $(( undist_count * 2 )) -ge ${img_count} ]]; then
+                        colmap_valid=true
+                    fi
+                fi
+                if [[ "${STAGE_NAME}" != "colmap" && "${colmap_valid}" == "true" ]]; then
+                    log_info "COLMAP sparse reconstruction already exists for OSCD '${oscd_sub}' (${undist_count}/${img_count} images). Skipping Stage 2 to conserve compute."
                 else
+                    if [[ "${DRY_RUN}" != "true" && ( -d "${sub_path}/sparse" || -d "${sub_path}/images" ) && $(( undist_count * 2 )) -lt ${img_count} ]]; then
+                        log_warn "Degenerate COLMAP undistorted image count for OSCD '${oscd_sub}' (${undist_count}/${img_count} images). Cleaning stale sparse/images and reference_reconstruction cache..."
+                        rm -rf "${sub_path}/sparse" "${sub_path}/images"
+                        rm -rf "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")/reference_reconstruction"
+                        rm -rf "${dataset_path}/reference_reconstruction"
+                    fi
                     log_info "COLMAP undistortion for OSCD '${oscd_sub}':"
-                    run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
-                        python convert.py -s "${sub_path}" --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"
+                    local recovered_from_distorted=false
+                    if [[ "${DRY_RUN}" != "true" && -d "${sub_path}/distorted/sparse" ]]; then
+                        local best_distorted_bin=""
+                        best_distorted_bin="$(find "${sub_path}/distorted/sparse" -mindepth 2 -maxdepth 2 -name "images.bin" -size +10000c 2>/dev/null | head -n 1 || true)"
+                        if [[ -n "${best_distorted_bin}" ]]; then
+                            log_info "Found existing large COLMAP sub-model in '${sub_path}/distorted/sparse'. Running fast undistortion (--skip_matching)..."
+                            if run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
+                                python convert.py -s "${sub_path}" --skip_matching --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"; then
+                                undist_count="$(find "${sub_path}/images" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.JPG" -o -name "*.png" -o -name "*.jpeg" \) 2>/dev/null | wc -l || true)"
+                                if [[ ${undist_count} -ge 10 && $(( undist_count * 2 )) -ge ${img_count} ]]; then
+                                    recovered_from_distorted=true
+                                    log_success "Recovered ${undist_count}/${img_count} undistorted images for OSCD '${oscd_sub}' via --skip_matching."
+                                fi
+                            fi
+                        fi
+                    fi
+                    if [[ "${recovered_from_distorted}" != "true" ]]; then
+                        run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
+                            python convert.py -s "${sub_path}" --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"
+                    fi
                     if [[ "${DRY_RUN}" != "true" && ! -f "${sub_path}/sparse/0/cameras.bin" && ! -f "${sub_path}/sparse/0/cameras.txt" ]]; then
                         log_error "COLMAP reconstruction failed to produce sparse/0/cameras.bin for OSCD '${oscd_sub}'."
                         return 1
@@ -698,9 +751,28 @@ execute_model_pipeline() {
                 fi
             fi
 
-            if [[ "${STAGE_NAME}" != "colmap" && -d "${scene_path}/sparse/0" && ( -f "${scene_path}/sparse/0/cameras.bin" || -f "${scene_path}/sparse/0/cameras.txt" ) ]]; then
+            local std_img_count=0
+            local std_undist_count=0
+            [[ -d "${scene_path}/input" ]] && std_img_count="$(find "${scene_path}/input" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.JPG" -o -name "*.png" -o -name "*.jpeg" \) 2>/dev/null | wc -l || true)"
+            [[ -d "${scene_path}/images" ]] && std_undist_count="$(find "${scene_path}/images" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.JPG" -o -name "*.png" -o -name "*.jpeg" \) 2>/dev/null | wc -l || true)"
+            local std_colmap_valid=false
+            if [[ -d "${scene_path}/sparse/0" && ( -f "${scene_path}/sparse/0/cameras.bin" || -f "${scene_path}/sparse/0/cameras.txt" ) ]]; then
+                if [[ "${DRY_RUN}" == "true" ]]; then
+                    std_colmap_valid=true
+                elif [[ ${std_img_count} -le 4 && ${std_undist_count} -gt 0 ]]; then
+                    std_colmap_valid=true
+                elif [[ ${std_undist_count} -ge 10 && $(( std_undist_count * 2 )) -ge ${std_img_count} ]]; then
+                    std_colmap_valid=true
+                fi
+            fi
+
+            if [[ "${STAGE_NAME}" != "colmap" && "${std_colmap_valid}" == "true" ]]; then
                 log_info "COLMAP sparse reconstruction already exists at '${scene_path}/sparse/0'. Skipping Stage 2 to conserve compute."
             else
+                if [[ "${DRY_RUN}" != "true" && ( -d "${scene_path}/sparse" || -d "${scene_path}/images" ) && ${std_img_count} -gt 4 && $(( std_undist_count * 2 )) -lt ${std_img_count} ]]; then
+                    log_warn "Degenerate COLMAP undistorted image count for scene '${scene_name}' (${std_undist_count}/${std_img_count} images). Cleaning stale sparse/images..."
+                    rm -rf "${scene_path}/sparse" "${scene_path}/images"
+                fi
                 run_stage_command "colmap_runner" "${REPO_ROOT}/Codebase/Tools/gaussian-splatting-main" \
                     python convert.py -s "${scene_path}" --colmap_executable "${SCRIPT_DIR}/colmap_wrapper.sh"
                 if [[ "${DRY_RUN}" != "true" && ! -f "${scene_path}/sparse/0/cameras.bin" && ! -f "${scene_path}/sparse/0/cameras.txt" ]]; then
@@ -920,6 +992,22 @@ execute_model_pipeline() {
                 oscd_output_base="${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main/output/$(basename "${dataset_path}")"
                 local ref_pc="${oscd_output_base}/reference_reconstruction/point_cloud/iteration_30000/point_cloud.ply"
 
+                if [[ "${DRY_RUN}" != "true" && -f "${ref_pc}" ]]; then
+                    local ref_undist_count=0
+                    if [[ -d "${dataset_path}/reference_scene/images" ]]; then
+                        ref_undist_count="$(find "${dataset_path}/reference_scene/images" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.JPG" -o -name "*.png" -o -name "*.jpeg" \) 2>/dev/null | wc -l || true)"
+                    fi
+                    local ref_cam_count=0
+                    if [[ -f "${oscd_output_base}/reference_reconstruction/cameras.json" ]]; then
+                        ref_cam_count="$(grep -c '"img_name"' "${oscd_output_base}/reference_reconstruction/cameras.json" 2>/dev/null || true)"
+                    fi
+                    if [[ ${ref_undist_count} -ge 10 && ${ref_cam_count} -gt 0 && $(( ref_cam_count * 2 )) -lt ${ref_undist_count} ]]; then
+                        log_warn "OSCD reference_reconstruction was trained on only ${ref_cam_count} cameras (expected ~${ref_undist_count}). Removing stale reference_reconstruction..."
+                        rm -rf "${oscd_output_base}/reference_reconstruction"
+                        rm -rf "${dataset_path}/reference_reconstruction"
+                    fi
+                fi
+
                 if [[ -f "${ref_pc}" ]]; then
                     log_info "OSCD reference reconstruction checkpoint already exists at ${ref_pc}. Skipping Step 1."
                 else
@@ -934,9 +1022,7 @@ execute_model_pipeline() {
                     log_dry "Symlink reference reconstruction: ln -sfn ${oscd_output_base}/reference_reconstruction ${dataset_path}/reference_reconstruction"
                 else
                     mkdir -p "${dataset_path}"
-                    if [[ ! -e "${dataset_path}/reference_reconstruction" ]]; then
-                        ln -sfn "${oscd_output_base}/reference_reconstruction" "${dataset_path}/reference_reconstruction"
-                    fi
+                    ln -sfn "${oscd_output_base}/reference_reconstruction" "${dataset_path}/reference_reconstruction"
                 fi
 
                 ensure_oscd_xfeat
@@ -956,7 +1042,7 @@ execute_model_pipeline() {
     # --------------------------------------------------------------------------
     # Stage 5: Mesh Extraction (SuGaR)
     # --------------------------------------------------------------------------
-    if should_run_stage "mesh" && [[ "${model}" != "sugar" && "${model}" != "oscd" ]]; then
+    if should_run_stage "mesh" && [[ "${model}" != "sugar" ]]; then
         log_info "--- Stage 5: Mesh Extraction (mesh) (SuGaR) ---"
         run_sugar_mesh_stage "${scene_path}" "${scene_name}" "${model}"
     fi

@@ -731,20 +731,24 @@ setup_3d_uir() {
     local sub_ssim="${repo_dir}/submodules/fused-ssim"
 
     if [[ ! -f "${sub_diff}/setup.py" ]]; then
-        log_info "Restoring vendored 3D-UIR diff-gaussian-rasterization..."
-        if git -C "${REPO_ROOT}" checkout -- "Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/diff-gaussian-rasterization" 2>/dev/null; then
-            log_success "Restored diff-gaussian-rasterization from git index."
-        elif command -v 7z >/dev/null 2>&1 && [[ -f "${CODEBASE_DIR}/zip/3D-UIR-main.7z" ]]; then
-            7z x -y "${CODEBASE_DIR}/zip/3D-UIR-main.7z" -o"${repo_dir}/submodules" "3D-UIR-main/submodules/diff-gaussian-rasterization"
-            mv "${repo_dir}/submodules/3D-UIR-main/submodules/diff-gaussian-rasterization" "${sub_diff}" 2>/dev/null || true
-            rm -rf "${repo_dir}/submodules/3D-UIR-main" 2>/dev/null || true
-        elif command -v 7za >/dev/null 2>&1 && [[ -f "${CODEBASE_DIR}/zip/3D-UIR-main.7z" ]]; then
-            7za x -y "${CODEBASE_DIR}/zip/3D-UIR-main.7z" -o"${repo_dir}/submodules" "3D-UIR-main/submodules/diff-gaussian-rasterization"
-            mv "${repo_dir}/submodules/3D-UIR-main/submodules/diff-gaussian-rasterization" "${sub_diff}" 2>/dev/null || true
-            rm -rf "${repo_dir}/submodules/3D-UIR-main" 2>/dev/null || true
+        if [[ "${DRY_RUN}" == "true" ]]; then
+            log_dry "git -C \"${REPO_ROOT}\" checkout -- \"Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/diff-gaussian-rasterization\""
         else
-            log_error "Cannot restore custom 3D-UIR diff-gaussian-rasterization. Do not clone vanilla Graphdeco repo as it lacks homodirectional gradient support."
-            return 1
+            log_info "Restoring vendored 3D-UIR diff-gaussian-rasterization..."
+            if git -C "${REPO_ROOT}" checkout -- "Codebase/3DGS-Water-Approaches/Physics/3D-UIR-main/submodules/diff-gaussian-rasterization" 2>/dev/null; then
+                log_success "Restored diff-gaussian-rasterization from git index."
+            elif command -v 7z >/dev/null 2>&1 && [[ -f "${CODEBASE_DIR}/zip/3D-UIR-main.7z" ]]; then
+                7z x -y "${CODEBASE_DIR}/zip/3D-UIR-main.7z" -o"${repo_dir}/submodules" "3D-UIR-main/submodules/diff-gaussian-rasterization"
+                mv "${repo_dir}/submodules/3D-UIR-main/submodules/diff-gaussian-rasterization" "${sub_diff}" 2>/dev/null || true
+                rm -rf "${repo_dir}/submodules/3D-UIR-main" 2>/dev/null || true
+            elif command -v 7za >/dev/null 2>&1 && [[ -f "${CODEBASE_DIR}/zip/3D-UIR-main.7z" ]]; then
+                7za x -y "${CODEBASE_DIR}/zip/3D-UIR-main.7z" -o"${repo_dir}/submodules" "3D-UIR-main/submodules/diff-gaussian-rasterization"
+                mv "${repo_dir}/submodules/3D-UIR-main/submodules/diff-gaussian-rasterization" "${sub_diff}" 2>/dev/null || true
+                rm -rf "${repo_dir}/submodules/3D-UIR-main" 2>/dev/null || true
+            else
+                log_error "Cannot restore custom 3D-UIR diff-gaussian-rasterization. Do not clone vanilla Graphdeco repo as it lacks homodirectional gradient support."
+                return 1
+            fi
         fi
     fi
     ensure_submodule_with_fallback "${sub_knn}" "https://gitlab.inria.fr/bkerbl/simple-knn.git" "https://github.com/camenduru/simple-knn.git"
@@ -761,17 +765,23 @@ setup_3d_uir() {
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
-        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+        if [[ -f "${_p}/bin/nvcc" ]]; then
+            export CUDA_HOME="${_p}"
+            export PATH="${_p}/bin:${PATH}"
+            break
+        fi
     done
     run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
     run_cmd pip install "${sub_knn}" --no-build-isolation
     run_cmd pip install "${sub_ssim}" --no-build-isolation
     run_cmd pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch --no-build-isolation
-    python -c "import diff_gaussian_rasterization as d; assert getattr(d, '__version__', '') == '0.1.0+homodirectional'" || {
+    run_cmd python -c "import diff_gaussian_rasterization as d; assert getattr(d, '__version__', '') == '0.1.0+homodirectional'" || {
         log_error "Verification of 3D-UIR diff_gaussian_rasterization failed!"
         return 1
     }
-    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
+    if [[ -n "${_saved_cuda_home}" ]]; then
+        export CUDA_HOME="${_saved_cuda_home}"
+    fi
     deactivate_env
     log_success "Environment '3d-uir' successfully provisioned."
 }
@@ -819,14 +829,20 @@ setup_water_splatting() {
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
-        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+        if [[ -f "${_p}/bin/nvcc" ]]; then
+            export CUDA_HOME="${_p}"
+            export PATH="${_p}/bin:${PATH}"
+            break
+        fi
     done
     run_cmd pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
     run_cmd pip install nerfstudio==1.1.4
     # Note: ns-install-cli is omitted as it is purely optional interactive shell
     # tab-completion and fails in headless non-interactive batch environments.
     run_cmd pip install --no-use-pep517 -e "${repo_dir}"
-    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
+    if [[ -n "${_saved_cuda_home}" ]]; then
+        export CUDA_HOME="${_saved_cuda_home}"
+    fi
     deactivate_env
     log_success "Environment 'water_splatting' successfully provisioned."
 }
@@ -878,11 +894,17 @@ setup_UW_GS() {
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
-        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+        if [[ -f "${_p}/bin/nvcc" ]]; then
+            export CUDA_HOME="${_p}"
+            export PATH="${_p}/bin:${PATH}"
+            break
+        fi
     done
     run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
     run_cmd pip install "${sub_knn}" --no-build-isolation
-    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
+    if [[ -n "${_saved_cuda_home}" ]]; then
+        export CUDA_HOME="${_saved_cuda_home}"
+    fi
     deactivate_env
     log_success "Environment 'UW-GS' successfully provisioned."
 }
@@ -920,11 +942,17 @@ setup_sugar() {
     _saved_cuda_home="${CUDA_HOME:-}"
     for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
                /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
-        [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+        if [[ -f "${_p}/bin/nvcc" ]]; then
+            export CUDA_HOME="${_p}"
+            export PATH="${_p}/bin:${PATH}"
+            break
+        fi
     done
     run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
     run_cmd pip install "${sub_knn}" --no-build-isolation --force-reinstall --no-deps
-    [[ -n "${_saved_cuda_home}" ]] && export CUDA_HOME="${_saved_cuda_home}"
+    if [[ -n "${_saved_cuda_home}" ]]; then
+        export CUDA_HOME="${_saved_cuda_home}"
+    fi
     deactivate_env
     log_success "Environment 'sugar' successfully provisioned."
 }

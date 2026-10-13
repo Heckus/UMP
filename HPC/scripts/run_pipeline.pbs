@@ -71,8 +71,10 @@ fi
 eval "$(conda shell.bash hook)"
 
 # Detect Conda executable and installation root
-if command -v conda >/dev/null 2>&1; then
-    CONDA_EXE="$(command -v conda)"
+if [[ -z "${CONDA_EXE:-}" ]]; then
+    CONDA_EXE="$(type -P conda 2>/dev/null || true)"
+fi
+if [[ -n "${CONDA_EXE:-}" && -f "${CONDA_EXE}" ]]; then
     CONDA_DIR="$(dirname "$(dirname "${CONDA_EXE}")")"
     export CONDA_EXE CONDA_DIR
     echo "CONDA_DIR set to: ${CONDA_DIR}"

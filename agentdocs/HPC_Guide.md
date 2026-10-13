@@ -274,3 +274,46 @@ All code-level fixes, mathematical edge-case guards, and PBS log synchronization
    - Confirm `Dataset/Custom_OSCD_Dataset/output/updated_scene.ply` and `results.json` are created for OSCD.
    - Confirm all 14 textured meshes exist in `Dataset/Submerged3D/<Scene>/output/refined_mesh/<Scene>.obj`.
    - Confirm quantitative NVS metrics (PSNR, SSIM, LPIPS) in `results.json` across all benchmark directories.
+
+---
+
+## 11. Attempt 10 Execution Procedure & Verification
+
+In Attempt 9 on QUT Aqua (`gpu0n004`, NVIDIA A100-SXM4-40GB GPU, walltime 14h 53m 11s), all 14 underwater 3DGS runs (`seasplat`, `gaussiansplashing`, `watersplatting`, `rusplatting`, `uw-gs`, `3dgs`, `3d-uir` across `Kwaj` and `Tokai`) achieved **100% genuine full-lifecycle completion** across all 6 stages. However, `oscd` suffered silent subprocess failures in `oscd.py`, `update.py`, and `utils/metrics.py` caused by COLMAP sub-model `0` having only 2 images while sub-model `1` held 121 images (`convert.py` hardcoded `distorted/sparse/0`), a keypoint triangulation bug in `scene/keyframe.py`, PnP RANSAC `torch.topk` on `<4` correspondences, TorchInductor `mode='max-autotune'` compilation failure on A100, and missing `sys.path` setup in `utils/metrics.py`.
+
+All 6 root causes have been fixed for Attempt 10, and Stage 5 SuGaR mesh extraction has also been enabled for `oscd` so that all 15 runs produce full 3D point clouds, textured surface meshes (`.obj`), and quantitative evaluation metrics (`results.json` and `evaluation.json`).
+
+### Step-by-Step Launch Instructions for Attempt 10:
+
+1. **Pull Latest Code on QUT Aqua Login Node**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   git pull origin main
+   ```
+
+2. **Recommended Fast Verification — Run `oscd` Solo First (~35–45 mins on A100/H100)**:
+   Because all 14 underwater 3DGS runs already completed all 6 stages in Attempt 9 (and their outputs are preserved on disk), run `oscd` solo first to verify its full 6-stage execution:
+   ```bash
+   # Submit single-model PBS job for OSCD across all stages (COLMAP recovery -> 3DGS Ref -> OSCD -> Update -> SuGaR Mesh -> Metrics)
+   qsub -v ARGS="--model oscd --stage all" HPC/scripts/run_pipeline.pbs
+   ```
+   *(Note: Stage 2 will automatically detect the 2-image degenerate `images/` directory in `Custom_OSCD_Dataset/{reference_scene,inference_scene}`, recover the 121-image sub-model `1` from `distorted/sparse/1` via `convert.py --skip_matching`, retrain the 121-camera `reference_reconstruction`, run `oscd.py` and `update.py`, extract the SuGaR mesh from `updated_scene`, and compute `results.json` + `evaluation.json`).*
+
+3. **Submit Full Attempt 10 Benchmark Pipeline (15 / 15 Verification)**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   qsub HPC/scripts/run_pipeline.pbs
+   ```
+
+4. **Verify Genuine `oscd` Artifacts After Completion**:
+   ```bash
+   # 1. Verify 121 undistorted images in both reference_scene and inference_scene
+   ls -1 Dataset/Custom_OSCD_Dataset/reference_scene/images | wc -l
+   ls -1 Dataset/Custom_OSCD_Dataset/inference_scene/images | wc -l
+
+   # 2. Verify updated_scene point cloud, SuGaR mesh, and metrics
+   ls -lh Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/updated_scene/point_cloud/iteration_30000/point_cloud.ply
+   ls -lh Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/updated_scene/results.json
+   ls -lh Codebase/3DGS-Change-Detection/O-SCD-main/output/Custom_OSCD_Dataset/updated_scene/evaluation.json
+   find Dataset/Custom_OSCD_Dataset/inference_scene/output -name "*.obj" -ls
+   ```

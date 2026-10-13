@@ -1,4 +1,11 @@
 import os
+import sys
+_UTILS_DIR = os.path.dirname(os.path.abspath(__file__))
+_ROOT_DIR = os.path.dirname(_UTILS_DIR)
+if _UTILS_DIR not in sys.path:
+    sys.path.insert(0, _UTILS_DIR)
+if _ROOT_DIR not in sys.path:
+    sys.path.insert(0, _ROOT_DIR)
 import cv2
 import argparse
 from tqdm import tqdm

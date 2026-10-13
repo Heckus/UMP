@@ -127,19 +127,29 @@ class Keyframe:
 
 
         ## Triangulation
+        if len(self.desc_kpts.matches) == 0:
+            if unload_desc_kpts:
+                self.desc_kpts.to("cpu")
+            return
+
         # Select keyframes to triangulate with based on their locations
         uv, uvs_others, chosen_kfs_ids = self.triangulator.prepare_matches(
             self.desc_kpts
         )
+        if len(chosen_kfs_ids) == 0:
+            if unload_desc_kpts:
+                self.desc_kpts.to("cpu")
+            return
+
         Rts_others = torch.stack(
             [all_keyframes[index].get_Rt() for i, index in enumerate(chosen_kfs_ids)],
             dim=0,
         )
-        if len(Rts_others < self.triangulator.n_cams):
+        if len(Rts_others) < self.triangulator.n_cams:
             Rts_others = torch.cat(
                 [
                     Rts_others,
-                    torch.eye(4, device="cuda")[None].repeat(
+                    torch.eye(4, device=Rts_others.device, dtype=Rts_others.dtype)[None].repeat(
                         self.triangulator.n_cams - len(Rts_others), 1, 1
                     ),
                 ],

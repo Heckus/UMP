@@ -77,9 +77,30 @@ if not args.skip_matching:
 
 ### Image undistortion
 ## We need to undistort our images into ideal pinhole intrinsics.
+## Select the sub-model in distorted/sparse/* with the most registered images (largest images.bin / images.txt)
+sparse_root = os.path.join(args.source_path, "distorted", "sparse")
+best_submodel = os.path.join(sparse_root, "0")
+if os.path.isdir(sparse_root):
+    candidates = []
+    for sub in sorted(os.listdir(sparse_root)):
+        sub_dir = os.path.join(sparse_root, sub)
+        if not os.path.isdir(sub_dir):
+            continue
+        img_bin = os.path.join(sub_dir, "images.bin")
+        img_txt = os.path.join(sub_dir, "images.txt")
+        if os.path.isfile(img_bin):
+            candidates.append((os.path.getsize(img_bin), sub_dir))
+        elif os.path.isfile(img_txt):
+            candidates.append((os.path.getsize(img_txt), sub_dir))
+    if candidates:
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        best_submodel = candidates[0][1]
+        if len(candidates) > 1:
+            print(f"[INFO] Multiple COLMAP sub-models found in {sparse_root}; selected {best_submodel} ({candidates[0][0]} bytes)")
+
 img_undist_cmd = (colmap_command + " image_undistorter \
     --image_path " + args.source_path + "/input \
-    --input_path " + args.source_path + "/distorted/sparse/0 \
+    --input_path " + best_submodel + " \
     --output_path " + args.source_path + "\
     --output_type COLMAP")
 exit_code = os.system(img_undist_cmd)

@@ -113,7 +113,9 @@ class Triangulator():
         Select the top matches based on the number of matches available for each keyframe.
         """
         uv = desc_kpts.kpts
-        uvs_others = -torch.ones(self.n_cams, uv.shape[0], 2, device="cuda")
+        uvs_others = -torch.ones(self.n_cams, uv.shape[0], 2, device=uv.device)
+        if len(desc_kpts.matches) == 0:
+            return uv, uvs_others, []
         n_matches = torch.tensor([matches.idx.shape[0] for matches in desc_kpts.matches.values()])
         kf_indices = torch.tensor(list(desc_kpts.matches.keys()))
         chosen_ids = torch.topk(n_matches, min(self.n_cams, n_matches.shape[0])).indices

@@ -95,6 +95,19 @@ class ImageDataset:
             has_all_poses = all(
                 "Rt" in self.infos[image_name] for image_name in self.image_name_list
             )
+            if not has_all_poses:
+                valid_names = [name for name in self.image_name_list if "Rt" in self.infos[name]]
+                if len(valid_names) > 0:
+                    logging.warning(
+                        f"Filtering reference dataset to {len(valid_names)}/{len(self.image_name_list)} images with registered COLMAP poses."
+                    )
+                    self.image_name_list = valid_names
+                    self.image_paths = [
+                        os.path.join(self.images_dir, image_name)
+                        for image_name in self.image_name_list
+                    ]
+                    self.num_threads = min(args.num_loader_threads, len(self.image_paths))
+                    has_all_poses = True
             if args.use_colmap_poses:
                 assert has_all_poses, (
                     "COLMAP poses are required but not all images have poses."

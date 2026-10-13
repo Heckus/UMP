@@ -71,14 +71,25 @@ class PoseInitializer():
             confs.append(keyframe.desc_kpts.pts_conf[matches.idx_other[mask]])
             match_indices.append(matches.idx[mask])
 
+        if len(xyz) == 0:
+            return keyframes[0].get_Rt() if len(keyframes) > 0 else torch.eye(4, device="cuda"), 0
+
         xyz = torch.cat(xyz, dim=0)
         uvs = torch.cat(uvs, dim=0)
         confs = torch.cat(confs, dim=0)
         match_indices = torch.cat(match_indices, dim=0)
 
+        if len(xyz) == 0:
+            if not is_test:
+                for keyframe in keyframes:
+                    keyframe.desc_kpts.matches.pop(index, None)
+            return keyframes[0].get_Rt(), 0
+
         # Subsample the points if there are too many
         if len(xyz) > self.num_pts_pnpransac:
-            selected_indices = torch.multinomial(confs, self.num_pts_miniba_incr, replacement=False)
+            confs_safe = confs.clamp_min(1e-6)
+            num_sample = min(self.num_pts_miniba_incr, len(confs_safe))
+            selected_indices = torch.multinomial(confs_safe, num_sample, replacement=False)
             xyz = xyz[selected_indices]
             uvs = uvs[selected_indices]
             confs = confs[selected_indices]
@@ -89,10 +100,19 @@ class PoseInitializer():
         ts_init = keyframes[0].tW2C
         Rt, inliers = self.PnPRANSAC(uvs, xyz, self.f, self.centre, Rs6D_init, ts_init, confs)
 
-        xyz = xyz[inliers]
-        uvs = uvs[inliers]
-        confs = confs[inliers]
-        match_indices = match_indices[inliers]
+        if inliers.sum() >= 4:
+            xyz = xyz[inliers]
+            uvs = uvs[inliers]
+            confs = confs[inliers]
+            match_indices = match_indices[inliers]
+
+        if len(xyz) < 4:
+            Rt_out = torch.eye(4, device=Rt.device, dtype=Rt.dtype)
+            Rt_out[:3, :4] = Rt[:3, :4]
+            if not is_test:
+                for keyframe in keyframes:
+                    keyframe.desc_kpts.matches.pop(index, None)
+            return Rt_out, int(inliers.sum().item())
 
         # print(f"PoseInitializer: {len(xyz)} points after PnP RANSAC")
 

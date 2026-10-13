@@ -177,9 +177,33 @@ class RANSACEstimator:
             assert focal is not None
             assert centre is not None
 
-        # Select N x m random points
-        random_scores = torch.rand(self.N, mkpts1.shape[0], device=mkpts1.device)
-        _, idxs = torch.topk(random_scores, self.m, dim=1)
+        n_pts = mkpts1.shape[0]
+        if n_pts == 0:
+            if self.type == EstimatorType.FUNDAMENTAL_8PTS:
+                return (
+                    torch.eye(3, device=mkpts1.device, dtype=mkpts1.dtype),
+                    torch.zeros(0, dtype=torch.bool, device=mkpts1.device),
+                )
+            fallback = torch.eye(3, 4, device=mkpts1.device, dtype=mkpts1.dtype)
+            if R6D_init is not None and t_init is not None:
+                R_mat = sixD2mtx(R6D_init)
+                if R_mat.ndim == 3:
+                    R_mat = R_mat[0]
+                fallback[:3, :3] = R_mat
+                fallback[:3, 3] = t_init.reshape(-1)[:3]
+            return fallback, torch.zeros(0, dtype=torch.bool, device=mkpts1.device)
+
+        if n_pts < self.m:
+            if self.type == EstimatorType.FUNDAMENTAL_8PTS:
+                return (
+                    torch.eye(3, device=mkpts1.device, dtype=mkpts1.dtype),
+                    torch.ones(n_pts, dtype=torch.bool, device=mkpts1.device),
+                )
+            idxs = torch.randint(0, n_pts, (self.N, self.m), device=mkpts1.device)
+        else:
+            # Select N x m random points
+            random_scores = torch.rand(self.N, n_pts, device=mkpts1.device)
+            _, idxs = torch.topk(random_scores, self.m, dim=1)
 
         # Run the batch estimator
         self.estimate(mkpts1, mkpts2, idxs, focal, centre, R6D_init, t_init)
@@ -195,4 +219,15 @@ class RANSACEstimator:
         best_model = self.models[best_id]
         mask = inliers[best_id] > 0
 
+        if self.type == EstimatorType.P4P and mask.sum() == 0:
+            if R6D_init is not None and t_init is not None:
+                fallback = torch.eye(3, 4, device=mkpts1.device, dtype=mkpts1.dtype)
+                R_mat = sixD2mtx(R6D_init)
+                if R_mat.ndim == 3:
+                    R_mat = R_mat[0]
+                fallback[:3, :3] = R_mat
+                fallback[:3, 3] = t_init.reshape(-1)[:3]
+                best_model = fallback
+
         return best_model, mask
+

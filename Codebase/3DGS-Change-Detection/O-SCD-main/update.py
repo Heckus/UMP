@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 import scene
 import torch
+import torch._dynamo
+torch._dynamo.config.suppress_errors = True
 torch.backends.cuda.benchmark = True
 import random
 from random import randint
@@ -159,9 +161,10 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
     change_masks = {}
 
     model = Sam2Model.from_pretrained("facebook/sam2.1-hiera-tiny").half().to("cuda")   
-    model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='max-autotune')
-    # model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='reduce-overhead')
-    # model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='default')
+    try:
+        model.get_image_embeddings = torch.compile(model.get_image_embeddings, mode='default')
+    except Exception as e:
+        print(f"[WARN] torch.compile failed, falling back to eager mode: {e}")
 
     patch_size = 14
 

@@ -633,5 +633,47 @@ All code-level fixes and PBS script enhancements have been implemented to guaran
    - Unit tests: Verified `get_reference_keyframes` with mocked dependencies covering all 4 branch permutations ($len \le n$ with `desc_kpts`, $len > n$ with `desc_kpts`, $len \le n$ with `desc_kpts=None`, $len > n$ with `desc_kpts=None`). All tests passed 100%.
    - Pipeline dry-runs: Executed `run_pipeline.sh --dry-run --model oscd --stage all` and `run_pipeline.sh --dry-run --model seasplat --stage all --scene Kwaj`. Both executed cleanly with 0 errors.
 
+---
 
+## Attempt 9 Execution Results & Root-Cause Audit
 
+- **Cluster Walltime**: 14h 53m 11s (53,591s total) on QUT Aqua (`gpu0n004`, NVIDIA A100-SXM4-40GB GPU, 36 CPUs, 243 GB RAM).
+- **Benchmark Outcome**: **15 / 15 model runs reported `SUCCESS`** in the master summary table; the 14 underwater 3DGS runs (`seasplat`, `gaussiansplashing`, `watersplatting`, `rusplatting`, `uw-gs`, `3dgs`, `3d-uir` across `Kwaj` and `Tokai`) achieved genuine 100% end-to-end completion across all 6 stages.
+- **`oscd` Silent Subprocess Failures Identified**:
+  1. **Degenerate COLMAP Sub-Model (`0` vs `1`)**: COLMAP `mapper` split `Custom_OSCD_Dataset/reference_scene` and `inference_scene` into sub-model `0` (2 images, 2,520 B) and sub-model `1` (121 images, 179,117 B). Because `convert.py` hardcoded `--input_path .../distorted/sparse/0`, only 2 of 123 images were undistorted into `images/` and trained in `reference_reconstruction`.
+  2. **Keypoint Triangulation Bug in `scene/keyframe.py`**: `if len(Rts_others < self.triangulator.n_cams):` evaluated `len(tensor)` instead of `len(Rts_others) < self.triangulator.n_cams`, and lacked an empty-match guard (`len(self.desc_kpts.matches) == 0`) before `prepare_matches`.
+  3. **PnP RANSAC Small-Sample Crash (`oscd.py`)**: `torch.topk(random_scores, self.m, dim=1)` in `poses/ransac.py:182` crashed with `RuntimeError: selected index k out of range` when `0 <= mkpts1.shape[0] < self.m`.
+  4. **TorchInductor `mode='max-autotune'` Crash (`update.py`)**: `torch.compile(model.get_image_embeddings, mode='max-autotune')` in `update.py:162` crashed with `torch._dynamo.exc.BackendCompilerFailed: IndentationError` on A100 without `torch._dynamo.config.suppress_errors = True`.
+  5. **Stage 5 Mesh Disabled & Stage 6 `sys.path` Missing (`oscd`)**: `run_pipeline.sh` excluded `oscd` from Stage 5 SuGaR mesh extraction, and `utils/metrics.py` failed with `ModuleNotFoundError: No module named 'lpipsPyTorch'` when invoked from outside `O-SCD-main/`.
+  6. **Cosmetic `CONDA_DIR: .` in `run_pipeline.pbs`**: Calling `command -v conda` after `eval "$(conda shell.bash hook)"` returned the shell function name `conda`, making `dirname $(dirname conda)` evaluate to `.`.
+
+---
+
+## Attempt 10 Remediation Implementation
+
+All 6 surgical fixes documented in [`attempt_9_failure_analysis.md`](attempt_9_failure_analysis.md) have been implemented and verified:
+
+1. **COLMAP Largest Sub-Model Selection (`Codebase/Tools/gaussian-splatting-main/convert.py`)**:
+   - Updated `convert.py` (lines 78–105) to scan all sub-directories under `${source_path}/distorted/sparse/*` and select the sub-model with the largest `images.bin` (or `images.txt`) before invoking `colmap image_undistorter`, logging all discovered sub-models.
+
+2. **Degenerate COLMAP & Reference Reconstruction Recovery + OSCD Stage 5 SuGaR Mesh (`Codebase/scripts/run_pipeline.sh`)**:
+   - In Stage 2 (lines 691–775), added undistorted image count verification (`undist_count * 2 < img_count`) for both OSCD dual scenes and standard scenes. When a degenerate (<50%) undistortion is detected in live mode (`DRY_RUN != "true"`), cleans stale `sparse/`, `images/`, and `reference_reconstruction`, and recovers directly from existing valid `distorted/sparse/*` sub-models (`images.bin > 10000c`) via `convert.py --skip_matching` before falling back to full COLMAP feature matching.
+   - In Stage 4 Step 1 (`oscd`, lines 992–1030), validates the camera count in `reference_reconstruction/cameras.json` against `reference_scene/images` and deletes stale degenerate (<50% cameras) reconstructions so Step 1 retrains on all 121 registered images.
+   - Enabled Stage 5 SuGaR mesh extraction for `oscd` (`if should_run_stage "mesh" && [[ "${model}" != "sugar" ]]; then`) and updated `run_sugar_mesh_stage` (lines 436–540) to resolve `sugar_scene_path="${scene_path}/inference_scene"`, synthesize/copy `${gs_prior}/cfg_args` from `reference_reconstruction/cfg_args`, and locate extracted `.obj` meshes under `${sugar_scene_path}/output`.
+
+3. **Keypoint Triangulation & Dataset Pose Filtering (`scene/keyframe.py`, `poses/triangulator.py`, `dataloaders/image_dataset.py`)**:
+   - Fixed `if len(Rts_others < self.triangulator.n_cams):` to `if len(Rts_others) < self.triangulator.n_cams:` with device-agnostic identity padding in `scene/keyframe.py:148-157`, and guarded empty `self.desc_kpts.matches` and `chosen_kfs_ids`.
+   - Added empty `desc_kpts.matches` guard in `poses/triangulator.py:117-118`.
+   - Filtered `self.image_files` and `self.infos` in `dataloaders/image_dataset.py:95-112` to only images with registered `"Rt"` poses when `not has_all_poses`, preventing `KeyError: 'Rt'` on unregistered images.
+
+4. **RANSAC & Pose Initializer Edge-Case Guards (`poses/ransac.py`, `poses/pose_initializer.py`)**:
+   - Guarded `RANSACEstimator.__call__` against `n_pts == 0`, `0 < n_pts < self.m`, and `mask.sum() == 0` (returning initial pose fallback for `P4P`).
+   - Guarded `PoseInitializer.init_inference_pose` against `len(xyz) == 0`, zero confidence weights in `torch.multinomial` (`confs.clamp_min(1e-6)`), and `< 4` PnP inliers.
+
+5. **TorchInductor Safe Compilation & Camera Sampling Guard (`update.py`, `utils/fast_utils.py`)**:
+   - Added `import torch._dynamo; torch._dynamo.config.suppress_errors = True` and wrapped `torch.compile(model.get_image_embeddings, mode='default')` in `try...except` in `update.py`.
+   - Clamped `num_cams = min(n, len(my_viewpoint_stack))` in `sampling_cameras` in `utils/fast_utils.py`.
+
+6. **Stage 6 `sys.path` Resolution & PBS `CONDA_DIR` Fix (`utils/metrics.py`, `utils/evaluate.py`, `HPC/scripts/run_pipeline.pbs`)**:
+   - Prepended both `utils/` and `O-SCD-main/` root to `sys.path` in `utils/metrics.py` and `utils/evaluate.py`.
+   - Updated `HPC/scripts/run_pipeline.pbs` to preserve `CONDA_EXE` from `conda shell.bash hook` or resolve via `type -P conda`.
