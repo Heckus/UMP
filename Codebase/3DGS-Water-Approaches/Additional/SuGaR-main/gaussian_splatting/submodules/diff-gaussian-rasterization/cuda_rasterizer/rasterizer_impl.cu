@@ -155,6 +155,7 @@ void CudaRasterizer::Rasterizer::markVisible(
 CudaRasterizer::GeometryState CudaRasterizer::GeometryState::fromChunk(char*& chunk, size_t P)
 {
 	GeometryState geom;
+	geom.scan_size = 0;
 	obtain(chunk, geom.depths, P, 128);
 	obtain(chunk, geom.clamped, P * 3, 128);
 	obtain(chunk, geom.internal_radii, P, 128);
@@ -181,6 +182,7 @@ CudaRasterizer::ImageState CudaRasterizer::ImageState::fromChunk(char*& chunk, s
 CudaRasterizer::BinningState CudaRasterizer::BinningState::fromChunk(char*& chunk, size_t P)
 {
 	BinningState binning;
+	binning.sorting_size = 0;
 	obtain(chunk, binning.point_list, P, 128);
 	obtain(chunk, binning.point_list_unsorted, P, 128);
 	obtain(chunk, binning.point_list_keys, P, 128);

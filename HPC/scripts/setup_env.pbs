@@ -84,8 +84,8 @@ else
     echo "Conda environment 'global_tools' and libOpenImageIO.so.3.1 are already present."
 fi
 
-# Hopper H100 architecture target for PyTorch JIT and wheel compilation
-export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-8.0;8.6;8.9;9.0+PTX}"
+# Multi-GPU architecture target (V100, T4, A100, A40, L40S, H100) for PyTorch JIT and wheel compilation
+export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-7.0;7.5;8.0;8.6;8.9;9.0+PTX}"
 
 # Append the global_tools bin directory to PATH for system tool access.
 # NOTE: Do NOT export global_tools/lib into LD_LIBRARY_PATH as it leaks

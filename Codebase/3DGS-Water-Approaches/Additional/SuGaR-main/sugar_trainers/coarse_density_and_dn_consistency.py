@@ -239,7 +239,8 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
         if (use_sdf_estimation_loss or enforce_samples_to_be_on_surface) and sdf_estimation_mode == 'density':
             density_factor = 1.
         density_threshold = 1.  # 0.5 * density_factor
-        n_samples_for_sdf_regularization = 1_000_000  # 300_000
+        _gpu_mem_gb = (torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)) if torch.cuda.is_available() else 80.0
+        n_samples_for_sdf_regularization = 300_000 if _gpu_mem_gb < 30.0 else 1_000_000
         sdf_sampling_scale_factor = 1.5
         sdf_sampling_proportional_to_volume = False
         
@@ -405,11 +406,24 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
             from sugar_utils.spherical_harmonics import SH2RGB
             points = nerfmodel.gaussians.get_xyz.detach().float().cuda()
             colors = SH2RGB(nerfmodel.gaussians.get_features[:, 0].detach().float().cuda())
+            finite_mask = (
+                torch.isfinite(points).all(dim=-1)
+                & torch.isfinite(nerfmodel.gaussians._scaling.detach()).all(dim=-1)
+                & torch.isfinite(nerfmodel.gaussians._rotation.detach()).all(dim=-1)
+                & torch.isfinite(nerfmodel.gaussians._opacity.detach()).all(dim=-1)
+                & torch.isfinite(nerfmodel.gaussians._features_dc.detach()).flatten(1).all(dim=-1)
+                & torch.isfinite(nerfmodel.gaussians._features_rest.detach()).flatten(1).all(dim=-1)
+                & (torch.norm(nerfmodel.gaussians._rotation.detach(), dim=-1) > 1e-8)
+            )
             if prune_at_start:
                 with torch.no_grad():
-                    start_prune_mask = nerfmodel.gaussians.get_opacity.view(-1) > start_pruning_threshold
+                    start_prune_mask = (nerfmodel.gaussians.get_opacity.view(-1) > start_pruning_threshold) & finite_mask
                     points = points[start_prune_mask]
                     colors = colors[start_prune_mask]
+            else:
+                start_prune_mask = finite_mask
+                points = points[start_prune_mask]
+                colors = colors[start_prune_mask]
             n_points = len(points)
     else:
         CONSOLE.print("\nLoading SfM point cloud...")
@@ -474,18 +488,12 @@ def coarse_training_with_density_regularization_and_dn_consistency(args):
         with torch.no_grad():            
             CONSOLE.print("Initializing 3D gaussians from 3D gaussians...")
             min_log_scale = float(np.log(1e-6))
-            if prune_at_start:
-                sugar._scales[...] = torch.clamp_min(nerfmodel.gaussians._scaling.detach()[start_prune_mask], min_log_scale)
-                sugar._quaternions[...] = nerfmodel.gaussians._rotation.detach()[start_prune_mask]
-                sugar.all_densities[...] = nerfmodel.gaussians._opacity.detach()[start_prune_mask]
-                sugar._sh_coordinates_dc[...] = nerfmodel.gaussians._features_dc.detach()[start_prune_mask]
-                sugar._sh_coordinates_rest[...] = nerfmodel.gaussians._features_rest.detach()[start_prune_mask]
-            else:
-                sugar._scales[...] = torch.clamp_min(nerfmodel.gaussians._scaling.detach(), min_log_scale)
-                sugar._quaternions[...] = nerfmodel.gaussians._rotation.detach()
-                sugar.all_densities[...] = nerfmodel.gaussians._opacity.detach()
-                sugar._sh_coordinates_dc[...] = nerfmodel.gaussians._features_dc.detach()
-                sugar._sh_coordinates_rest[...] = nerfmodel.gaussians._features_rest.detach()
+            max_log_scale = float(np.log(10.0))
+            sugar._scales[...] = torch.clamp(nerfmodel.gaussians._scaling.detach()[start_prune_mask], min=min_log_scale, max=max_log_scale)
+            sugar._quaternions[...] = nerfmodel.gaussians._rotation.detach()[start_prune_mask]
+            sugar.all_densities[...] = torch.clamp(nerfmodel.gaussians._opacity.detach()[start_prune_mask], min=-15.0, max=15.0)
+            sugar._sh_coordinates_dc[...] = nerfmodel.gaussians._features_dc.detach()[start_prune_mask]
+            sugar._sh_coordinates_rest[...] = nerfmodel.gaussians._features_rest.detach()[start_prune_mask]
         
     CONSOLE.print(f'\nSuGaR model has been initialized.')
     CONSOLE.print(sugar)

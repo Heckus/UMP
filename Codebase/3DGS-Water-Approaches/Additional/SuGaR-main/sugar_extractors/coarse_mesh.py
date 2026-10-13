@@ -24,7 +24,8 @@ def extract_mesh_from_coarse_sugar(args):
     low_opacity_gaussian_pruning_threshold = 0.5
 
     # Surface level extraction parameters
-    n_total_points = 10_000_000
+    _gpu_mem_gb = (torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)) if torch.cuda.is_available() else 80.0
+    n_total_points = 4_000_000 if _gpu_mem_gb < 30.0 else 10_000_000
     use_gaussian_depth_for_surface_levels = False  # False until now
     surface_level_triangle_scale = 2.  # 2.
     # surface_level_triangle_scale = -2 * np.log(surface_level)
@@ -32,7 +33,7 @@ def extract_mesh_from_coarse_sugar(args):
     surface_level_splat_mesh = True  # True
     surface_level_n_points_in_range = 21  # 21
     surface_level_range_size = 3.0  # 3.0
-    surface_level_n_points_per_pass = 2_000_000  # '2_000_000'
+    surface_level_n_points_per_pass = 500_000 if _gpu_mem_gb < 30.0 else 2_000_000  # '2_000_000'
     surface_level_knn_to_track = 16  # 16
     flat_surface_level_normals = False  # False
 

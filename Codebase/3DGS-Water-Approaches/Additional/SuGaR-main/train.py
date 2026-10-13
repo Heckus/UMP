@@ -134,6 +134,9 @@ if __name__ == "__main__":
     else:
         raise ValueError(f'Unknown regularization type: {args.regularization_type}')
     
+    import gc
+    gc.collect()
+    torch.cuda.empty_cache()
     
     # ----- Extract mesh from coarse SuGaR -----
     coarse_mesh_args = AttrDict({
@@ -156,6 +159,8 @@ if __name__ == "__main__":
     })
     coarse_mesh_path = extract_mesh_from_coarse_sugar(coarse_mesh_args)[0]
     
+    gc.collect()
+    torch.cuda.empty_cache()
     
     # ----- Refine SuGaR -----
     refined_args = AttrDict({
@@ -177,6 +182,8 @@ if __name__ == "__main__":
     })
     refined_sugar_path = refined_training(refined_args)
     
+    gc.collect()
+    torch.cuda.empty_cache()
     
     # ----- Extract mesh and texture from refined SuGaR -----
     if args.export_uv_textured_mesh:

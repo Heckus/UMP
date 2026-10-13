@@ -499,6 +499,20 @@ def main(dataset: Namespace, opt : Namespace, pipe: Namespace, args: Namespace):
             gaussians_rgb.optimizer_step(iteration)
 
     pbar_global_op.close()
+    with torch.no_grad():
+        invalid_mask = (
+            (~torch.isfinite(gaussians_rgb._xyz).all(dim=-1))
+            | (~torch.isfinite(gaussians_rgb._scaling).all(dim=-1))
+            | (~torch.isfinite(gaussians_rgb._rotation).all(dim=-1))
+            | (~torch.isfinite(gaussians_rgb._opacity).all(dim=-1))
+            | (~torch.isfinite(gaussians_rgb._features_dc).flatten(1).all(dim=-1))
+            | (~torch.isfinite(gaussians_rgb._features_rest).flatten(1).all(dim=-1))
+            | (torch.norm(gaussians_rgb._rotation, dim=-1) < 1e-8)
+        )
+        if invalid_mask.any():
+            gaussians_rgb.prune_points_fastgs(invalid_mask)
+        gaussians_rgb._scaling.data.clamp_(min=-15.0, max=5.0)
+        gaussians_rgb._opacity.data.clamp_(min=-15.0, max=15.0)
     gaussians_rgb.save_ply(os.path.join(args.model_path, "updated_scene.ply"))
 
     with torch.no_grad():

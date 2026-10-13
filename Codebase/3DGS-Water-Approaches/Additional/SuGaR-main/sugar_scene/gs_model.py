@@ -231,7 +231,7 @@ class GaussianSplattingWrapper:
             Tensor: The ground truth image.
         """
         gt_image = self.cam_list[camera_indices].original_image
-        if to_cuda:
+        if to_cuda or gt_image.device.type == "cpu":
             gt_image = gt_image.cuda()
         return gt_image.permute(1, 2, 0)
     
@@ -246,7 +246,7 @@ class GaussianSplattingWrapper:
             Tensor: The ground truth image.
         """
         gt_image = self.test_cam_list[camera_indices].original_image
-        if to_cuda:
+        if to_cuda or gt_image.device.type == "cpu":
             gt_image = gt_image.cuda()
         return gt_image.permute(1, 2, 0)
     

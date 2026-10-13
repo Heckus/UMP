@@ -728,7 +728,7 @@ class GaussianModel:
             final_prune = torch.logical_and(prune_mask, selected_pts_mask)
             self.prune_points_fastgs(final_prune)
         
-        opacities_new = inverse_sigmoid(torch.min(self.get_opacity, torch.ones_like(self.get_opacity)*0.8))
+        opacities_new = inverse_sigmoid(torch.clamp(self.get_opacity, min=1e-6, max=0.8))
         optimizable_tensors = self.replace_tensor_to_optimizer(opacities_new, "opacity")
         self._opacity = optimizable_tensors["opacity"]
         tmp_radii = self.tmp_radii

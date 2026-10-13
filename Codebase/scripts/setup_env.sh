@@ -718,8 +718,8 @@ setup_seasplat_py310() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile==0.8.1 tqdm opencv-python scipy ninja matplotlib kornia
-    run_cmd pip install "${sub_diff}" --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --no-cache-dir
     deactivate_env
     log_success "Environment 'seasplat_py310' successfully provisioned."
 }
@@ -773,9 +773,9 @@ setup_3d_uir() {
             break
         fi
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
-    run_cmd pip install "${sub_knn}" --no-build-isolation
-    run_cmd pip install "${sub_ssim}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --no-cache-dir
+    run_cmd pip install "${sub_ssim}" --no-build-isolation --no-cache-dir
     run_cmd pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch --no-build-isolation
     run_cmd python -c "import diff_gaussian_rasterization as d; assert getattr(d, '__version__', '') == '0.1.0+homodirectional'" || {
         log_error "Verification of 3D-UIR diff_gaussian_rasterization failed!"
@@ -804,8 +804,8 @@ setup_gaussianSplashing_env() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install matplotlib wandb timm scikit-learn pdc-dp-means opencv-python pyyaml
-    run_cmd pip install "${sub_diff}" --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --no-cache-dir
     deactivate_env
     log_success "Environment 'gaussianSplashing_env' successfully provisioned."
 }
@@ -866,8 +866,8 @@ setup_rusplatting() {
     run_cmd pip install --upgrade pip ninja
     run_cmd pip install torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile tqdm opencv-python joblib scipy imageio imageio-ffmpeg dearpygui lpips
-    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
-    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --no-cache-dir
     deactivate_env
     log_success "Environment 'rusplatting' successfully provisioned."
 }
@@ -902,8 +902,8 @@ setup_UW_GS() {
             break
         fi
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
-    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --no-cache-dir
     if [[ -n "${_saved_cuda_home}" ]]; then
         export CUDA_HOME="${_saved_cuda_home}"
     fi
@@ -950,8 +950,10 @@ setup_sugar() {
             break
         fi
     done
-    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps
-    run_cmd pip install "${sub_knn}" --no-build-isolation --force-reinstall --no-deps
+    export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-7.0;7.5;8.0;8.6;8.9;9.0+PTX}"
+    rm -rf "${sub_diff}/build" "${sub_knn}/build" 2>/dev/null || true
+    run_cmd pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --force-reinstall --no-deps --no-cache-dir
     if [[ -n "${_saved_cuda_home}" ]]; then
         export CUDA_HOME="${_saved_cuda_home}"
     fi
@@ -995,9 +997,9 @@ setup_oscd() {
     run_cmd pip install torch torchvision xformers --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install cupy-cuda12x
     run_cmd pip install plyfile tqdm opencv-python lpips transformers==4.56.1 torchmetrics viser
-    run_cmd pip install "${sub_fastgs}" --no-build-isolation
-    run_cmd pip install "${sub_ssim}" --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation
+    run_cmd pip install "${sub_fastgs}" --no-build-isolation --no-cache-dir
+    run_cmd pip install "${sub_ssim}" --no-build-isolation --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --no-cache-dir
     deactivate_env
     log_success "Environment 'oscd' successfully provisioned."
 }
@@ -1019,9 +1021,9 @@ setup_3dgs() {
     run_cmd pip install --upgrade pip
     run_cmd pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
     run_cmd pip install plyfile tqdm opencv-python joblib
-    run_cmd pip install "${sub_diff}" --no-build-isolation
-    run_cmd pip install "${sub_knn}" --no-build-isolation
-    run_cmd pip install "${sub_ssim}" --no-build-isolation
+    run_cmd pip install "${sub_diff}" --no-build-isolation --no-cache-dir
+    run_cmd pip install "${sub_knn}" --no-build-isolation --no-cache-dir
+    run_cmd pip install "${sub_ssim}" --no-build-isolation --no-cache-dir
     deactivate_env
     log_success "Environment '3dgs' successfully provisioned."
 }

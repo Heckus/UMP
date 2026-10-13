@@ -351,6 +351,81 @@ ensure_3d_uir_rasterizer() {
 }
 
 # ------------------------------------------------------------------------------
+# SuGaR CUDA Extension Integrity & Multi-Arch Verification (A100/H100)
+# ------------------------------------------------------------------------------
+ensure_sugar_rasterizer() {
+    local sugar_sub="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/gaussian_splatting/submodules"
+    local sub_diff="${sugar_sub}/diff-gaussian-rasterization"
+    local sub_knn="${sugar_sub}/simple-knn"
+    if [[ ! -d "${sub_diff}" || ! -f "${sub_diff}/setup.py" ]]; then
+        return 0
+    fi
+    if [[ "${DRY_RUN}" == "true" ]]; then
+        return 0
+    fi
+
+    # Probe whether sugar's diff_gaussian_rasterization and simple_knn have valid CUDA kernels for the active GPU
+    local sugar_ok=false
+    if (
+        activate_conda_env "sugar"
+        python -c "
+import torch
+from diff_gaussian_rasterization import GaussianRasterizationSettings, GaussianRasterizer
+from simple_knn._C import distCUDA2
+if torch.cuda.is_available():
+    pts = torch.tensor([[0.0, 0.0, 2.0], [0.1, 0.0, 2.0], [0.0, 0.1, 2.0], [0.1, 0.1, 2.0]], device='cuda')
+    distCUDA2(pts)
+    s = GaussianRasterizationSettings(
+        image_height=16, image_width=16, tanfovx=1.0, tanfovy=1.0,
+        bg=torch.zeros(3, device='cuda'), scale_modifier=1.0,
+        viewmatrix=torch.eye(4, device='cuda'), projmatrix=torch.eye(4, device='cuda'),
+        sh_degree=0, campos=torch.zeros(3, device='cuda'), prefiltered=False, debug=False
+    )
+    r = GaussianRasterizer(raster_settings=s)
+    r(
+        means3D=pts[:1], means2D=torch.zeros((1, 3), device='cuda'),
+        shs=None, colors_precomp=torch.ones((1, 3), device='cuda'),
+        opacities=torch.ones((1, 1), device='cuda') * 0.5,
+        scales=torch.ones((1, 3), device='cuda') * 0.01,
+        rotations=torch.tensor([[1.0, 0.0, 0.0, 0.0]], device='cuda'),
+        cov3D_precomp=None
+    )
+    torch.cuda.synchronize()
+"
+    ) >/dev/null 2>&1; then
+        sugar_ok=true
+    fi
+
+    if [[ "${sugar_ok}" != "true" ]]; then
+        log_warn "Conda environment 'sugar' CUDA extensions lack kernel images for the active GPU (e.g., cached H100 sm_90 wheel on A100 sm_80). Rebuilding now..."
+        local _saved_cuda="${CUDA_HOME:-}"
+        local _saved_arch="${TORCH_CUDA_ARCH_LIST:-}"
+        export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;8.9;9.0+PTX"
+        for _p in /mnt/weka/pkg/rhel94/GenuineIntel-6/software/CUDA/11.8.0 \
+                   /mnt/weka/pkg/rhel94/AuthenticAMD-25/software/CUDA/11.8.0; do
+            [[ -f "${_p}/bin/nvcc" ]] && { export CUDA_HOME="${_p}"; export PATH="${_p}/bin:${PATH}"; break; }
+        done
+        rm -rf "${sub_diff}/build" "${sub_knn}/build" 2>/dev/null || true
+        (
+            activate_conda_env "sugar"
+            pip install "${sub_diff}" --no-build-isolation --force-reinstall --no-deps --no-cache-dir
+            if [[ -d "${sub_knn}" && -f "${sub_knn}/setup.py" ]]; then
+                pip install "${sub_knn}" --no-build-isolation --force-reinstall --no-deps --no-cache-dir
+            fi
+        ) || {
+            log_error "Failed to rebuild CUDA extensions for sugar."
+            [[ -n "${_saved_cuda}" ]] && export CUDA_HOME="${_saved_cuda}"
+            [[ -n "${_saved_arch}" ]] && export TORCH_CUDA_ARCH_LIST="${_saved_arch}"
+            return 1
+        }
+        [[ -n "${_saved_cuda}" ]] && export CUDA_HOME="${_saved_cuda}"
+        [[ -n "${_saved_arch}" ]] && export TORCH_CUDA_ARCH_LIST="${_saved_arch}"
+        log_success "Successfully rebuilt multi-arch diff-gaussian-rasterization and simple-knn in 'sugar' environment."
+    fi
+    return 0
+}
+
+# ------------------------------------------------------------------------------
 # Pre-execution Diagnostic Verification
 # ------------------------------------------------------------------------------
 run_preflight_verification() {
@@ -470,6 +545,7 @@ run_sugar_mesh_stage() {
     log_info "Mesh Extraction: Running SuGaR on top of best 3DGS point cloud prior from: ${gs_prior}"
     
     if [[ "${DRY_RUN}" != "true" ]]; then
+        ensure_sugar_rasterizer || true
         local target_pc_dir="${gs_prior}/point_cloud/iteration_7000"
         local target_pc="${target_pc_dir}/point_cloud.ply"
         if [[ ! -f "${target_pc}" ]]; then
@@ -477,9 +553,9 @@ run_sugar_mesh_stage() {
             local best_ply=""
             for candidate in "point_cloud/iteration_30000/point_cloud.ply" "updated_scene.ply" "splat.ply" "point_cloud.ply"; do
                 local found
-                found="$(find "${gs_prior}" -maxdepth 4 -name "$(basename "${candidate}")" | grep "${candidate}$" | head -n 1 || true)"
-                if [[ -z "${found}" ]]; then
-                    found="$(find "${gs_prior}" -maxdepth 4 -name "${candidate}" | head -n 1 || true)"
+                found="$(find "${gs_prior}" -maxdepth 4 -name "$(basename "${candidate}")" 2>/dev/null | grep "${candidate}$" | head -n 1 || true)"
+                if [[ -z "${found}" && "${candidate}" != */* ]]; then
+                    found="$(find "${gs_prior}" -maxdepth 4 -name "${candidate}" 2>/dev/null | head -n 1 || true)"
                 fi
                 if [[ -n "${found}" ]]; then
                     best_ply="${found}"
@@ -1026,12 +1102,25 @@ execute_model_pipeline() {
                 fi
 
                 ensure_oscd_xfeat
-                log_info "Step 2: Online Scene Change Detection (oscd.py in O-SCD-main):"
-                run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
-                    python oscd.py -s "${dataset_path}" -m "${oscd_output_base}/output" --resolution 1 --test_hold 5 --refine
-                log_info "Step 3: Update 3D scene representation (update.py producing updated_scene.ply):"
-                run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
-                    python update.py -s "${dataset_path}" -m "${oscd_output_base}/output" --resolution 1 --test_hold 5
+                local oscd_mask_count=0
+                if [[ "${DRY_RUN}" != "true" && -d "${oscd_output_base}/output/renders/change_mask" ]]; then
+                    oscd_mask_count="$(find "${oscd_output_base}/output/renders/change_mask" -maxdepth 1 -type f -name "*.png" 2>/dev/null | wc -l | tr -d '[:space:]' || true)"
+                fi
+                if [[ "${DRY_RUN}" != "true" && ${oscd_mask_count:-0} -ge 10 ]]; then
+                    log_info "Step 2: OSCD change masks already exist (${oscd_mask_count} masks in ${oscd_output_base}/output/renders/change_mask). Skipping Step 2."
+                else
+                    log_info "Step 2: Online Scene Change Detection (oscd.py in O-SCD-main):"
+                    run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
+                        python oscd.py -s "${dataset_path}" -m "${oscd_output_base}/output" --resolution 1 --test_hold 5 --refine
+                fi
+
+                if [[ "${DRY_RUN}" != "true" && -s "${oscd_output_base}/output/updated_scene.ply" && -s "${oscd_output_base}/output/cameras.json" && -d "${oscd_output_base}/output/renders/updated_scene/renders" ]]; then
+                    log_info "Step 3: Updated 3DGS scene already exists at ${oscd_output_base}/output/updated_scene.ply. Skipping Step 3."
+                else
+                    log_info "Step 3: Update 3D scene representation (update.py producing updated_scene.ply):"
+                    run_stage_command "oscd" "${REPO_ROOT}/Codebase/3DGS-Change-Detection/O-SCD-main" \
+                        python update.py -s "${dataset_path}" -m "${oscd_output_base}/output" --resolution 1 --test_hold 5
+                fi
                 ;;
             sugar)
                 run_sugar_mesh_stage "${scene_path}" "${scene_name}" "${model}"

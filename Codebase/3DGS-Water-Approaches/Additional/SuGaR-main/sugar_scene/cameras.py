@@ -286,6 +286,10 @@ class GSCamera(torch.nn.Module):
             print(f"[Warning] Custom device {data_device} failed, fallback to default cuda device" )
             self.data_device = torch.device("cuda")
 
+        if self.data_device.type == "cuda" and torch.cuda.is_available():
+            if (torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)) < 30.0:
+                self.data_device = torch.device("cpu")
+
         if image is None:
             if image_height is None or image_width is None:
                 raise ValueError("Either image or image_height and image_width must be specified")
