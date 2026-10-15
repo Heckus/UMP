@@ -1,12 +1,13 @@
 \changetocdepth {2}
 \changetocdepth {2}
-\contentsline {chapter}{Executive Summary}{iii}{chapter*.2}%
-\contentsline {chapter}{Contents}{v}{chapter*.3}%
-\contentsline {chapter}{List of Tables}{viii}{chapter*.4}%
-\contentsline {chapter}{List of Figures}{viii}{chapter*.5}%
-\contentsline {chapter}{Statement of Original Authorship}{ix}{chapter*.7}%
-\contentsline {chapter}{Acknowledgements}{x}{chapter*.9}%
-\contentsline {chapter}{Abbreviations and Acronyms}{xi}{section*.10}%
+\contentsline {chapter}{Keywords}{i}{chapter*.2}%
+\contentsline {chapter}{Executive Summary}{ii}{chapter*.4}%
+\contentsline {chapter}{Contents}{iii}{chapter*.5}%
+\contentsline {chapter}{List of Tables}{vi}{chapter*.6}%
+\contentsline {chapter}{List of Figures}{vi}{chapter*.7}%
+\contentsline {chapter}{Statement of Original Authorship}{vii}{chapter*.9}%
+\contentsline {chapter}{Acknowledgements}{viii}{chapter*.11}%
+\contentsline {chapter}{Abbreviations and Acronyms}{ix}{section*.12}%
 \contentsline {chapter}{\chapternumberline {1}Introduction}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Motivation and Background}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Project Research Objectives}{2}{section.1.2}%
@@ -19,7 +20,7 @@
 \contentsline {section}{\numberline {2.3}Scene Change Detection: Render-then-Compare vs. Primitive-Space Comparison}{6}{section.2.3}%
 \contentsline {subsection}{\numberline {2.3.1}Render-then-Compare Paradigms}{6}{subsection.2.3.1}%
 \contentsline {subsection}{\numberline {2.3.2}Direct Primitive-Space Comparison}{6}{subsection.2.3.2}%
-\contentsline {paragraph}{The Challenge of Reconstruction Drift:}{7}{section*.14}%
+\contentsline {paragraph}{The Challenge of Reconstruction Drift:}{7}{section*.16}%
 \contentsline {section}{\numberline {2.4}Underwater 3D Gaussian Splatting Architectures}{7}{section.2.4}%
 \contentsline {subsection}{\numberline {2.4.1}Paradigm 1: Physically-Grounded Inverse Rendering}{7}{subsection.2.4.1}%
 \contentsline {subsection}{\numberline {2.4.2}Paradigm 2: Prior-Driven and Restoration-Guided Photogrammetry}{8}{subsection.2.4.2}%
@@ -27,7 +28,7 @@
 \contentsline {subsection}{\numberline {2.4.4}Environmental Adaptations}{8}{subsection.2.4.4}%
 \contentsline {section}{\numberline {2.5}Surface Regularization: SuGaR Mesh Extraction}{9}{section.2.5}%
 \contentsline {section}{\numberline {2.6}Summary of Methods and Research Gap}{9}{section.2.6}%
-\contentsline {paragraph}{The Identified Research Gap:}{9}{section*.16}%
+\contentsline {paragraph}{The Identified Research Gap:}{9}{section*.18}%
 \contentsline {chapter}{\chapternumberline {3}Research Design and Methodology}{11}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Introduction}{11}{section.3.1}%
 \contentsline {section}{\numberline {3.2}The 6-Stage Automation Pipeline Architecture}{11}{section.3.2}%
@@ -46,7 +47,7 @@
 \contentsline {subsection}{\numberline {4.4.1}Physics-Based Models: Geometric Consistency vs. Computational Cost}{18}{subsection.4.4.1}%
 \contentsline {subsection}{\numberline {4.4.2}Restoration-Guided Models: High Perceptual Fidelity vs. Geometry Drift}{18}{subsection.4.4.2}%
 \contentsline {subsection}{\numberline {4.4.3}Supplementary Models and Environmental Noise}{18}{subsection.4.4.3}%
-\contentsline {paragraph}{Key Takeaway for EcoRRAP Selection:}{18}{section*.20}%
+\contentsline {paragraph}{Key Takeaway for EcoRRAP Selection:}{18}{section*.22}%
 \contentsline {section}{\numberline {4.5}Surface Geometry Regularization via SuGaR}{19}{section.4.5}%
 \contentsline {section}{\numberline {4.6}Primitive-Space Scene Change Detection (O-SCD)}{19}{section.4.6}%
 \contentsline {section}{\numberline {4.7}Visual Reconstruction Portfolio and Future Render Placeholders}{19}{section.4.7}%
@@ -72,10 +73,10 @@
 \contentsline {subsection}{\numberline {6.3.1}Phase 2: EcoRRAP Ingestion and Co-Registration (Months 1–2)}{27}{subsection.6.3.1}%
 \contentsline {subsection}{\numberline {6.3.2}Phase 3: Model Transplantation and Extended Cluster Optimization (Months 3–4)}{28}{subsection.6.3.2}%
 \contentsline {subsection}{\numberline {6.3.3}Phase 4: Synthesis, Validation, and Handover (Month 5)}{28}{subsection.6.3.3}%
-\contentsline {chapter}{Project Timeline and Updated Gantt Schedule}{29}{chapter*.24}%
-\contentsline {chapter}{Attempt 10 Verification Report and Execution Manifest}{31}{chapter*.28}%
-\contentsline {chapter}{Extended Risk Assessment Matrix}{33}{chapter*.30}%
-\contentsline {chapter}{Extended Literature Review Survey (from Proposal 1B)}{34}{chapter*.33}%
-\contentsline {section}{Historical Foundations: Diver Transects and 2D Planar Limitations}{34}{section*.34}%
-\contentsline {section}{Radiative Transfer in Aquatic Scattering Media}{34}{section*.35}%
-\contentsline {chapter}{Bibliography}{35}{chapter*.37}%
+\contentsline {chapter}{Project Timeline and Updated Gantt Schedule}{29}{chapter*.26}%
+\contentsline {chapter}{Attempt 10 Verification Report and Execution Manifest}{31}{chapter*.30}%
+\contentsline {chapter}{Extended Risk Assessment Matrix}{33}{chapter*.32}%
+\contentsline {chapter}{Extended Literature Review Survey (from Proposal 1B)}{34}{chapter*.35}%
+\contentsline {section}{Historical Foundations: Diver Transects and 2D Planar Limitations}{34}{section*.36}%
+\contentsline {section}{Radiative Transfer in Aquatic Scattering Media}{34}{section*.37}%
+\contentsline {chapter}{Bibliography}{35}{chapter*.39}%

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.17)  15 OCT 2026 15:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.17)  15 OCT 2026 15:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1974,33 +1974,33 @@ Package glossaries Info: Writing glossary file ProgressReport.glo on input line
 Package glossaries Info: Writing glossary file ProgressReport.acn on input line
  30.
 Package translations Info: No language package found. I am going to use `englis
-h' as default language. on input line 51.
+h' as default language. on input line 52.
 LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 5
-1.
+2.
  (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 (ProgressReport.aux)
 \openout1 = `ProgressReport.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
@@ -2027,7 +2027,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 fg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring ON on input line 51.
+Package hyperref Info: Link coloring ON on input line 52.
  (ProgressReport.out) (ProgressReport.out)
 \@outlinefile=\write10
 \openout10 = `ProgressReport.out'.
@@ -2081,13 +2081,13 @@ Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ))
-LaTeX Info: Redefining \microtypecontext on input line 51.
-Package microtype Info: Applying patch `item' on input line 51.
-Package microtype Info: Applying patch `toc' on input line 51.
-Package microtype Info: Applying patch `eqnum' on input line 51.
-Package microtype Info: Applying patch `footnote' on input line 51.
-Package microtype Info: Applying patch `verbatim' on input line 51.
-LaTeX Info: Redefining \microtypesetup on input line 51.
+LaTeX Info: Redefining \microtypecontext on input line 52.
+Package microtype Info: Applying patch `item' on input line 52.
+Package microtype Info: Applying patch `toc' on input line 52.
+Package microtype Info: Applying patch `eqnum' on input line 52.
+Package microtype Info: Applying patch `footnote' on input line 52.
+Package microtype Info: Applying patch `verbatim' on input line 52.
+LaTeX Info: Redefining \microtypesetup on input line 52.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -2103,7 +2103,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 )
 LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line
- 51.
+ 52.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ztmcm.fd
 File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
@@ -2113,29 +2113,29 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line
- 51.
+ 52.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
 LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line
- 51.
+ 52.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
 LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line
- 51.
+ 52.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
@@ -2147,10 +2147,10 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 File: mt-eur.cfg 2006/07/31 v1.1 microtype config. file: AMS Euler Roman (RS)
 )
 LaTeX Font Info:    Trying to load font information for U+stmry on input line 5
-1.
+2.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/stmaryrd\ustmry.fd)
-Package xypdf Info: Line width: 0.47987pt on input line 51.
+Package xypdf Info: Line width: 0.47987pt on input line 52.
 
 (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/translations/dicts\tran
 slations-basic-dictionary-english.trsl
@@ -2158,61 +2158,70 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 51.
+or `english'. on input line 52.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: supertabular package is loaded.
 Package caption Info: End \AtBeginDocument code.
-<qutlogo.png, id=310, 749.80125pt x 182.6825pt>
+<qutlogo.png, id=314, 749.80125pt x 182.6825pt>
 File: qutlogo.png Graphic file (type png)
 <use qutlogo.png>
-Package pdftex.def Info: qutlogo.png  used on input line 57.
-(pdftex.def)             Requested size: 276.8974pt x 67.46323pt.
+Package pdftex.def Info: qutlogo.png  used on input line 58.
+(pdftex.def)             Requested size: 191.6987pt x 46.70467pt.
  [1
 
 \openout7 = `ProgressReport.ist'.
 
 
 {C:/Users/hecke/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/heck
-e/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./qutlogo.png>] [
-2] (Chapters/0_1_Abstract.tex)
-[3
+e/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./qutlogo.png>] (
+Chapters/0_0_Keywords.tex
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 8
+.
+
+(C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+))
+[1
 
 
-] [4] (ProgressReport.toc [5
-
-] [6]) [7] (ProgressReport.lot)
-(ProgressReport.lof) [8
-
-] (Chapters/0_2_Declaration.tex) [9
+] (Chapters/0_1_Abstract.tex) [2
 
 
-]
-(Chapters/0_3_Acknowledgements.tex) [10
+] (ProgressReport.toc [3
+
+] [4]) [5]
+(ProgressReport.lot) (ProgressReport.lof) [6
+
+] (Chapters/0_2_Declaration.tex)
+[7
 
 
-] (ProgressReport.acr) [11
+] (Chapters/0_3_Acknowledgements.tex) [8
+
+
+] (ProgressReport.acr) [9
 
 
 
 ]
 (Chapters/1_Introduction.tex
 Chapter 1.
-[1
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.19 \end{enumerate}
+                     [1
 
 
 
-]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
-6.
- (C:\Users\hecke\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-[2] [3]
+] [2]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-) (Chapters/2_Literature Review.tex [4]
+) (Chapters/2_Literature Review.tex [3] [4]
 Chapter 2.
 [5
 
@@ -2673,16 +2682,16 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `ProgressReport.out' has not changed.
-(rerunfilecheck)             Checksum: E3ECA3DA957F549A9840FF7402A809BB;19515.
+(rerunfilecheck)             Checksum: B91E126D8A394C16CFE02E58BCA4D7E7;19601.
  ) 
 Here is how much of TeX's memory you used:
- 51856 strings out of 467871
- 1033135 string characters out of 5418376
- 1628959 words of memory out of 5000000
- 79049 multiletter control sequences out of 15000+600000
- 721551 words of font info for 545 fonts, out of 8000000 for 9000
+ 51870 strings out of 467871
+ 1033594 string characters out of 5418376
+ 1629151 words of memory out of 5000000
+ 79081 multiletter control sequences out of 15000+600000
+ 718588 words of font info for 530 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,12n,107p,3321b,1420s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,12n,107p,3321b,1418s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmex10.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmmi10.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -2702,9 +2711,9 @@ mes/utmbi8a.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/type1/urw/t
 imes/utmr8a.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/type1/urw/t
 imes/utmr8a.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/type1/urw/t
 imes/utmri8a.pfb>
-Output written on ProgressReport.pdf (48 pages, 478106 bytes).
+Output written on ProgressReport.pdf (47 pages, 477842 bytes).
 PDF statistics:
  1010 PDF objects out of 1200 (max. 8388607)
- 218 named destinations out of 1000 (max. 500000)
- 116850 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 219 named destinations out of 1000 (max. 500000)
+ 110714 words of extra memory for PDF output out of 128383 (max. 10000000)
 

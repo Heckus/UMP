@@ -1,25 +1,19 @@
 # Change Log
 
-## [2026-10-15] Assessment 2B Progress Report Final Polish & Layout Optimization
-- **Document**: `2B/ProgressReport/ProgressReport.pdf` (48 pages, MiKTeX compilation exit code 0).
-- **Class & Spacing Optimization (`qutthesis.cls`)**:
-  - Configured `\LoadClass[12pt, a4paper, oneside, openany]{memoir}` to eliminate spurious blank pages between chapters and front matter.
-  - Set global float positioning parameters (`\textfloatsep`, `\floatsep`, `\intextsep`, `\topfraction`, `\bottomfraction`) and black hyperlinks (`linkcolor=black`, `citecolor=black`).
-  - Merged Keywords into Executive Abstract and wrapped List of Figures / List of Tables to share a single page.
-- **TikZ Diagram Improvements**:
-  - `Chapters/1_Introduction.tex`: Widened 5-phase lifecycle diagram nodes (`node distance=0.6cm and 0.25cm`, `font=\scriptsize\sffamily`, `text width=2.4cm`) to eliminate awkward word-hyphenation.
-  - `Chapters/3_Research Design.tex`: Refined 6-stage automation pipeline TikZ diagram (`font=\tiny\sffamily`, `text width=2.1cm`, `inner sep=1.5pt`) to prevent hyphenation across stages.
-- **Table Formatting Fixes**:
-  - `Chapters/3_Research Design.tex`: Table 3.1 (Compute Budget) adjusted with `\setlength{\tabcolsep}{5pt}` and `\renewcommand{\arraystretch}{1.15}` for clean spacing across NVIDIA A100-SXM4-40GB metrics.
-  - `Chapters/4_Progress.tex`: Table 4.1 (Master Benchmark Table) updated to a clean 5-column `tabularx` format (`l X c c c`), eliminating the blank first column, removing underscore artifacts, and ensuring `LPIPS` header fits without line wrapping.
-  - `Chapters/5_Management.tex`: Table 5.2 (Stakeholder Engagement Matrix) updated to `\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm} p{3.8cm} X}` with `\renewcommand{\arraystretch}{1.2}`.
-- **Appendix & Code Cleanups**:
-  - `Chapters/Appendix.tex`: Wrapped `ganttchart` in `\resizebox{\textwidth}{!}{% ... %}` with `expand chart=\textwidth` and `bar progress label node/.append style={right=4pt}`. Wrapped terminal execution manifest verbatim block in `\begin{footnotesize} ... \end{footnotesize}` to prevent overfull hboxes. Replaced Markdown bolding `**Attempt 10**` with `\textbf{Attempt 10}`.
-  - `Chapters/6_Conclusion.tex`: Polished list item sentences to eliminate overfull hboxes.
-  - Acronyms: Cleaned doubled acronym expansions (`Full Name (\gls{key})`) across all chapters, allowing LaTeX `glossaries` to expand natively on first use.
-- **Build Verification**:
+## [2026-10-15] Assessment 2B Progress Report Title Containment & Dedicated Keywords Chapter
+- **Document**: `2B/ProgressReport/ProgressReport.pdf` (47 pages, MiKTeX compilation exit code 0).
+- **Title Page Overflow Resolution (`qut-title.sty` & `ProgressReport.tex`)**:
+  - Identified root cause of title page leaking onto page 2: excessive explicit `\vspace` blocks (totaling >180pt), large logo scaling (`.65\textwidth`), multiple `center` environments, and `\OnehalfSpacing` line expansion that pushed School/Faculty/Supervisors onto page 2.
+  - Rewrote `\maketitle` using `memoir`'s native `titlingpage` environment with local `\SingleSpacing`, scaled logo (`0.45\textwidth`), and dynamic elastic `\vfill` anchors.
+  - Title page is now strictly contained within Page 1.
+- **Dedicated Keywords Chapter Restored (`Chapters/0_0_Keywords.tex`)**:
+  - Restored `\chapter{Keywords}` as its own preliminary chapter directly following the title page (Page i), conforming to the QUT/UQ thesis structure.
+  - Populated with categorized Primary Research Keywords (3DGS, O-SCD, SuGaR, SDF, EcoRRAP, AUV, etc.) and ANZSRC 2020 Field of Research codes (460303 Computer Vision, 460309 Spatial Systems, 400701 Autonomous Systems, 410402 Marine Ecology).
+  - Cleaned inlined acronym expansion on the Keywords page to prevent double parenthetical artifacts.
+  - Streamlined `Chapters/0_1_Abstract.tex` (Executive Summary) so it fits onto Page ii, ensuring the Table of Contents begins cleanly on Page iii.
+- **Compilation Verification**:
   - Full toolchain executed: `pdflatex -> makeglossaries -> bibtex -> pdflatex -> pdflatex`.
-  - Output verified: 48 pages, 0 compilation errors, 0 undefined references, all glossaries and citations resolved.
+  - Output verified: Exactly 47 pages, 0 errors, title strictly on Page 1, Keywords on Page i, Executive Summary on Page ii, Contents on Page iii.
 
 ---
 
