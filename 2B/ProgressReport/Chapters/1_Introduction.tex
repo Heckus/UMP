@@ -1,0 +1,77 @@
+% ***************************************************
+% Chapter 1: Introduction
+% ***************************************************
+
+\chapter{Introduction}
+\label{chap:introduction}
+
+\section{Motivation and Background}
+\label{sec:motivation}
+Coral reefs represent some of the most ecologically vital and biodiverse marine ecosystems on Earth, providing habitat for over a quarter of all marine species and offering critical coastal protection and economic value~\cite{souter2020status}. However, these delicate ecosystems are facing unprecedented threats from global climate change, marine heatwaves leading to mass bleaching, severe cyclonic storms, and anthropogenic runoff. Timely, high-precision monitoring of coral structures is paramount to evaluate reef recovery, assess the efficacy of ecological interventions, and detect physical habitat destruction~\cite{icri2021monitoring}.
+
+Historically, benthic ecological monitoring has relied on manual diver-based surveys. Established methodologies—such as Point Intercept Transects (PIT), Manta Tows, and fixed-site photo-quadrats—rely predominantly on two-dimensional planar imagery~\cite{icri2021monitoring}. As highlighted in recent critical surveys of reef condition metrics~\cite{davey2025review}, 2D surface metrics (such as planar percentage coral cover) fail to capture three-dimensional geometric complexity, structural rugosity, colony volume, or structural breakage under overhanging reef canopies. While \gls{sfm} photogrammetry has made inroads into marine surveys, generating dense multi-temporal point clouds remains computationally expensive, slow to optimize, and prone to severe degradation from water-column turbidity.
+
+The recent emergence of \gls{3dgs}~\cite{10897713} has transformed three-dimensional computer vision, offering real-time rendering speeds and explicit volumetric scene representations. Nonetheless, adapting \gls{3dgs} to marine environments poses acute scientific challenges:
+\begin{enumerate}
+    \item \textbf{Wavelength-Dependent Optical Degradation:} Water rapidly absorbs longer wavelengths of light (red spectrum), resulting in severe blue-green colour casts, while forward- and back-scattering off suspended organic particulate matter creates pervasive haze, contrast degradation, and caustic illumination patterns~\cite{10203316, 11128502}.
+    \item \textbf{Floating Primitive Artifacts:} Standard \gls{3dgs} optimizers compensate for water haze and caustics by generating millions of spurious, low-opacity ``floating'' Gaussians within the empty water column, severely corrupting true scene geometry~\cite{guedon2024sugar}.
+    \item \textbf{The Scene Change Detection Dilemma:} When multi-temporal surveys are compared across different tidal states, varying turbidity and seasonal ambient lighting cause naive change detection algorithms to falsely flag water-column variations as physical structural shifts~\cite{galappaththige2026pixelsprimitivesscenechange}.
+\end{enumerate}
+
+\section{Project Research Objectives}
+\label{sec:objectives}
+This research project, undertaken at the \gls{qcr}, investigates the convergence of underwater-optimised \gls{3dgs} architectures with primitive-space \gls{scd}. The primary research aims are structured as follows:
+
+\begin{enumerate}
+    \item \textbf{Evaluation of Underwater 3DGS Representations:} Benchmark candidate underwater \gls{3dgs} architectures across physical inverse-rendering models (e.g., \textit{SeaSplat}~\cite{11128502}, \textit{3D-UIR}~\cite{huang2025restorationreconstructionrethinking3d}), restoration-guided frameworks (\textit{Gaussian Splashing}~\cite{mualem2025gaussiansplashingdirectvolumetric}, \textit{WaterSplatting}~\cite{li2025watersplattingfastunderwater3d}), and supplementary methods (\textit{RUSplatting}~\cite{jiang2025rusplattingrobust3dgaussian}, \textit{UW-GS}~\cite{10943785}) to determine which method produces the most geometrically stable foundation under marine degradation.
+    \item \textbf{Surface Regularization and Floater Elimination:} Integrate \gls{sugar}~\cite{guedon2024sugar} to enforce \gls{sdf} constraints, binding 3D Gaussians tightly to physical surfaces and pruning spurious water-column floaters to extract watertight surface meshes (\texttt{.obj}).
+    \item \textbf{Primitive-Space Scene Change Detection:} Evaluate the efficacy of \gls{oscd}~\cite{galappaththige2026pixelsprimitivesscenechange} operating directly in Gaussian primitive space (comparing spatial centroids, covariance matrices, and spherical harmonic colours) without relying on viewpoint-dependent 2D image renders.
+    \item \textbf{Development of an End-to-End HPC Automation Pipeline:} Design, provision, and validate an automated 6-stage batch execution suite on the QUT Aqua \gls{hpc} cluster to support large-scale marine photogrammetry.
+\end{enumerate}
+
+\section{Project Scope, Proof-of-Concept, and the EcoRRAP Horizon}
+\label{sec:scope_context}
+A vital contextual dimension of this research is the staged progression between the current benchmark phase and the ultimate project goal:
+\begin{itemize}
+    \item \textbf{Current Proof-of-Concept Phase:} To systematically establish baseline metrics, test algorithmic implementations, and solve cluster compatibility across 11 isolated environments, the current work utilises public underwater benchmark datasets (\textit{Submerged3D} Kwajalein and Tokai Maru shipwrecks~\cite{11128502}) alongside a custom-captured dual-state change detection dataset (\texttt{Custom\_OSCD\_Dataset}). All 15 planned benchmark targets have now achieved 100\% full-lifecycle execution.
+    \item \textbf{The Core Research Goal (AIMS EcoRRAP):} While the open-source datasets validate the computational pipeline, the primary research objective is dedicated to high-density, real-world temporal coral monitoring photogrammetry provided by the \gls{aims} \gls{ecorrap} project~\cite{gordon2023field}. The EcoRRAP dataset encompasses a massive 1.35~TB repository of multi-temporal coral reef surveys. Currently, data acquisition is undergoing formal inter-institutional data-sharing and legal compliance review.
+    \item \textbf{The Architectural Bridge:} Once the 1.35~TB EcoRRAP dataset is transferred to the QUT Aqua storage filesystem, the winning underwater 3DGS models identified in this report (specifically \textit{3D-UIR} and \textit{SeaSplat}) will be directly grafted into the \gls{oscd} pipeline, replacing the default terrestrial Gaussian backbone. The unified model will undergo extended, high-iteration optimization on multi-GPU nodes to produce millimetre-accurate volumetric change maps ($\text{cm}^3 / \text{m}^2$) tracking coral growth, calcification, and physical breakage over time.
+\end{itemize}
+
+\section{The 5-Phase Operational Lifecycle}
+\label{sec:lifecycle}
+The research methodology is governed by a rigorous 5-phase operational lifecycle, depicted in Figure~\ref{fig:lifecycle_diagram}:
+\begin{enumerate}
+    \item \textbf{Phase 1: Setup:} Provision 11 isolated Conda environments, compile custom CUDA rasterization kernels, and perform pre-flight hardware verification.
+    \item \textbf{Phase 2: Run:} Orchestrate the 6-stage pipeline (Data Ingestion, COLMAP SfM, Monocular Depth Estimation, Model Optimization, SuGaR Mesh Extraction, and Quantitative Benchmarking).
+    \item \textbf{Phase 3: Extract:} Bundle verified outputs using dynamic shell manifests and transfer archives via the QUT Data Transfer Node (\texttt{eresdtn01.qut.edu.au}).
+    \item \textbf{Phase 4: Organise:} Standardize raw artifacts into a presentation-ready academic hierarchy.
+    \item \textbf{Phase 5: Review \& Evaluate:} Synthesize cross-model benchmark tables, inspect 3D volumetric splats in WebGL/CloudCompare, and evaluate watertight meshes in MeshLab.
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.6cm and 0.25cm,
+        box/.style={rectangle, draw=blue!70!black, fill=blue!5, thick, text width=2.4cm, minimum height=1.4cm, align=center, font=\scriptsize\sffamily, inner sep=2pt},
+        arrow/.style={->, >=stealth, thick, blue!70!black}
+    ]
+        \node[box] (setup) {\textbf{1. SETUP}\\[2pt]Provision Envs \& CUDA Toolchain};
+        \node[box, right=of setup] (run) {\textbf{2. RUN}\\[2pt]Orchestrate 6-Stage Pipeline};
+        \node[box, right=of run] (extract) {\textbf{3. EXTRACT}\\[2pt]Bundle \& Transfer via DTN};
+        \node[box, right=of extract] (organise) {\textbf{4. ORGANISE}\\[2pt]Academic Hierarchy};
+        \node[box, right=of organise] (review) {\textbf{5. REVIEW}\\[2pt]Evaluate Splats \& Meshes};
+
+        \draw[arrow] (setup) -- (run);
+        \draw[arrow] (run) -- (extract);
+        \draw[arrow] (extract) -- (organise);
+        \draw[arrow] (organise) -- (review);
+    \end{tikzpicture}
+    \caption{The 5-phase operational lifecycle governing the experimental workflow from HPC cluster provisioning to desktop visual evaluation.}
+    \label{fig:lifecycle_diagram}
+\end{figure}
+
+\section{Report Structure}
+\label{sec:report_structure}
+The remainder of this report is organized as follows:
+Chapter~\ref{chap:lit_review} synthesizes current literature across marine monitoring, primitive-space scene change detection, underwater 3DGS paradigms, and surface regularization. Chapter~\ref{chap:research_design} outlines the research design, HPC architecture, compute and storage budget, and dataset protocols. Chapter~\ref{chap:progress} details the project's empirical progress to date, presenting the master 15/15 benchmark table, detailed comparative performance analyses, SuGaR mesh reconstructions, primitive-space change results, and comprehensive commented visual figure blocks. Chapter~\ref{chap:management} covers risk management, data compliance for the AIMS EcoRRAP dataset, ethical considerations under the Engineers Australia Code of Ethics, and stakeholder engagement. Finally, Chapter~\ref{chap:conclusion} concludes the report and delineates the Phase~2/3 roadmap for deploying the unified underwater change detection architecture onto the 1.35~TB EcoRRAP dataset.

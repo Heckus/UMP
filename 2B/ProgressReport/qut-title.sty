@@ -1,0 +1,89 @@
+%*************************************
+% QUT Thesis Title Page Formatting Package
+%*************************************
+%\ProvidesPackage{qut-title}[2021/11/10 QUT thesis title template]
+%\RequirePackage{graphicx}
+
+%qut-title.sty
+% An Honours thesis style class for the Queensland University of Technology
+% Tina Yuting Huang
+% 2021
+% Based on 2018/03/19 v.01 UQ thesis title template, and
+% Based on https://cms.qut.edu.au/__data/assets/pdf_file/0004/7249/requirements_for_presenting_theses.pdf
+
+%*************************************
+% Define new 'storing' commands and set defaults.
+%*************************************
+%Current degree.
+\newcommand*{\currentdegrees}[1]{\gdef\@currentdegrees{#1}}
+\newcommand*{\@currentdegrees}{Bachelor, Master}
+\newcommand*{\submittedfor}[1]{\gdef\@submittedfor{#1}}
+\newcommand*{\@submittedfor}{Specify degree you are submitting for}
+\newcommand*{\school}[1]{\gdef\@school{#1}}
+\newcommand*{\@school}{School xxx}
+\newcommand*{\faculty}[1]{\gdef\@faculty{#1}}
+\newcommand*{\@faculty}{Faculty xxx}
+\newcommand*{\university}[1]{\gdef\@university{#1}}
+\newcommand*{\@university}{University xxx}
+\newcommand{\supervisor}[1]{\gdef\@supervisor{#1}}
+\newcommand{\@supervisor}{Principal Supervisor: Prof. Niko S{\"u}nderhauf}
+\newcommand{\asscsupervisor}[1]{\gdef\@asscsupervisor{#1}}
+\newcommand{\@asscsupervisor}{Associate Supervisor: Dr. Scarlett Raine}
+
+%Your ORCID
+%\newcommand*{\orcid}[1]{\gdef\@orcid{#1}}
+%\newcommand*{\@orcid}{Your orcid}
+
+%Renew the maketitle command.
+\renewcommand*{\maketitle}{%
+
+%*************************************
+% Title Page layout
+%*************************************
+\pagestyle{empty}	
+%Suppress the header.
+\rmfamily					
+%Make sure we have Roman font family.
+
+%----------------Front Page ---------
+\noindent
+\vfill
+\begin{center}
+	\includegraphics[width=.65\textwidth]{qutlogo}
+\end{center}
+        \vspace{30 pt}
+\begin{center}
+    \huge\bfseries
+	\thetitle
+\end{center}
+
+\begin{center}
+	\Large\textbf{\theauthor} \\
+\end{center}
+\begin{center}
+	\@currentdegrees{}
+\end{center}
+\vspace{15 pt}
+
+
+\vspace{40 pt}
+
+\begin{center}
+    \large{\textbf{ENN595-1 - Research Project 1}} \\ 
+    \vspace{6 pt}
+    \large{\textbf{Assessment 2B: Project Progress Written Report}} \\
+    \vspace{14 pt}
+    Submitted in partial fulfilment of the requirements for the degree of\\ \textbf{\@submittedfor{}}\\
+    \vspace{60 pt}
+	\@school{}\\
+    \@faculty{}\\
+	\@university{}\\
+    \vspace{15 pt}
+    \@supervisor{}\\
+    \@asscsupervisor{}\\
+    \vspace{10 pt}
+    \textbf{\thedate{}}\\
+\end{center}
+}
+
+

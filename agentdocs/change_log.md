@@ -1,6 +1,27 @@
-# Final Sweep and Fixes Changelog
+# Change Log
 
-During the zero-tolerance final sweep of the 3DGS / OSCD orchestration pipeline (`run_pipeline.sh` and related scripts), the entire data flow was traced from Dataset download and preparation through COLMAP, training, mesh extraction, and quantitative evaluation.
+## [2026-10-15] Assessment 2B Progress Report Final Polish & Layout Optimization
+- **Document**: `2B/ProgressReport/ProgressReport.pdf` (48 pages, MiKTeX compilation exit code 0).
+- **Class & Spacing Optimization (`qutthesis.cls`)**:
+  - Configured `\LoadClass[12pt, a4paper, oneside, openany]{memoir}` to eliminate spurious blank pages between chapters and front matter.
+  - Set global float positioning parameters (`\textfloatsep`, `\floatsep`, `\intextsep`, `\topfraction`, `\bottomfraction`) and black hyperlinks (`linkcolor=black`, `citecolor=black`).
+  - Merged Keywords into Executive Abstract and wrapped List of Figures / List of Tables to share a single page.
+- **TikZ Diagram Improvements**:
+  - `Chapters/1_Introduction.tex`: Widened 5-phase lifecycle diagram nodes (`node distance=0.6cm and 0.25cm`, `font=\scriptsize\sffamily`, `text width=2.4cm`) to eliminate awkward word-hyphenation.
+  - `Chapters/3_Research Design.tex`: Refined 6-stage automation pipeline TikZ diagram (`font=\tiny\sffamily`, `text width=2.1cm`, `inner sep=1.5pt`) to prevent hyphenation across stages.
+- **Table Formatting Fixes**:
+  - `Chapters/3_Research Design.tex`: Table 3.1 (Compute Budget) adjusted with `\setlength{\tabcolsep}{5pt}` and `\renewcommand{\arraystretch}{1.15}` for clean spacing across NVIDIA A100-SXM4-40GB metrics.
+  - `Chapters/4_Progress.tex`: Table 4.1 (Master Benchmark Table) updated to a clean 5-column `tabularx` format (`l X c c c`), eliminating the blank first column, removing underscore artifacts, and ensuring `LPIPS` header fits without line wrapping.
+  - `Chapters/5_Management.tex`: Table 5.2 (Stakeholder Engagement Matrix) updated to `\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm} p{3.8cm} X}` with `\renewcommand{\arraystretch}{1.2}`.
+- **Appendix & Code Cleanups**:
+  - `Chapters/Appendix.tex`: Wrapped `ganttchart` in `\resizebox{\textwidth}{!}{% ... %}` with `expand chart=\textwidth` and `bar progress label node/.append style={right=4pt}`. Wrapped terminal execution manifest verbatim block in `\begin{footnotesize} ... \end{footnotesize}` to prevent overfull hboxes. Replaced Markdown bolding `**Attempt 10**` with `\textbf{Attempt 10}`.
+  - `Chapters/6_Conclusion.tex`: Polished list item sentences to eliminate overfull hboxes.
+  - Acronyms: Cleaned doubled acronym expansions (`Full Name (\gls{key})`) across all chapters, allowing LaTeX `glossaries` to expand natively on first use.
+- **Build Verification**:
+  - Full toolchain executed: `pdflatex -> makeglossaries -> bibtex -> pdflatex -> pdflatex`.
+  - Output verified: 48 pages, 0 compilation errors, 0 undefined references, all glossaries and citations resolved.
+
+---
 
 The following critical bugs and missing implementation details were found and immediately fixed:
 

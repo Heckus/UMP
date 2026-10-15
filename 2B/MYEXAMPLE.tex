@@ -1,0 +1,640 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                            EGH400 PROGRESS REPORT                            %
+%         Small-Scale Underwater ROV for QUT Demonstrations and Testing        %
+%                                                                              %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ------------------------------------------------------------------------------
+% DOCUMENT SETUP (Based on Engineering Technical Report Style Guide)
+% ------------------------------------------------------------------------------
+\documentclass[11pt, a4paper]{article}
+% IMPORTANT: To generate the bibliography and citations correctly, you must
+% compile this file using the following sequence of commands:
+% pdflatex ProgressReport.tex  && bibtex ProgressReport && makeglossaries ProgressReport && pdflatex ProgressReport.tex && pdflatex ProgressReport.tex
+
+% --- Core Packages ---
+\usepackage{graphicx}       % For including figures
+\usepackage{amsmath}        % For advanced math equations
+\usepackage{booktabs}       % For professional-looking tables
+\usepackage{longtable}      % For tables that span multiple pages
+\usepackage[acronym]{glossaries} % For managing acronyms like ROV
+\usepackage{pdfpages}       % For including PDF pages (e.g., technical drawings)
+\usepackage{xltabular}      % For advanced tables that can span pages
+\usepackage{tabularx}       % For the tabularx environment
+\usepackage{ragged2e}       % For \RaggedRight alignment
+\usepackage{pgfgantt}
+% --- Formatting Packages (as per Style Guide) ---
+\usepackage[a4paper, margin=2.3cm]{geometry} % Margins at 2.3 cm
+\usepackage{setspace}       % To control line spacing
+\setstretch{1.15}            % Line spacing at 1.15
+\usepackage{carlito}        % A metric-compatible font for Calibri
+\usepackage[T1]{fontenc}
+\renewcommand{\familydefault}{\sfdefault} % Set Carlito (sans-serif) as default
+
+\usepackage{fancyhdr}       % For custom headers and footers
+\pagestyle{fancy}
+\fancyhf{}                  % Clear all header and footer fields
+\fancyfoot[C]{\thepage}     % Page number at bottom centre
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\usepackage[
+    tableposition=top,      % Table captions go above
+    figureposition=bottom,  % Figure captions go below
+    labelfont=bf,           % Caption labels (e.g., "Figure 1") in bold
+    justification=centering % Captions are centrally aligned
+]{caption}
+
+\usepackage{siunitx}        % For correct SI units, e.g., \SI{10}{\kilo\gram}
+
+% --- Referencing Packages ---
+\usepackage[sort&compress, numbers]{natbib} % For QUT APA-style-like citations
+\usepackage{hyperref}       % For clickable links and references
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=black,
+}
+
+% --- Acronyms (from Project Proposal) ---
+\makeglossaries
+\newacronym{rov}{ROV}{Remotely Operated Vehicle}
+\newacronym{ml}{ML}{Machine Learning}
+\newacronym{qut}{QUT}{Queensland University of Technology}
+\newacronym{gui}{GUI}{Graphical User Interface}
+\newacronym{pfds}{PFDs}{Process Flow Diagrams}
+\newacronym{auv}{AUV}{Autonomous Underwater Vehicle}
+\newacronym{dof}{DOF}{Degrees of Freedom}
+\newacronym{cad}{CAD}{Computer-Aided Design}
+\newacronym{cfd}{CFD}{Computational Fluid Dynamics}
+\newacronym{ros}{ROS}{Robot Operating System}
+\newacronym{imu}{IMU}{Inertial Measurement Unit}
+\newacronym{dvl}{DVL}{Doppler Velocity Log}
+\newacronym{pid}{PID}{Proportional-Integral-Derivative}
+
+% --- Document Information ---
+\title{
+    \textbf{EGH400-1 Progress Report} \\
+    \large\vspace{0.5em}
+    \rule{\linewidth}{0.5pt} \\
+    \vspace{1em}
+    \huge Development of a Small-Scale Underwater Remotely Operated Vehicle (ROV)
+}
+\author{Faculty of Engineering}
+\date{\today}
+
+% ------------------------------------------------------------------------------
+% BEGIN DOCUMENT
+% ------------------------------------------------------------------------------
+\begin{document}
+
+% --- TITLE PAGE ---
+\begin{titlepage}
+    \centering
+    \maketitle
+    \vspace{2cm}
+    
+    \begin{tabular}{ll}
+        \textbf{Unit Code:} & EGH400 - Research Project 1 \\
+        \textbf{Assessment:} & \#2 - Progress Report \\
+        \textbf{Supervisor:} & Tobias Fischer \\
+    \end{tabular}
+
+    \vspace{2cm}
+    \rule{\linewidth}{0.5pt}
+    \vspace{1em}
+    
+    \begin{tabular}{ll}
+        \textbf{Student Engineer:} & Joshua Hecke \\
+        \textbf{Student ID:}       & n11585382 \\
+    \end{tabular}
+
+    \vspace*{1cm}
+    \includegraphics[width=6cm]{logo.png} %%% Ensure QUT logo is in the same folder
+    \vspace{1.5cm}
+
+    \begin{center}
+        This report is submitted in partial fulfilment of the requirements for EGH400.
+    \end{center}
+    
+\end{titlepage}
+\thispagestyle{empty}
+\clearpage
+\pagenumbering{roman} % Table of contents uses roman numerals
+
+% --- TABLE OF CONTENTS & ACRONYMS ---
+\tableofcontents
+\clearpage
+\printglossaries
+\clearpage
+\pagenumbering{arabic} % Main content starts at page 1
+\pagestyle{fancy} % Re-apply fancy style for main pages
+
+% ==============================================================================
+% 1. INTRODUCTION
+% ==============================================================================
+\section{Introduction}
+\label{sec:introduction}
+% This section should provide a short summary of your project and its expected outcomes.
+% You can adapt the 'General Objective' from your proposal.
+This project aims to design, develop, and validate a small-scale underwater \gls{rov} to address the gap in accessible research-grade platforms. The primary objective is to create a fully operational vehicle for use in \gls{qut} demonstrations and as a versatile testbed for novel \gls{ml} control pipelines. The research focuses on integrating robust hardware and software solutions within a compact form factor, a challenge not fully addressed by larger commercial systems.
+
+The expected outcomes of this project include a fully assembled \gls{rov}, complete \gls{cad} drawings, control system software with a basic \gls{gui}, and a final report detailing the design, methodology, and performance results. This will be done in three phases:
+\begin{itemize}
+    \item Phase 1: Research and Design (current phase)
+    \item Phase 2: Validation and Prototyping 
+    \item Phase 3: Testing, Evaluation and Reporting
+\end{itemize}
+
+% --- Add any other introductory content here ---
+
+% ==============================================================================
+% 2. LITERATURE REVIEW
+% ==============================================================================
+\section{Literature Review}
+\subsection{Literature Review Summary}
+\label{sec:litreview_summary}
+A comprehensive survey of existing literature reveals a distinct gap in the field of underwater robotics for small-scale, low-cost, and modular Remotely Operated Vehicles (\gls{rov}s) that are also computationally equipped for modern research. While the domain is populated with large, work-class vehicles for industrial applications and highly specialised Autonomous Underwater Vehicles (\gls{auv}s), these platforms are often financially and logistically prohibitive for academic research and rapid prototyping \cite{9659412}. This review synthesised key design philosophies and technical trade-offs from a range of academic papers and technical reports, establishing a theoretical foundation to inform the design of a novel research platform.
+
+A primary theme is the fundamental decision in chassis architecture, which presents a trade-off between modularity and hydrodynamic performance. Open-frame designs are consistently favoured for research and educational platforms due to their inherent modularity, which simplifies the process of mounting, testing, and reconfiguring sensors, thrusters, and other payloads, as seen in vehicles like the eROV \cite{8615595}. This adaptability is paramount for a vehicle intended to serve as a testbed. Conversely, enclosed, torpedo-style hulls are chosen when operational efficiency, speed, and endurance are the primary drivers, as their streamlined form minimises drag \cite{5723752, 7893910}. For this project's objectives, the principles of the open-frame design are more closely aligned with the need for a flexible and extensible research platform.
+
+Maneuverability in a compact form factor is another critical consideration, heavily influenced by thruster configuration. While simple 3-thruster systems can provide basic motion \cite{5355247}, the literature indicates that full 6-\gls{dof} control is a key enabler for complex inspection and intervention tasks. This is typically achieved with six or more thrusters \cite{marzbanrad_2011_design, 9965928}. A common and effective strategy is the use of a vectored thruster arrangement, where horizontal thrusters are angled to provide coupled control of surge, sway, and yaw \cite{10200265, 9659412}. This approach allows for high agility and omnidirectional movement without a large physical footprint, a key idea that heavily influenced this project's propulsion system design.
+
+The selection of onboard hardware reflects a clear scalability based on mission complexity and budget. At the lower end, simple microcontrollers like Arduino are sufficient for basic teleoperation and sensor reading \cite{8309454, 5355247}. However, to serve as a viable testbed for modern algorithms, particularly in computer vision and \gls{ml}, a more powerful single-board computer, such as a Raspberry Pi or Nvidia Jetson, is essential. These platforms provide the necessary processing power for real-time video streaming, network communication, and running inference models \cite{10200265, 10928203, 8558880, 8729822}. This distinction highlights the necessity of selecting a companion computer that not only meets current needs but also provides headroom for future computational expansion.
+
+Finally, the software architecture and control system design are integral to the vehicle's capability. The Robot Operating System (\gls{ros}) is frequently cited as the framework of choice for complex, modular robotic systems due to its robust inter-process communication, extensive libraries, and available hardware drivers \cite{9965928, 8558880}. While simpler platforms may use custom firmware, open-source solutions like ArduSub offer a powerful, community-supported alternative that can significantly accelerate development \cite{9447108}. At the control level, the Proportional-Integral-Derivative (\gls{pid}) controller is a foundational and ubiquitous method for achieving basic stability, such as depth and heading hold \cite{10928203, marzbanrad_2011_design}. However, its performance can degrade in the presence of external disturbances, leading more advanced projects to explore robust control techniques like Sliding Mode Control or Fuzzy Logic controllers \cite{5355247, 7946564}. These established ideas from the literature provide a clear benchmark against which this project's design choices and practical progress can be evaluated. The full literature review is available in Appendix B for further detail.
+
+\subsection{Evaluation of Literature Review Findings and New Literature}
+During the phase one of the project it was found that the insights from the literature review were largely applicable to the design and development of the medium scale \gls{rov} but not small scale \gls{rov}s. Using 6 thrusters to achieve 6 \gls{dof} was found to be impractical for a small scale \gls{rov} due to size and power consumption constraints. This was also true for the use of a companion computer such as a raspberry pi or nvidia jetson. These components while useful for \gls{ml} applications, were found to be too large and power hungry for the size of \gls{rov} being designed. This lead to further literature review to find alternatives that would suit the size and power constraints of the small scale \gls{rov}.
+A paper by Sujan et al. (2024) \cite{sujan_2024_structure} presented a design for a small scale \gls{rov} that used 4 thrusters in a vectored configuration to achieve underactuated control of the ROV as seen in figure \ref{fig:4_thrusters}. This design was found to be more suitable for the project as it allowed for a smaller footprint and lower power consumption, however the underactuation resulted in the lack of pitch control.
+
+\begin{center}
+    \includegraphics[width=0.4\textwidth]{4thrusters.png}
+    \vspace{0.5em}
+    \captionof{figure}{4 thruster vectored configuration for small scale \gls{rov} from Sujan et al. (2024) \cite{sujan_2024_structure}.}
+    \label{fig:4_thrusters}
+\end{center}
+
+This approach was modified into a experimental design using custom 45-45 degree brackets to give each thruster a vectored force. This design will need to be tested to see if it can achieve the desired dof and control. The benefit of this design is that it reduces the number of thrusters from 6 to 4, which reduces the size of the battery and ESC's required. This is a key area for the small scale \gls{rov} as it allows for a smaller hull and overall size, as well as cost reductions.
+
+Due to sizing constraints found during initial design phase it was found that lithium-ion batteries were too large and had to be replaced with the smaller, lithium-ion polymer battery.
+While Lithium-ion Polymer (LiPo) batteries were selected for this project due to their high energy density and discharge rates essential for powering the thrusters, their use introduces significant safety considerations. An issues paper by the Australian Competition \& Consumer Commission (ACCC) highlights the primary hazard associated with Li-ion batteries as 'thermal runaway' a rapid, self-sustaining temperature increase \cite{ACCC2022LiIon}. This event can be triggered by manufacturing defects, over-charging, physical impact (a key risk during ROV operations), or water ingress leading to a short circuit. The consequences of thermal runaway are severe, including intense fires that are difficult to extinguish, potential explosions, and the release of toxic and flammable gases \cite{ACCC2022LiIon}. For this project, these risks underscore the criticality of a robust, impact-resistant, and completely watertight enclosure for the battery, as well as strict adherence to balanced charging protocols. A detailed Risk Assessment has been conducted (see Section \ref{sec:risk_assessment}) to identify and mitigate these hazards, ensuring the safe operation of the ROV in aquatic environments.
+
+Finally, new literature on the mavlink communication protocol was found as the small size rov was not large enough to hold a companion computer. This lead to the use of a pixhawk flight controller as the main computer, which uses the mavlink protocol to communicate with the surface station. Mavlink is a lightweight, header-only message marshalling library for micro air vehicles. It is designed as a very efficient communication protocol between drones and/or ground control stations \cite{mavlink_2009_introduction}. This protocol is widely used in the drone community and has been adapted for use in underwater vehicles. The use of mavlink allows for a reliable and efficient communication link between the rov and the surface station, which is essential for remote operation and data transfer.
+% ==============================================================================
+% 3. PROJECT PROGRESS AND ACHIEVEMENTS
+% ==============================================================================
+\section{Project Progress and Achievements}
+\label{sec:progress}
+This section details the progress made in the project to date, highlighting key achievements and milestones. These include design work, component procurement, assembly, experimentation, and any technical drawings produced.
+Below is a summary of the major milestones achieved so far:
+\begin{itemize}
+    \item Design iteration and problem-solving to meet research objectives
+    \item Bom produced and components sourced.
+    \item Final Solution in SolidWorks 2023 produced
+    \item Construction of prototypes started
+    \item Risk assessment completed and submitted for review
+    \item Required hardware sourced and prepared for simulation
+\end{itemize}
+These items while not fully completing the first research and design phase (not complete as components are still missing), place the project in a good position to move into phase 2.
+\newpage
+\subsection{Design Iterations}
+When starting the design phase, components were picked based of literature review and existing designs.
+ Key components that fall under this were the thrusters, hull, battery, main computer and camera. The initial design also
+ followed this with 6 thrusters in a vectored configuration to allow for 6 degrees of freedom. Below is a
+ rendering of the first design iterations Hull and WTE designs.
+\subsubsection{Mechanical Design}
+% Non-floating figures so they stay directly under the text
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-1/DraftDesign-No_Foam.png}
+    \vspace{1em}
+
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-1/DraftDesign-No_Foam23768.png}
+    \vspace{0.5em}
+
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-1/WTE_assembly_Draft.png}
+    \vspace{0.5em}
+    \captionof{figure}{Top: Initial design of the ROV with 6 thrusters in a vectored configuration from a top view.\\Middle: Front view of initial design\\ Bottom: detail view of the WTE assembly for design 1 and 2.}
+    \label{fig:initial_design}
+\end{center}
+After getting feedback that the design was too large in comparison to the existing BlueRov2, an attempt to reduce its footprint was made. This can be seen below in design 2. It was made clear that
+sizing and battery life were key areas for this project.
+
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-2/Top.png}
+    \vspace{1em}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-2/Front.png}
+    \vspace{0.5em}
+    \captionof{figure}{Top: overall second design of the ROV with 6 thrusters in a smaller footprint in comparison to the BlueRov2 from top view.\\Bottom: size comparison of design 2 to blue robotics blue rov2 front view.}
+    \label{fig:second_design}
+\end{center}
+
+as seen in figure \ref{fig:second_design}, the second design was still too bulky and had a large footprint relative to the existing BlueRov2. This was due to the large battery required for the selected T200 thrusters,
+ the 6 ESC's required for thrusters and the inclusion of the companion computer the pi 5 in the chassis. This lead to a meeting with the supervisor to address the limitation of size with these components. 
+ The outcomes of the meeting where
+ \itemize{
+    \item Reduce the number of thrusters to reduce size of battery and ESC's
+    \item research different thrusters to get a smaller footprint
+    \item Move the companion computer outside of the main hull to reduce size
+    \item Connect the autopilot to the companion computer via a short tether
+ }
+ These changes lead to a new design which had its own set of challenges. these included sourcing new thrusters, a
+ change in camera as the original Pi compatible camera could not interface with the autopilot. Another challenge was 
+ maintaining a high dof with only 4 thrusters. A experimental design using a custom 45-45 degree bracket was made to
+ give each thruster a vectored force. A custom control system will need to be implemented, however if successful the power
+ consumption will be lower and the size of the ROV will be smaller. The benefit of removing the companion computer from the main hull
+ allows the hull to have a smaller diameter and shorter in length. This change is what got design 3 to be accepted and allowed for prototyping to start.
+Below is design 3 that will be prototyped.
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-3/Design3 Simple Render.png}
+    \vspace{1em}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-3/Rough comparision Photo.png}
+    \vspace{0.5em}
+    \captionof{figure}{Top: overall third design of the ROV with 4 thrusters in a smaller footprint. \\Bottom: size comparison of design 3 to blue robotics blue rov2.}
+    \label{fig:third_design}
+\end{center}
+This design used 4x U2 Mini thrusters by apisqueen to reduce size and power consumption. The battery was changed to a 4s 5200mah lipo battery to power the thrusters and electronics.
+
+After it was accepted it was revealed that the camera selected was no longer on the market. This lead to a final design iteration to change the camera to a z-1 mini gimballed camera and the addition of a handle for safer handling. This required a new mount to be designed to fit inside the blue robotics 3'' diameter watertight enclosure. This final design can be seen below in figure \ref{fig:final_design}. However there was still some uncertainty with this design. Key areas of uncertainty are
+\begin{itemize}
+    \item The 3D printed brackets for the thrusters need to be tested for strength
+    \item The waterproofing of the main hull and WTE's need to be tested
+    \item Will the custom 45 degree brackets work as intended
+    \item Design validation needs to be done to calculate the buoyancy and additional volume required to achieve neutral buoyancy
+\end{itemize}
+
+these are planned to be addressed in the next phase of the project.
+
+% --- Electronics and System Integration Subsection ---
+\subsubsection{Electronics and System Integration}
+The electronics system is designed for reliability and performance, centred around a Pixhawk 6X flight controller and Z-1 Mini gimballed camera. Communication with the surface is achieved via a pair of Fathom-X Tether Interface Boards, which enable a robust, high-bandwidth Ethernet-over-power connection to a ground station. A lumen Subsea light will act as a inital payload but this can be swapped out for other sensors in the future.
+A Matek Systems PDB XT60 is used to simplify wiring and power distribution to the four APISQUEEN U2 MINI thrusters, each with there own external ECS and capable of delivering up to 130W of thrust. The entire system is powered by a small onboard LiPo battery, chosen for its high discharge rate and energy density, ensuring sufficient power for extended operation. The electronics are housed within a Blue Robotics 3" diameter watertight enclosure, providing protection against water ingress while allowing easy access for maintenance and upgrades.
+
+\subsubsection{Power Budget and Runtime Analysis}
+A detailed power budget was created to inform battery selection and estimate operational endurance. The power consumption of major components was determined from manufacturer datasheets, as summarised below:
+\begin{itemize}
+    \item \textbf{APISQUEEN U2 MINI Thrusters (x4):} The most significant power consumers, drawing up to 130W each at maximum throttle. A typical cruising state is estimated at 25-30\% throttle, corresponding to approximately 35W per thruster.
+    \item \textbf{Pixhawk 6X Mini:} A consistent draw of approximately 3.0W.
+    \item \textbf{Fathom-X Boards \& Camera:} A combined constant draw of around 1.0W.
+\end{itemize}
+
+Based on this, the total system power draw for different operational scenarios was calculated:
+\begin{itemize}
+    \item \textbf{Idle:} 8W
+    \item \textbf{Cruising:} 144W
+    \item \textbf{Maximum Thrust:} 524W
+\end{itemize}
+
+The chosen power source is a Tattu 5200mAh 4S (14.8V) LiPo battery, which has a nominal energy capacity of $5.2 \, \text{Ah} \times 14.8 \, \text{V} = 76.96 \, \text{Wh}$. Using this, the vehicle's runtime can be estimated:
+$$ \text{Runtime (Cruising)} = \frac{76.96 \, \text{Wh}}{144 \, \text{W}} \approx 0.53 \, \text{hours} \approx 32 \, \text{minutes} $$
+This runtime is deemed sufficient for the demonstration and testing objectives of the project.
+
+
+% --- Bill of Materials Subsection ---
+\subsection{Bill of Materials (BOM)}
+Significant progress has been made in sourcing and ordering components. All critical long-lead items, including the flight controller, thrusters, and enclosure are currently received. Mounting hardware is on order and the power sensor is on reorder due to a mistake with shipping. A full BOM can be found in the appendix. The total estimated cost for all components is currently ~\$2900.
+
+
+
+\subsection{Final Design of Phase 1 in SolidWorks}
+The final design from phase 1 of the ROV has been completed in SolidWorks, incorporating all necessary modifications and optimizations identified during the design review process. The assembly includes detailed models of all major components, including the thrusters, mounting hardware and electronics enclosure. It is missing buoyancy elements as these will be designed in phase 2. Below are the renderings of the final design, technical drawing with dimensions included can be found in the appendix.
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-4/full1.png}
+    \vspace{1em}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-4/full2.png}
+    \vspace{0.5em}
+    \captionof{figure}{This figure shows 2 views of the final design of the ROV with 4 thrusters in a compact footprint. Technical Drawings with dimensions can be found in the appendix.}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-4/wte1.png}
+    \vspace{1em}
+    \includegraphics[width=0.8\textwidth]{../../../Solidworks/Assemblies/Screenshots/Design-4/wte2.png}
+    \vspace{0.5em}
+    \captionof{figure}{Final design from phase 1 of the the water tight enclosure with the blue robotics 3" diameter product. This includes the new camera mount and handle added from design 3. Technical Drawings with dimensions can be found in the appendix.}
+    \label{fig:final_design}
+\end{center}
+
+
+\subsection{Prototyping and Assembly Testing}
+To validate the Solidworks design, inital construction of the WTE has started. This includeds the mounting of the interal control and power electronics. It was found through this prototype that some of the mounting holes needed slight modification. However once this was done 
+the Pixhawk 6X, PDB-XT60 and Fathom-X boards fit well inside the enclosure. Below are some photos of the assembly process.
+\begin{center}
+    \includegraphics[width=0.6\textwidth]{workshop.jpg}
+    \vspace{1em}
+    \includegraphics[width=0.6\textwidth]{progress.jpg}
+    \vspace{0.5em}
+    \captionof{figure}{Top: Photo of home workshop with the 3d printed parts and initial assembly of the watertight enclosure. \\Bottom: Close up of the internal electronics showing the Pixhawk 6X, PDB-XT60 and Fathom-X boards.}
+    \label{fig:wte_assembly}
+\end{center}
+
+\subsection{Hardware and preparation for Simulation}
+Currently no experimentation or testing has been done as the project is still in the design phase. Once the design is completed the project will move into phase 2, this will start in Solidworks where mass/inertial properties will be calculated for each component.
+The design will then be exported into a urdf file and imported into ros2/gazebo with a buoyancy plugin to validate the design. A ubuntu environment has be setup ready for this step. The method involves calculating the force required to achieve neutral buoyancy and adding enough volume to produce a buoyancy force equal to the offset force.
+Once the design is validated, a prototype will be built and tested in a pool environment after waterproof tests are done.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% ==============================================================================
+% 4. PROJECT MANAGEMENT
+% ==============================================================================
+\section{Project Management}
+\label{sec:management}
+
+
+\subsection{Risk Assessment}
+\label{sec:risk_assessment}
+% --- REVISED RISK ASSESSMENT SECTION ---
+
+A comprehensive risk assessment (RA), titled "Design of small scale Remotely Operated Vehicle - Underwater Robot" (ID: 18339), was submitted through the QUT HSE Hub to ensure the safety of all personnel and equipment. This document identifies the primary hazards associated with the project and, more importantly, establishes the formal control measures that will be implemented to mitigate them. The full RA document is attached in Appendix~\ref{app:risk_assessment}.
+
+The key risks and their corresponding mitigation strategies are summarised below:
+
+\begin{itemize}
+    \item \textbf{Electrical Hazards (LiPo Battery):}
+    The primary electrical risk involves the use, handling, storage, and charging of the 5200mAh 4S Lithium-Polymer (LiPo) battery. These batteries have a very high energy density and discharge rate, requiring strict protocols. The ROV's internal system is classified as "ultra low voltage" to comply with Australian standards.
+    \begin{description}
+        \item[Storage:] All batteries will be stored in designated fire-resistant LiPo bags or a battery cabinet, following consultation with S9 technical staff.
+        \item[Charging:] Charging will only be performed in a designated, clear area using a purpose-built LiPo balance charger. Batteries will be monitored throughout the charging process and never left unattended.
+        \item[Handling:] Only trained, designated operators may handle or connect the battery. A physical inspection for damage, swelling ("puffing"), or low voltage will be conducted before every use.
+        \item[Transport:] Batteries will be transported in a safe, discharged state within fire-resistant bags.
+    \end{description}
+    
+    \item \textbf{Operational Hazards (Electronics and Water):}
+    This risk category covers the hazards of operating a high-power electronic device in and around water, including the specific hazard of water leakage into the main electronics enclosure.
+    \begin{description}
+        \item[Leak Prevention:] A pre-operation checklist will be followed, requiring a visual and physical inspection of all O-ring seals, cable penetrators, and enclosure surfaces before every water-based test.
+        \item[Leak Detection:] During initial submersion in the test tank, the ROV will be closely monitored for any signs of water ingress.
+        \item[Electrical Safety:] The topside control station and power supply will be plugged into a Ground Fault Circuit Interrupter (GFCI) or Residual Current Device (RCD) protected outlet at all times.
+        \item[Facility Safety:] Use of any testing facility (e.g., QUT pool, test tanks) will be done only after receiving formal approval from the appropriate facility manager or body.
+    \end{description}
+
+    \item \textbf{Personnel and Training:}
+    The experimental nature of the ROV presents a risk if operated by untrained personnel.
+    \begin{description}
+        \item[Designated Operators:] Operation is strictly limited to the designated and trained team members (Joshua Hecke, Tobias Fischer, and Scarlett Raine).
+        \item[Induction Protocol:] Any other person must first receive a formal induction and practical training from a designated operator before they are permitted to operate the vehicle under supervision.
+    \end{description}
+
+    \item \textbf{Chemical Hazards (Waterproofing Sealant):}
+    The RA identifies potential hazards related to the use and storage of Dichtol waterproofing chemicals, which may be required to seal porous 3D-printed components.
+    \begin{description}
+        \item[Storage:] Should these chemicals be required, they will be purchased through S9 and stored in a designated, ventilated chemical storage cabinet as advised by technical staff.
+        \item[Handling:] Application will be performed in a well-ventilated area (e.g., a fume hood) using the appropriate Personal Protective Equipment (PPE), including gloves and safety glasses.
+        \item[SDS:] The Safety Data Sheet (SDS) for the chemical will be kept on-file and accessible in the lab.
+    \end{description}
+\end{itemize}
+
+\par\noindent\textbf{Note on Waterproofing Chemicals:} It should be noted that the Dichtol waterproofing chemical, while included in the RA for completeness, is not currently in use. This chemical was identified for potential future application if the 3D-printed components demonstrate water ingress or degradation after prolonged testing. Its use will be subject to the controls outlined above if and when it is required.
+
+These measures are pending final review for endorsement, with procedures for chemical and battery storage being finalised with S9 staff.
+\section{Ethical Considerations}
+\label{subsec:ethics}
+\subsection{Code of Ethics}
+\label{sec:ethics}
+This project is conducted in accordance with the Engineers Australia Code of Ethics \cite{EngineersAustralia2019}. The application of these guiding principles throughout the project's progress is detailed below.
+
+\subsubsection{Demonstrate Integrity}
+Integrity has been a foundational principle in all project activities, ensuring honest and respectful conduct.
+\begin{itemize}
+    \item \textbf{Honesty and Trustworthiness (1.2):} All project plans, design challenges, and progress have been communicated with transparency to supervisors and stakeholders. This commitment to openness ensures all involved parties remain fully informed of the project's status and direction.
+    \item \textbf{Respect for Persons (1.3):} Input has been actively sought and respectfully considered from all stakeholders, including academic supervisors, technical staff, and peers. Every contribution is valued, regardless of an individual's specific technical background, fostering a collaborative project environment.
+\end{itemize}
+
+\subsubsection{Practise Competently}
+The project has been undertaken with a commitment to technical competence and continuous professional development.
+\begin{itemize}
+    \item \textbf{Maintenance of Skills (2.1):} To meet the specific design requirements of the ROV chassis, a proactive effort was made to expand personal capabilities by learning and utilising SolidWorks 2023 for the mechanical design, despite prior experience favouring other CAD platforms.
+    \item \textbf{Acting on Knowledge (2.2):} All significant technical decisions, from component selection to control system architecture, have been evidence-based. These decisions are underpinned by a thorough review of relevant literature and direct consultation with knowledgeable stakeholders and subject matter experts.
+\end{itemize}
+
+\subsubsection{Exercise Leadership}
+Leadership has been demonstrated through proactive, clear, and honest communication with all project participants.
+\begin{itemize}
+    \item \textbf{Effective Communication (3.3):} Professional and effective communication has been maintained with a diverse group of stakeholders, including researchers and laboratory technicians. Through clear emails and meetings, critical information and expert advice have been solicited honestly and efficiently, acknowledging the reliance of the project on their expertise.
+\end{itemize}
+
+\subsubsection{Promote Sustainability}
+The design and documentation process has been mindful of the project's long-term impact and future use.
+\begin{itemize}
+    \item \textbf{Balancing Present and Future Needs (4.3):} To ensure the project's longevity, components have been selected with consideration for their long-term availability, mitigating risks of future obsolescence. Furthermore, a strong emphasis has been placed on thorough documentation, ensuring that the project's outcomes and learnings are accessible and can be effectively utilised by future students and researchers.
+\end{itemize}
+
+\subsection{Sustainability Considerations}
+\label{subsec:sustainability}
+The development of the SubbyROV platform has incorporated sustainability considerations throughout the design and component selection process. The project's sustainability is assessed across three key pillars: environmental, economic, and social, ensuring a responsible approach to engineering that extends beyond the project's immediate technical goals.
+
+\subsubsection{Environmental Sustainability}
+Environmental sustainability has been a primary driver in the selection of materials and the operational design of the ROV.
+\begin{itemize}
+    \item \textbf{Material Selection:} The ROV's chassis is constructed from anodised aluminium Item profile. Aluminium is not only durable and corrosion-resistant, extending the vehicle's operational lifespan, but it is also highly recyclable. The primary enclosure and thruster bodies are made from robust polymers designed for longevity in harsh marine environments, minimising the need for replacements and reducing potential waste.
+    
+    \item \textbf{Energy Efficiency:} The power system was designed for maximum efficiency to prolong operational time and reduce the frequency of battery charging cycles. As detailed in the power budget analysis, components such as the Pixhawk flight controller and the APISQUEEN U2 MINI thrusters were selected for their favourable power-to-performance ratio. 
+    
+    \item \textbf{Minimal Operational Impact:} As an electrically powered vehicle, the ROV produces no direct emissions. Its small size and low-noise thrusters are intended to minimise disturbance to marine life during research and demonstration activities.
+\end{itemize}
+
+\subsubsection{Economic Sustainability}
+The long-term economic viability of the platform is ensured through a modular and repairable design philosophy.
+\begin{itemize}
+    \item \textbf{Modularity and Reusability:} The use of a standardised Item Profile frame is a cornerstone of the design's economic sustainability. This modularity allows for the simple addition, removal, or repositioning of components, such as sensors, manipulators, or buoyancy blocks. This means the ROV is not a static design but an adaptable platform that can be reconfigured for future projects and research questions without requiring a complete rebuild, thus maximising the return on the initial investment.
+    
+    \item \textbf{Repairability and Maintenance:} The reliance on Commercial-Off-The-Shelf (COTS) components from reputable suppliers like Blue Robotics and HolyBro, as listed in the Bill of Materials, simplifies maintenance and repairs. Standardised parts are readily available, reducing downtime and lowering long-term maintenance costs compared to a system built with fully custom, one-off components. This is further backed the use of 3D printed parts for mounting components, allowing for inexpensive and rapid replacement if damaged or in need of modulation.
+\end{itemize}
+
+\subsubsection{Social and Educational Sustainability}
+Beyond its technical function, the ROV is designed to be a long-lasting educational and research tool for QUT.
+\begin{itemize}
+    \item \textbf{Platform for Future Research:} As outlined in the project proposal, a primary goal of this project is to create a testbed for future research and student projects within the university. The adaptable nature of the ROV ensures it will remain a relevant and valuable asset, facilitating hands-on learning in marine robotics, control systems, and sensor integration for subsequent student cohorts.
+    
+    \item \textbf{Knowledge Transfer:} The documentation of this project, including this report, serves to transfer knowledge to future teams. The use of widely adopted hardware like the Pixhawk and accessible software frameworks ensures that future students can readily build upon the work completed, fostering a continuous cycle of innovation and learning.
+\end{itemize}
+
+% ==============================================================================
+% 5. RESOURCES AND STAKEHOLDER ENGAGEMENT
+% ==============================================================================
+\section{Resources and Stakeholder Engagement}
+\label{sec:resources}
+
+\subsection{Codes, Regulations, and Standards}
+Given the project's current scope as an experimental platform for controlled environments, such as a QUT testing tank, adherence to specific commercial or maritime standards has not been a primary design constraint. Future development, particularly for deployment in natural waterways such as rivers or coastal waters, will require a review and application of relevant standards relevant to marine equipment and environmental protection.
+
+Despite the experimental nature, proactive safety measures aligned with general robotic best practices have been integrated. Notably, a physical emergency stop has been incorporated into the operator control unit. This feature, absent in many commercial off-the-shelf \gls{rov} kits like the BlueROV2, provides a reliable, failsafe method to de-energise the thrusters, significantly enhancing operator and equipment safety during testing.
+
+Furthermore, the use of high-energy Lithium Polymer (LiPo) batteries introduces specific hazards. All handling, charging, and storage procedures for these batteries will strictly adhere to Queensland University of Technology (QUT) regulations for on-campus laboratory work. These protocols are explicitly addressed and managed within the project's formal risk assessment to ensure safe operation.
+
+\subsection{Stakeholder Input}
+The project's direction and progress have been significantly shaped by continuous input from key stakeholders. This collaborative approach ensures the project remains aligned with its objectives, technically sound, and compliant with safety protocols.
+
+\subsubsection{Primary Stakeholders}
+\textbf{Tobias Fischer (Project Supervisor):} Mr. Fischer's role has been crucial in the conceptual and design phases of the project. His expert evaluation of design iterations and proposals for alternative simulation and modelling approaches have been instrumental. This guidance has been key to validating the design, particularly in balancing the competing constraints of vehicle size and operational runtime, ensuring the final product will meet its core performance targets.
+
+\textbf{S9 Workshop Technicians:} The technical staff at the S9 workshop have provided essential logistical and safety oversight. Their contributions to sourcing and ordering components have been vital for maintaining the project schedule. Furthermore, their expertise in evaluating the safety of critical systems has been indispensable. A notable instance was their input regarding the use of a high-discharge LiPo battery. Their requirement for a detailed risk assessment \textit{prior} to the battery's procurement has reinforced a safety-first culture within the project, ensuring all component selections are rigorously justified and safely implemented.
+
+\subsubsection{Future Stakeholders}
+As the project transitions from initial development (Phase 1) into prototyping and testing (Phase 2-3), the scope of stakeholder engagement will expand.
+
+\textbf{QUT Facilities and Personnel:} Preparations will be made to engage with the facility managers of the QUT pool and to induct secondary operators, such as Scarlet Raine, who will be involved in future testing.
+
+\textbf{Collaborating Research Teams:} The \gls{rov} is being developed as a potential payload-carrying platform for other research groups. Discussions with Tobias Fischer's other research teams are planned for Phase 3. These engagements will be critical for demonstrating the vehicle's capabilities and its effectiveness as a tool for their specific applications, which will directly influence the project's overall impact and potential for future use.
+
+% ==============================================================================
+% 6. CONCLUSION AND FUTURE WORK
+% ==============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+This report has detailed the significant progress achieved in the initial phase of the small-scale Remotely Operated Vehicle (ROV) development project. The primary objectives of this phase—comprehensive literature review, detailed mechanical and electrical design, and component procurement—have been successfully met. A robust literature review has informed a set of key design themes, guiding the project towards established and effective methodologies in ROV construction.
+
+The mechanical design, finalised in CAD and visualized in Figure \ref{fig:third_design}, provides a compact and modular frame centred around a 3-inch series watertight enclosure. The vectored thruster configuration has been selected to reduce power requirements and meet size constraints. All major electronic components, including the Pixhawk 6X flight controller and APISQUEEN U2 MINI thrusters, have been specified and sourced, as documented in the Bill of Materials. A thorough power budget analysis confirms the theoretical viability of the system, estimating an operational runtime of approximately 30 minutes with the selected 5200mAh LiPo battery under typical cruising conditions. With the design finalised and the majority of components now on hand, the project is well-positioned to transition from the theoretical design phase to the physical assembly and integration phase.
+
+\section{Future Work}
+\label{sec:future_work}
+
+The subsequent stages of the project will focus on the physical realisation and empirical validation of the designed system. The work is divided into two distinct phases: system integration and testing.
+
+\subsection{Phase 2: Assembly and System Integration}
+The immediate next step involves the complete physical assembly of the ROV. This will begin with the construction of the aluminium frame and the mounting of the thrusters and watertight enclosure. Concurrently, the internal electronics tray will be assembled, integrating the Pixhawk 6X, Power Distribution Board (PDB), Fathom-X interface board, and Electronic Speed Controllers (ESCs).
+
+Key tasks in this phase include:
+\begin{itemize}
+    \item Mechanical assembly of the frame and propulsion system.
+    \item Wiring of all internal electronic components, ensuring correct power and signal paths.
+    \item Installation and sealing of the cable penetrators for the thrusters and tether.
+    \item Flashing the Pixhawk controller with the ArduSub firmware and performing initial "on-the-bench" configuration and sensor calibration.
+    \item Establishing a successful communication link between the topside control station and the ROV via the Fathom-X tether interface boards.
+    \item Simulating the ROV in a virtual environment using ROS2 and Gazebo to validate the control algorithms and buoyancy behaviour prior to physical testing.
+    \item Conducting a comprehensive review of the risk assessment to ensure all new hazards introduced during assembly are adequately mitigated.
+    \item Designing buoyancy modules to achieve neutral buoyancy, based on the final mass properties of the assembled vehicle.
+\end{itemize}
+
+\subsection{Phase 3: Testing, Tuning, and Deployment}
+Once assembly is complete, the project will enter the critical testing phase. This will be conducted in a controlled environment, such as QUT and private swimming pools, to ensure safety and allow for iterative adjustments.
+
+The objectives of this phase are:
+\begin{itemize}
+    \item \textbf{Waterproofing and Ballasting:} The ROV will undergo initial leak testing. Following this, it will be carefully ballasted with weights and buoyancy additions to test the simulated neutral buoyancy and a stable trim.
+    \item \textbf{System Identification:} Initial manual control tests will be conducted to gather empirical data on the vehicle's dynamic response. This data will be crucial for developing an accurate mathematical model of the ROV's behaviour, which is a prerequisite for advanced controller design.
+    \item \textbf{Controller Tuning:} The Proportional-Integral-Derivative (PID) control loops within the ArduSub/PX4/GCU firmware will be systematically tuned to provide responsive and stable manual control across all degrees of freedom.
+    \item \textbf{Operational Validation:} The ROV will be tasked with performing a series of manoeuvres to validate its performance against the original project objectives. This includes tests for depth-holding, heading-holding, and general manoeuvrability.
+    \item \textbf{Autonomous and Payload Testing:} If time permits, basic autonomous waypoint navigation will be tested. Additionally, the vehicle's capability to carry and operate a simple payload, such as a camera or environmental sensor, will be evaluated.
+    \item \textbf{Documentation and Handover:} Comprehensive documentation of the assembly, configuration, and testing procedures will be compiled. This will ensure that future users can effectively operate and maintain the ROV platform.
+\end{itemize}
+Successful completion of these phases will result in a fully operational and tested ROV platform, ready for future research and demonstration applications.
+
+
+% ==============================================================================
+% REFERENCES
+% ==============================================================================
+\bibliographystyle{apalike} % A style close to APA
+\bibliography{references}  % This calls the 'references.bib' file
+
+
+% ==============================================================================
+% APPENDICES
+% ==============================================================================
+\appendix
+
+\section{Project Timeline}
+The project timeline is detailed in the Gantt chart below. The schedule outlines the key phases from the initial proposal through to the planned final testing. Phase 1, encompassing literature review, design, and procurement, has been successfully completed. The project is currently at the beginning of Phase 2.
+\includepdf[pages=1]{../../../Documents/ProjectProgressReport/GANTT CHART TEMPLATE.pdf}
+
+% place the section title on the first included PDF page (no extra page)
+\includepdf[
+    pages=1,
+    pagecommand={\section{Technical Drawings}\thispagestyle{plain}},
+    width=\paperwidth
+]{../../../Solidworks/Assemblies/Screenshots/Design-4/WTE.pdf}
+
+% include remaining drawing page(s) normally (no extra title page)
+\includepdf[
+    pages=1,
+    pagecommand={},
+    width=\paperwidth
+]{../../../Solidworks/Assemblies/Screenshots/Design-4/Drawing.pdf}
+
+% Place the section title onto the first page of the included BOM PDF so the title
+% doesn't occupy its own page. Include any remaining BOM pages normally.
+\includepdf[pages=1, pagecommand={\section{BOM (Full)}}, width=\paperwidth]{../SubbyROV BOM - Sheet1.pdf}
+\includepdf[pages=2-, pagecommand={}, width=\paperwidth]{../SubbyROV BOM - Sheet1.pdf}
+
+\includepdf[
+    pages=1,
+    pagecommand={\section{Full Risk Assessment}\label{app:risk_assessment}\thispagestyle{plain}},
+    width=\paperwidth
+]{../HSE Hub_07 PrintRiskAssessment.pdf}
+\includepdf[
+    pages=2-,
+    pagecommand={},
+    width=\paperwidth
+]{../HSE Hub_07 PrintRiskAssessment.pdf}
+
+
+\section{Original Literature Review (from Project Proposal)}
+\label{app:full_lit_review}
+% This is the full literature review from the original project proposal for reference.
+
+\subsection{Introduction}
+Unmanned Underwater Vehicles (UUVs) have become indispensable tools for a vast range of applications, including oceanographic surveys, infrastructure maintenance, and military defence \cite{Coccolo2023716, article}. As technology has advanced, these vehicles have evolved from simple teleoperated platforms into complex autonomous systems capable of executing sophisticated missions \cite{Coccolo2023716}. However, the literature reveals that a significant portion of research and commercial development has focused on large-scale, work-class vehicles or highly specialised Autonomous Underwater Vehicles (AUVs), which are often financially and logistically inaccessible for educational institutions or rapid prototyping research \cite{9659412}. This is due to the cost of setting up demonstrations with large scale \gls{rov} and larger \gls{rov} designs call for larger scale prototyping solutions which may not be realistic. This has created a gap for small-scale, low-cost, and modular \gls{rov} platforms that are not only suitable for demonstration but are also powerful enough to serve as testbeds for advanced control and perception algorithms. The aim of this review is to explore the current state-of-the-art in small-scale \gls{rov} design by analysing key themes in existing literature, thereby identifying best practices and informing the design methodology for a novel research platform.
+
+\subsection{Methodology and Scope}
+The literature review was conducted using a systematic approach, focusing on peer-reviewed journal articles, conference papers, and technical reports from the last decade. The search was primarily conducted using the database IEEE Xplore, with keywords including "small-scale ROV", "underwater vehicle design", "ROV control systems", and "modular underwater robotics". The review is structured to cover key design themes, hardware and software selections, control system architectures, and system modelling approaches, providing a comprehensive overview of the current state of small-scale \gls{rov} research. The scope of this review is limited to reviewing current literature on \gls{rov} design methodology and hardware selections.
+
+\subsection{Key Design Themes}
+\subsubsection{Chassis and Mechanical Design}
+The physical architecture of an \gls{rov} is a foundational design choice that dictates its hydrodynamic performance, modularity, and durability. The literature presents a clear dichotomy between open-frame and enclosed, torpedo-style chassis designs. Open-frame designs, such as those seen in the KCROV \cite{6263424}, MarmaROV \cite{8090250}, and eROV \cite{8615595}, are praised for their modularity, allowing for easy mounting of sensors, payloads, and thrusters. This configuration simplifies maintenance and is highly adaptable for research platforms. In contrast, streamlined, enclosed hulls are often selected to minimise hydrodynamic drag for greater efficiency and speed, as demonstrated by the MASUV-1 \cite{5723752} and X4-ROV \cite{7893910}. The thruster configuration is critical for maneuverability, with designs ranging from underactuated 3-thruster systems providing basic 3-\gls{dof} motion \cite{5355247}, to fully actuated 6 or 8 thruster systems enabling full 6 \gls{dof} control \cite{marzbanrad_2011_design, 9965928}. The placement of thrusters in a vectored arrangement is common for achieving high agility, allowing for coupled control of surge, sway, and yaw from a set of horizontal thrusters \cite{10200265, 9659412}.
+
+\subsubsection{Material Selection and Waterproofing}
+Material selection directly impacts the vehicle's weight, durability, and operational depth. For low-cost educational platforms like the ArduinoSub and the vehicle proposed by \citet{7506844}, PVC and acrylic are common choices due to their affordability and ease of fabrication. For more robust applications, designs progress towards aluminium frames and hulls \cite{6263424, article}, with high-performance vehicles intended for deep-sea operation employing materials like carbon fibre and syntactic foam to achieve high strength-to-weight ratios \cite{9962007}. Waterproofing remains a critical and persistent challenge. Standard solutions include O-ring seals for static enclosures and potted cable penetrators \cite{marzbanrad_2011_design}. However, the literature presents several innovative approaches to overcome the limitations of these methods. The Jeff \gls{auv} uses a novel non-penetrative magnetic coupling to transmit torque from internal motors to external propellers, completely eliminating the need for a dynamic shaft seal \cite{6907282}. The design by \citet{10313927} also highlights custom-developed connectors as a significant improvement over permanently potting electronics, allowing for easier maintenance and repair. For the QUT demonstration \gls{rov}, waterproofing will be a key challenge due to its small form factor.
+
+\subsubsection{Hardware Selections}
+\paragraph{Propulsion and Sensing.}
+The choice of thrusters and sensors is dictated by the vehicle's mission profile and budget. Propulsion systems range from modified low-cost(~\$50) bilge pumps in budget designs \cite{9267948} to commercially available, high-performance brushless DC thrusters like the BlueRobotics T200(~\$350 per unit), which are noted for their power and reliability \cite{8615595, 10200265}. Sensor suites vary significantly; educational kits may only include a basic \gls{imu} and a camera \cite{9659412}, while advanced research platforms like EVA and Mesobot are equipped with a comprehensive array of high end high-cost sensors, including Doppler Velocity Logs (DVLs) for measuring velocity relative to the seafloor(~\$12,500), USBL positioning systems for underwater localization(~\$3000), and high-resolution waterproofed cameras for visual navigation(~\$300) \cite{8558880, 8729822}.
+
+\paragraph{Control Hardware.}
+The selection of onboard electronics reflects a trade-off between cost, computational power, and development complexity. At the low-cost end of the spectrum, microcontroller based systems are prevalent. The D20-ROV and ArduinoSub, for instance, use an Arduino Mega 2560 as the central brain, which is sufficient for basic manual control and sensor interfacing \cite{8309454, 5355247}. For more advanced capabilities, single-board computers like the Raspberry Pi are frequently adopted, as seen in the BlueRov2 and PolROV designs, providing a Linux-based environment capable of handling networking, video streaming, and more complex algorithms \cite{10200265, 10928203}. High-performance vehicles designed for significant autonomy, such as EVA and Mesobot, employ multi-computer architectures with powerful CPUs and dedicated GPUs (e.g., Nvidia Jetson TX2) to process large volumes of sensor data in real-time \cite{8558880, 8729822}.
+
+\subsubsection{Software and Communication Frameworks}
+The software stack and communication architecture are integral to the \gls{rov}'s functionality. For complex, modular systems, the \gls{ros} is the framework of choice, as seen in the Autonomous ROV for Marine Growth and the EVA hybrid vehicle \cite{9965928, 8558880}. \gls{ros} is valued for its extensive libraries, hardware drivers, and robust inter-process communication, which significantly accelerates development time. On simpler platforms, custom firmware is often developed in C++ within the Arduino IDE or using Python on a Raspberry Pi \cite{9659412}. Open-source firmware like ArduSub, used in the VITA1 prototype, provides a powerful and well-supported alternative to developing a control system from scratch \cite{9447108}. Communication is almost universally handled via a physical tether for \gls{rov}s, which provides both power and a high-bandwidth data link. This link is typically Ethernet over twisted pairs, though high-end systems may use fibre optics for greater bandwidth and distance \cite{9962007}.
+
+\subsubsection{Control System Architectures}
+Control strategies for underwater vehicles have matured from direct teleoperation to sophisticated autonomous behaviours \cite{5355247}. The foundational control method discussed in much of the literature is the \gls{pid} controller, used for fundamental tasks like depth-hold and heading-hold in vehicles such as the PolROV and Ariana-I \cite{10928203, marzbanrad_2011_design}. These controllers are well-understood and relatively simple to implement. However, due to the highly non-linear dynamics of underwater vehicles, more advanced techniques are often required for robust performance, especially in the presence of external disturbances like currents \cite{5355247}. To address this, some designs implement Sliding Mode Control (SMC) for its robustness to parameter uncertainties \cite{5355247}, or Fuzzy Logic controllers which do not require a precise mathematical model of the system \cite{7946564}. The Kambara \gls{auv} represents the cutting edge, employing model-free reinforcement learning to allow the controller to learn the vehicle's dynamics through trial and error, avoiding the need for an explicit model altogether \cite{wettergreen1999autonomous}.
+
+\subsubsection{System Modelling Approaches}
+The development of a control system is often preceded by system modelling to simulate and predict the vehicle's behaviour. A key distinction in the literature is the approach taken to derive this model. Many research-grade projects, such as the eROV and the spherical \gls{auv} by \citet{7790672}, develop a comprehensive 6-\gls{dof} dynamic model from first principles. This process involves using \gls{cad} software to determine rigid-body parameters (mass, inertia) and \gls{cfd} simulations to estimate hydrodynamic coefficients (drag, added mass) \cite{8615595, 10200265}. This model-based design allows for extensive simulation and controller tuning before physical construction. An alternative, empirical approach is system identification, where experimental data from a physical prototype is used to derive a transfer function model. This was successfully demonstrated by \citet{7244902} for the UTERG-ROV2, providing an accurate model for depth control without complex theoretical analysis. The choice of modelling approach represents a trade-off between theoretical rigour and the practicalities of physical testing.
+
+\end{document}

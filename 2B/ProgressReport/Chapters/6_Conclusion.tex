@@ -1,0 +1,60 @@
+% ***************************************************
+% Chapter 6: Conclusion and Future Roadmap
+% ***************************************************
+
+\chapter{Conclusion and Future Roadmap}
+\label{chap:conclusion}
+
+\section{Summary of Research Progress and Achievements}
+\label{sec:conclusion_summary}
+This progress report has detailed the conception, technical implementation, and empirical evaluation of primitive-space scene change detection applied to underwater 3D Gaussian Splatting models. In the initial phase of the research, all primary computational milestones have been met:
+\begin{enumerate}
+    \item \textbf{Automated Cluster Infrastructure:} A modular, production-grade 6-stage automation suite was designed and deployed across 11 isolated Conda environments on the QUT Aqua High-Performance Computing cluster, eliminating manual intervention in large-scale multi-view photogrammetry.
+    \item \textbf{Master 15 / 15 Benchmark Milestone:} All 15 planned benchmark targets across 8 models and 3 datasets achieved 100\% full-lifecycle completion, demonstrating rock-solid execution stability on NVIDIA A100-SXM4-40GB hardware.
+    \item \textbf{Comprehensive Model Benchmarking:} Quantitative evaluation across held-out novel views revealed critical architectural trade-offs:
+    \begin{itemize}
+        \item \textit{3D-UIR} demonstrated the highest structural preservation ($SSIM = 0.8739$ on Kwaj, $0.7085$ on Tokai), proving optimal for retaining fine geometric coral features without blurring.
+        \item \textit{SeaSplat} successfully decoupled water column backscatter and wavelength attenuation ($PSNR = 24.60\text{ dB}$, $SSIM = 0.8341$), recovering true benthic albedo.
+        \item \textit{Gaussian Splashing} achieved the highest raw reconstruction fidelity ($PSNR = 27.93\text{ dB}$ on Kwaj), while \textit{WaterSplatting} achieved the lowest perceptual error ($LPIPS = 0.1714$) with sub-40-minute training times.
+    \end{itemize}
+    \item \textbf{Surface Regularization (SuGaR):} Successfully enforced signed distance field priors to prune 85–92\% of floating water-column primitives, extracting watertight textured Poisson meshes (\texttt{.obj}) across all scenes.
+    \item \textbf{Primitive-Space Change Detection (O-SCD):} Validated the primitive-space differencing engine on \texttt{Custom\_OSCD\_Dataset}, achieving $PSNR = 27.08\text{ dB}$ and $SSIM = 0.8315$ while accurately separating added and removed objects directly in 3D without viewpoint dependencies.
+\end{enumerate}
+
+\section{Technical Challenges and Lessons Learned}
+\label{sec:lessons_learned}
+Experimental execution yielded valuable insights that inform subsequent project phases:
+\begin{itemize}
+    \item \textbf{Gaussian Drift:} Unconstrained Gaussian splats optimize purely for photometric re-projection; independent runs on identical scenes exhibit spatial centroid drift. SuGaR surface regularization is indispensable to anchor primitives to physical geometry prior to differencing.
+    \item \textbf{Severe Turbidity and Long-Range Collapse:} In highly turbid environments (such as Tokai Maru), optical attenuation models require accurate metric depth priors to avoid collapsing background Gaussians into foreground haze.
+    \item \textbf{Batch Script Robustness:} Diverse submodules with conflicting GCC/CUDA dependencies require rigid environment sandboxing and process isolation.
+\end{itemize}
+
+\section{Future Roadmap: The AIMS EcoRRAP Deployment}
+\label{sec:future_roadmap}
+With baseline benchmarks and cluster toolchains fully validated, the project is strategically positioned to enter Phase~2 and Phase~3 upon receipt of the 1.35~TB AIMS EcoRRAP dataset:
+
+\subsection{Phase 2: EcoRRAP Ingestion and Co-Registration (Months 1–2)}
+\begin{itemize}
+    \item \textbf{Data Ingestion \& Staging:} Finalize the inter-institutional Data Transfer Agreement (DTA) with AIMS, staging the 1.35~TB temporal dataset onto the QUT Aqua Lustre scratch filesystem via high-throughput Globus transfer.
+    \item \textbf{Multi-Temporal SfM Alignment:} Ingest multi-temporal image pairs ($T_0$ baseline vs. $T_1$ post-disturbance) through the Stage~2 COLMAP pipeline, establishing unified extrinsic camera poses across seasonal surveys.
+    \item \textbf{Depth Prior Extraction:} Run batch monocular depth estimation across the coral scenes to provide dense spatial constraints for optical inversion.
+\end{itemize}
+
+\subsection{Phase 3: Model Transplantation and Extended Cluster Optimization (Months 3–4)}
+\begin{itemize}
+    \item \textbf{Architectural Transplantation:} Based on the benchmark findings, directly graft the winning underwater optical formulation (\textit{3D-UIR} and \textit{SeaSplat}) into the \gls{oscd} pipeline, replacing the default naive terrestrial Gaussian backbone.
+    \item \textbf{Long-Duration HPC Training:} Train the unified model for extended iteration counts (50,000 to 100,000 iterations) on multi-GPU A100 nodes, generating ultra-dense, turbidity-free representations of baseline reef colonies.
+    \item \textbf{Volumetric Change Quantitation:} Execute primitive-space change detection against the $T_1$ inspection surveys, followed by SuGaR mesh extraction to calculate exact physical metrics:
+    \begin{itemize}
+        \item Volumetric accretion ($cm^3$) indicating coral growth and calcification.
+        \item Volumetric depletion ($cm^3$) reflecting cyclone breakage, storm damage, or coral mortality.
+        \item Surface area changes ($m^2$) quantifying structural rugosity shifts.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Phase 4: Synthesis, Validation, and Handover (Month 5)}
+\begin{itemize}
+    \item \textbf{Ecological Validation:} Review volumetric change maps with domain experts (Dr. Scarlett Raine and AIMS researchers) to validate biological plausibility against in-situ diver transects.
+    \item \textbf{Dissemination:} Compile the final Master's thesis, draft a conference manuscript for submission to a leading vision venue (e.g., IEEE ICRA or IROS), and package the codebase for long-term deployment at the QUT Centre for Robotics.
+\end{itemize}

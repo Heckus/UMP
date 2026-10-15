@@ -1,0 +1,122 @@
+% ***************************************************
+% Chapter 2: Literature Review
+% ***************************************************
+
+\chapter{Literature Review}
+\label{chap:lit_review}
+
+\section{Introduction and Theoretical Foundation}
+\label{sec:lit_intro}
+The literature informing this research spans three core domains: the ecological necessity of advanced marine photogrammetry, the evolution of scene change detection from 2D pixel space to 3D primitive space, and the rapid adaptation of 3D Gaussian Splatting (\gls{3dgs}) architectures to underwater optical degradation. This chapter critically evaluates recent literature (2020–2026), examines trade-offs between physical inverse rendering and restoration-guided 3DGS, investigates surface regularisation techniques, and highlights the research gap addressed by this project.
+
+\section{The Marine Photogrammetry Imperative and Ecological Indicators}
+\label{sec:lit_marine}
+Accurate temporal monitoring of benthic coral ecosystems is essential for tracking ecological resilience, structural calcification, and post-disturbance recovery~\cite{souter2020status}. Traditional marine monitoring methodologies rely predominantly on diver-operated in-situ surveys, including Point Intercept Transects (PIT), broad-scale Manta Tows, and fixed-site planar photo-quadrats~\cite{icri2021monitoring}. 
+
+However, a comprehensive review of coral condition indicators by Davey et al.~\cite{davey2025review} revealed a persistent disconnect between the massive volume of raw imagery collected globally and its practical utility in spatial conservation planning. Standard 2D indicators, such as percentage planar coral cover, project complex three-dimensional biological geometries onto a flat plane. As a result, planar metrics systematically obscure under-canopy structural rugosity, vertical growth rates, cryptic microhabitats, and sub-surface physical fractures~\cite{davey2025review}. While multi-view Structure-from-Motion (\gls{sfm}) and Neural Radiance Fields (\gls{nerf})~\cite{10203316} have demonstrated the value of 3D spatial representations, their heavy training times, lack of explicit surface geometry, and sensitivity to underwater turbidity have historically limited their operational scalability. The advent of explicit 3D Gaussian primitives offers the capability to capture dense, millimeter-accurate spatial structures at real-time rendering rates~\cite{10897713}.
+
+\section{Scene Change Detection: Render-then-Compare vs. Primitive-Space Comparison}
+\label{sec:lit_scd}
+Detecting physical modifications across multi-temporal scene captures has historically relied on two competing paradigms:
+
+\subsection{Render-then-Compare Paradigms}
+Conventional 3D change detection methods utilize 3D representations strictly as an intermediate rendering substrate~\cite{10.1145/3806262.3806264}. Given a post-change camera pose, a synthetic image of the baseline scene is rendered and compared against the query photograph using pixel-wise differencing or deep feature extractors. While this suppresses viewpoint discrepancies, it suffers from several severe limitations:
+\begin{itemize}
+    \item \textbf{Viewpoint and Occlusion Dependencies:} Discrepancies are only detected where cameras have direct lines of sight, leaving occluded sub-canopy changes undetected.
+    \item \textbf{Sensitivity to Transient Illumination:} In underwater environments, shifting sunlight caustics, tidal turbidity, and variable cloud cover cause intense pixel-level differences between baseline and query views, triggering widespread false positives~\cite{galappaththige2026pixelsprimitivesscenechange}.
+    \item \textbf{Indirect Representation:} Structural change signals must be laboriously re-projected back into 3D space, introducing quantization and boundary errors.
+\end{itemize}
+
+\subsection{Direct Primitive-Space Comparison}
+To circumvent the limitations of 2D image-space differencing, recent breakthroughs have established direct comparison within the native 3D primitive space. GS-DIFF~\cite{galappaththige2026pixelsprimitivesscenechange} and \gls{oscd} pioneer direct mathematical comparison across the primary attributes of 3D Gaussians: centroid positions ($\mu \in \mathbb{R}^3$), anisotropic covariance matrices ($\Sigma \in \mathbb{R}^{3 \times 3}$), opacity ($\alpha \in \mathbb{R}$), and spherical harmonic colour coefficients.
+
+The fundamental advantage of direct primitive-space change detection is its capacity to separate genuine geometric transformations (e.g., coral branch detachment or volumetric accretion) from superficial photometric shifts (such as water colour casts or transient shading) without requiring 2D image synthesis or external segmentation supervision~\cite{galappaththige2026pixelsprimitivesscenechange}. Similarly, 3DGS-CD~\cite{10852207} leverages geometric primitive clustering to track object rearrangements without depth inputs.
+
+\paragraph{The Challenge of Reconstruction Drift:} Despite its advantages, direct primitive-space comparison faces the challenge of \textit{Gaussian drift}. Because 3DGS optimization is fundamentally under-constrained, independent training passes on the exact same static scene can converge to radically distinct arrangements of ellipsoidal primitives~\cite{galappaththige2026pixelsprimitivesscenechange}. To prevent false positives, primitive-space engines must implement robust covariance inflation, nearest-neighbour spatial gating, and photometric drift modeling.
+
+\section{Underwater 3D Gaussian Splatting Architectures}
+\label{sec:lit_underwater_3dgs}
+Standard 3DGS~\cite{10897713} was formulated for terrestrial, clear-air environments under the assumption of non-participating media, where light travels unattenuated along straight camera rays. Underwater, light undergoes severe absorption and scattering governed by the Jaffe-McGlamery and Akkaynak-Treibitz optical models~\cite{10203316, 11128502}. The computer vision literature has diverged into three primary methodological paradigms to overcome these phenomena:
+
+\subsection{Paradigm 1: Physically-Grounded Inverse Rendering}
+Physically-grounded models directly integrate physical equations of light attenuation and backscatter into the differentiable Gaussian splatting optimization:
+\begin{itemize}
+    \item \textbf{SeaSplat (ICRA 2025):} Yang et al.~\cite{11128502} formulate image formation by parameterizing wavelength-dependent attenuation coefficients $\beta_{atten}(\lambda)$ and backscatter $\beta_{scat}(\lambda)$ directly alongside spatial Gaussian attributes. By explicitly disentangling the medium contribution from the scene reflectance, SeaSplat recovers true object geometry and unattenuated albedo.
+    \item \textbf{WaterGS (2025):} Wang et al.~\cite{article} frame underwater reconstruction as a formal inverse-rendering problem, jointly optimizing transmission maps and medium ambient radiance.
+    \item \textbf{DualPhys-GS (2025):} Li et al.~\cite{LI2025104405} implement dual feature-guided scattering-attenuation models, incorporating water-type adaptive loss functions to balance edge sharpness against distant turbidity.
+    \item \textbf{UW-3DGS (2025):} Xing et al.~\cite{xing2025uw3dgsunderwater3dreconstruction} introduce physics-aware uncertainty pruning to suppress floaters in turbid zones.
+\end{itemize}
+\textit{Analytical Assessment:} Physically-grounded models produce the most geometrically rigorous and structurally consistent primitives because they directly invert the degradation physics. However, they incur substantial computational complexity and are sensitive to initial depth prior accuracy.
+
+\subsection{Paradigm 2: Prior-Driven and Restoration-Guided Photogrammetry}
+An alternative paradigm avoids solving complex differential radiative transfer equations, instead incorporating 2D underwater restoration networks or learned enhancement priors into the 3DGS loss formulation:
+\begin{itemize}
+    \item \textbf{3D-UIR (2025):} Huang et al.~\cite{huang2025restorationreconstructionrethinking3d} rethink underwater splatting by leveraging restoration guidance to regularize spatial densities while optimizing color fidelity.
+    \item \textbf{Gaussian Splashing (2025):} Mualem et al.~\cite{mualem2025gaussiansplashingdirectvolumetric} model direct volumetric rendering in participating underwater media, achieving crisp visual details.
+    \item \textbf{WaterSplatting (2025):} Li et al.~\cite{li2025watersplattingfastunderwater3d} couple lightweight 2D restoration with splatting, yielding ultra-fast training convergence.
+\end{itemize}
+\textit{Analytical Assessment:} Restoration-guided architectures converge rapidly and frequently achieve high novel-view synthesis metrics (PSNR/SSIM). However, 2D filters can introduce cross-view inconsistencies, and without explicit medium modeling, these architectures often generate spurious low-density floaters in distant water regions.
+
+\subsection{Paradigm 3: Multi-Modal Acoustic-Optic Fusion}
+In zero-visibility or high-turbidity aquatic zones, optical imagery degrades completely. Recent works fuse Forward-Looking Sonar (FLS) or imaging sonar with 3DGS:
+\begin{itemize}
+    \item \textbf{Aqua-Splat (2025):} Ling et al.~\cite{11184160} fuse acoustic range measurements with optical splats to correct scale ambiguity.
+    \item \textbf{SonarReg-GS SLAM (2026):} Yang et al.~\cite{s26154713} use sparse sonar range returns as metric depth anchors to regularize monocular visual SLAM.
+    \item \textbf{SonarSplat (2025) \& NAS-GS (2026):} Sethuraman et al.~\cite{11223217} and Xu et al.~\cite{xu2026nasgsnoiseawaresonargaussian} model acoustic fan-beam geometries directly within Gaussian kernels.
+\end{itemize}
+\textit{Analytical Assessment:} While acoustic sensors overcome turbidity, sonar data is sparse, noisy, and ambiguous in elevation, making pure acoustic sensing insufficient for the fine-grained millimeter structural rugosity required in benthic ecological monitoring.
+
+\subsection{Environmental Adaptations}
+Specialized adaptations have targeted dynamic marine artifacts:
+\begin{itemize}
+    \item \textbf{UW-GS (WACV 2025):} Wang et al.~\cite{10943785} introduce distractor-aware variance filtering to prune transient marine fauna (fish, floating kelp) from static reconstructions.
+    \item \textbf{RUSplatting (2025):} Jiang et al.~\cite{jiang2025rusplattingrobust3dgaussian} leverage decoupled RGB optimization and frame interpolation for sparse or poorly illuminated surveys.
+\end{itemize}
+
+\section{Surface Regularization: SuGaR Mesh Extraction}
+\label{sec:lit_sugar}
+Unconstrained 3D Gaussians represent arbitrary volumes rather than discrete physical surfaces, leading to blurred boundaries and floating artifacts in water. Surface-Aligned Gaussian Splatting (\gls{sugar})~\cite{guedon2024sugar} addresses this fundamental limitation by regularizing Gaussians onto a continuous Signed Distance Function (\gls{sdf}). By enforcing flat, disc-shaped Gaussian ellipsoids that align tangentially to estimated surface normals, SuGaR enables:
+\begin{enumerate}
+    \item Elimination of unanchored water-column primitives through opacity-density pruning.
+    \item Direct extraction of clean, high-resolution Poisson surface meshes (\texttt{.obj}) that retain photorealistic texture maps.
+    \item A geometrically anchored foundation suitable for quantitative volumetric and surface area measurements ($cm^3 / m^2$).
+\end{enumerate}
+
+\section{Summary of Methods and Research Gap}
+\label{sec:lit_gap}
+Table~\ref{tab:lit_methods_summary} consolidates the surveyed 3DGS paradigms.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Summary of Surveyed 3DGS Architectures and Categorisation}
+    \label{tab:lit_methods_summary}
+    \begin{tabularx}{\textwidth}{l l X}
+        \toprule
+        \textbf{Category} & \textbf{Model} & \textbf{Core Contribution \& Methodological Stance} \\
+        \midrule
+        \multirow{2}{*}{\parbox{2.8cm}{\textbf{Scene Change\\Detection}}} 
+        & GS-DIFF~\cite{galappaththige2026pixelsprimitivesscenechange} & Direct primitive-space comparison across centroid, covariance, and colour. \\
+        & 3DGS-CD~\cite{10852207} & Explicit geometric clustering for tracking object transformations. \\
+        \midrule
+        \multirow{3}{*}{\parbox{2.8cm}{\textbf{Physically-Grounded\\Underwater 3DGS}}} 
+        & SeaSplat~\cite{11128502} & Physically-grounded medium attenuation and backscatter parameterization. \\
+        & WaterGS~\cite{article} & Formal inverse rendering optimization for underwater radiance. \\
+        & DualPhys-GS~\cite{LI2025104405} & Dual feature-guided attenuation-scattering with water-type adaptation. \\
+        \midrule
+        \multirow{3}{*}{\parbox{2.8cm}{\textbf{Restoration-Guided\\Underwater 3DGS}}} 
+        & 3D-UIR~\cite{huang2025restorationreconstructionrethinking3d} & Restoration-guided density regularization for complex aquatic scenes. \\
+        & Gaussian Splashing~\cite{mualem2025gaussiansplashingdirectvolumetric} & Direct volumetric rendering for scattering participating media. \\
+        & WaterSplatting~\cite{li2025watersplattingfastunderwater3d} & Coupled 2D restoration network with ultra-fast Gaussian training. \\
+        \midrule
+        \multirow{2}{*}{\parbox{2.8cm}{\textbf{Environmental\\Adaptations}}} 
+        & RUSplatting~\cite{jiang2025rusplattingrobust3dgaussian} & Decoupled RGB learning and interpolation for low-light/sparse views. \\
+        & UW-GS~\cite{10943785} & Distractor-aware variance filtering to remove transient marine life. \\
+        \midrule
+        \textbf{Surface Regularization} 
+        & SuGaR~\cite{guedon2024sugar} & SDF-aligned surface regularization; eliminates floaters; extracts meshes. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\paragraph{The Identified Research Gap:} While underwater-optimised 3DGS models have advanced rapidly in static reconstruction, and primitive-space change detection has succeeded in terrestrial scenes, \textbf{no existing framework unifies underwater optical compensation with primitive-space scene change detection}. Current change detection engines (like default O-SCD) utilize standard terrestrial splatting backbones, causing severe false positives when confronted with water haze and shifting turbidity. This project directly addresses this gap by benchmarking underwater architectures, regularizing their geometries via SuGaR, and providing the architectural foundation to deploy an underwater-hardened O-SCD pipeline on real-world temporal coral monitoring data.

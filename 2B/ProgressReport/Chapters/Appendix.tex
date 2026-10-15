@@ -1,0 +1,181 @@
+% ***************************************************
+% Appendices
+% ***************************************************
+
+\chapter{Project Timeline and Updated Gantt Schedule}
+\label{app:timeline}
+Figure~\ref{fig:gantt_schedule} and Table~\ref{tab:detailed_schedule} detail the updated project schedule across the two-semester lifecycle, factoring in the legal and data-sharing processes for the 1.35~TB AIMS EcoRRAP dataset. Phase~1 (Literature Review, Pipeline Scaffolding, and 15/15 Benchmark Execution) is 100\% complete. The project is currently positioned at the start of Phase~2.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{ganttchart}[
+        vgrid,
+        hgrid,
+        x unit=0.65cm,
+        y unit chart=0.65cm,
+        time slot format=isodate,
+        time slot unit=month,
+        title/.append style={fill=gray!15},
+        title label font=\footnotesize\bfseries,
+        bar/.append style={fill=blue!35},
+        bar complete/.append style={fill=blue!75!black},
+        bar label font=\footnotesize,
+        group label font=\footnotesize\bfseries,
+        bar progress label font=\scriptsize,
+        bar progress label node/.append style={right=4pt},
+        bar height=0.5,
+        group height=0.35,
+        group right shift=0,
+        group top shift=0.65,
+         expand chart=\textwidth
+    ]{2026-07-01}{2027-02-28}
+        \gantttitlecalendar{year, month=shortname} \\
+        \ganttgroup{Phase 1: Foundations \& Benchmarks}{2026-07-01}{2026-10-15} \\
+        \ganttbar[progress=100]{Literature Review \& Proposal (1A/1B)}{2026-07-01}{2026-09-15} \\
+        \ganttbar[progress=100]{HPC Toolchain \& 11 Conda Envs}{2026-08-15}{2026-10-05} \\
+        \ganttbar[progress=100]{15/15 Benchmark Executions (Att. 10)}{2026-09-15}{2026-10-15} \\
+        \ganttgroup{Phase 2: EcoRRAP Ingestion}{2026-10-16}{2026-11-30} \\
+        \ganttbar[progress=30]{AIMS DTA \& Globus Transfer (1.35TB)}{2026-10-01}{2026-11-15} \\
+        \ganttbar[progress=0]{Temporal SfM Alignment \& Preprocessing}{2026-11-01}{2026-11-30} \\
+        \ganttgroup{Phase 3: Model Transplantation}{2026-12-01}{2027-01-15} \\
+        \ganttbar[progress=0]{Grafting 3D-UIR/SeaSplat into O-SCD}{2026-12-01}{2026-12-20} \\
+        \ganttbar[progress=0]{Long-Duration Aqua Cluster Training}{2026-12-15}{2027-01-15} \\
+        \ganttgroup{Phase 4: Synthesis \& Final Thesis}{2027-01-01}{2027-02-25} \\
+        \ganttbar[progress=0]{Volumetric Analysis ($\text{cm}^3/\text{m}^2$)}{2027-01-01}{2027-01-25} \\
+        \ganttbar[progress=0]{Final Thesis \& Manuscript Delivery}{2027-01-15}{2027-02-25}
+    \end{ganttchart}%
+    }
+    \caption{Project Gantt schedule illustrating completed Phase 1 milestones and the upcoming multi-temporal EcoRRAP deployment roadmap.}
+    \label{fig:gantt_schedule}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Detailed Phase and Milestone Schedule}
+\label{tab:detailed_schedule}
+\begin{tabularx}{\textwidth}{l p{5.5cm} c l}
+\toprule
+\textbf{Phase} & \textbf{Milestone Description} & \textbf{Status} & \textbf{Target Window} \\
+\midrule
+\textbf{Phase 1} & Literature Review (1A) \& Project Proposal (1B) & Complete & July -- Sept 2026 \\
+& HPC Environment Setup (11 Sandboxed Envs) & Complete & Aug -- Oct 2026 \\
+& 6-Stage Automation Suite Implementation & Complete & Sept -- Oct 2026 \\
+& Master 15 / 15 Benchmark Execution Milestone & Complete & Oct 2026 \\
+& Progress Written Report (Assessment 2B) & Complete & Oct 2026 \\
+\midrule
+\textbf{Phase 2} & Finalize AIMS Data Transfer Agreement (DTA) & In Progress & Oct -- Nov 2026 \\
+& Staging 1.35~TB EcoRRAP Data to Aqua Lustre & Pending Legal & Nov 2026 \\
+& Stage 1--2 Batch COLMAP Alignment across Reefs & Planned & Nov 2026 \\
+\midrule
+\textbf{Phase 3} & Transplant Winning 3DGS Backbones into O-SCD & Planned & Dec 2026 \\
+& Long-Duration Cluster Optimization (50k Iterations) & Planned & Dec 2026 -- Jan 2027 \\
+& Primitive-Space Change Detection on Temporal Benthos & Planned & Jan 2027 \\
+\midrule
+\textbf{Phase 4} & Volumetric Coral Accretion/Depletion Calculations & Planned & Jan 2027 \\
+& Final Thesis Submission \& Conference Manuscript & Planned & Feb 2027 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% APPENDIX B: ATTEMPT 10 HPC VERIFICATION REPORT
+% ==============================================================================
+\chapter{Attempt 10 Verification Report and Execution Manifest}
+\label{app:verification}
+
+This appendix presents the verified terminal execution log and output manifest from \textbf{Attempt 10} (October 13, 2026), marking the 100\% successful completion of all 15 benchmark targets on the QUT Aqua GPU cluster node \texttt{gpu0n004} (NVIDIA A100-SXM4-40GB):
+
+\begin{footnotesize}
+\begin{verbatim}
+[INFO] SuGaR mesh verified and exported to: 
+  Dataset/Custom_OSCD_Dataset/output/refined_mesh/oscd.obj
+[INFO] --- Stage 6: Benchmarking & Metrics Evaluation (eval) (oscd) ---
+[INFO] Executing in [Env: oscd] [CWD: Codebase/3DGS-Change-Detection/O-SCD-main]:
+  python utils/metrics.py -m output/Custom_OSCD_Dataset/output
+
+Method: updated_scene
+Metric evaluation progress: 100%|[=========]| 25/25 [00:31<00:00, 1.24s/it]
+  SSIM : 0.8314773
+  PSNR : 27.0773735
+  LPIPS: 0.3440086
+
+[INFO] Metrics written to results.json and evaluation.json
+[SUCCESS] Pipeline execution completed for model: oscd (Duration: 1h 4m 6s)
+======================================================================
+Pipeline Execution Summary Report (Attempt 10 Master Milestone)
+======================================================================
+Model        Scene                 Status    Duration     VRAM Peak
+----------------------------------------------------------------------
+seasplat     Kwaj                  SUCCESS   1h 02m 11s   14.8 GB
+seasplat     Tokai                 SUCCESS   59m 03s      14.6 GB
+3d-uir       Kwaj                  SUCCESS   1h 11m 20s   16.2 GB
+3d-uir       Tokai                 SUCCESS   1h 18m 29s   16.1 GB
+gs-splash    Kwaj                  SUCCESS   2h 32m 37s   22.4 GB
+gs-splash    Tokai                 SUCCESS   4h 57m 07s   22.4 GB
+watersplat   Kwaj                  SUCCESS   38m 42s      11.2 GB
+watersplat   Tokai                 SUCCESS   48m 15s      11.1 GB
+rusplat      Kwaj                  SUCCESS   50m 16s      13.5 GB
+rusplat      Tokai                 SUCCESS   53m 24s      13.4 GB
+uw-gs        Kwaj                  SUCCESS   51m 15s      12.9 GB
+uw-gs        Tokai                 SUCCESS   1h 03m 29s   12.8 GB
+sugar        Kwaj                  SUCCESS   38m 41s      18.5 GB
+sugar        Tokai                 SUCCESS   32m 11s      18.2 GB
+oscd         Custom_OSCD_Dataset   SUCCESS   1h 04m 06s   28.6 GB
+----------------------------------------------------------------------
+Total Executions: 15 | Succeeded: 15 | Failed: 0 (100% Success Milestone)
+======================================================================
+\end{verbatim}
+\end{footnotesize}
+
+% ==============================================================================
+% APPENDIX C: EXTENDED RISK ASSESSMENT MATRIX
+% ==============================================================================
+\chapter{Extended Risk Assessment Matrix}
+\label{app:risk_assessment}
+
+Table~\ref{tab:app_risk_full} presents the formal Risk Assessment matrix adapted from QUT HSE Hub submission ID: 18339, addressing all identified project hazards.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Full Risk Management Matrix (QUT HSE Hub Submission ID: 18339)}
+\label{tab:app_risk_full}
+\begin{tabularx}{\textwidth}{p{2.6cm} p{2.2cm} c p{3.2cm} X}
+\toprule
+\textbf{Activity / Context} & \textbf{Hazard} & \textbf{Risk} & \textbf{Consequence} & \textbf{Control Measures} \\
+\midrule
+HPC Cluster Compute & GPU Thermal / Memory Overload & Med & Process abort, loss of intermediate weights & Checkpointing every 5k iterations; automatic OOM traps; VRAM monitoring via \texttt{nvidia-smi}. \\
+\addlinespace
+Cluster Jobs & Walltime Exhaustion & Med & Job termination before evaluation & Conservative PBS walltime limits (+2 hours buffer); split Stage 1--4 and Stage 5--6 jobs. \\
+\addlinespace
+AIMS Data Storage & Restricted Ecological Data & High & Compliance breach, data leak & Data stored exclusively on secure restricted HPC scratch; strict POSIX permissions; no public hosting. \\
+\addlinespace
+Local Workstation & Large Archive Extraction & Low & Disk space exhaustion on local drives & Dynamic archiving script excluding intermediate temp folders; symlink-based organization. \\
+\addlinespace
+Algorithm Optimization & Gaussian Drift & Med & False-positive scene change masks & SuGaR surface regularisation prior to change computation; spatial distance thresholds. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% APPENDIX D: EXTENDED LITERATURE SURVEY FROM PROPOSAL
+% ==============================================================================
+\chapter{Extended Literature Review Survey (from Proposal 1B)}
+\label{app:extended_lit_review}
+
+For complete auditability, this appendix preserves the comprehensive literature survey conducted during Project Proposal 1B, detailing earlier underwater optical formulations and baseline comparisons:
+
+\section{Historical Foundations: Diver Transects and 2D Planar Limitations}
+Benthic monitoring has historically relied on planar 2D imagery. In a seminal evaluation, Davey et al.~\cite{davey2025review} demonstrated that 2D metrics systematic underestimate vertical canopy rugosity by up to 45\% compared to true 3D spatial reconstructions. Traditional Structure-from-Motion (SfM) techniques require hours of bundle adjustment for a single reef quadrat and lack the explicit primitive representation required for real-time differential tracking.
+
+\section{Radiative Transfer in Aquatic Scattering Media}
+Underwater optical propagation is governed by the simplified Jaffe-McGlamery formulation:
+\begin{equation}
+    I_\lambda(x) = J_\lambda(x) e^{-\beta_{atten}(\lambda) d(x)} + B_\lambda^\infty \left(1 - e^{-\beta_{scat}(\lambda) d(x)}\right)
+    \label{eq:underwater_optical_model}
+\end{equation}
+where $I_\lambda(x)$ is the observed sensor radiance at wavelength $\lambda$, $J_\lambda(x)$ represents the unattenuated direct scene radiance (true benthic colour), $d(x)$ is the Euclidean distance from the sensor, $\beta_{atten}$ and $\beta_{scat}$ denote wavelength-dependent attenuation and backscatter coefficients, and $B_\lambda^\infty$ is the veiling ambient background water radiance. 
+
+Traditional image restoration methods (such as histogram equalization, CLAHE, or deep GANs) operate strictly in 2D image space, introducing view-inconsistent color artifacts across different camera perspectives. In contrast, physically grounded 3DGS models (such as \textit{SeaSplat}~\cite{11128502}) optimize the attenuation coefficients $\beta(\lambda)$ directly within the differentiable volumetric rendering loop, ensuring that the recovered spatial primitives represent true, medium-independent benthic geometry.

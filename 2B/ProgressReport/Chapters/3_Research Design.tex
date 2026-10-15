@@ -1,0 +1,115 @@
+% ***************************************************
+% Chapter 3: Research Design and Methodology
+% ***************************************************
+
+\chapter{Research Design and Methodology}
+\label{chap:research_design}
+
+\section{Introduction}
+\label{sec:design_intro}
+This chapter delineates the technical framework and experimental methodology developed to investigate primitive-space change detection in underwater 3D Gaussian Splatting models. Section~\ref{sec:pipeline_arch} details the automated 6-stage execution pipeline. Section~\ref{sec:compute_budget} establishes the High-Performance Computing (\gls{hpc}) resource and storage budget on the QUT Aqua cluster. Finally, Section~\ref{sec:dataset_protocol} details the dataset ingestion protocols for current benchmarks and the upcoming 1.35~TB AIMS EcoRRAP dataset.
+
+\section{The 6-Stage Automation Pipeline Architecture}
+\label{sec:pipeline_arch}
+To achieve rigorous, repeatable experimentation across 8 distinct models and multiple datasets without manual intervention, a production-grade automation suite was engineered. Orchestrated through modular bash scripts (\texttt{run\_pipeline.sh} and PBS batch job arrays), the system executes a sequential 6-stage workflow depicted in Figure~\ref{fig:six_stage_pipeline}:
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.45cm and 0.2cm,
+        stage/.style={rectangle, draw=blue!80!black, fill=blue!8, thick, text width=2.1cm, minimum height=1.3cm, align=center, font=\tiny\sffamily, inner sep=1.5pt},
+        arrow/.style={->, >=stealth, thick, blue!80!black}
+    ]
+        \node[stage] (s1) {\textbf{Stage 1}\\[1pt]Data Ingestion\\\& Downsampling};
+        \node[stage, right=of s1] (s2) {\textbf{Stage 2}\\[1pt]COLMAP SfM\\Pose Estimation};
+        \node[stage, right=of s2] (s3) {\textbf{Stage 3}\\[1pt]Depth Estimation\\\& Inversion};
+        \node[stage, right=of s3] (s4) {\textbf{Stage 4}\\[1pt]Model Training\\(30k Iterations)};
+        \node[stage, right=of s4] (s5) {\textbf{Stage 5}\\[1pt]SuGaR Surface\\Mesh Extraction};
+        \node[stage, right=of s5] (s6) {\textbf{Stage 6}\\[1pt]Quantitative\\Benchmarking};
+
+        \draw[arrow] (s1) -- (s2);
+        \draw[arrow] (s2) -- (s3);
+        \draw[arrow] (s3) -- (s4);
+        \draw[arrow] (s4) -- (s5);
+        \draw[arrow] (s5) -- (s6);
+    \end{tikzpicture}
+    \caption{The end-to-end 6-stage automated pipeline executed across all benchmark targets on the QUT Aqua HPC cluster.}
+    \label{fig:six_stage_pipeline}
+\end{figure}
+
+\begin{enumerate}
+    \item \textbf{Stage 1: Data Preparation \& Ingestion:} Ingests multi-view imagery, extracts EXIF metadata, rescales inputs to standard resolutions ($1\times, 2\times, 4\times, 8\times$), and formats directory trees into standard camera convention layouts.
+    \item \textbf{Stage 2: COLMAP Structure-from-Motion (SfM):} Performs SIFT feature extraction, exhaustive or spatial feature matching, bundle adjustment, and sparse geometric triangulation. For dual-scene change detection (\gls{oscd}), a joint co-registration procedure aligns reference and query camera poses into a shared coordinate reference frame.
+    \item \textbf{Stage 3: Depth Estimation and Optical Inversion:} For models requiring monocular metric depth priors (e.g., \textit{SeaSplat}, \textit{DualPhys-GS}), this stage executes deep metric estimation models (UniDepth / ZoeDepth) to extract dense distance maps.
+    \item \textbf{Stage 4: 3DGS Model Optimization:} Dispatches the chosen architecture into its dedicated, isolated Conda environment. The model is trained for up to 30,000 iterations on an NVIDIA A100 GPU, optimizing position, covariance, opacity, and spherical harmonic albedo via stochastic gradient descent.
+    \item \textbf{Stage 5: SuGaR Surface Mesh Extraction:} Ingests the optimized 3D Gaussian point cloud, applies signed-distance-field regularization, prunes unanchored water-column floaters, and extracts a watertight Poisson surface mesh (\texttt{.obj}) with baked texture maps.
+    \item \textbf{Stage 6: Quantitative Benchmarking \& Evaluation:} Evaluates novel view synthesis on held-out test cameras, computing Peak Signal-to-Noise Ratio (\gls{psnr}), Structural Similarity Index (\gls{ssim}), and Learned Perceptual Image Patch Similarity (\gls{lpips}). Outputs are recorded into structured JSON manifests (\texttt{results.json}, \texttt{evaluation.json}).
+\end{enumerate}
+
+\section{Compute, Storage, and Resource Budget}
+\label{sec:compute_budget}
+Just as physical robotics projects require mechanical Bills of Materials (BOM) and electrical power budgets, high-performance artificial intelligence research demands a rigorous compute, storage, and memory resource budget.
+
+\subsection{HPC Compute Infrastructure}
+All model training and evaluations are conducted on the \textbf{QUT Aqua High-Performance Computing cluster}. Computations utilize dedicated GPU compute nodes equipped with:
+\begin{itemize}
+    \item \textbf{Compute Nodes:} NVIDIA A100-SXM4-40GB GPUs (40~GB high-bandwidth HBM2 memory, 6,912 CUDA cores, 432 Tensor cores).
+    \item \textbf{Host Processors:} AMD EPYC 7742 64-Core Processors (minimum 8 CPU cores allocated per job).
+    \item \textbf{System Memory:} 64~GB to 128~GB DDR4 ECC host RAM per execution.
+    \item \textbf{Interconnect \& Filesystem:} InfiniBand HDR (200 Gbps) connecting to a high-speed Lustre parallel scratch filesystem.
+\end{itemize}
+
+\subsection{Model Resource Utilization and Execution Budget}
+Table~\ref{tab:compute_budget} provides the empirical compute and memory budget across the evaluated architectures on the Aqua cluster.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \setlength{\tabcolsep}{5pt}
+    \renewcommand{\arraystretch}{1.15}
+    \caption{Empirical Compute, VRAM, and Execution Budget on QUT Aqua HPC (NVIDIA A100-SXM4-40GB)}
+    \label{tab:compute_budget}
+    \begin{tabularx}{\textwidth}{l l c c c X}
+        \toprule
+        \textbf{Model} & \textbf{Category} & \textbf{Peak VRAM} & \textbf{Avg Duration} & \textbf{Disk} & \textbf{Primary Output Artifacts} \\
+        \midrule
+        SeaSplat & Physics-based & 14.8 GB & 1h 01m & 1.2 GB & Point Cloud (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
+        3D-UIR & Physics-based & 16.2 GB & 1h 15m & 1.4 GB & Point Cloud (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
+        Gaussian Splashing & Restoration & 22.4 GB & 3h 45m & 2.8 GB & Volumetric Splat (\texttt{.ply}), Mesh (\texttt{.obj}) \\
+        WaterSplatting & Restoration & 11.2 GB & 43m & 0.9 GB & Fast Splat (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
+        RUSplatting & Supplementary & 13.5 GB & 52m & 1.1 GB & Point Cloud (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
+        UW-GS & Supplementary & 12.9 GB & 57m & 1.0 GB & Variance-filtered Splat (\texttt{.ply}), Mesh (\texttt{.obj}) \\
+        SuGaR & Surface Reg. & 18.5 GB & 35m & 1.8 GB & Coarse \& Refined Textured Meshes (\texttt{.obj}) \\
+        O-SCD & Change Det. & 28.6 GB & 1h 04m & 3.2 GB & Updated Splat (\texttt{.ply}), Change Masks (\texttt{.png}) \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Storage and Data Transfer Bandwidth}
+The project manages two storage tiers:
+\begin{enumerate}
+    \item \textbf{Cluster Scratch Storage (\texttt{/mnt/hpccs01/home/n11585382}):} High-speed NVMe/Lustre storage holding active Conda environments (11 environments $\approx 45\text{ GB}$), raw image sets, COLMAP feature databases, and checkpoint caches. Total allocation: 2.0~TB.
+    \item \textbf{Local Presentation Storage:} Extracted and organized deliverables on Ubuntu workstations. Transfers utilize the QUT Data Transfer Node (\texttt{eresdtn01.qut.edu.au}) via multi-threaded \texttt{rsync} over SSH, sustaining transfer bandwidths exceeding $85\text{ MB/s}$ over the university network.
+\end{enumerate}
+
+\section{Dataset Ingestion Protocols}
+\label{sec:dataset_protocol}
+
+\subsection{Proof-of-Concept Benchmark Datasets}
+To establish comparative baselines and eliminate software bugs prior to receiving production data, two open-source datasets and one custom dual-scene dataset were utilized:
+\begin{itemize}
+    \item \textbf{Submerged3D Shipwreck Benchmarks~\cite{11128502}:} Comprises real-world high-resolution underwater surveys:
+    \begin{enumerate}
+        \item \textit{Kwaj:} Photogrammetric survey of the WW2 German cruiser \textit{Prinz Eugen} capsized at Kwajalein Atoll, exhibiting heavy biofouling, rust, and medium backscatter.
+        \item \textit{Tokai:} Survey of the \textit{Tokai Maru} shipwreck in Guam, characterized by extreme blue-wavelength absorption, low ambient lighting, and suspended turbidity.
+    \end{enumerate}
+    \item \textbf{Custom Dual-Scene Change Dataset (\texttt{Custom\_OSCD\_Dataset}):} A dual-pass dataset captured specifically to evaluate the primitive-space change detection pipeline. It features a controlled environment where multiple objects were physically introduced, removed, and rearranged between a reference survey ($T_0$) and an inference survey ($T_1$).
+\end{itemize}
+
+\subsection{The Production Target: AIMS EcoRRAP Dataset (1.35 TB)}
+The true research objective of this thesis centers on the \textbf{AIMS EcoRRAP dataset}~\cite{gordon2023field}, curated by the Australian Institute of Marine Science in partnership with the QUT Centre for Robotics:
+\begin{itemize}
+    \item \textbf{Nature and Scale:} EcoRRAP contains multi-temporal benthic photogrammetry across major Great Barrier Reef monitoring sectors. The complete dataset encompasses approximately \textbf{1.35 Terabytes} of ultra-high-resolution stereoscopic imagery, tracking fixed coral colonies across seasonal cycles, cyclone impacts, and thermal bleaching events.
+    \item \textbf{Administrative and Legal Status:} Due to data confidentiality, commercial-in-confidence ecological mapping, and institutional compliance, the 1.35~TB dataset requires a formal inter-institutional Data Transfer Agreement (DTA). The data transfer process is currently undergoing standard institutional legal review between AIMS and QUT legal departments.
+    \item \textbf{Ingestion Strategy:} Upon legal clearance, the dataset will be staged onto the Aqua Lustre filesystem via high-throughput Globus transfer. The 6-stage automation pipeline developed in this progress report will ingest the temporal pairs, using the optimal underwater models identified in Chapter~\ref{chap:progress} to execute large-scale primitive-space change detection.
+\end{itemize}

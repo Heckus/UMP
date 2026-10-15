@@ -1,0 +1,115 @@
+\documentclass[final]{qutthesis}
+
+% The document class file
+% *************************************
+% ENN595-1 Assessment 2B: Project Progress Written Report
+% *************************************
+% Investigation of Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models
+% Author: Joshua Hecke (n11585382)
+% Supervisors: Prof. Niko Sünderhauf & Dr. Scarlett Raine (QUT Centre for Robotics)
+
+\input{LaTexPackages.tex}
+
+% ***************************************************
+% Title page Metadata
+% ***************************************************
+
+\title{\LARGE Investigation of Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models}
+\author{Joshua Hecke}
+\currentdegrees{Bachelor of Engineering (Honours) / Master of Robotics and Artificial Intelligence (Student ID: n11585382)}
+\date{\large October 2026}
+\submittedfor{Bachelor of Engineering (Honours) / Master of Robotics and Artificial Intelligence}
+
+\school{\textbf{\normalsize School of Electrical Engineering and Robotics}}
+\faculty{\textbf{\normalsize Faculty of Engineering}}
+\university{\textbf{\normalsize Queensland University of Technology}}
+\supervisor{\textbf{\normalsize Principal Supervisor: Prof. Niko S{\"u}nderhauf}}
+\asscsupervisor{\textbf{\normalsize Associate Supervisor / Domain Contact: Dr. Scarlett Raine}}
+
+% --- Acronyms / Glossaries ---
+\makeglossaries
+\newacronym{3dgs}{3DGS}{3D Gaussian Splatting}
+\newacronym{scd}{SCD}{Scene Change Detection}
+\newacronym{oscd}{O-SCD}{Online Scene Change Detection}
+\newacronym{psnr}{PSNR}{Peak Signal-to-Noise Ratio}
+\newacronym{ssim}{SSIM}{Structural Similarity Index Measure}
+\newacronym{lpips}{LPIPS}{Learned Perceptual Image Patch Similarity}
+\newacronym{sfm}{SfM}{Structure from Motion}
+\newacronym{aims}{AIMS}{Australian Institute of Marine Science}
+\newacronym{ecorrap}{EcoRRAP}{Reef Restoration and Adaptation Program}
+\newacronym{qcr}{QCR}{QUT Centre for Robotics}
+\newacronym{hpc}{HPC}{High-Performance Computing}
+\newacronym{sugar}{SuGaR}{Surface-Aligned Gaussian Splatting}
+\newacronym{dtn}{DTN}{Data Transfer Node}
+\newacronym{sdf}{SDF}{Signed Distance Function}
+\newacronym{nerf}{NeRF}{Neural Radiance Fields}
+\newacronym{vram}{VRAM}{Video Random Access Memory}
+
+% *************************************************
+% Front Matter
+% *************************************************
+\begin{document}
+
+\frontmatter 
+\pagestyle{myfancy}
+
+% Assemble title page
+\maketitle
+\clearpage
+
+%--------------------------------------
+\chapter{Executive Summary}
+\normalfont
+\input{./Chapters/0_1_Abstract.tex}
+\clearpage
+
+\tableofcontents
+\clearpage
+\begingroup
+\let\clearpage\relax
+\listoftables
+\vspace{2em}
+\listoffigures
+\endgroup
+\clearpage
+
+% ***************************************************
+\chapter{Statement of Original Authorship}
+\input{./Chapters/0_2_Declaration.tex}
+\clearpage
+
+% ***************************************************
+\chapter{Acknowledgements}
+\input{./Chapters/0_3_Acknowledgements.tex}
+\clearpage
+
+\printglossary[type=\acronymtype,title=Abbreviations and Acronyms]
+\clearpage
+
+% ***************************************************
+% Main Matter - Progress Report Content
+% ***************************************************
+\mainmatter
+\pagestyle{myfancy}
+
+% Chapters
+\input{./Chapters/1_Introduction.tex}
+\input{./Chapters/2_Literature Review.tex}
+\input{./Chapters/3_Research Design.tex}
+\input{./Chapters/4_Progress.tex}
+\input{./Chapters/5_Management.tex}
+\input{./Chapters/6_Conclusion.tex}
+
+% *************************************************
+% Back Matter
+% *************************************************
+\backmatter
+\pagestyle{myfancy}
+
+\appendix
+\input{./Chapters/Appendix.tex}
+
+\bibliographystyle{ieeetr}
+\bibliography{./Chapters/Bibliography}
+
+\end{document}

@@ -1,0 +1,112 @@
+% ***************************************************
+% Chapter 5: Project Management, Risks, Ethics and Sustainability
+% ***************************************************
+
+\chapter{Project Management, Risks, Ethics and Sustainability}
+\label{chap:management}
+
+\section{Introduction}
+\label{sec:management_intro}
+Professional engineering research demands rigorous operational governance, risk management, adherence to professional codes of ethics, and sustainability considerations. This chapter articulates the risk management framework adapted from the QUT Health, Safety and Environment (HSE) Hub (Section~\ref{sec:risk_assessment}), professional ethical conduct under the Engineers Australia Code of Ethics (Section~\ref{sec:ethics}), sustainability across environmental, economic, and social pillars (Section~\ref{sec:sustainability}), and the stakeholder engagement matrix (Section~\ref{sec:stakeholders}).
+
+\section{Risk Assessment and Mitigation Strategies}
+\label{sec:risk_assessment}
+A comprehensive risk assessment framework—adapted from QUT HSE Hub procedures (Risk Assessment ID: 18339)—was implemented to identify hazards, assess potential operational severity, and establish proactive control protocols across computational, logistical, and data domains. Table~\ref{tab:risk_matrix} summarizes the core operational risks and their mitigations.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Comprehensive Risk Management Matrix for Computational 3DGS Research}
+\label{tab:risk_matrix}
+\begin{tabularx}{\textwidth}{p{2.8cm} c p{4.2cm} X}
+\toprule
+\textbf{Hazard / Risk} & \textbf{Initial Risk} & \textbf{Consequence / Operational Impact} & \textbf{Enforced Mitigation Controls} \\
+\midrule
+\textbf{High-Performance Compute Failure} & High & GPU Out-of-Memory (OOM) crashes, CUDA rasterizer kernel panics, or PBS job walltime timeouts on Aqua cluster. & Pre-flight memory profiling on A100-40GB nodes; automatic gradient checkpointing; downsampled $2\times/4\times$ image sweeps; automated PBS resubmission scripts. \\
+\addlinespace
+\textbf{AIMS Data Transfer Legal Delays} & High & Inter-institutional Data Transfer Agreement (DTA) delays postponing ingestion of the 1.35~TB EcoRRAP dataset. & Proactive pipeline scaffolding using open-source benchmarks (Submerged3D Kwaj/Tokai and Custom OSCD); complete model vetting completed in advance of data arrival. \\
+\addlinespace
+\textbf{Data Corruption and Storage Loss} & Medium & Loss of multi-gigabyte point clouds, checkpoint states, or COLMAP feature databases on scratch filesystem. & Regular multi-threaded synchronization via QUT Data Transfer Node (\texttt{eresdtn01.qut.edu.au}) to local RAID storage; Git-tracked automation manifests. \\
+\addlinespace
+\textbf{Reconstruction Drift in 3DGS} & Medium & Under-constrained Gaussian optimization producing false-positive scene change detections between survey states. & Implementation of \gls{sugar} to bind primitives to true physical surfaces; spatial covariance gating and drift modeling. \\
+\addlinespace
+\textbf{Sensitive Ecological Data Breach} & High & Unauthorized public dissemination of restricted Great Barrier Reef benthic location coordinates. & Enforcing restricted POSIX permissions (\texttt{chmod 700}) on HPC scratch directories; strict compliance with AIMS data-sharing agreements. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Managing the AIMS EcoRRAP Data Legal Transfer}
+The most significant logistical dependency in this project is the acquisition of the \textbf{1.35~Terabyte AIMS EcoRRAP temporal monitoring dataset}. Because these surveys contain high-resolution geographic coordinates and sensitive benthic ecological condition mappings, data release is governed by formal institutional Data Transfer Agreements (DTA) between the Australian Institute of Marine Science and the Queensland University of Technology.
+\begin{itemize}
+    \item \textbf{Proactive Buffer Strategy:} Rather than halting progress while legal and compliance negotiations proceed, the project adopted an agile proof-of-concept strategy. By utilizing the \textit{Submerged3D} and \texttt{Custom\_OSCD\_Dataset} benchmarks, the entire 6-stage automation suite was built, debugged, and verified across 15 complete model runs.
+    \item \textbf{Turn-Key Readiness:} As soon as institutional legal approval is formalized and data transfer commences, the pipeline is fully validated to immediately ingest, downsample, and optimize the EcoRRAP photogrammetry with zero architectural refactoring required.
+\end{itemize}
+
+\section{Ethical Considerations: Engineers Australia Code of Ethics}
+\label{sec:ethics}
+This research is conducted in strict alignment with the \textit{Engineers Australia Code of Ethics}~\cite{EngineersAustralia2019}. The four fundamental tenets are embedded throughout the research lifecycle:
+
+\subsection{1. Demonstrate Integrity}
+\begin{itemize}
+    \item \textbf{Honesty and Transparency (Tenet 1.2):} All research achievements, algorithmic limitations, and failure modes are documented transparently. Detailed forensic analyses of failed attempts (Attempts 5 through 9, preserved in \texttt{agentdocs/}) are openly reported to ensure complete scientific reproducibility.
+    \item \textbf{Data Governance and Respect for Sovereignty (Tenet 1.3):} Marine ecological data of the Great Barrier Reef involves sensitive environmental knowledge. All photogrammetric coordinates from AIMS are handled with strict confidentiality, respecting institutional custodianship and Indigenous sea country partnerships.
+\end{itemize}
+
+\subsection{2. Practise Competently}
+\begin{itemize}
+    \item \textbf{Technical Competence and Evidence-Based Decision Making (Tenet 2.2):} All model selections (e.g., choosing 3D-UIR and SeaSplat for future EcoRRAP integration) are grounded in quantitative metric evaluations (PSNR, SSIM, LPIPS) and rigorous mathematical analysis of underwater optical transfer functions.
+\end{itemize}
+
+\subsection{3. Exercise Leadership}
+\begin{itemize}
+    \item \textbf{Clear and Collaborative Communication (Tenet 3.3):} Regular technical briefings and progress updates are maintained with supervisory staff (Prof. Niko S{\"u}nderhauf) and domain liaisons (Dr. Scarlett Raine), fostering an open, interdisciplinary research environment across engineering and marine science.
+\end{itemize}
+
+\subsection{4. Promote Sustainability}
+\begin{itemize}
+    \item \textbf{Balancing Current and Future Needs (Tenet 4.3):} Documenting codebases, automation scripts, and cluster guides ensures that research outcomes become reusable institutional assets for future student cohorts at the QUT Centre for Robotics.
+\end{itemize}
+
+\section{Sustainability Considerations}
+\label{sec:sustainability}
+The project evaluates sustainability across environmental, economic, and social dimensions:
+
+\subsection{Environmental Sustainability: Mitigating the Carbon Footprint of AI Compute}
+Training millions of 3D Gaussian primitives on advanced GPU clusters consumes significant electrical energy. To minimize the carbon footprint:
+\begin{itemize}
+    \item \textbf{Efficient Batch Scheduling:} PBS execution scripts were optimized to eliminate idle GPU compute time, batching Stage 1–3 pre-processing on multi-threaded CPU nodes before allocating power-intensive A100 GPUs exclusively for Stage 4 optimization.
+    \item \textbf{Fast Model Pre-Screening:} Lightweight architectures (such as \textit{WaterSplatting}, training in under 40 minutes) were utilized for initial parameter tuning, avoiding redundant multi-hour training runs on larger models.
+\end{itemize}
+
+\subsection{Economic Sustainability: Reusable Open Frameworks}
+By engineering the pipeline around modular open-source repositories and Python automation tools, the project avoids reliance on expensive proprietary photogrammetry licenses. The resulting codebase provides a modular, cost-free foundation that can be extended across future academic research.
+
+\subsection{Social and Educational Legacy}
+Beyond immediate thesis deliverables, this research establishes a standardized benchmark suite within the QUT Centre for Robotics, bridging high-end robotics computer vision with practical marine conservation tools.
+
+\section{Resources and Stakeholder Engagement}
+\label{sec:stakeholders}
+The project's successful execution relies on close collaboration across academic and scientific institutions, as summarized in Table~\ref{tab:stakeholders}.
+
+\begin{table}[htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\caption{Stakeholder Engagement Matrix}
+\label{tab:stakeholders}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3.2cm} p{3.8cm} X}
+\toprule
+\textbf{Stakeholder} & \textbf{Institutional Affiliation} & \textbf{Role, Interest, and Contribution} \\
+\midrule
+Prof. Niko S{\"u}nderhauf & Principal Supervisor, QUT Centre for Robotics & Oversees academic rigour, provides technical leadership on 3D spatial vision, and guides algorithmic scene change detection. \\
+\addlinespace
+Dr. Scarlett Raine & Associate Supervisor / AIMS Liaison, QCR & Provides marine vision domain expertise, assesses ecological relevance, and manages the AIMS EcoRRAP data transfer interface. \\
+\addlinespace
+QUT Centre for Robotics (QCR) & Institutional Host, School of Electrical Eng. & Provides research facilities, compute workstation infrastructure, and institutional sponsorship for advanced robotics vision. \\
+\addlinespace
+Australian Institute of Marine Science (AIMS) & External Research Partner (EcoRRAP Project) & Primary data custodians and end-users interested in scalable 3D change detection for temporal Great Barrier Reef monitoring. \\
+\addlinespace
+QUT HPC Support Team & QUT IT / High Performance Computing & Manages the Aqua cluster hardware, GPU node allocations, job queues, and Lustre high-speed scratch filesystems. \\
+\bottomrule
+\end{tabularx}
+\end{table}
