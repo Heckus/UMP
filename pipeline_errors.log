@@ -149,3 +149,5 @@
 [2026-10-18 17:29:41] ERROR: Model=uw-gs | Scene=Kwaj | Stage=mesh | ExitCode=1 | Duration=3s
 [2026-10-18 17:29:46] ERROR: Model=uw-gs | Scene=Tokai | Stage=mesh | ExitCode=1 | Duration=3s
 [2026-10-18 17:29:54] ERROR: Model=oscd | Scene=oscd | Stage=mesh | ExitCode=1 | Duration=2s
+[2026-10-18 17:35:21] ERROR: Model=seasplat | Scene=Kwaj | Stage=mesh | ExitCode=1 | Duration=20s
+[2026-10-18 17:35:34] ERROR: Model=seasplat | Scene=Tokai | Stage=mesh | ExitCode=1 | Duration=11s
