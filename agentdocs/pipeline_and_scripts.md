@@ -404,9 +404,11 @@ The repository includes automated tools for local evaluation on Ubuntu Desktop:
 ## 8. **[KEY-CONCEPT]** Future Architectural Bridge: Underwater-Optimised + SuGaR Prior -> OSCD
 
 The target research trajectory for this codebase merges underwater optical compensation with primitive-space change detection:
-1. **$T_0$ Baseline Underwater Splatting:** Train an underwater model (e.g., SeaSplat or 3D-UIR) on the $T_0$ baseline images to mathematically remove turbidity, light absorption, and backscatter.
-2. **SuGaR Geometric Regularization:** Bind the underwater Gaussians to signed distance fields and extract a watertight surface mesh (`.obj`), pruning all floating water-column artifacts.
-3. **OSCD Primitive-Space Change Tracking:** Ingest subsequent $T_1$ inspection frames into O-SCD using the restored, surface-bounded $T_0$ Gaussian model as the reference geometry prior.
-4. **Turbidity-Invariant Change Detection:** Because the $T_0$ prior is optically clean and surface-anchored, OSCD detects genuine physical structural modifications without false positives caused by temporal variations in water clarity or lighting.
-5. **Differential Volumetric Measurement:** Re-run SuGaR on the updated scene delta to extract exact physical volume and surface-area change measurements.
+1. **Primary Goal & Literature Motivation for SuGaR:** While the main goal of the project is identifying scene change directly using the **3D Gaussian splats** (`O-SCD`), the primitive-space change detection paper (`GS-DIFF` / `O-SCD`, Galappaththige et al., 2026) explicitly recommended at the conclusion of their paper integrating the **SuGaR** method to anchor 3D Gaussians onto physical surfaces and mitigate Gaussian drift.
+2. **$T_0$ Baseline Underwater Splatting:** Train an underwater model (e.g., `SeaSplat` or `3D-UIR`) on the $T_0$ baseline images to mathematically remove turbidity, light absorption, and backscatter.
+3. **Per-Model SuGaR Geometric Regularization & 3D Mesh Review (`--output_dir_tag <model>/<scene>`):** Bind each underwater method's Gaussians to signed distance fields and extract a distinct watertight 3D surface mesh (`.obj` + `.mtl` + `.png`), pruning floating water-column artifacts. Reviewing the 3D `.obj` models across all underwater methods right now serves as a supporting output and bonus feature to evaluate which method produces cleaner, more accurate 3D reconstructions capable of resolving fine-scale **millimetre-to-centimetre ($\text{mm} \to \text{cm}$) changes in coral**.
+4. **OSCD Primitive-Space Change Tracking:** Ingest subsequent $T_1$ inspection frames into O-SCD using the restored, surface-bounded $T_0$ Gaussian model as the reference geometry prior.
+5. **Turbidity-Invariant $\text{mm} \to \text{cm}$ Change Detection:** Because the $T_0$ prior is optically clean and surface-anchored, OSCD detects genuine physical structural modifications ($\text{mm} \to \text{cm}$ coral growth, branching breakage, or erosion) without false positives caused by temporal variations in water clarity or lighting.
+6. **Differential Volumetric Measurement:** Re-run SuGaR on the updated scene delta to extract exact physical volume ($\text{cm}^3$) and surface-area ($\text{m}^2$) change measurements.
+
 

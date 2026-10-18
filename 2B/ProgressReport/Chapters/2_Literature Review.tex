@@ -32,7 +32,7 @@ To circumvent the limitations of 2D image-space differencing, recent breakthroug
 
 The fundamental advantage of direct primitive-space change detection is its capacity to separate genuine geometric transformations (e.g., coral branch detachment or volumetric accretion) from superficial photometric shifts (such as water colour casts or transient shading) without requiring 2D image synthesis or external segmentation supervision~\cite{galappaththige2026pixelsprimitivesscenechange}. Similarly, 3DGS-CD~\cite{10852207} leverages geometric primitive clustering to track object rearrangements without depth inputs.
 
-\paragraph{The Challenge of Reconstruction Drift:} Despite its advantages, direct primitive-space comparison faces the challenge of \textit{Gaussian drift}. Because 3DGS optimization is fundamentally under-constrained, independent training passes on the exact same static scene can converge to radically distinct arrangements of ellipsoidal primitives~\cite{galappaththige2026pixelsprimitivesscenechange}. To prevent false positives, primitive-space engines must implement robust covariance inflation, nearest-neighbour spatial gating, and photometric drift modeling.
+\paragraph{The Challenge of Reconstruction Drift and the Recommendation for SuGaR:} Despite its advantages, direct primitive-space comparison faces the challenge of \textit{Gaussian drift}. Because 3DGS optimization is fundamentally under-constrained, independent training passes on the exact same static scene can converge to distinct arrangements of ellipsoidal primitives~\cite{galappaththige2026pixelsprimitivesscenechange}. Crucially, at the conclusion of their study, Galappaththige et al.~\cite{galappaththige2026pixelsprimitivesscenechange} explicitly recommended integrating surface-aligned regularization—specifically the \textbf{\gls{sugar}} method~\cite{guedon2024sugar}—to anchor 3D Gaussian primitives onto true physical surfaces and mitigate spatial drift. This direct literature recommendation forms the theoretical basis for integrating \gls{sugar} across our underwater \gls{3dgs} and change detection pipeline.
 
 \section{Underwater 3D Gaussian Splatting Architectures}
 \label{sec:lit_underwater_3dgs}
@@ -73,13 +73,13 @@ Specialized adaptations have targeted dynamic marine artifacts:
     \item \textbf{RUSplatting (2025):} Jiang et al.~\cite{jiang2025rusplattingrobust3dgaussian} leverage decoupled RGB optimization and frame interpolation for sparse or poorly illuminated surveys.
 \end{itemize}
 
-\section{Surface Regularization: SuGaR Mesh Extraction}
+\section{Surface Regularization: Per-Model SuGaR Mesh Extraction}
 \label{sec:lit_sugar}
-Unconstrained 3D Gaussians represent arbitrary volumes rather than discrete physical surfaces, leading to blurred boundaries and floating artifacts in water. Surface-Aligned Gaussian Splatting (\gls{sugar})~\cite{guedon2024sugar} addresses this fundamental limitation by regularizing Gaussians onto a continuous Signed Distance Function (\gls{sdf}). By enforcing flat, disc-shaped Gaussian ellipsoids that align tangentially to estimated surface normals, SuGaR enables:
+Unconstrained 3D Gaussians represent arbitrary volumes rather than discrete physical surfaces, leading to blurred boundaries and floating artifacts in water. Following the explicit recommendation at the end of the primitive-space change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}, Surface-Aligned Gaussian Splatting (\gls{sugar})~\cite{guedon2024sugar} is integrated into this project to regularize Gaussians onto a continuous Signed Distance Function (\gls{sdf}). By enforcing flat, disc-shaped Gaussian ellipsoids that align tangentially to estimated surface normals, SuGaR enables:
 \begin{enumerate}
-    \item Elimination of unanchored water-column primitives through opacity-density pruning.
-    \item Direct extraction of clean, high-resolution Poisson surface meshes (\texttt{.obj}) that retain photorealistic texture maps.
-    \item A geometrically anchored foundation suitable for quantitative volumetric and surface area measurements ($cm^3 / m^2$).
+    \item Elimination of unanchored water-column primitives through opacity-density pruning, directly mitigating the Gaussian drift problem identified by Galappaththige et al.~\cite{galappaththige2026pixelsprimitivesscenechange}.
+    \item Direct extraction and review of distinct, model-specific Poisson 3D surface meshes (\texttt{.obj} with UV-baked \texttt{.mtl}/\texttt{.png} textures) for each candidate underwater \gls{3dgs} method.
+    \item A comparative 3D geometric evaluation framework to support fine-scale \textbf{millimetre-to-centimetre ($\text{mm} \to \text{cm}$) coral change detection}: while identifying change directly using the 3D Gaussian splats is the primary goal of this project, producing and reviewing 3D \texttt{.obj} models for every underwater method right now reveals which optical restoration method yields cleaner, more accurate 3D surface reconstructions capable of resolving subtle $\text{mm} \to \text{cm}$ coral growth or erosion.
 \end{enumerate}
 
 \section{Summary of Methods and Research Gap}
@@ -96,7 +96,7 @@ Table~\ref{tab:lit_methods_summary} consolidates the surveyed 3DGS paradigms.
         \textbf{Category} & \textbf{Model} & \textbf{Core Contribution \& Methodological Stance} \\
         \midrule
         \multirow{2}{*}{\parbox{2.8cm}{\textbf{Scene Change\\Detection}}} 
-        & GS-DIFF~\cite{galappaththige2026pixelsprimitivesscenechange} & Direct primitive-space comparison across centroid, covariance, and colour. \\
+        & GS-DIFF~\cite{galappaththige2026pixelsprimitivesscenechange} & Direct primitive-space comparison across centroid, covariance, and colour; recommends SuGaR for surface anchoring. \\
         & 3DGS-CD~\cite{10852207} & Explicit geometric clustering for tracking object transformations. \\
         \midrule
         \multirow{3}{*}{\parbox{2.8cm}{\textbf{Physically-Grounded\\Underwater 3DGS}}} 
@@ -114,9 +114,9 @@ Table~\ref{tab:lit_methods_summary} consolidates the surveyed 3DGS paradigms.
         & UW-GS~\cite{10943785} & Distractor-aware variance filtering to remove transient marine life. \\
         \midrule
         \textbf{Surface Regularization} 
-        & SuGaR~\cite{guedon2024sugar} & SDF-aligned surface regularization; eliminates floaters; extracts meshes. \\
+        & SuGaR~\cite{guedon2024sugar} & SDF-aligned surface regularization; eliminates floaters; extracts per-model 3D meshes (\texttt{.obj}). \\
         \bottomrule
     \end{tabularx}
 \end{table}
 
-\paragraph{The Identified Research Gap:} While underwater-optimised 3DGS models have advanced rapidly in static reconstruction, and primitive-space change detection has succeeded in terrestrial scenes, \textbf{no existing framework unifies underwater optical compensation with primitive-space scene change detection}. Current change detection engines (like default O-SCD) utilize standard terrestrial splatting backbones, causing severe false positives when confronted with water haze and shifting turbidity. This project directly addresses this gap by benchmarking underwater architectures, regularizing their geometries via SuGaR, and providing the architectural foundation to deploy an underwater-hardened O-SCD pipeline on real-world temporal coral monitoring data.
+\paragraph{The Identified Research Gap:} While underwater-optimised 3DGS models have advanced rapidly in static reconstruction, and primitive-space change detection has succeeded in terrestrial scenes, \textbf{no existing framework unifies underwater optical compensation, per-model SuGaR 3D surface extraction, and primitive-space scene change detection}. Current change detection engines (like default O-SCD) utilize standard terrestrial splatting backbones, causing false positives when confronted with water haze and shifting turbidity, and no prior study has systematically compared the 3D surface meshes (\texttt{.obj}) extracted across competing underwater 3DGS priors. By acting on the SuGaR recommendation from the 3D change detection literature~\cite{galappaththige2026pixelsprimitivesscenechange}, this project benchmarks both the native 3D Gaussian splats and the extracted 3D \texttt{.obj} models across underwater methods—establishing which model produces the cleanest 3D reconstruction to support $\text{mm} \to \text{cm}$ coral change detection.

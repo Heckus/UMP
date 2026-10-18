@@ -7,9 +7,11 @@ This repository is the central workspace for a QUT (Queensland University of Tec
 ## 1. **[KEY-CONCEPT]** Core Research Objective
 
 The primary objective of this project is to investigate and develop methods for detecting scene changes directly within the **primitive space** (the 3D Gaussians themselves) of 3D Gaussian Splatting (3DGS) models, with a specific focus on challenging underwater environments. This involves:
-1. Analyzing existing 3DGS architectures and adapting them for underwater optical degradation (wavelength-dependent absorption, backscatter, haze).
-2. Regularizing 3D Gaussian representations onto physical surfaces using signed distance fields (SuGaR) to eliminate floating artifacts and extract watertight surface meshes (`.obj`).
-3. Implementing primitive-space Online Scene Change Detection (O-SCD) to track, segment, and update 3D Gaussians across temporal states without retraining the entire representation from scratch.
+1. **Primary Goal — Primitive-Space Scene Change Detection (`O-SCD`):** Implementing primitive-space Online Scene Change Detection (`GS-DIFF` / `O-SCD`) to track, segment, and update 3D Gaussians across temporal states without retraining the entire representation from scratch.
+2. **Evaluating Underwater 3DGS Formulations:** Analyzing existing 3DGS architectures (`SeaSplat`, `3D-UIR`, `Gaussian Splashing`, `WaterSplatting`, `RUSplatting`, `UW-GS`) and adapting them for underwater optical degradation (wavelength-dependent absorption, backscatter, haze).
+3. **Per-Model 3D Surface Geometry Extraction & Review (`SuGaR` — Supporting Output & Bonus Feature):**
+   - **Literature Motivation:** The foundational 3D change detection paper (`GS-DIFF` / `O-SCD`, Galappaththige et al., 2026) explicitly recommended at the conclusion of their paper integrating the **SuGaR** surface regularization method to bind 3D Gaussians to physical surfaces and mitigate Gaussian drift—which directly motivated integrating SuGaR here.
+   - **Why Per-Model 3D `.obj` Meshes Are Generated & Reviewed Right Now ($\text{mm} \to \text{cm}$ Coral Change):** While identifying change using the 3D Gaussian splats is the main goal, we also produce and review **distinct 3D surface models (`.obj` + `.mtl` + `.png`) for each underwater 3DGS method** (`--output_dir_tag <model>/<scene>`) right now as a supporting output and bonus capability. Because ecological coral monitoring (AIMS EcoRRAP) frequently requires identifying fine-scale **millimetre-to-centimetre ($\text{mm} \to \text{cm}$) changes in coral**, reviewing the 3D `.obj` reconstructions across methods reveals whether different underwater 3DGS models yield cleaner, more accurate 3D geometry that can support $\text{mm} \to \text{cm}$ change detection now or as a future direction.
 
 ---
 
@@ -26,12 +28,12 @@ The entire pipeline is structured into a reproducible 5-phase lifecycle:
 ```
 
 1. **Setup (`setup_env.sh` & `verify_env.sh`):** Installs system dependencies, provisions CUDA/rasterizer submodules, creates 11 isolated Conda environments, and performs pre-flight GPU/dataset sanity checks.
-2. **Run (`run_pipeline.sh` / `run_pipeline.pbs`):** Executes the 6-stage pipeline (Data Preparation, COLMAP, Depth Estimation/Inversion, Model Training, SuGaR Mesh Extraction, Benchmarking).
-3. **Extract (`package_outputs.sh` & `rsync`):** Packages verified evaluation artifacts on the HPC cluster using dynamic manifests and transfers them to the local Ubuntu desktop via the dedicated Data Transfer Node (`eresdtn01.qut.edu.au`).
-4. **Organise (`Model_Outputs/organize_outputs.py`):** Reorders raw outputs into a 5-domain academic hierarchy (`01_Physics_Based_3DGS`, `02_Image_Restoration_3DGS`, etc.) with cleaned, supervisor-friendly naming and a clickable `PORTFOLIO_INDEX.md`.
+2. **Run (`run_pipeline.sh` / `run_pipeline.pbs`):** Executes the 6-stage pipeline (Data Preparation, COLMAP, Depth Estimation/Inversion, Model Training, Per-Model SuGaR Mesh Extraction via `--output_dir_tag <model>/<scene>`, Benchmarking).
+3. **Extract (`package_outputs.sh` & `rsync`):** Packages verified evaluation artifacts (including per-model `.ply` splats and `.obj`/`.mtl`/`.png` 3D meshes) on the HPC cluster using dynamic manifests and transfers them to the local Ubuntu desktop via the dedicated Data Transfer Node (`eresdtn01.qut.edu.au`).
+4. **Organise (`Model_Outputs/organize_outputs.py`):** Reorders raw outputs into a 5-domain academic hierarchy (`01_Physics_Based_3DGS`, `02_Image_Restoration_3DGS`, etc.) with strict per-model mesh matching (`<Model>_<Scene>_refined_mesh.obj`), automatic `.mtl` texture fixing, and a clickable `PORTFOLIO_INDEX.md`.
 5. **Review & Evaluate (`Model_Outputs/collect_metrics.py` & `view_outputs.py`):**
    - Compiles master benchmark tables in LaTeX (`master_benchmark_table.tex`), Markdown, CSV, and JSON.
-   - Interactively visualizes 3D splats (CloudCompare / SuperSplat WebGL), surface meshes (MeshLab / Blender), and 2D change masks.
+   - Interactively visualizes 3D splats (CloudCompare / SuperSplat WebGL), per-model 3D surface meshes (MeshLab / Blender), and 2D change masks.
 
 ---
 

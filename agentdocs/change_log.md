@@ -17,6 +17,9 @@
      - Updated `find_sugar_meshes()` to require both `has_scene` and `has_model` (matching `/{model_alias}/` or `_{model_alias}_`) for all underwater 3DGS models (`SeaSplat`, `3D-UIR`, `Gaussian_Splashing`, `WaterSplatting`, `RUSplatting`, `UW-GS`), preventing cross-model mesh duplication.
   5. **`HPC/scripts/package_outputs.sh`**:
      - Added `-type f` to `find Dataset/... -path "*/output/refined_mesh/*"` so `tar -T` archives individual files cleanly without duplicating nested model subdirectories.
+  6. **`HPC/scripts/run_pipeline.pbs` & `Codebase/scripts/run_pipeline.sh` (AMD Login Node vs. Intel H100 Compute Node Conda Fix)**:
+     - **Root Cause**: When submitting `qsub -v ARGS="--all --stage mesh" HPC/scripts/run_pipeline.pbs` from `aquarius02` (an AMD EPYC login node), PBS inherited `CONDA_EXE=/mnt/weka/pkg/rhel94/AuthenticAMD-25/software/Anaconda3/2024.02-1/bin/conda`, while the H100 batch node (`select=1:...:gpu_id=H100`) is an Intel Xeon node (`GenuineIntel-6`) where the `AuthenticAMD-25` software tree is inaccessible (`Permission denied`). Because `run_pipeline.pbs` checked `if [[ -z "${CONDA_EXE:-}" ]]`, it kept the stale `AuthenticAMD-25` path and caused `activate_conda_env` in `run_pipeline.sh` to silently fail (`2>/dev/null || true`), falling back to the base system Python 3.11 instead of activating `~/.conda/envs/sugar` (Python 3.9).
+     - **Fix**: Updated `HPC/scripts/run_pipeline.pbs` to unconditionally resolve `CONDA_EXE` and `CONDA_DIR` from the active node's loaded `Anaconda3` module (`type -P conda`), and hardened `activate_conda_env` in `Codebase/scripts/run_pipeline.sh` to explicitly prepend `~/.conda/envs/<env_name>/bin` to `PATH`.
 
 ---
 
@@ -796,3 +799,25 @@ All 6 surgical fixes documented in [`attempt_9_failure_analysis.md`](attempt_9_f
 - **3D & Video Change Heatmap Synthesizer (`generate_change_heatmaps.py`)**:
   - Engineered spatial KD-tree differential analysis between reference and updated 3DGS point clouds to project change probabilities into spherical harmonics color fields, outputting `O-SCD_3D_Change_Heatmap_Hybrid.ply` (photorealistic background + glowing incandescent flame red on changed primitives) and `O-SCD_3D_Change_Heatmap_Turbo.ply` (scientific thermal gradient) viewable at 60 FPS in SuperSplat.
   - Synthesized synchronized full-resolution MP4 videos (`oscd_change_heatmap_overlay.mp4` and `oscd_change_comparison_3panel.mp4`) blending 122 inspection frames with dynamic thermal colormaps, glowing contours, and HUD telemetry, alongside multi-view comparison strips (`oscd_change_keyframe_strip.png`).
+
+---
+
+## [2026-10-18] — Per-Model SuGaR 3D Mesh Isolation, Unified Root `README.md`, and Assessment 2B Progress Report Updates
+
+- **Root Cause & Fix for Identical `.obj` Meshes Across Models (`--output_dir_tag <model>/<scene>`)**:
+  - **Root Cause Identified**: During interactive inspection of `.obj` and `.mtl` textured meshes in Blender, all underwater models on a given scene (`Kwaj` or `Tokai`) exhibited identical meshes (`3,646,184` faces / `205,717` vertices on `Tokai`) due to three compounding factors:
+    1. `SuGaR-main/train_full_pipeline.py` derived its output subfolder solely from `args.scene_path.split('/')[-1]` (`output/coarse_mesh/<scene>/`) and skipped Stage 2 (`extract_coarse_mesh_from_coarse_sugar`) whenever an existing `.ply` file was already present in that folder.
+    2. `Codebase/scripts/run_pipeline.sh` (`run_sugar_mesh_stage`) ran `find "${sugar_dir}/output/refined_mesh/${scene_name}"` and copied the same cached mesh to `${scene_path}/output/refined_mesh/${current_model}.obj`.
+    3. `Model_Outputs/organize_outputs.py` (`find_sugar_meshes`) filtered only by `scene_aliases` without checking `model_aliases`.
+  - **Code Fixes**:
+    1. Added `--output_dir_tag` argument to `Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/train_full_pipeline.py` and `train.py`, and updated `sugar_extractors/refined_mesh.py` to use `args.coarse_mesh_path` so each model's coarse/refined SuGaR checkpoints and meshes are isolated under `output/{coarse,refined}_mesh/<model>/<scene>/`.
+    2. Updated `Codebase/scripts/run_pipeline.sh` (`run_sugar_mesh_stage`) to pass `--output_dir_tag "${current_model}/${scene_name}"`, isolate the search directory to `${sugar_dir}/output/refined_mesh/${current_model}/${scene_name}`, and copy the `.obj`, `.mtl`, and `.png` files into `${scene_path}/output/refined_mesh/${current_model}/`.
+    3. Updated `HPC/scripts/package_outputs.sh` (`-type f` on `refined_mesh` find) and `Model_Outputs/organize_outputs.py` (`find_sugar_meshes`) to strictly match both `model_aliases` and `scene_aliases`.
+- **Single Unified Root `README.md`**:
+  - Merged all documentation from `Model_Outputs/README.md` (including workspace layout, Ubuntu/Blender `.obj` + `.mtl` viewing and rendering instructions, and the 5-phase evaluation workflow) into the root [`README.md`](../README.md) and deleted the duplicate `Model_Outputs/README.md`.
+- **Assessment 2B Progress Report (`2B/ProgressReport/`) & Research Narrative Updates**:
+  - Updated `0_1_Abstract.tex`, `1_Introduction.tex`, `2_Literature Review.tex`, `3_Research Design.tex`, `4_Progress.tex`, `6_Conclusion.tex`, and recompiled `ProgressReport.pdf` alongside `README.md` and `agentdocs/` to clearly articulate:
+    1. **Primary Goal**: Identifying scene changes directly using the **3D Gaussian splats** (`O-SCD` / `GS-DIFF`).
+    2. **Literature Motivation for SuGaR**: The primitive-space 3D change detection paper (`GS-DIFF` / `O-SCD`, Galappaththige et al., 2026) explicitly recommended at the conclusion of their paper integrating the **SuGaR** surface regularization method to anchor 3D Gaussians onto physical surfaces and mitigate Gaussian drift.
+    3. **Supporting / Bonus Evaluation of Per-Model 3D `.obj` Meshes ($\text{mm} \to \text{cm}$ Coral Change)**: Producing and reviewing 3D `.obj` models for each underwater 3DGS method right now allows direct evaluation of whether different underwater methods produce cleaner, more accurate 3D surface reconstructions capable of resolving fine-scale **millimetre-to-centimetre ($\text{mm} \to \text{cm}$) changes in coral** now or as a future direction.
+

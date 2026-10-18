@@ -37,7 +37,7 @@ After creating a new file, you **must** immediately update the index in this `RE
 
 *This index is managed by the AI agent and should always be up-to-date.*
 
-- [**Repository Master Guide**](../README.md): Comprehensive end-to-end user manual (Setup -> Run -> Extract -> Organise -> Review), custom dataset ingestion guidelines, and the temporal underwater OSCD research roadmap.
+- [**Repository Master Guide & Model Outputs Evaluation Suite**](../README.md): Unified root manual covering the 5-phase operational lifecycle (Setup -> Run -> Extract -> Organise -> Review), the `Model_Outputs/` evaluation workspace, per-model SuGaR `.obj` mesh review in Blender/MeshLab, custom dataset ingestion guidelines, and the temporal underwater OSCD research roadmap.
 - [**Agent Instructions**](./AGENT_INSTRUCTIONS.md): Central instructions for AI agents working in this repo.
 - [**Project Overview**](./overview.md): A high-level summary of the project's purpose and goals.
 - [**Pipeline & Automation Scripts**](./pipeline_and_scripts.md): Technical documentation for the one-shot bash automation suite, Conda environments, execution stages, and diagnostic tools.
@@ -49,4 +49,3 @@ After creating a new file, you **must** immediately update the index in this `RE
 - [**Attempt 8 Failure Analysis**](./attempt_8_failure_analysis.md): Comprehensive forensic audit, verification of the 14 full-lifecycle successful runs, root-cause diagnostics of the single failed run in Attempt 8, PBS log synchronization investigation, and exact code-level blueprint for Attempt 9.
 - [**Attempt 9 Failure Analysis**](./attempt_9_failure_analysis.md): Forensic root-cause diagnostic of the Attempt 9 `oscd` failure (`RuntimeError: selected index k out of range` at `poses/ransac.py:182` caused by COLMAP `distorted/sparse/0` 2-image fragment selection + `scene/keyframe.py:138` unconditional early-return bug) and full end-to-end audit of `update.py`, Stage 5 SuGaR mesh extraction, Stage 6 `utils/metrics.py` `sys.path`, and `CONDA_DIR` resolution.
 - [**Attempt 10 Verification Report**](./attempt_10_verification.md): Final verification and master completion report for Attempt 10, confirming 100% full-lifecycle execution of `oscd` (SSIM 0.8315, PSNR 27.08 dB, SuGaR mesh export) and the historic 15 / 15 (100%) success milestone across the entire benchmark suite.
-- [**Model Outputs Evaluation Suite**](../Model_Outputs/README.md): Interactive visualization suite, supervisor presentation reordering tools, LaTeX/Markdown metric aggregators, and 3D splat/mesh viewers for local evaluation.

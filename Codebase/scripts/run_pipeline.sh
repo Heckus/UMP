@@ -187,11 +187,16 @@ should_run_stage() {
 activate_conda_env() {
     local env_name="$1"
     local conda_hook=""
+    local conda_bin=""
 
-    if [[ -x "${CONDA_DIR}/bin/conda" ]]; then
-        conda_hook="$("${CONDA_DIR}/bin/conda" shell.bash hook 2>/dev/null || true)"
+    if [[ -n "${CONDA_DIR:-}" && -x "${CONDA_DIR}/bin/conda" ]]; then
+        conda_bin="${CONDA_DIR}/bin/conda"
     elif command -v conda >/dev/null 2>&1; then
-        conda_hook="$(conda shell.bash hook 2>/dev/null || true)"
+        conda_bin="$(type -P conda 2>/dev/null || command -v conda 2>/dev/null || true)"
+    fi
+
+    if [[ -n "${conda_bin}" && -x "${conda_bin}" ]]; then
+        conda_hook="$("${conda_bin}" shell.bash hook 2>/dev/null || true)"
     fi
 
     set +u
@@ -208,7 +213,23 @@ activate_conda_env() {
         source "$HOME/anaconda3/etc/profile.d/conda.sh"
     fi
 
-    conda activate "${env_name}"
+    conda activate "${env_name}" 2>/dev/null || true
+
+    # Guarantee the target environment's bin directory is first on PATH
+    # even across multi-architecture HPC nodes (AuthenticAMD vs GenuineIntel)
+    for _env_dir in "${HOME}/.conda/envs/${env_name}" \
+                    "/mnt/hpccs01/home/${USER:-}/.conda/envs/${env_name}" \
+                    "${CONDA_DIR:-}/envs/${env_name}" \
+                    "${HOME}/miniconda3/envs/${env_name}"; do
+        if [[ -d "${_env_dir}/bin" && -x "${_env_dir}/bin/python" ]]; then
+            export CONDA_PREFIX="${_env_dir}"
+            export CONDA_DEFAULT_ENV="${env_name}"
+            export PATH="${_env_dir}/bin:${PATH}"
+            break
+        fi
+    done
+    unset PYTHONPATH PYTHONHOME
+    export PYTHONNOUSERSITE=1
     set -u
 }
 

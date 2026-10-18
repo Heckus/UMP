@@ -67,18 +67,16 @@ else
     done
 fi
 
-# Initialize Conda
-eval "$(conda shell.bash hook)"
-
-# Detect Conda executable and installation root
-if [[ -z "${CONDA_EXE:-}" ]]; then
-    CONDA_EXE="$(type -P conda 2>/dev/null || true)"
-fi
+# Initialize Conda and resolve installation root from the active node's module
+CONDA_EXE="$(type -P conda 2>/dev/null || command -v conda 2>/dev/null || true)"
 if [[ -n "${CONDA_EXE:-}" && -f "${CONDA_EXE}" ]]; then
     CONDA_DIR="$(dirname "$(dirname "${CONDA_EXE}")")"
     export CONDA_EXE CONDA_DIR
     echo "CONDA_DIR set to: ${CONDA_DIR}"
 fi
+eval "$("${CONDA_EXE:-conda}" shell.bash hook)"
+unset PYTHONPATH PYTHONHOME
+export PYTHONNOUSERSITE=1
 
 # Prevent WandB from hanging on headless batch jobs waiting for interactive login
 export WANDB_MODE="${WANDB_MODE:-offline}"
