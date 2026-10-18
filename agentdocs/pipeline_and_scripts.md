@@ -252,12 +252,12 @@ Executes model-specific training in its respective isolated Conda environment:
 
 #### Stage 5: Surface Mesh Extraction (`mesh`)
 - Activates `sugar` environment.
-- Ingests best 3DGS point cloud prior (defaulting to SeaSplat checkpoint or custom path via `--gs-output-dir`).
-- Runs SuGaR joint density and mesh extraction pipeline:
+- Ingests best 3DGS point cloud prior (defaulting to each model's own checkpoint or custom path via `--gs-output-dir`).
+- Runs SuGaR joint density and mesh extraction pipeline with model-namespaced output paths (`--output_dir_tag <model>/<scene>`):
   ```bash
-  python train_full_pipeline.py -s <scene_path> -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir <checkpoint_dir>
+  python train_full_pipeline.py -s <scene_path> -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir <checkpoint_dir> --output_dir_tag <model>/<scene>
   ```
-- Produces refined, textured 3D mesh files (`.obj`, `.mtl`).
+- Produces distinct, model-isolated refined textured 3D mesh files (`.obj`, `.mtl`, `.png`) in `SuGaR-main/output/refined_mesh/<model>/<scene>/` and `<scene_path>/output/refined_mesh/<model>/<scene>.obj`.
 
 #### Stage 6: Benchmarking & Metrics Evaluation (`eval`)
 - **Novel View Synthesis**: Renders held-out test views via `python render.py -m <output_path> --skip_train`.

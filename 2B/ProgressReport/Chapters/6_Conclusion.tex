@@ -42,16 +42,42 @@ With baseline benchmarks and cluster toolchains fully validated, the project is 
 \end{itemize}
 
 \subsection{Phase 3: Model Transplantation and Extended Cluster Optimization (Months 3–4)}
+Figure~\ref{fig:ecorrap_architecture} illustrates the target Phase~3 architectural integration bridging underwater optical restoration, \gls{sugar} surface regularization, and primitive-space scene change detection.
 \begin{itemize}
-    \item \textbf{Architectural Transplantation:} Based on the benchmark findings, directly graft the winning underwater optical formulation (\textit{3D-UIR} and \textit{SeaSplat}) into the \gls{oscd} pipeline, replacing the default naive terrestrial Gaussian backbone.
-    \item \textbf{Long-Duration HPC Training:} Train the unified model for extended iteration counts (50,000 to 100,000 iterations) on multi-GPU A100 nodes, generating ultra-dense, turbidity-free representations of baseline reef colonies.
+    \item \textbf{Architectural Transplantation:} Based on the benchmark findings, directly graft the winning underwater optical formulations (\textit{3D-UIR} and \textit{SeaSplat}) into the \gls{oscd} pipeline, replacing the default naive terrestrial Gaussian backbone.
+    \item \textbf{Long-Duration HPC Training:} Train the unified model for extended iteration counts (50,000 to 100,000 iterations) on multi-GPU A100/H100 nodes, generating ultra-dense, turbidity-free representations of baseline reef colonies.
     \item \textbf{Volumetric Change Quantitation:} Execute primitive-space change detection against the $T_1$ inspection surveys, followed by SuGaR mesh extraction to calculate exact physical metrics:
     \begin{itemize}
-        \item Volumetric accretion ($cm^3$) indicating coral growth and calcification.
-        \item Volumetric depletion ($cm^3$) reflecting cyclone breakage, storm damage, or coral mortality.
-        \item Surface area changes ($m^2$) quantifying structural rugosity shifts.
+        \item Volumetric accretion ($\text{cm}^3$) indicating coral growth and calcification.
+        \item Volumetric depletion ($\text{cm}^3$) reflecting cyclone breakage, storm damage, or coral mortality.
+        \item Surface area changes ($\text{m}^2$) quantifying structural rugosity shifts.
     \end{itemize}
 \end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.55cm and 0.8cm,
+        block/.style={rectangle, draw=blue!75!black, fill=blue!6, thick, text width=4.4cm, minimum height=1.15cm, align=center, font=\scriptsize\sffamily, inner sep=3pt},
+        wideblock/.style={rectangle, draw=blue!80!black, fill=blue!10, thick, text width=6.8cm, minimum height=1.2cm, align=center, font=\scriptsize\sffamily, inner sep=3pt},
+        arrow/.style={->, >=stealth, thick, blue!75!black}
+    ]
+        \node[block] (t0) {\textbf{Baseline Survey ($T_0$)}\\[1pt]Raw EcoRRAP Coral Imagery};
+        \node[block, right=1.4cm of t0] (t1) {\textbf{Inspection Survey ($T_1$)}\\[1pt]Post-Disturbance Reef Imagery};
+        \node[block, below=of t0] (uw) {\textbf{Underwater-Optimised 3DGS}\\[1pt]\textit{3D-UIR} / \textit{SeaSplat} Optical Inversion};
+        \node[block, below=of uw] (sugar) {\textbf{SuGaR Surface Regularization}\\[1pt]Enforce SDF Prior \& Prune Floaters};
+        \node[wideblock, below=3.4cm of $(t0)!0.5!(t1)$] (oscd) {\textbf{Primitive-Space O-SCD Engine}\\[1pt]Turbidity-Invariant 3D Gaussian Differencing ($T_1$ vs.\ $T_0$ Prior)};
+        \node[wideblock, below=of oscd] (vol) {\textbf{Differential SuGaR Mesh \& Ecological Metrics}\\[1pt]Volumetric Accretion/Depletion ($\text{cm}^3$) \& Rugosity ($\text{m}^2$)};
+
+        \draw[arrow] (t0) -- (uw);
+        \draw[arrow] (uw) -- (sugar);
+        \draw[arrow] (sugar.south) |- ([yshift=0.25cm]oscd.north) -- (oscd.north);
+        \draw[arrow] (t1.south) |- ([yshift=0.25cm]oscd.north) -- (oscd.north);
+        \draw[arrow] (oscd) -- (vol);
+    \end{tikzpicture}
+    \caption{Target Phase~3 unified temporal underwater change detection architecture, combining underwater-optimised 3DGS optical restoration and SuGaR surface regularization with primitive-space O-SCD for the 1.35~TB AIMS EcoRRAP dataset.}
+    \label{fig:ecorrap_architecture}
+\end{figure}
 
 \subsection{Phase 4: Synthesis, Validation, and Handover (Month 5)}
 \begin{itemize}

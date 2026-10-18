@@ -39,7 +39,7 @@
 \usepackage[figuresright]{rotating}	%Allows large tables to be rotated to landscape.
 \usepackage{multirow}
 \usepackage{multicol}
-\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc}
 %You can add more packages here if you need
 \usepackage{siunitx}
 \usepackage{xltabular}
@@ -85,3 +85,23 @@
 \newcommand{\etal}{\textit{et al.}} %And others, with correct punctuation.
 \newcommand{\naive}{na\"\i{}ve} %Queen Amidala is young and \naive{}.
 
+% Smart Figure Placeholder Macro:
+% Automatically embeds the image if present in Images/, otherwise renders a clean placeholder box.
+\newcommand{\renderplaceholder}[4]{%
+    \IfFileExists{#1}{%
+        \includegraphics[width=\textwidth]{#1}%
+    }{%
+        \fcolorbox{blue!60!black}{blue!3}{%
+            \begin{minipage}[c][4.2cm][c]{0.90\textwidth}
+                \centering
+                \footnotesize\sffamily\raggedright
+                \centering
+                \textbf{\textcolor{blue!75!black}{[IMAGE PLACEHOLDER]}}\par\vspace{3pt}
+                \textbf{File:} \texttt{\detokenize{#1}}\par\vspace{3pt}
+                \textbf{Subject:} #2\par\vspace{3pt}
+                \scriptsize\textbf{Source:} #3\par\vspace{2pt}
+                \textit{#4}\par
+            \end{minipage}%
+        }%
+    }%
+}

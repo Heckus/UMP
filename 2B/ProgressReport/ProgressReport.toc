@@ -5,9 +5,9 @@
 \contentsline {chapter}{Contents}{iii}{chapter*.5}%
 \contentsline {chapter}{List of Tables}{vi}{chapter*.6}%
 \contentsline {chapter}{List of Figures}{vi}{chapter*.7}%
-\contentsline {chapter}{Statement of Original Authorship}{vii}{chapter*.9}%
-\contentsline {chapter}{Acknowledgements}{viii}{chapter*.11}%
-\contentsline {chapter}{Abbreviations and Acronyms}{ix}{section*.12}%
+\contentsline {chapter}{Statement of Original Authorship}{viii}{chapter*.9}%
+\contentsline {chapter}{Acknowledgements}{ix}{chapter*.11}%
+\contentsline {chapter}{Abbreviations and Acronyms}{x}{section*.12}%
 \contentsline {chapter}{\chapternumberline {1}Introduction}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Motivation and Background}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Project Research Objectives}{2}{section.1.2}%
@@ -43,40 +43,40 @@
 \contentsline {section}{\numberline {4.1}Introduction}{16}{section.4.1}%
 \contentsline {section}{\numberline {4.2}HPC Cluster Provisioning and Milestone Verification}{16}{section.4.2}%
 \contentsline {section}{\numberline {4.3}Master Quantitative Benchmark Results}{17}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Comparative Analysis Across Model Paradigms}{18}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Physics-Based Models: Geometric Consistency vs. Computational Cost}{18}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Restoration-Guided Models: High Perceptual Fidelity vs. Geometry Drift}{18}{subsection.4.4.2}%
-\contentsline {subsection}{\numberline {4.4.3}Supplementary Models and Environmental Noise}{18}{subsection.4.4.3}%
-\contentsline {paragraph}{Key Takeaway for EcoRRAP Selection:}{18}{section*.22}%
-\contentsline {section}{\numberline {4.5}Surface Geometry Regularization via SuGaR}{19}{section.4.5}%
-\contentsline {section}{\numberline {4.6}Primitive-Space Scene Change Detection (O-SCD)}{19}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Visual Reconstruction Portfolio and Future Render Placeholders}{19}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Summary of Progress}{20}{section.4.8}%
-\contentsline {chapter}{\chapternumberline {5}Project Management, Risks, Ethics and Sustainability}{21}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Introduction}{21}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Risk Assessment and Mitigation Strategies}{21}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Managing the AIMS EcoRRAP Data Legal Transfer}{21}{subsection.5.2.1}%
-\contentsline {section}{\numberline {5.3}Ethical Considerations: Engineers Australia Code of Ethics}{23}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}1. Demonstrate Integrity}{23}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}2. Practise Competently}{23}{subsection.5.3.2}%
-\contentsline {subsection}{\numberline {5.3.3}3. Exercise Leadership}{23}{subsection.5.3.3}%
-\contentsline {subsection}{\numberline {5.3.4}4. Promote Sustainability}{23}{subsection.5.3.4}%
-\contentsline {section}{\numberline {5.4}Sustainability Considerations}{24}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Environmental Sustainability: Mitigating the Carbon Footprint of AI Compute}{24}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Economic Sustainability: Reusable Open Frameworks}{24}{subsection.5.4.2}%
-\contentsline {subsection}{\numberline {5.4.3}Social and Educational Legacy}{24}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}Resources and Stakeholder Engagement}{24}{section.5.5}%
-\contentsline {chapter}{\chapternumberline {6}Conclusion and Future Roadmap}{26}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Summary of Research Progress and Achievements}{26}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Technical Challenges and Lessons Learned}{27}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Future Roadmap: The AIMS EcoRRAP Deployment}{27}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}Phase 2: EcoRRAP Ingestion and Co-Registration (Months 1–2)}{27}{subsection.6.3.1}%
-\contentsline {subsection}{\numberline {6.3.2}Phase 3: Model Transplantation and Extended Cluster Optimization (Months 3–4)}{28}{subsection.6.3.2}%
-\contentsline {subsection}{\numberline {6.3.3}Phase 4: Synthesis, Validation, and Handover (Month 5)}{28}{subsection.6.3.3}%
-\contentsline {chapter}{Project Timeline and Updated Gantt Schedule}{29}{chapter*.26}%
-\contentsline {chapter}{Attempt 10 Verification Report and Execution Manifest}{31}{chapter*.30}%
-\contentsline {chapter}{Extended Risk Assessment Matrix}{33}{chapter*.32}%
-\contentsline {chapter}{Extended Literature Review Survey (from Proposal 1B)}{34}{chapter*.35}%
-\contentsline {section}{Historical Foundations: Diver Transects and 2D Planar Limitations}{34}{section*.36}%
-\contentsline {section}{Radiative Transfer in Aquatic Scattering Media}{34}{section*.37}%
-\contentsline {chapter}{Bibliography}{35}{chapter*.39}%
+\contentsline {section}{\numberline {4.4}Comparative Analysis Across Model Paradigms}{17}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Physics-Based Models: Geometric Consistency vs. Computational Cost}{17}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Restoration-Guided Models: High Perceptual Fidelity vs. Geometry Drift}{19}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Supplementary Models and Environmental Noise}{20}{subsection.4.4.3}%
+\contentsline {paragraph}{Key Takeaway for EcoRRAP Selection:}{20}{section*.26}%
+\contentsline {section}{\numberline {4.5}Surface Geometry Regularization via SuGaR}{21}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Primitive-Space Scene Change Detection (O-SCD)}{21}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Visual Reconstruction Portfolio and Render Specification Summary}{23}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Summary of Progress}{23}{section.4.8}%
+\contentsline {chapter}{\chapternumberline {5}Project Management, Risks, Ethics and Sustainability}{26}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Introduction}{26}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Risk Assessment and Mitigation Strategies}{26}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Managing the AIMS EcoRRAP Data Legal Transfer}{26}{subsection.5.2.1}%
+\contentsline {section}{\numberline {5.3}Ethical Considerations: Engineers Australia Code of Ethics}{28}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}1. Demonstrate Integrity}{28}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}2. Practise Competently}{28}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}3. Exercise Leadership}{28}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}4. Promote Sustainability}{28}{subsection.5.3.4}%
+\contentsline {section}{\numberline {5.4}Sustainability Considerations}{29}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Environmental Sustainability: Mitigating the Carbon Footprint of AI Compute}{29}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Economic Sustainability: Reusable Open Frameworks}{29}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}Social and Educational Legacy}{29}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Resources and Stakeholder Engagement}{29}{section.5.5}%
+\contentsline {chapter}{\chapternumberline {6}Conclusion and Future Roadmap}{31}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Summary of Research Progress and Achievements}{31}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Technical Challenges and Lessons Learned}{32}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Future Roadmap: The AIMS EcoRRAP Deployment}{32}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Phase 2: EcoRRAP Ingestion and Co-Registration (Months 1–2)}{32}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Phase 3: Model Transplantation and Extended Cluster Optimization (Months 3–4)}{33}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Phase 4: Synthesis, Validation, and Handover (Month 5)}{34}{subsection.6.3.3}%
+\contentsline {appendix}{\chapternumberline {A}Project Timeline and Updated Gantt Schedule}{35}{appendix.A}%
+\contentsline {appendix}{\chapternumberline {B}Attempt 10 Verification Report and Execution Manifest}{37}{appendix.B}%
+\contentsline {appendix}{\chapternumberline {C}Extended Risk Assessment Matrix}{39}{appendix.C}%
+\contentsline {appendix}{\chapternumberline {D}Extended Literature Review Survey (from Proposal 1B)}{40}{appendix.D}%
+\contentsline {section}{\numberline {D.1}Historical Foundations: Diver Transects and 2D Planar Limitations}{40}{section.D.1}%
+\contentsline {section}{\numberline {D.2}Radiative Transfer in Aquatic Scattering Media}{40}{section.D.2}%
+\contentsline {chapter}{Bibliography}{41}{chapter*.39}%

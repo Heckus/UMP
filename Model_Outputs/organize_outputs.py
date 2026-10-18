@@ -63,28 +63,28 @@ MODEL_SPECS = [
         "category": "02_Image_Restoration_3DGS",
         "model_name": "Gaussian_Splashing",
         "scene": "Kwaj",
-        "model_aliases": ["gaussianSplashing-main", "gaussianSplashing", "Gaussian_Splashing"],
+        "model_aliases": ["gaussianSplashing-main", "gaussiansplashing", "gaussianSplashing", "Gaussian_Splashing"],
         "scene_aliases": ["Kwaj", "kwaj"],
     },
     {
         "category": "02_Image_Restoration_3DGS",
         "model_name": "Gaussian_Splashing",
         "scene": "Tokai",
-        "model_aliases": ["gaussianSplashing-main", "gaussianSplashing", "Gaussian_Splashing"],
+        "model_aliases": ["gaussianSplashing-main", "gaussiansplashing", "gaussianSplashing", "Gaussian_Splashing"],
         "scene_aliases": ["Tokai", "tokai"],
     },
     {
         "category": "02_Image_Restoration_3DGS",
         "model_name": "WaterSplatting",
         "scene": "Kwaj",
-        "model_aliases": ["water-splatting-main", "water-splatting", "WaterSplatting"],
+        "model_aliases": ["water-splatting-main", "watersplatting", "water-splatting", "WaterSplatting"],
         "scene_aliases": ["Kwaj", "kwaj"],
     },
     {
         "category": "02_Image_Restoration_3DGS",
         "model_name": "WaterSplatting",
         "scene": "Tokai",
-        "model_aliases": ["water-splatting-main", "water-splatting", "WaterSplatting"],
+        "model_aliases": ["water-splatting-main", "watersplatting", "water-splatting", "WaterSplatting"],
         "scene_aliases": ["Tokai", "tokai"],
     },
 
@@ -228,9 +228,16 @@ def find_point_clouds(input_dir: Path, spec: Dict) -> Tuple[Optional[Path], List
     return final_ply, other_plys
 
 
+OTHER_UNDERWATER_ALIASES = [
+    "seasplat", "3d-uir", "3d_uir", "gaussiansplashing", "gaussian_splashing",
+    "watersplatting", "water-splatting", "water_splatting", "rusplatting", "uw-gs", "uw_gs",
+]
+
+
 def find_sugar_meshes(input_dir: Path, spec: Dict) -> List[Path]:
-    """Finds all SuGaR refined mesh files (.obj, .mtl, .png) for a given scene."""
+    """Finds all SuGaR refined mesh files (.obj, .mtl, .png) specific to a given model and scene."""
     scene_aliases = spec["scene_aliases"]
+    model_aliases = spec["model_aliases"]
     model_name = spec["model_name"]
 
     matched_assets = []
@@ -238,18 +245,35 @@ def find_sugar_meshes(input_dir: Path, spec: Dict) -> List[Path]:
         if not p.is_file() or p.suffix.lower() not in [".obj", ".mtl", ".png", ".jpg"]:
             continue
         p_str = str(p)
+        p_lower = p_str.lower().replace("\\", "/")
 
         # Skip non-mesh PNGs
-        if p.suffix.lower() in [".png", ".jpg"] and "sugarfine" not in p.name.lower() and "texture" not in p_str.lower() and "refined_mesh" not in p_str.lower():
+        if p.suffix.lower() in [".png", ".jpg"] and "sugarfine" not in p.name.lower() and "texture" not in p_lower and "refined_mesh" not in p_lower:
+            continue
+
+        if "refined_mesh" not in p_lower and "sugarfine" not in p.name.lower():
             continue
 
         if model_name == "O-SCD":
             # For OSCD, SuGaR meshes live under inference_scene or oscd or Custom_OSCD_Dataset
-            if any(s in p_str for s in ["inference_scene", "oscd", "Custom_OSCD_Dataset"]) and ("refined_mesh" in p_str or "sugarfine" in p.name):
+            if any(s.lower() in p_lower for s in ["inference_scene", "oscd", "custom_oscd_dataset"]):
+                matched_assets.append(p)
+        elif model_name == "SuGaR":
+            # Standalone SuGaR model: match explicit /sugar/ tag or legacy un-namespaced refined_mesh/<scene>/
+            # while excluding paths belonging to a specific underwater model (e.g., /seasplat/, /3d-uir/)
+            has_scene = any(s.lower() in p_lower for s in scene_aliases)
+            has_other_model = any(f"/{m}/" in p_lower for m in OTHER_UNDERWATER_ALIASES)
+            if has_scene and not has_other_model:
                 matched_assets.append(p)
         else:
-            # For underwater models (SuGaR, SeaSplat, etc.)
-            if any(s.lower() in p_str.lower() for s in scene_aliases) and ("refined_mesh" in p_str or "sugarfine" in p.name):
+            # Specific underwater 3DGS model (SeaSplat, 3D-UIR, Gaussian_Splashing, WaterSplatting, RUSplatting, UW-GS):
+            # MUST match both the model alias AND the scene alias in the path so different models never share a mesh
+            has_scene = any(s.lower() in p_lower for s in scene_aliases)
+            has_model = any(
+                f"/{m.lower()}/" in p_lower or f"_{m.lower()}_" in p_lower or p.name.lower().startswith(f"{m.lower()}_")
+                for m in model_aliases
+            )
+            if has_scene and has_model:
                 matched_assets.append(p)
 
     return matched_assets

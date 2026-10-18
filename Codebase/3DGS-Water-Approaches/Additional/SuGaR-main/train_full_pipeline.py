@@ -82,6 +82,8 @@ if __name__ == "__main__":
     # GPU
     parser.add_argument('--gpu', type=int, default=0, help='Index of GPU device to use.')
     parser.add_argument('--white_background', type=str2bool, default=False, help='Use a white background instead of black.')
+    parser.add_argument('--output_dir_tag', type=str, default=None,
+                        help='(Optional) Model/experiment subdirectory tag to namespace SuGaR outputs per model (e.g. seasplat/Tokai).')
 
     # Parse arguments
     args = parser.parse_args()
@@ -134,6 +136,7 @@ if __name__ == "__main__":
             gs_checkpoint_dir += os.path.sep
     
     # Runs the train.py python script with the given arguments
+    output_dir_tag_arg = f"--output_dir_tag {args.output_dir_tag}" if args.output_dir_tag else ""
     ret = os.system(
         f"python train.py \
             -s {args.scene_path} \
@@ -159,7 +162,8 @@ if __name__ == "__main__":
             --refinement_time {args.refinement_time} \
             --eval {args.eval} \
             --gpu {args.gpu} \
-            --white_background {args.white_background}"
+            --white_background {args.white_background} \
+            {output_dir_tag_arg}"
     )
     if ret != 0:
         raise RuntimeError(f"SuGaR train.py failed with exit code {ret}")

@@ -90,6 +90,8 @@ if __name__ == "__main__":
     # GPU
     parser.add_argument('--gpu', type=int, default=0, help='Index of GPU device to use.')
     parser.add_argument('--white_background', type=str2bool, default=False, help='Use a white background instead of black.')
+    parser.add_argument('--output_dir_tag', type=str, default=None,
+                        help='(Optional) Model/experiment subdirectory tag to namespace SuGaR outputs per model (e.g. seasplat/Tokai).')
 
     # Parse arguments
     args = parser.parse_args()
@@ -115,12 +117,18 @@ if __name__ == "__main__":
     if args.export_ply:
         print('Will export a ply file with the refined 3D Gaussians at the end of the training.')
     
+    import os
+    coarse_out_dir = os.path.join("./output/coarse", args.output_dir_tag) if args.output_dir_tag else None
+    coarse_mesh_out_dir = os.path.join("./output/coarse_mesh", args.output_dir_tag) if args.output_dir_tag else None
+    refined_out_dir = os.path.join("./output/refined", args.output_dir_tag) if args.output_dir_tag else None
+    refined_mesh_out_dir = os.path.join("./output/refined_mesh", args.output_dir_tag) if args.output_dir_tag else None
+
     # ----- Optimize coarse SuGaR -----
     coarse_args = AttrDict({
         'checkpoint_path': args.checkpoint_path,
         'scene_path': args.scene_path,
         'iteration_to_load': args.iteration_to_load,
-        'output_dir': None,
+        'output_dir': coarse_out_dir,
         'eval': args.eval,
         'estimation_factor': 0.2,
         'normal_factor': 0.2,
@@ -148,7 +156,7 @@ if __name__ == "__main__":
         'surface_level': args.surface_level,
         'decimation_target': args.n_vertices_in_mesh,
         'project_mesh_on_surface_points': args.project_mesh_on_surface_points,
-        'mesh_output_dir': None,
+        'mesh_output_dir': coarse_mesh_out_dir,
         'bboxmin': args.bboxmin,
         'bboxmax': args.bboxmax,
         'center_bbox': args.center_bbox,
@@ -168,7 +176,7 @@ if __name__ == "__main__":
         'scene_path': args.scene_path,
         'checkpoint_path': args.checkpoint_path,
         'mesh_path': coarse_mesh_path,      
-        'output_dir': None,
+        'output_dir': refined_out_dir,
         'iteration_to_load': args.iteration_to_load,
         'normal_consistency_factor': 0.1,    
         'gaussians_per_triangle': args.gaussians_per_triangle,        
@@ -193,7 +201,8 @@ if __name__ == "__main__":
             'iteration_to_load': args.iteration_to_load,
             'checkpoint_path': args.checkpoint_path,
             'refined_model_path': refined_sugar_path,
-            'mesh_output_dir': None,
+            'coarse_mesh_path': coarse_mesh_path,
+            'mesh_output_dir': refined_mesh_out_dir,
             'n_gaussians_per_surface_triangle': args.gaussians_per_triangle,
             'square_size': args.square_size,
             'eval': args.eval,

@@ -10,43 +10,66 @@ Figure~\ref{fig:gantt_schedule} and Table~\ref{tab:detailed_schedule} detail the
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{ganttchart}[
-        vgrid,
+        canvas/.append style={fill=white, draw=gray!50!black, line width=0.8pt},
+        hgrid style/.style={draw=gray!20, line width=0.4pt},
         hgrid,
-        x unit=0.65cm,
-        y unit chart=0.65cm,
+        vgrid={*{6}{draw=none}, {draw=gray!25, dotted, line width=0.4pt}},
+        x unit=0.046cm,
+        y unit title=0.68cm,
+        y unit chart=0.64cm,
         time slot format=isodate,
-        time slot unit=month,
-        title/.append style={fill=gray!15},
-        title label font=\footnotesize\bfseries,
-        bar/.append style={fill=blue!35},
-        bar complete/.append style={fill=blue!75!black},
-        bar label font=\footnotesize,
-        group label font=\footnotesize\bfseries,
-        bar progress label font=\scriptsize,
+        time slot unit=day,
+        title/.append style={draw=gray!50!black, line width=0.5pt, fill=gray!12},
+        title label font=\footnotesize\bfseries\sffamily\color{black},
+        bar/.append style={fill=blue!68!cyan, draw=blue!85!black, line width=0.6pt, rounded corners=1.5pt},
+        bar incomplete/.append style={fill=gray!16, draw=gray!55!black, line width=0.6pt, rounded corners=1.5pt},
+        bar label font=\footnotesize\sffamily\color{black},
+        bar label node/.append style={left=6pt},
+        group/.append style={fill=black!80, draw=black},
+        group incomplete/.append style={fill=gray!38, draw=gray!65!black},
+        group label font=\footnotesize\bfseries\sffamily\color{black},
+        group label node/.append style={left=6pt},
+        progress label text={#1\%},
+        bar progress label font=\scriptsize\bfseries\sffamily\color{black},
         bar progress label node/.append style={right=4pt},
-        bar height=0.5,
-        group height=0.35,
+        milestone/.append style={fill=orange!90!red, draw=red!80!black, line width=0.7pt},
+        milestone left shift=-2.5,
+        milestone right shift=3.5,
+        milestone height=0.52,
+        milestone label font=\footnotesize\bfseries\sffamily\color{red!75!black},
+        milestone label node/.append style={left=6pt},
+        vrule/.style={draw=red!75!black, dashed, line width=1.1pt},
+        vrule offset=0.5,
+        vrule label font=\scriptsize\bfseries\sffamily\color{red!75!black},
+        vrule label node/.append style={below=3pt, solid, fill=red!6, draw=red!50, line width=0.5pt, rounded corners=2pt, inner sep=2.5pt},
+        bar height=0.48,
+        group height=0.24,
         group right shift=0,
-        group top shift=0.65,
-         expand chart=\textwidth
-    ]{2026-07-01}{2027-02-28}
+        group top shift=0.64,
+        group peaks tip position=0,
+        group peaks width=2.5,
+        group peaks height=0.15
+    ]{2026-07-01}{2027-03-31}
         \gantttitlecalendar{year, month=shortname} \\
-        \ganttgroup{Phase 1: Foundations \& Benchmarks}{2026-07-01}{2026-10-15} \\
-        \ganttbar[progress=100]{Literature Review \& Proposal (1A/1B)}{2026-07-01}{2026-09-15} \\
-        \ganttbar[progress=100]{HPC Toolchain \& 11 Conda Envs}{2026-08-15}{2026-10-05} \\
-        \ganttbar[progress=100]{15/15 Benchmark Executions (Att. 10)}{2026-09-15}{2026-10-15} \\
-        \ganttgroup{Phase 2: EcoRRAP Ingestion}{2026-10-16}{2026-11-30} \\
-        \ganttbar[progress=30]{AIMS DTA \& Globus Transfer (1.35TB)}{2026-10-01}{2026-11-15} \\
-        \ganttbar[progress=0]{Temporal SfM Alignment \& Preprocessing}{2026-11-01}{2026-11-30} \\
-        \ganttgroup{Phase 3: Model Transplantation}{2026-12-01}{2027-01-15} \\
-        \ganttbar[progress=0]{Grafting 3D-UIR/SeaSplat into O-SCD}{2026-12-01}{2026-12-20} \\
-        \ganttbar[progress=0]{Long-Duration Aqua Cluster Training}{2026-12-15}{2027-01-15} \\
-        \ganttgroup{Phase 4: Synthesis \& Final Thesis}{2027-01-01}{2027-02-25} \\
-        \ganttbar[progress=0]{Volumetric Analysis ($\text{cm}^3/\text{m}^2$)}{2027-01-01}{2027-01-25} \\
-        \ganttbar[progress=0]{Final Thesis \& Manuscript Delivery}{2027-01-15}{2027-02-25}
+        \ganttgroup[progress=100, progress label text={}]{Phase 1: Foundations \& Benchmarks}{2026-07-01}{2026-10-16} \\
+        \ganttbar[progress=100, name=p1a]{Literature Review \& Proposal (1A/1B)}{2026-07-01}{2026-09-15} \\
+        \ganttbar[progress=100, name=p1b]{HPC Toolchain \& 11 Conda Envs}{2026-08-10}{2026-09-24} \\
+        \ganttbar[progress=100, name=p1c]{15/15 Benchmark Executions (Att.\ 10)}{2026-09-12}{2026-10-16} \\
+        \ganttmilestone[name=m2b]{Assessment 2B Progress Report}{2026-10-17} \\
+        \ganttgroup[progress=30, progress label text={}]{Phase 2: EcoRRAP Data Ingestion}{2026-10-01}{2026-11-30} \\
+        \ganttbar[progress=30, name=p2a]{AIMS DTA \& Globus Transfer (1.35 TB)}{2026-10-01}{2026-11-15} \\
+        \ganttbar[progress=0, name=p2b]{Temporal SfM Alignment \& Depth Priors}{2026-11-01}{2026-11-30} \\
+        \ganttgroup[progress=0, progress label text={}]{Phase 3: Model Transplantation}{2026-12-01}{2027-01-20} \\
+        \ganttbar[progress=0, name=p3a]{Grafting 3D-UIR / SeaSplat into O-SCD}{2026-12-01}{2026-12-22} \\
+        \ganttbar[progress=0, name=p3b]{Long-Duration Aqua Cluster Training}{2026-12-15}{2027-01-20} \\
+        \ganttgroup[progress=0, progress label text={}]{Phase 4: Synthesis \& Final Thesis}{2027-01-05}{2027-02-25} \\
+        \ganttbar[progress=0, name=p4a]{Volumetric Coral Analysis ($\text{cm}^3/\text{m}^2$)}{2027-01-05}{2027-01-28} \\
+        \ganttbar[progress=0, name=p4b]{Final Thesis \& Manuscript Delivery}{2027-01-15}{2027-02-25}
+        \ganttvrule{Current Status: 17 Oct 2026}{2026-10-17}
     \end{ganttchart}%
     }
-    \caption{Project Gantt schedule illustrating completed Phase 1 milestones and the upcoming multi-temporal EcoRRAP deployment roadmap.}
+    \vspace{2pt}
+    \caption{Project Gantt schedule illustrating completed Phase~1 milestones, the current Assessment~2B checkpoint, and the upcoming multi-temporal AIMS EcoRRAP deployment roadmap.}
     \label{fig:gantt_schedule}
 \end{figure}
 

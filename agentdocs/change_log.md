@@ -1,5 +1,42 @@
 # Change Log
 
+## [2026-10-18] Per-Model SuGaR Surface Mesh Namespacing & Organizer Model-Filtering Fix
+- **Root Cause Identified (Identical `.obj` Meshes Across Methods)**:
+  - **Bug 1 (`SuGaR-main` Static Scene Path & Early-Return Cache)**: `SuGaR-main/train.py`, `coarse_density_and_dn_consistency.py`, `coarse_mesh.py`, `refine.py`, and `refined_mesh.py` defaulted `output_dir` and `mesh_output_dir` to `./output/{coarse,coarse_mesh,refined,refined_mesh}/<scene_name>/` without namespacing by the upstream 3DGS model (`seasplat`, `3d-uir`, `gaussiansplashing`, `watersplatting`, `rusplatting`, `uw-gs`, `sugar`). Because `coarse_density_and_dn_consistency.py`, `coarse_mesh.py`, and `refine.py` check if `15000.pt` or `sugarmesh_...ply` already exists in that directory and immediately skip training if found, running Stage 5 (`mesh`) across multiple models caused every subsequent model to reuse the first model's cached SuGaR checkpoints and overwrite the same `.obj` file.
+  - **Bug 2 (`run_pipeline.sh` Shared Export Path)**: `run_sugar_mesh_stage` exported all models' meshes to `${scene_path}/output/refined_mesh/${scene_name}.obj`, overwriting the previous model's mesh on each run.
+  - **Bug 3 (`Model_Outputs/organize_outputs.py` Scene-Only Matching)**: `find_sugar_meshes()` only checked whether the scene name (`Kwaj` or `Tokai`) was in the file path (`any(s.lower() in p_str.lower() for s in scene_aliases)`) without checking `model_aliases`. Consequently, `organize_outputs.py` matched the single `SuGaR-main/output/refined_mesh/<scene>/sugarfine_*.obj` file and copied/renamed it into all 7 underwater model folders.
+- **Code-Level Fixes Implemented**:
+  1. **`Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/train_full_pipeline.py` & `train.py`**:
+     - Added `--output_dir_tag` CLI argument (e.g., `--output_dir_tag seasplat/Tokai`).
+     - Populated `coarse_args.output_dir`, `coarse_mesh_args.mesh_output_dir`, `refined_args.output_dir`, and `refined_mesh_args.mesh_output_dir` with `./output/{coarse,coarse_mesh,refined,refined_mesh}/<output_dir_tag>`, isolating each model's coarse SDF training, Poisson mesh extraction, refinement, and UV texture export.
+  2. **`Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/sugar_extractors/refined_mesh.py`**:
+     - Updated `extract_mesh_and_texture_from_refined_sugar` to read `args.coarse_mesh_path` directly when provided instead of hardcoding `./output/coarse_mesh/<scene_name>/`, ensuring model-namespaced coarse meshes are loaded during UV texture extraction.
+  3. **`Codebase/scripts/run_pipeline.sh`**:
+     - Updated `run_sugar_mesh_stage` to pass `--output_dir_tag "${current_model}/${scene_name}"` to `train_full_pipeline.py` and export the resulting `.obj`, `.mtl`, and `.png` assets to `${scene_path}/output/refined_mesh/${current_model}/${scene_name}.obj` (while maintaining the legacy `${scene_path}/output/refined_mesh/${scene_name}.obj` link for backwards compatibility).
+  4. **`Model_Outputs/organize_outputs.py`**:
+     - Updated `find_sugar_meshes()` to require both `has_scene` and `has_model` (matching `/{model_alias}/` or `_{model_alias}_`) for all underwater 3DGS models (`SeaSplat`, `3D-UIR`, `Gaussian_Splashing`, `WaterSplatting`, `RUSplatting`, `UW-GS`), preventing cross-model mesh duplication.
+  5. **`HPC/scripts/package_outputs.sh`**:
+     - Added `-type f` to `find Dataset/... -path "*/output/refined_mesh/*"` so `tar -T` archives individual files cleanly without duplicating nested model subdirectories.
+
+---
+
+## [2026-10-17] Assessment 2B Progress Report Visual Placeholders, In-Text References & O-SCD Keyframe Strip Integration
+- **Document**: `2B/ProgressReport/ProgressReport.pdf` (54 pages, MiKTeX compilation exit code 0, 0 errors, 0 undefined references).
+- **Smart Conditional Placeholder Macro (`LaTexPackages.tex`)**:
+  - Implemented `\renderplaceholder{#1}{#2}{#3}{#4}` using `\IfFileExists{#1}{\includegraphics[width=\textwidth]{#1}}{...}` so all figure environments remain active in the compiled PDF with valid figure numbers (`Figure 4.1`–`Figure 4.8`, `Figure 6.1`) and List of Figures entries, while automatically rendering screenshots the moment they are placed into `2B/ProgressReport/Images/`.
+- **Live Integration of O-SCD Keyframe Strip (`Images/oscd_change_keyframe_strip.png`)**:
+  - Copied `Model_Outputs/organized/05_Scene_Change_Detection/O-SCD/Custom_OSCD_Dataset/oscd_change_keyframe_strip.png` to `2B/ProgressReport/Images/oscd_change_keyframe_strip.png` and embedded it live as Figure 4.8 (`\label{fig:oscd_keyframe_strip}`).
+- **Expanded Placeholder Coverage & Proper Subsection Placement (`Chapters/4_Progress.tex` & `Chapters/6_Conclusion.tex`)**:
+  - Relocated all Chapter 4 figures from the end-of-chapter comment block into their proper analytical subsections (`4.4.1`, `4.4.2`, `4.4.3`, `4.5`, `4.6`) with explicit in-text references (`Figure~\ref{...} shows...`).
+  - Added new placeholder locations for `3d_uir_tokai_detail.png`, Domain 03 Supplementary 3DGS (`rusplatting_kwaj_render.png`, `uw_gs_kwaj_render.png`), O-SCD post-change 3DGS & SuGaR mesh (`oscd_updated_scene_render.png`, `oscd_sugar_mesh_render.png`), and updated the O-SCD 3D heatmap placeholders to match the two actual `.ply` outputs (`oscd_3d_heatmap_turbo.png` and `oscd_3d_heatmap_all_changes.png`).
+  - Added Figure 6.1 (`\label{fig:ecorrap_architecture}` TikZ diagram) in `Chapters/6_Conclusion.tex` illustrating the Phase 3 Unified Temporal Underwater O-SCD Architecture.
+- **Appendix Numbering & Gantt Schedule Redesign (`ProgressReport.tex` & `Chapters/Appendix.tex`)**:
+  - Moved `\appendix` before `\backmatter` in `ProgressReport.tex` so Appendices are properly numbered `Appendix A`–`Appendix D` and their floats are numbered `Figure A.1` / `Table A.1` instead of unnumbered `Figure 1` / `Table 1`.
+  - Redesigned Figure A.1 (`\label{fig:gantt_schedule}`) in `Chapters/Appendix.tex` with day-level granularity (`time slot unit=day`), clean `100%`/`30%`/`0%` progress labels, a dedicated `Assessment 2B Progress Report` milestone diamond (`2026-10-17`), a vertical `Current Status: 17 Oct 2026` status line, and distinct blue/gray completed vs. incomplete bar styling.
+  - Converted all Gantt chart typography (phase headers, calendar month/year labels, task labels, and percentage markers) from blue to clean black with neutral gray framing.
+
+---
+
 ## [2026-10-15] Assessment 2B Progress Report Title Containment & Dedicated Keywords Chapter
 - **Document**: `2B/ProgressReport/ProgressReport.pdf` (47 pages, MiKTeX compilation exit code 0).
 - **Title Page Overflow Resolution (`qut-title.sty` & `ProgressReport.tex`)**:

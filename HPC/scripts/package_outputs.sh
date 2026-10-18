@@ -21,8 +21,8 @@ cd "${REPO_ROOT}"
 echo "[1/3] Scanning filesystem for verified evaluation artifacts..."
 
 # 1. Textured Surface Meshes (.obj, .mtl, texture maps)
-find Dataset/Submerged3D -path "*/output/refined_mesh/*" 2>/dev/null >> "${MANIFEST}" || true
-find Dataset/Custom_OSCD_Dataset -path "*/output/refined_mesh/*" 2>/dev/null >> "${MANIFEST}" || true
+find Dataset/Submerged3D -type f -path "*/output/refined_mesh/*" 2>/dev/null >> "${MANIFEST}" || true
+find Dataset/Custom_OSCD_Dataset -type f -path "*/output/refined_mesh/*" 2>/dev/null >> "${MANIFEST}" || true
 find Codebase/3DGS-Water-Approaches/Additional/SuGaR-main/output -type f \( -name "*.obj" -o -name "*.mtl" -o -name "*.png" \) 2>/dev/null >> "${MANIFEST}" || true
 
 # 2. Benchmark Metrics & Evaluations (results.json, evaluation.json)

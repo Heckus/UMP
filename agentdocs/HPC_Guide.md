@@ -392,3 +392,43 @@ Per `HPC/Guides/hpc-transferring-files-tofrom-hpc.md` and `HPC/Guides/hpc-filesy
    qsub -v ARGS="--model oscd --dataset Dataset/My_Custom_Change_Scene --stage all" HPC/scripts/run_pipeline.pbs
    ```
 
+---
+
+## 13. Per-Model Distinct SuGaR Surface Mesh Extraction Protocol
+
+Prior to the October 18, 2026 fix, `SuGaR-main` hardcoded its intermediate checkpoint and mesh output paths to `./output/{coarse,coarse_mesh,refined,refined_mesh}/<Scene>/` without namespacing by the upstream 3DGS model. Because SuGaR checks if `15000.pt` already exists in that directory and skips training if found, running `--all` caused subsequent models to reuse the first model's (`seasplat`) cached SuGaR mesh.
+
+With `--output_dir_tag <model>/<scene>` implemented across `train_full_pipeline.py`, `train.py`, `refined_mesh.py`, `run_pipeline.sh`, and `organize_outputs.py`, each model now trains and exports its own isolated coarse SDF, Poisson mesh, refined SuGaR model, and UV-textured `.obj` mesh.
+
+### Regenerating Distinct Meshes on HPC (No 3DGS Retraining Required):
+
+1. **Pull Latest Fixes on QUT Aqua**:
+   ```bash
+   cd ~/EUAPGM7346/UMP
+   git pull origin main
+   ```
+
+2. **Run Only the Mesh Stage (`--stage mesh`) Across All Models**:
+   Because all trained 30,000-iteration 3DGS point clouds (`point_cloud.ply` / `splat.ply` / `updated_scene.ply`) already exist on disk, run `--stage mesh` to generate distinct SuGaR meshes directly from each method's trained point cloud prior:
+   ```bash
+   # Extract distinct meshes for all models on both Kwaj and Tokai:
+   qsub -v ARGS="--all --stage mesh" HPC/scripts/run_pipeline.pbs
+
+   # Or for a single scene (e.g., Tokai only):
+   qsub -v ARGS="--all --scene Tokai --stage mesh" HPC/scripts/run_pipeline.pbs
+   ```
+
+3. **Package, Transfer, and Re-Organize**:
+   ```bash
+   # On HPC Login Node:
+   bash HPC/scripts/package_outputs.sh
+
+   # On Local Machine (pull archive & unpack into Model_Outputs/raw):
+   rsync -avzP n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz ~/Downloads/
+   tar -xzvf ~/Downloads/ump_15_outputs.tar.gz -C /path/to/UMP/Model_Outputs/raw/
+
+   # Re-run organizer to populate Model_Outputs/organized with distinct per-model meshes:
+   python Model_Outputs/organize_outputs.py --input Model_Outputs/raw --output Model_Outputs/organized --mode copy
+   ```
+
+

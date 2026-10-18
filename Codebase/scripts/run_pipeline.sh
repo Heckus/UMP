@@ -597,17 +597,38 @@ run_sugar_mesh_stage() {
         fi
     fi
 
+    local output_tag="${current_model}/${scene_name}"
     run_stage_command "sugar" "${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main" \
-        python train_full_pipeline.py -s "${sugar_scene_path}" -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir "${gs_prior}"
-    local expected_obj="${scene_path}/output/refined_mesh/${scene_name}.obj"
+        python train_full_pipeline.py -s "${sugar_scene_path}" -r "dn_consistency" --high_poly True --export_obj True --gs_output_dir "${gs_prior}" --output_dir_tag "${output_tag}"
+    local expected_obj="${scene_path}/output/refined_mesh/${current_model}/${scene_name}.obj"
+    local legacy_obj="${scene_path}/output/refined_mesh/${scene_name}.obj"
     if [[ "${DRY_RUN}" != "true" ]]; then
         local sugar_repo_dir="${REPO_ROOT}/Codebase/3DGS-Water-Approaches/Additional/SuGaR-main"
+        local model_mesh_dir="${sugar_repo_dir}/output/refined_mesh/${output_tag}"
         local found_obj=""
-        found_obj="$(find "${sugar_repo_dir}/output" "${sugar_scene_path}/output" "${scene_path}/output" "${REPO_ROOT}/output" -name "*.obj" 2>/dev/null | sort -r | head -n 1 || true)"
+        if [[ -d "${model_mesh_dir}" ]]; then
+            found_obj="$(find "${model_mesh_dir}" -name "*.obj" 2>/dev/null | sort -r | head -n 1 || true)"
+        fi
+        if [[ -z "${found_obj}" ]]; then
+            found_obj="$(find "${sugar_repo_dir}/output" "${sugar_scene_path}/output" "${scene_path}/output" "${REPO_ROOT}/output" -name "*.obj" 2>/dev/null | sort -r | head -n 1 || true)"
+        fi
         if [[ -n "${found_obj}" && -f "${found_obj}" ]]; then
             mkdir -p "$(dirname "${expected_obj}")"
             if [[ "${found_obj}" != "${expected_obj}" ]]; then
                 cp -f "${found_obj}" "${expected_obj}" 2>/dev/null || ln -sfn "${found_obj}" "${expected_obj}"
+            fi
+            # Copy companion .mtl and texture .png alongside expected_obj
+            local found_dir
+            found_dir="$(dirname "${found_obj}")"
+            for asset in "${found_dir}"/*.mtl "${found_dir}"/*.png; do
+                if [[ -f "${asset}" ]]; then
+                    cp -f "${asset}" "$(dirname "${expected_obj}")/" 2>/dev/null || ln -sfn "${asset}" "$(dirname "${expected_obj}")/$(basename "${asset}")"
+                fi
+            done
+            # Maintain legacy symlink/copy for backwards compatibility
+            mkdir -p "$(dirname "${legacy_obj}")"
+            if [[ "${found_obj}" != "${legacy_obj}" ]]; then
+                cp -f "${found_obj}" "${legacy_obj}" 2>/dev/null || ln -sfn "${found_obj}" "${legacy_obj}"
             fi
             log_info "SuGaR mesh verified and exported to: ${expected_obj} (source: ${found_obj})"
         else
