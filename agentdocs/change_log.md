@@ -1,5 +1,25 @@
 # Change Log
 
+## [2026-10-19] HPC Data Transfer Diagnostics & Host Endpoint Hardening
+- **Diagnostic of Local-to-HPC Transfer Failure (`eresdtn01.qut.edu.au`)**:
+  - **Issue 1 (Syntax Error)**: The `rsync` command `rsync -avzP n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz` lacked a destination argument (e.g. `./`). Without a destination, `rsync` performs a remote directory listing rather than downloading files.
+  - **Issue 2 (SSH Banner Exchange Timeout on DTN)**: Probed network connectivity from local laptop on QUT network; while TCP port 22 connects on `eresdtn01.qut.edu.au` (131.181.68.21) and `eresdtn02`, the DTN SSH daemon hangs during banner exchange (`Connection timed out during banner exchange`).
+  - **Resolution**: Verified that primary login node `aqua.qut.edu.au` (131.181.68.102) is fully operational on port 22 (`SSH-2.0-OpenSSH_8.7`) and shares the identical home/GPFS filesystem (`/home/n11585382/EUAPGM7346/UMP/`).
+- **Code & Documentation Updates**:
+  - Updated `HPC/scripts/package_outputs.sh` download instructions to use `aqua.qut.edu.au` as the primary transfer host and specify `./` as the destination.
+  - Updated `agentdocs/HPC_Guide.md` Section 12 with verified `rsync` and `scp` commands pointing to `aqua.qut.edu.au`.
+- **`Model_Outputs/view_outputs.py` & `organize_outputs.py` Visualizer Overhaul**:
+  - **Root Cause (Drawing from Bad Links / Phantom Models)**:
+    1. When unpacking or running `organize_outputs.py` with `--output Model_Outputs/organized`, `script_dir / out_dir` caused nested folder creation (`Model_Outputs/Model_Outputs/{raw,organized}`).
+    2. `view_outputs.py` defaulted to scanning all subdirectories under `Model_Outputs`, recursing through unorganized raw folders (`raw/Codebase/3DGS-Water-Approaches/...`, `raw/Dataset/Submerged3D/...`) and spawning 37 phantom, fragmented models named `output`, `outputs`, `refined_mesh`, `3d-uir`, etc.
+    3. `view_mesh()` discarded the user's selected canonical mesh and arbitrarily opened whatever file `glob("*.obj")` returned first from companion subfolders.
+    4. Options `[V]`, `[H]`, `[T]` referenced stale hybrid/deprecated file patterns or failed silently when heatmaps or tables were not yet synthesized.
+  - **Fixes Deployed**:
+    1. Unnested `Model_Outputs/{raw,organized}` into canonical top-level layout and updated `organize_outputs.py` relative path resolution to eliminate double-nesting.
+    2. Overhauled `scan_available_models()` in `view_outputs.py` to prioritize `organized/` and strictly enumerate the 16 canonical benchmark models grouped by the 5 thesis categories.
+    3. Added direct support for canonical `<Model>_<Scene>_point_cloud.ply` and `<Model>_<Scene>_refined_mesh.obj`, companion `.mtl` / `.png` texture detection, and WebGL viewer options (`https://3dviewer.net/` and `https://playcanvas.com/supersplat/editor`).
+    4. Synthesized all missing O-SCD 3D Turbo Heatmaps (`O-SCD_3D_Change_Heatmap_Turbo.ply`, `O-SCD_3D_Change_Heatmap_Turbo_All_Changes.ply`), synchronized videos (`oscd_change_heatmap_overlay.mp4`, `4panel.mp4`, `2x2_grid.mp4`), and master benchmark metrics tables (`master_benchmark_table.md`).
+
 ## [2026-10-18] Per-Model SuGaR Surface Mesh Namespacing & Organizer Model-Filtering Fix
 - **Root Cause Identified (Identical `.obj` Meshes Across Methods)**:
   - **Bug 1 (`SuGaR-main` Static Scene Path & Early-Return Cache)**: `SuGaR-main/train.py`, `coarse_density_and_dn_consistency.py`, `coarse_mesh.py`, `refine.py`, and `refined_mesh.py` defaulted `output_dir` and `mesh_output_dir` to `./output/{coarse,coarse_mesh,refined,refined_mesh}/<scene_name>/` without namespacing by the upstream 3DGS model (`seasplat`, `3d-uir`, `gaussiansplashing`, `watersplatting`, `rusplatting`, `uw-gs`, `sugar`). Because `coarse_density_and_dn_consistency.py`, `coarse_mesh.py`, and `refine.py` check if `15000.pt` or `sugarmesh_...ply` already exists in that directory and immediately skip training if found, running Stage 5 (`mesh`) across multiple models caused every subsequent model to reuse the first model's cached SuGaR checkpoints and overwrite the same `.obj` file.

@@ -344,15 +344,19 @@ Per `HPC/Guides/hpc-transferring-files-tofrom-hpc.md` and `HPC/Guides/hpc-filesy
    bash HPC/scripts/package_outputs.sh
    ```
    *(The script uses dynamic `find` manifests to discover and bundle all 15 models' `.obj` meshes, `.mtl`, texture maps, `results.json`, `evaluation.json`, `point_cloud.ply`, `updated_scene.ply`, `splat.ply`, `change_mask/*.png`, and execution logs into `ump_15_outputs.tar.gz` with zero wildcard errors).*
-3. **Step 2: Transfer to Local Ubuntu Desktop via Dedicated Data Transfer Node (`eresdtn01.qut.edu.au`)**:
-   - **Primary Workflow (Ubuntu Desktop over VPN via `rsync` — Recommended)**:
-     With QUT VPN active, execute from your local Ubuntu terminal:
+3. **Step 2: Transfer to Local Machine (`aqua.qut.edu.au` or `eresdtn01.qut.edu.au`)**:
+   - **Primary Workflow (Local Terminal on QUT Network or VPN via `rsync` — Recommended)**:
+     From your local repository root (`/home/hecke/0Github/UMP`), execute:
      ```bash
-     # Single compressed archive download with progress, compression, and resume capability:
-     rsync -avzP n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz ~/Downloads/
+     # Single compressed archive download via aqua (bypasses DTN banner timeout):
+     rsync -avzP n11585382@aqua.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz ./
+     ```
+     *(Note: If `eresdtn01.qut.edu.au` hangs during SSH banner exchange on campus Wi-Fi / VPN, `aqua.qut.edu.au` shares the exact same filesystem and connects instantaneously).*
+   - **Standard `scp` Transfer**:
+     ```bash
+     scp n11585382@aqua.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz ./
      ```
    - **Alternative: Direct Live Extraction via `rsync` (Without Archiving First)**:
-     If you prefer not creating `ump_15_outputs.tar.gz` on the HPC, you can filter and sync the exact 15 outputs directly into a local folder:
      ```bash
      mkdir -p ~/UMP_15_outputs
      rsync -avzP --include="*/" \
@@ -364,11 +368,7 @@ Per `HPC/Guides/hpc-transferring-files-tofrom-hpc.md` and `HPC/Guides/hpc-filesy
          --include="*results.json" --include="*evaluation.json" \
          --include="*change_mask/*.png" \
          --exclude="*" \
-         n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ ~/UMP_15_outputs/
-     ```
-   - **Standard `scp` Transfer**:
-     ```bash
-     scp n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz ~/Downloads/
+         n11585382@aqua.qut.edu.au:~/EUAPGM7346/UMP/ ~/UMP_15_outputs/
      ```
 
 4. **Local Evaluation & 3D Visualization on Ubuntu Desktop**:

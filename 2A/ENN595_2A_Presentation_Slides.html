@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENN595-1 Assessment 2A Oral Presentation — Joshua Hecke</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:wght@600;700&display=swap');
+  :root {
+    --text-dark: #334155;
+    --heading-dark: #2c3e50;
+    --cyan-bright: #38bdf8;
+    --cyan-soft: #bae6fd;
+    --blue-soft: #c7d2fe;
+    --accent-blue: #0284c7;
+    --bg-card: #f8fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f172a;
+    color: var(--text-dark);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .deck-wrapper {
+    position: relative;
+    width: min(96vw, calc(90vh * 16 / 9));
+    height: min(90vh, calc(96vw * 9 / 16));
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  /* Corner Hexagon Decorations matching original deck */
+  .hex-decor {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hex-tl { top: -20px; left: -20px; width: 220px; height: 220px; }
+  .hex-tr { top: -20px; right: -20px; width: 220px; height: 220px; }
+  .hex-bl { bottom: -30px; left: -30px; width: 140px; height: 140px; }
+  .hex-br { bottom: -30px; right: -30px; width: 140px; height: 140px; }
+
+  .slide {
+    display: none;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    padding: 3.2% 5.5% 4.5% 5.5%;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .slide.active { display: flex; }
+
+  h1.main-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2rem, 3.6vw, 3.5rem);
+    color: var(--heading-dark);
+    text-align: center;
+    line-height: 1.22;
+    max-width: 82%;
+    margin: auto auto 1.2rem auto;
+  }
+  .subtitle-rq {
+    font-size: clamp(0.95rem, 1.35vw, 1.3rem);
+    color: #475569;
+    text-align: center;
+    max-width: 78%;
+    margin: 0 auto auto auto;
+    background: #f1f5f9;
+    padding: 0.8rem 1.4rem;
+    border-left: 4px solid var(--cyan-bright);
+    border-radius: 6px;
+  }
+  .authors-row {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1rem, 1.5vw, 1.45rem);
+    color: var(--heading-dark);
+    margin-bottom: 1.5%;
+  }
+  h2.slide-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.6rem, 2.7vw, 2.6rem);
+    color: var(--heading-dark);
+    text-align: center;
+    margin-bottom: 1.4%;
+    font-weight: 700;
+  }
+  .slide-badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-blue);
+    background: #e0f2fe;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    margin: 0 auto 0.4rem auto;
+  }
+  /* 3-Column Layout (matching Submerged3D & EcoRRAP slides) */
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.2%;
+    width: 100%;
+    flex: 1;
+    align-items: start;
+  }
+  .col-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid var(--cyan-bright);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    height: 100%;
+  }
+  .col-box h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.05rem, 1.5vw, 1.45rem);
+    color: var(--heading-dark);
+    text-align: center;
+    margin-bottom: 0.65rem;
+  }
+  .col-box ul {
+    padding-left: 1.15rem;
+    font-size: clamp(0.76rem, 1.02vw, 0.98rem);
+    line-height: 1.42;
+    color: var(--text-dark);
+  }
+  .col-box li { margin-bottom: 0.55rem; }
+
+  /* 2-Column Split Layout for Text/Table + GIF */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1.05fr 1.15fr;
+    gap: 2.2%;
+    width: 100%;
+    flex: 1;
+    align-items: center;
+    min-height: 0;
+  }
+  .media-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 0;
+    gap: 0.5rem;
+  }
+  .media-box img {
+    max-width: 100%;
+    max-height: 88%;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.08);
+  }
+  .caption {
+    font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+    color: #64748b;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* Tables */
+  table.bench-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.68rem, 0.9vw, 0.88rem);
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  table.bench-table th {
+    background: #1e293b;
+    color: #fff;
+    padding: 0.45rem 0.5rem;
+    text-align: left;
+    font-weight: 600;
+  }
+  table.bench-table td {
+    padding: 0.38rem 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  table.bench-table tr.highlight {
+    background: #ecfdf5;
+    font-weight: 600;
+  }
+  .pill-win {
+    background: #10b981;
+    color: #fff;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: 700;
+  }
+
+  /* Stage Pipeline Flow */
+  .stage-flow {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.6rem;
+    margin: 0.6rem 0;
+  }
+  .stage-card {
+    background: #f0f9ff;
+    border: 1.5px solid #38bdf8;
+    border-radius: 8px;
+    padding: 0.6rem;
+    text-align: center;
+    font-size: clamp(0.68rem, 0.88vw, 0.85rem);
+  }
+  .stage-card strong {
+    display: block;
+    color: #0369a1;
+    margin-bottom: 0.2rem;
+    font-size: 1.05em;
+  }
+
+  /* Bottom HUD Controls & Speaker Notes Drawer */
+  .hud-bar {
+    width: min(96vw, calc(90vh * 16 / 9));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 1rem;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+  }
+  .hud-controls button {
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid #475569;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 0.35rem;
+  }
+  .hud-controls button:hover { background: #334155; }
+  .notes-Overlay {
+    display: none;
+    position: fixed;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90vw, 1100px);
+    background: rgba(15, 23, 42, 0.96);
+    color: #f8fafc;
+    border: 1px solid #38bdf8;
+    border-radius: 10px;
+    padding: 1rem 1.4rem;
+    z-index: 100;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+  .notes-Overlay.visible { display: block; }
+  .notes-meta {
+    color: #38bdf8;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-wrapper">
+  <!-- Hexagon Corner SVGs matching original presentation theme -->
+  <svg class="hex-decor hex-tl" viewBox="0 0 200 200">
+    <polygon points="60,10 110,10 135,53 110,96 60,96 35,53" fill="#bae6fd" opacity="0.7"/>
+    <polygon points="120,10 170,10 195,53 170,96 120,96 95,53" fill="#38bdf8" opacity="0.85"/>
+    <polygon points="20,80 70,80 95,123 70,166 20,166 -5,123" fill="#e0f2fe" opacity="0.75"/>
+  </svg>
+  <svg class="hex-decor hex-tr" viewBox="0 0 200 200">
+    <polygon points="90,10 140,10 165,53 140,96 90,96 65,53" fill="#c7d2fe" opacity="0.75"/>
+    <polygon points="140,60 190,60 215,103 190,146 140,146 115,103" fill="#bae6fd" opacity="0.7"/>
+    <polygon points="140,130 190,130 215,173 190,216 140,216 115,173" fill="#dbeafe" opacity="0.8"/>
+  </svg>
+  <svg class="hex-decor hex-bl" viewBox="0 0 120 120">
+    <polygon points="20,40 70,40 95,83 70,126 20,126 -5,83" fill="#93c5fd" opacity="0.8"/>
+  </svg>
+  <svg class="hex-decor hex-br" viewBox="0 0 120 120">
+    <polygon points="50,40 100,40 125,83 100,126 50,126 25,83" fill="#38bdf8" opacity="0.85"/>
+  </svg>
+
+  <!-- SLIDE 1: TITLE -->
+  <div class="slide active" data-time="0:00 - 0:30 (30s)" data-notes="Good morning/afternoon everyone. My name is Joshua Hecke, and under the supervision of Professor Niko Sünderhauf and Dr. Scarlett Raine at the QUT Centre for Robotics, my project investigates Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models. Our core research question asks: How can we detect fine-scale physical and colour changes—such as coral growth, breakage, or bleaching—directly inside 3D Gaussian primitive space without being fooled by changing water turbidity and backscatter?">
+    <h1 class="main-title">Investigation of<br>Primitive-Space Scene Change<br>Detection in Under-water<br>3D Gaussian Splatting Models</h1>
+    <div class="subtitle-rq">
+      <strong>Research Question:</strong> Can direct primitive-space differencing on surface-regularized, optically restored 3D Gaussian Splatting models accurately isolate physical structural ($\text{mm}\to\text{cm}$) and colour changes in turbid underwater environments?
+    </div>
+    <div class="authors-row">
+      <span>Joshua Hecke</span>
+      <span>Prof. Niko Sünderhauf</span>
+      <span>Dr. Scarlett Raine</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: ECOLOGICAL MOTIVATION & CONTEXT (Criterion 1) -->
+  <div class="slide" data-time="0:30 - 1:05 (35s)" data-notes="To understand the context of this work: marine monitoring programs like the Australian Institute of Marine Science EcoRRAP project need to track millimetre-to-centimetre coral growth, skeletal erosion, and bleaching across massive reef sectors. Historically, surveys rely on 2D planar photo-transects, which miss up to 45% of three-dimensional canopy rugosity and volumetric change. However, moving to 3D underwater vision introduces a major hurdle: between survey Time A and Time B, water turbidity, ambient lighting, and particulate backscatter change dramatically, causing conventional 2D image-comparison pipelines to fail.">
+    <span class="slide-badge">Criterion 1 • Project Context & Problem Statement</span>
+    <h2 class="slide-title">Project Context: Why Underwater 3D Change Detection?</h2>
+    <div class="three-col">
+      <div class="col-box">
+        <h3>1. The Ecological Need</h3>
+        <ul>
+          <li><strong>Coral Reef Crisis:</strong> Great Barrier Reef ecosystems face accelerating mass thermal bleaching, cyclonic wave breakage, and acidification.</li>
+          <li><strong>AIMS EcoRRAP Mandate:</strong> Evaluating reef restoration demands tracking fine-scale <strong>millimetre-to-centimetre ($\text{mm}\to\text{cm}$)</strong> coral growth, branching breakage, and colour shifts over time.</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h3>2. The 2D Survey Bottleneck</h3>
+        <ul>
+          <li><strong>Planar Transect Blindness:</strong> Traditional diver Point Intercept Transects and 2D orthomosaics underestimate vertical canopy rugosity by up to <strong>45%</strong> (Davey et al., 2025).</li>
+          <li><strong>No Volumetric Delta:</strong> 2D percentage cover cannot measure 3D skeletal accretion ($\text{cm}^3$) or damage beneath overhanging coral colonies.</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h3>3. The Marine Optical Hurdle</h3>
+        <ul>
+          <li><strong>Wavelength Absorption & Haze:</strong> Water rapidly absorbs red wavelengths and scatters light off suspended particulate matter ("marine snow").</li>
+          <li><strong>False Change Detections:</strong> Between survey $T_0$ and $T_1$, differing turbidity and caustics cause naive 2D render-then-compare methods to flag water haze as structural change.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: UNDERSTANDING THE CONCEPT (2023 3DGS) -->
+  <div class="slide" data-time="1:05 - 1:35 (30s)" data-notes="Our foundation begins with 3D Gaussian Splatting, introduced by Kerbl et al. in 2023. Unlike Neural Radiance Fields—which lock geometry inside slow, implicit MLP weights—3DGS represents a scene explicitly as millions of 3D Gaussian ellipsoids, each defined by a 3D position, anisotropic covariance, opacity, and spherical harmonic colour. This enables real-time rendering at over 30 frames per second and gives us direct mathematical access to the 3D primitives themselves.">
+    <span class="slide-badge">Criterion 1 • Foundational Literature (2023)</span>
+    <h2 class="slide-title">Understanding the Concept: 3D Gaussian Splatting</h2>
+    <div class="two-col">
+      <div class="col-box" style="height:auto;">
+        <h3 style="text-align:left;">Kerbl et al. (SIGGRAPH 2023)</h3>
+        <ul>
+          <li><strong>Explicit 3D Primitives:</strong> Represents scenes as millions of anisotropic 3D Gaussians parameterized by centroid $\mu \in \mathbb{R}^3$, covariance $\Sigma$, opacity $\alpha$, and Spherical Harmonics colour $c$.</li>
+          <li><strong>Real-Time Tile Rasterization:</strong> Achieves $\ge 30\text{ FPS}$ at 1080p—orders of magnitude faster than volumetric NeRF ray-marching.</li>
+          <li><strong>Why Crucial for Change Detection:</strong> Because geometry is stored explicitly in 3D primitives rather than implicit MLP weights, we can inspect and compare the 3D primitives directly!</li>
+        </ul>
+      </div>
+      <div class="media-box">
+        <img src="gifs/concept_sugar_garden.gif" alt="3DGS Real-Time Radiance Field">
+        <div class="caption">Real-Time Differentiable 3D Gaussian Splatting Representation (2023)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: UNDERSTANDING THE CONCEPT (2026 GS-DIFF / O-SCD) -->
+  <div class="slide" data-time="1:35 - 2:15 (40s)" data-notes="In 2026, Galappaththige et al. at QUT introduced primitive-space scene change detection—GS-Diff and O-SCD. Instead of rendering 3D models back into 2D pixels to compare them, this method compares the 3D Gaussian primitives directly in 3D space. Crucially, it decouples a Geometric Kernel—which detects physical structural additions or breakage—from an Appearance Kernel, which isolates surface colour shifts like coral bleaching. However, because unconstrained Gaussians can drift in space, the authors explicitly recommended at the conclusion of their paper integrating SuGaR surface regularization to anchor Gaussians to physical surfaces.">
+    <span class="slide-badge">Criterion 1 & 2 • Core Primitive-Space Theory (2026)</span>
+    <h2 class="slide-title">Understanding the Concept: From Pixels to Primitives (2026)</h2>
+    <div class="two-col">
+      <div class="col-box" style="height:auto;">
+        <h3 style="text-align:left;">Galappaththige, Sünderhauf et al. (QCR, 2026)</h3>
+        <ul>
+          <li><strong>Beyond Render-then-Compare:</strong> Operates directly in 3D Gaussian primitive space—inherently multi-view consistent and trajectory-independent.</li>
+          <li><strong>Structural Score (Geometric Kernel):</strong> Measures physical 3D change (e.g., coral growth or colony breakage).</li>
+          <li><strong>Surface Score (Appearance Kernel):</strong> Measures colour/albedo change on unchanged geometry (e.g., coral bleaching).</li>
+          <li><strong>Key Paper Recommendation:</strong> Authors explicitly recommend integrating <strong>SuGaR surface alignment</strong> to prevent unconstrained Gaussian drift between independent runs.</li>
+        </ul>
+      </div>
+      <div class="media-box">
+        <img src="gifs/concept_oscd_paper.gif" alt="O-SCD Primitive Space Change Detection">
+        <div class="caption">Direct Primitive-Space Change Detection & Fast 3D Scene Updating (O-SCD / GS-Diff, 2026)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: EXTENDING THE CONCEPT (2025 SEA-SPLAT & UNDERWATER 3DGS) -->
+  <div class="slide" data-time="2:15 - 2:50 (35s)" data-notes="To extend primitive-space change detection underwater, we first have to solve water distortion. Standard 3DGS models bake water haze and backscatter directly into floating ghost Gaussians in the water column. Recent 2025 methods like SeaSplat, 3D-UIR, and WaterSplatting embed a physically grounded Jaffe-McGlamery optical model into the rasterizer. This allows the network to learn the water medium separately and subtract backscatter and wavelength attenuation—recovering true clear-water colour and cleaner geometry.">
+    <span class="slide-badge">Criterion 2 • Underwater Optical Restoration (2025)</span>
+    <h2 class="slide-title">Extending the Concept: Underwater 3DGS Formulations</h2>
+    <div class="two-col">
+      <div class="col-box" style="height:auto;">
+        <h3 style="text-align:left;">Subtracting the Water Medium (2025)</h3>
+        <ul>
+          <li><strong>The Water Noise Problem:</strong> Vanilla 3DGS models water backscatter as clouds of semi-transparent "floater" Gaussians in empty water space.</li>
+          <li><strong>Physical Image Formation Model:</strong><br>
+            $I_\lambda(x) = J_\lambda(x)e^{-\beta_{\text{atten}}d(x)} + B_\lambda^\infty(1 - e^{-\beta_{\text{scat}}d(x)})$</li>
+          <li><strong>6 Underwater Architectures Benchmarked in This Project:</strong>
+            <ul>
+              <li><em>Physics-Based:</em> <strong>SeaSplat</strong> (ICRA 2025), <strong>3D-UIR</strong> (2025)</li>
+              <li><em>Restoration-Guided:</em> <strong>Gaussian Splashing</strong>, <strong>WaterSplatting</strong></li>
+              <li><em>Supplementary:</em> <strong>RUSplatting</strong> (Inverted Depth), <strong>UW-GS</strong></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="media-box">
+        <img src="../2B/ProgressReport/Images/seasplat_kwaj_render.png" alt="SeaSplat Kwaj Render">
+        <div class="caption">Our SeaSplat Reconstruction on Kwajalein: Backscatter Subtracted & True Albedo Restored</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: EXTENDING THE CONCEPT (2024 SUGAR SURFACE ALIGNMENT) -->
+  <div class="slide" data-time="2:50 - 3:25 (35s)" data-notes="The second extension is SuGaR by Guédon and Lepetit. Following the recommendation from the GS-Diff paper, we integrate SuGaR into Stage 5 of our pipeline for two reasons. First, its Signed Distance Field consistency prior pulls Gaussians flat onto physical surfaces and prunes 85 to 92 percent of unanchored water-column floaters. Second, it extracts a distinct, watertight 1-million-face 3D surface mesh for every underwater 3DGS model we test—allowing us to evaluate which optical method yields the cleanest 3D geometry for millimetre-to-centimetre coral monitoring.">
+    <span class="slide-badge">Criterion 2 • Surface Anchoring & Floater Pruning (2024)</span>
+    <h2 class="slide-title">Extending the Concept: SuGaR Surface Regularization</h2>
+    <div class="two-col">
+      <div class="col-box" style="height:auto;">
+        <h3 style="text-align:left;">Guédon & Lepetit (CVPR 2024)</h3>
+        <ul>
+          <li><strong>Literature-Driven Integration:</strong> Directly implements the future-work recommendation from <em>GS-Diff (2026)</em> to eliminate unconstrained Gaussian drift.</li>
+          <li><strong>Signed Distance Field (`dn_consistency`) Prior:</strong> Forces 3D Gaussians to align flat with physical surfaces and <strong>prunes 85–92% of floating water-column noise</strong>.</li>
+          <li><strong>Bonus Deliverable for $\text{mm}\to\text{cm}$ Coral Metrology:</strong> Exports a watertight 1.0M-face Poisson 3D mesh (<code>.obj</code> + <code>.mtl</code> + <code>.png</code>) for <em>every</em> underwater 3DGS model to evaluate geometric cleanliness in Blender/MeshLab.</li>
+        </ul>
+      </div>
+      <div class="media-box">
+        <img src="../2B/ProgressReport/Images/sugar_kwaj_mesh.png" alt="SuGaR Extracted Mesh on Kwajalein">
+        <div class="caption">Our Stage 5 SuGaR Watertight Mesh on Kwajalein (1.0M Faces, SDF Level 0.3, Floaters Pruned)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: PROPOSED PIPELINE & 6-STAGE AUTOMATION -->
+  <div class="slide" data-time="3:25 - 4:05 (40s)" data-notes="This CONOPS diagram shows how all these pieces unite. Multi-temporal surveys at Time 1 and Time 2 pass through COLMAP Structure-from-Motion, dense monocular depth estimation via Depth-Anything-V2, underwater 3DGS optical reconstruction, and SuGaR surface refinement, before entering primitive-space change detection to output separate colour-change, geometry-change, and full-change maps. Over the past semester, I engineered this conceptual pipeline into a fully automated, 6-stage bash and PBS batch orchestration suite running on the QUT Aqua supercomputer.">
+    <span class="slide-badge">Criterion 2 • System Architecture & Methodology</span>
+    <h2 class="slide-title">Proposed CONOPS & Implemented 6-Stage HPC Pipeline</h2>
+    <div class="stage-flow">
+      <div class="stage-card"><strong>Stage 1: Prep</strong>Dataset Normalization & Sharp Frame Extraction</div>
+      <div class="stage-card"><strong>Stage 2: COLMAP</strong>SIFT SfM & Dual-Scene Pose Co-Registration</div>
+      <div class="stage-card"><strong>Stage 3: Depth</strong>Depth-Anything-V2 (ViT-L) & Optical Inversion</div>
+      <div class="stage-card"><strong>Stage 4: 3DGS Train</strong>8 Models in 11 Isolated Conda Envs (30k iters)</div>
+      <div class="stage-card"><strong>Stage 5: SuGaR Mesh</strong>Per-Model SDF Pruning & <code>.obj</code> Export</div>
+      <div class="stage-card"><strong>Stage 6: Evaluate</strong>Held-Out PSNR, SSIM, LPIPS & 3D Heatmaps</div>
+    </div>
+    <div class="two-col" style="margin-top:0.4rem;">
+      <div class="col-box" style="height:auto;">
+        <h3 style="text-align:left;">The 5-Phase Reproducible Lifecycle</h3>
+        <ul>
+          <li><strong>1. Setup (<code>setup_env.sh</code>):</strong> Auto-provisions 11 isolated Conda envs & compiles custom CUDA rasterizers on QUT Aqua.</li>
+          <li><strong>2. Run (<code>run_pipeline.pbs</code>):</strong> Fault-tolerant 6-stage batch orchestration on NVIDIA A100-40GB / H100-80GB nodes.</li>
+          <li><strong>3. Extract & 4. Organise:</strong> High-speed sync via QUT Data Transfer Node into a 5-domain academic hierarchy.</li>
+          <li><strong>5. Review (<code>view_outputs.py</code>):</strong> Interactive 3D splats, Blender <code>.obj</code> meshes, and Turbo thermal change heatmaps.</li>
+        </ul>
+      </div>
+      <div class="media-box">
+        <img src="gifs/oscd_3d_heatmap_toggle.gif" alt="Pipeline End-to-End Outputs">
+        <div class="caption">Automated End-to-End Outputs: 3D Splats (.ply), SuGaR Meshes (.obj), and 3D Change Heatmaps</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: UPDATED SUBMERGED3D SLIDE (20 IMAGES x 4 LOCATIONS) -->
+  <div class="slide" data-time="4:05 - 4:55 (50s)" data-notes="Why did we start with the Submerged3D test dataset—specifically its 20-image, 4-location subset covering the Kwajalein, Tokai Maru, Cormoran, and Isle Royale shipwrecks? First, because our target 1.35-terabyte AIMS EcoRRAP coral dataset is undergoing inter-institutional legal Data Transfer Agreement review, this compact 80-image dataset served as a proactive engineering buffer. Having exactly 20 images per location kept full 6-stage training and mesh extraction runtimes to roughly 40 to 75 minutes per model on an A100 GPU—allowing us to rapidly iterate through 10 full debugging cycles across 11 isolated Conda environments. Second, testing across all four locations stress-tested our pipeline: the sparse 20-image views in low-contrast water on Cormoran and Isro exposed COLMAP feature-matching limits early, while Kwajalein and Tokai Maru provided ideal benchmarks for medium backscatter versus extreme blue attenuation. Finally, because Submerged3D only captures a single timestamp, we paired it with a custom dual-state change detection dataset to validate O-SCD.">
+    <span class="slide-badge">Criterion 2 • Pipeline Stress-Testing & Validation Dataset</span>
+    <h2 class="slide-title">Why the Submerged3D Test Dataset (20 Images × 4 Locations)</h2>
+    <div class="two-col" style="grid-template-columns: 1.35fr 0.95fr;">
+      <div class="three-col" style="gap:0.7rem;">
+        <div class="col-box" style="padding:0.75rem;">
+          <h3 style="font-size:1.05rem;">Data Type<br><small style="color:#0284c7;">(20 Images × 4 Sites)</small></h3>
+          <ul>
+            <li><strong>Compact 80-Frame Set:</strong> 4 underwater shipwreck locations (<code>Kwaj</code>, <code>Tokai</code>, <code>Cormoran</code>, <code>Isro</code>) with <strong>20 images per site</strong>.</li>
+            <li><strong>4 Distinct Optical Regimes:</strong> Medium backscatter & biofouling (<code>Kwaj</code>), extreme deep-blue attenuation (<code>Tokai</code>), and low-contrast green haze (<code>Cormoran</code>, <code>Isro</code>).</li>
+            <li><strong>Fast Iteration Size:</strong> 20 images/site keeps 6-stage GPU runtimes to <strong>38–78 mins/model</strong> instead of days.</li>
+          </ul>
+        </div>
+        <div class="col-box" style="padding:0.75rem;">
+          <h3 style="font-size:1.05rem;">Application<br><small style="color:#0284c7;">(Pipeline Stress Test)</small></h3>
+          <ul>
+            <li><strong>Proactive Legal Buffer:</strong> Enabled debugging 10 cluster iterations & 11 Conda envs while 1.35 TB EcoRRAP awaits AIMS–QUT legal DTA clearance.</li>
+            <li><strong>SfM Stress-Testing:</strong> 20 sparse views on <code>Cormoran</code> & <code>Isro</code> exposed COLMAP matching limits early, focusing full 15/15 benchmarks on <code>Kwaj</code> & <code>Tokai</code>.</li>
+            <li><strong>Backbone Selection:</strong> Vetted 6 underwater 3DGS methods + SuGaR meshes head-to-head.</li>
+          </ul>
+        </div>
+        <div class="col-box" style="padding:0.75rem;">
+          <h3 style="font-size:1.05rem;">Limitations<br><small style="color:#0284c7;">(Why Custom OSCD + EcoRRAP)</small></h3>
+          <ul>
+            <li><strong>Single Timestamp ($T_0$ Only):</strong> No repeat $T_1$ survey exists—requiring our dual-state <code>Custom_OSCD_Dataset</code> to validate <code>O-SCD</code>.</li>
+            <li><strong>Sparse 20-View Density:</strong> Wide camera baselines increase edge floaters without SuGaR SDF pruning.</li>
+            <li><strong>Macro vs. $\text{mm}\to\text{cm}$ Scale:</strong> Shipwrecks test macro geometry, whereas EcoRRAP targets fine coral branching.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="media-box">
+        <img src="gifs/submerged3d_4locations_20images.gif" alt="Submerged3D 4 Locations x 20 Images GIF">
+        <div class="caption">Animated 20-Image × 4-Location Submerged3D Test Suite (Kwaj, Tokai, Cormoran, Isro)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: WHY THE ECORRAP DATASET (Distinct Production Target) -->
+  <div class="slide" data-time="4:55 - 5:30 (35s)" data-notes="That leads directly to our production target: the 1.35-terabyte AIMS EcoRRAP dataset. Unlike Submerged3D, EcoRRAP provides high-overlap, multi-temporal 4D photogrammetry of fixed Great Barrier Reef coral quadrats across seasonal bleaching and storm events. For marine biologists, our pipeline will enable interactive browser walkthroughs and separate heatmaps for coral bleaching versus physical growth or breakage. The key potential blockers we must manage are large temporal changes saturating the heatmap, transient marine life or shifting sand, and the extreme geometric complexity of branching corals.">
+    <span class="slide-badge">Criterion 1 & 2 • Production Ecological Target (1.35 TB AIMS Dataset)</span>
+    <h2 class="slide-title">Why the AIMS EcoRRAP Dataset (1.35 TB Target)</h2>
+    <div class="three-col">
+      <div class="col-box">
+        <h3>Data Type</h3>
+        <ul>
+          <li><strong>4D Multi-Temporal Photogrammetry:</strong> 1.35 TB of high-overlap stereoscopic reef surveys with strong COLMAP SfM foundations.</li>
+          <li><strong>Fixed Reef Quadrats ($T_0$ vs $T_1$):</strong> Repeated surveys of identical Great Barrier Reef coordinates across thermal bleaching and cyclone events.</li>
+          <li><strong>Trajectory Agnostic:</strong> Our primitive-space method works even when diver/ROV capture paths are not identical between passes.</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h3>Ecological Application</h3>
+        <ul>
+          <li><strong>Interactive 4D Heatmaps:</strong> Marine scientists can inspect 3D thermal change heatmaps to pinpoint $\text{mm}\to\text{cm}$ colony changes.</li>
+          <li><strong>Bleaching vs. Growth Separation:</strong> Decouples Appearance Kernel (colour/bleaching) from Geometric Kernel (skeletal growth or breakage).</li>
+          <li><strong>Browser-Ready Digital Twins:</strong> Lightweight <code>.ply</code> and <code>.obj</code> models can be walked through in real time via WebGL (SuperSplat).</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h3>Potential Blockers</h3>
+        <ul>
+          <li><strong>Extreme Temporal Shift:</strong> Massive reef changes between timestamps can saturate the change map if unregularized.</li>
+          <li><strong>Dynamic Distractors:</strong> Fish, swaying soft coral, or shifting sand duplicating on the change map.</li>
+          <li><strong>Residual Water/Geometric Noise:</strong> Unremoved turbidity floaters propagate into <code>GS-DIFF</code> / <code>O-SCD</code>—why <code>3D-UIR</code> + <code>SuGaR</code> is mandatory.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: PROGRESS — HPC INFRASTRUCTURE & 15/15 MILESTONE -->
+  <div class="slide" data-time="5:30 - 6:10 (40s)" data-notes="Moving into our concrete technical progress this semester: open-source underwater 3DGS repositories span incompatible Python versions from 3.7 to 3.12 and require custom-compiled CUDA rasterizers. To solve this, I engineered an automated provisioning and verification suite on the QUT Aqua supercomputer that builds 11 isolated Conda environments on NVIDIA A100 and H100 nodes. Across 10 systematic cluster iterations—where we diagnosed and patched issues ranging from 3D-UIR homodirectional gradient shapes to SuGaR subnormal float division—we achieved our primary milestone: 15 out of 15 full-lifecycle benchmark runs completed with zero errors.">
+    <span class="slide-badge">Criterion 2 • Engineering Progress & Technical Difficulties Solved</span>
+    <h2 class="slide-title">Progress: QUT Aqua HPC & The 15/15 Milestone</h2>
+    <div class="two-col">
+      <div class="col-box" style="height:auto;">
+        <h3 style="text-align:left;">Technical Hurdles Diagnosed & Solved (Attempts 1–10)</h3>
+        <ul>
+          <li><strong>11 Isolated Conda Environments:</strong> Resolved conflicting dependencies across Python 3.7–3.12, PyTorch 1.12–2.5, CUDA 11.8/12.1, and Hopper H100 (<code>sm_90</code>) compilation.</li>
+          <li><strong>Custom CUDA Rasterizer Repairs:</strong> Restored 4D homodirectional AbsGS gradients for <code>3D-UIR</code>, 6-tensor underwater rasterizers for <code>RUSplatting</code>/<code>UW-GS</code>, and <code>diff-fastgs</code> for <code>O-SCD</code>.</li>
+          <li><strong>SuGaR Subnormal Scale NaN Fix:</strong> Clamped SDF standard deviation ($\ge 10^{-4}$) & added gradient clipping to stop coordinates collapsing to <code>NaN</code> at iter 9,000.</li>
+          <li><strong>O-SCD RANSAC & Keyframe Fix:</strong> Fixed 2-image fragment selection and early-return keyframe bugs for 100% completion.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="bench-table">
+          <thead>
+            <tr><th>#</th><th>Architecture</th><th>Category</th><th>Target Scene(s)</th><th>Status</th><th>Avg Time</th><th>Peak VRAM</th></tr>
+          </thead>
+          <tbody>
+            <tr class="highlight"><td>1–2</td><td><strong>3D-UIR</strong></td><td>Physics-Based</td><td>Kwaj &amp; Tokai</td><td><span class="pill-win">SUCCESS (2/2)</span></td><td>1h 15m</td><td>16.2 GB</td></tr>
+            <tr class="highlight"><td>3–4</td><td><strong>SeaSplat</strong></td><td>Physics-Based</td><td>Kwaj &amp; Tokai</td><td><span class="pill-win">SUCCESS (2/2)</span></td><td>1h 01m</td><td>14.8 GB</td></tr>
+            <tr><td>5–6</td><td><strong>Gaussian Splashing</strong></td><td>Restoration</td><td>Kwaj &amp; Tokai</td><td><span class="pill-win">SUCCESS (2/2)</span></td><td>3h 45m</td><td>22.4 GB</td></tr>
+            <tr><td>7–8</td><td><strong>WaterSplatting</strong></td><td>Restoration</td><td>Kwaj &amp; Tokai</td><td><span class="pill-win">SUCCESS (2/2)</span></td><td>43m</td><td>11.2 GB</td></tr>
+            <tr><td>9–10</td><td><strong>RUSplatting</strong></td><td>Supplementary</td><td>Kwaj &amp; Tokai</td><td><span class="pill-win">SUCCESS (2/2)</span></td><td>52m</td><td>13.5 GB</td></tr>
+            <tr><td>11–12</td><td><strong>UW-GS</strong></td><td>Supplementary</td><td>Kwaj &amp; Tokai</td><td><span class="pill-win">SUCCESS (2/2)</span></td><td>57m</td><td>12.9 GB</td></tr>
+            <tr><td>13–14</td><td><strong>SuGaR</strong></td><td>Surface Mesh</td><td>Kwaj &amp; Tokai</td><td><span class="pill-win">SUCCESS (2/2)</span></td><td>35m</td><td>18.5 GB</td></tr>
+            <tr class="highlight"><td>15</td><td><strong>O-SCD</strong></td><td>Change Detection</td><td>Custom_OSCD</td><td><span class="pill-win">SUCCESS (1/1)</span></td><td>1h 04m</td><td>28.6 GB</td></tr>
+          </tbody>
+        </table>
+        <div class="caption" style="margin-top:0.4rem;"><strong>Attempt 10 Milestone:</strong> 15 / 15 (100%) Full 6-Stage Pipeline Executions Verified on QUT Aqua A100/H100</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: PROGRESS — QUANTITATIVE & VISUAL UNDERWATER 3DGS RESULTS -->
+  <div class="slide" data-time="6:10 - 7:00 (50s)" data-notes="Here are the quantitative and visual results across all six underwater 3DGS architectures on Kwajalein and Tokai Maru. As you can see in the animated comparison and metrics table, Gaussian Splashing achieved the highest raw PSNR at 27.93 dB on Kwajalein, but its structural similarity dropped to 0.6142 in the heavy turbidity of Tokai Maru due to volumetric smoothing. WaterSplatting was the fastest model at 43 minutes with the best perceptual LPIPS score of 0.1714. However, for our change detection goal, 3D-UIR and SeaSplat are the clear winners: 3D-UIR achieved the highest structural similarity on both datasets—0.8739 on Kwajalein and 0.7085 on Tokai—preserving sharp geometric boundaries essential for millimeter-to-centimeter change tracking.">
+    <span class="slide-badge">Criterion 2 & 3 • Quantitative & Visual Model Benchmarking</span>
+    <h2 class="slide-title">Progress: Underwater 3DGS Benchmark Results</h2>
+    <div class="two-col">
+      <div>
+        <table class="bench-table">
+          <thead>
+            <tr><th>Model</th><th>Scene</th><th>PSNR (dB) $\uparrow$</th><th>SSIM $\uparrow$</th><th>LPIPS $\downarrow$</th></tr>
+          </thead>
+          <tbody>
+            <tr class="highlight"><td><strong>3D-UIR (Winner: Structure)</strong></td><td>Kwaj / Tokai</td><td>27.00 / 23.78</td><td><strong>0.8739 / 0.7085</strong></td><td>0.1812 / 0.3311</td></tr>
+            <tr class="highlight"><td><strong>SeaSplat (Winner: Albedo)</strong></td><td>Kwaj / Tokai</td><td>24.60 / 21.93</td><td>0.8341 / 0.6737</td><td>0.2296 / 0.3926</td></tr>
+            <tr><td><strong>Gaussian Splashing</strong></td><td>Kwaj / Tokai</td><td><strong>27.93 / 24.32</strong></td><td>0.8394 / 0.6142</td><td>0.2081 / 0.3766</td></tr>
+            <tr><td><strong>WaterSplatting (Fastest)</strong></td><td>Kwaj / Tokai</td><td>27.12 / 23.52</td><td>0.8635 / 0.6588</td><td><strong>0.1714 / 0.3048</strong></td></tr>
+            <tr><td><strong>RUSplatting</strong></td><td>Kwaj / Tokai</td><td>26.56 / 21.41</td><td>0.8620 / 0.6490</td><td>0.2045 / 0.4229</td></tr>
+            <tr><td><strong>UW-GS</strong></td><td>Kwaj / Tokai</td><td>24.64 / 21.43</td><td>0.8432 / 0.6387</td><td>0.2286 / 0.4364</td></tr>
+          </tbody>
+        </table>
+        <div class="col-box" style="height:auto; margin-top:0.6rem; padding:0.7rem;">
+          <ul style="margin:0;">
+            <li><strong>Why 3D-UIR &amp; SeaSplat Are Selected for EcoRRAP:</strong> Highest structural preservation (<code>SSIM 0.8739 / 0.7085</code>) and physical backscatter removal prevent water haze from corrupting 3D primitive geometry.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="media-box">
+        <img src="gifs/underwater_3dgs_kwaj_comparison.gif" alt="Kwajalein 3DGS Model Comparison GIF">
+        <div class="caption">Animated Comparison of All Evaluated Underwater 3DGS Models &amp; SuGaR Mesh on Kwajalein</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: PROGRESS — PER-MODEL SUGAR SURFACE MESHES -->
+  <div class="slide" data-time="7:00 - 7:30 (30s)" data-notes="In Stage 5, every trained underwater model is passed into SuGaR to bind Gaussians to physical surfaces and extract a 1-million-face watertight Poisson mesh. During Blender inspection, we discovered a major bug in vanilla SuGaR: it hardcoded cache directories by scene name alone, causing subsequent models to reuse the first model's mesh. By engineering per-model namespace isolation via --output_dir_tag, we now generate and review distinct textured .obj meshes for every underwater method—pruning up to 92% of water-column floaters.">
+    <span class="slide-badge">Criterion 2 • Creative Engineering Solution for $\text{mm}\to\text{cm}$ Geometry</span>
+    <h2 class="slide-title">Progress: Per-Model SuGaR 3D Meshes (<code>--output_dir_tag</code>)</h2>
+    <div class="two-col">
+      <div class="col-box" style="height:auto;">
+        <h3 style="text-align:left;">Solving the Identical Mesh Cache Bug</h3>
+        <ul>
+          <li><strong>The Discovery:</strong> During Blender inspection, we found vanilla SuGaR hardcoded output paths to <code>output/coarse_mesh/&lt;scene&gt;/</code> and skipped training if <code>15000.pt</code> existed—causing all 7 models on the same scene to share an identical <code>.obj</code> mesh!</li>
+          <li><strong>Our Fix (<code>--output_dir_tag &lt;model&gt;/&lt;scene&gt;</code>):</strong> Isolated coarse SDF training, Poisson extraction, refinement, and UV texture baking across all 15 runs.</li>
+          <li><strong>Impact for EcoRRAP ($\text{mm}\to\text{cm}$ Coral Change):</strong> Prunes <strong>85–92% of water-column floaters</strong> and produces distinct 1.0M-face textured <code>.obj</code> models to verify which underwater 3DGS method yields the cleanest surface geometry.</li>
+        </ul>
+      </div>
+      <div class="media-box">
+        <img src="gifs/underwater_3dgs_tokai_comparison.gif" alt="Tokai Maru Extreme Turbidity & SuGaR Mesh GIF">
+        <div class="caption">Tokai Maru (Extreme Blue Attenuation): Optical 3DGS Reconstructions &amp; Floater-Pruned SuGaR Mesh</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: PROGRESS — PRIMITIVE-SPACE O-SCD RESULTS & 3D HEATMAPS -->
+  <div class="slide" data-time="7:30 - 8:05 (35s)" data-notes="Finally, here is our primary primitive-space change detection engine—O-SCD—running end-to-end on our dual-state dataset. On the left, across 122 camera viewpoints, the model accurately segments added, removed, and rearranged objects without false positives from camera trajectory shifts. On the right, we synthesized direct 3D primitive-space thermal heatmaps—including a bidirectional 3D splat that retains the volumetric thermal ghost of the removed soda can from Time 0—while the updated 3D scene achieves 27.08 dB PSNR and 0.8315 SSIM.">
+    <span class="slide-badge">Criterion 2 & 3 • Primary Research Goal Validated</span>
+    <h2 class="slide-title">Progress: Primitive-Space Change Detection (O-SCD)</h2>
+    <div class="two-col" style="grid-template-columns: 1fr 1fr;">
+      <div class="media-box">
+        <img src="gifs/oscd_2x2_grid.gif" alt="O-SCD 122-Pose Synchronized Multi-View Change Detection GIF">
+        <div class="caption"><strong>122-Pose Multi-View Change Detection:</strong> Reference ($T_0$), Query ($T_1$), Thermal Overlay &amp; Binary Mask</div>
+      </div>
+      <div class="media-box">
+        <img src="gifs/oscd_3d_heatmap_toggle.gif" alt="O-SCD 3D Primitive Heatmap & Removed Object Ghost GIF">
+        <div class="caption"><strong>3D Primitive-Space Heatmaps:</strong> Updated Scene ($\text{PSNR } 27.08\text{ dB}, \text{SSIM } 0.8315$), SuGaR Mesh &amp; Removed Can 3D Ghost</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: PRIORITIES FOR NEXT STEPS & ROADMAP -->
+  <div class="slide" data-time="8:05 - 8:30 (25s)" data-notes="Looking ahead to our next priorities: as soon as the AIMS Data Transfer Agreement clears in Phase 2, our turnkey pipeline will ingest the 1.35-terabyte EcoRRAP dataset. In Phase 3, we will transplant our winning underwater backbones—3D-UIR and SeaSplat—alongside SuGaR surface anchoring directly into the O-SCD engine, enabling turbidity-invariant millimetre-to-centimetre coral change detection. Thank you, and I welcome any questions.">
+    <span class="slide-badge">Criterion 2 • Insight into Priorities for Next Steps</span>
+    <h2 class="slide-title">Priorities for Next Steps: Phase 2–4 EcoRRAP Roadmap</h2>
+    <div class="three-col">
+      <div class="col-box">
+        <h3>Phase 2 (Oct–Nov 2026)<br><small style="color:#0284c7;">EcoRRAP Ingestion (30% Done)</small></h3>
+        <ul>
+          <li><strong>Finalize AIMS–QUT DTA:</strong> Complete legal compliance and stage the <strong>1.35 TB EcoRRAP dataset</strong> onto QUT Aqua Lustre via Globus.</li>
+          <li><strong>Multi-Temporal Alignment:</strong> Run Stage 2 joint COLMAP pose co-registration and Stage 3 Depth-Anything-V2 priors across seasonal coral surveys ($T_0$ vs $T_1$).</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h3>Phase 3 (Dec 2026–Jan 2027)<br><small style="color:#0284c7;">Backbone Transplantation</small></h3>
+        <ul>
+          <li><strong>Unite 3D-UIR / SeaSplat + SuGaR + O-SCD:</strong> Replace O-SCD's terrestrial 3DGS backbone with our winning physics-based underwater models and SuGaR SDF anchoring.</li>
+          <li><strong>Extended Cluster Training:</strong> Scale to 50k–100k iterations on A100/H100 GPUs for dense reef reconstructions.</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h3>Phase 4 (Jan–Feb 2027)<br><small style="color:#0284c7;">$\text{mm}\to\text{cm}$ Coral Quantitation</small></h3>
+        <ul>
+          <li><strong>Ecological Validation:</strong> Quantify $\text{mm}\to\text{cm}$ branching accretion ($\text{cm}^3$), cyclone breakage, and bleaching colour shifts with Dr. Scarlett Raine &amp; AIMS.</li>
+          <li><strong>Final Thesis &amp; Publication:</strong> Deliver Master's thesis and QCR open-source benchmark suite.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom HUD & Controls -->
+<div class="hud-bar">
+  <div>
+    <strong id="slide-counter">Slide 1 / 14</strong> &nbsp;|&nbsp;
+    <span id="slide-timing" style="color:#38bdf8;">Target: 0:00 - 0:30 (30s)</span> &nbsp;|&nbsp;
+    <span>Timer: <strong id="live-timer" style="color:#10b981;">00:00</strong> / 08:00 (+2:00 Q&amp;A)</span>
+  </div>
+  <div class="hud-controls">
+    <button onclick="prevSlide()">&#8592; Prev</button>
+    <button onclick="nextSlide()">Next &#8594;</button>
+    <button onclick="toggleNotes()">[S] Speaker Notes</button>
+    <button onclick="toggleTimer()">Start/Pause Timer</button>
+  </div>
+</div>
+
+<!-- Speaker Notes Popup -->
+<div id="notes-box" class="notes-Overlay">
+  <div class="notes-meta" id="notes-header">Speaker Script</div>
+  <div id="notes-content"></div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  let timerSec = 0;
+  let timerInt = null;
+
+  function updateSlide() {
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    document.getElementById('slide-counter').textContent = `Slide ${current + 1} / ${slides.length}`;
+    const timing = slides[current].getAttribute('data-time') || '';
+    document.getElementById('slide-timing').textContent = `Target: ${timing}`;
+    document.getElementById('notes-header').textContent = `Slide ${current + 1} Speaker Script (${timing})`;
+    document.getElementById('notes-content').textContent = slides[current].getAttribute('data-notes') || '';
+  }
+  function nextSlide() { if (current < slides.length - 1) { current++; updateSlide(); } }
+  function prevSlide() { if (current > 0) { current--; updateSlide(); } }
+  function toggleNotes() { document.getElementById('notes-box').classList.toggle('visible'); }
+  function toggleTimer() {
+    if (timerInt) { clearInterval(timerInt); timerInt = null; }
+    else {
+      timerInt = setInterval(() => {
+        timerSec++;
+        const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+        const s = String(timerSec % 60).padStart(2, '0');
+        const el = document.getElementById('live-timer');
+        el.textContent = `${m}:${s}`;
+        el.style.color = timerSec > 480 ? '#ef4444' : (timerSec > 420 ? '#f59e0b' : '#10b981');
+      }, 1000);
+    }
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key.toLowerCase() === 's') toggleNotes();
+  });
+  updateSlide();
+</script>
+</body>
+</html>

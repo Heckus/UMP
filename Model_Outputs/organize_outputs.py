@@ -348,7 +348,13 @@ def main():
 
     out_dir = Path(args.output)
     if not out_dir.is_absolute():
-        out_dir = script_dir / out_dir
+        cwd_cand = (Path.cwd() / out_dir).resolve()
+        if cwd_cand.parent == script_dir or cwd_cand == script_dir:
+            out_dir = cwd_cand
+        elif out_dir.parts and out_dir.parts[0] == script_dir.name:
+            out_dir = (script_dir.parent / out_dir).resolve()
+        else:
+            out_dir = (script_dir / out_dir).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print("======================================================================")
