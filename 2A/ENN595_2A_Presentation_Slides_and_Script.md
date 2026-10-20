@@ -1,7 +1,8 @@
 # ENN595-1 Assessment 2A: Project Summary Oral Presentation
 **Title:** Investigation of Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models  
 **Presenter:** Joshua Hecke (n11585382)  
-**Supervisors:** Prof. Niko Sünderhauf & Dr. Scarlett Raine (QUT Centre for Robotics)  
+**Principal Supervisor:** Prof. Niko Sünderhauf (QUT Centre for Robotics)  
+**Public Code & Scripts Repository:** [https://github.com/Heckus/UMP](https://github.com/Heckus/UMP)  
 **Timing Target:** **8 Minutes Presentation** (~1,050–1,150 spoken words at ~135 wpm) + **2 Minutes Q&A**  
 **Rubric Alignment:** ENN595-1 Assessment 2A High Distinction (HD) Criteria (Context: 6 pts | Topic & Progress: 6 pts | Oral Communication & Media: 8 pts)
 
@@ -11,7 +12,7 @@
 
 | Slide # | Slide Title | Status vs. Original Deck | Rubric Criterion Targeted | Visual / GIF Asset (`2A/gifs/` or `2B/ProgressReport/Images/`) | Target Time | Cumulative |
 | :---: | :--- | :--- | :--- | :--- | :---: | :---: |
-| **1** | Title & Research Question | **Updated** (Added RQ & Dr. Scarlett Raine) | Criterion 1 (Context & RQ) | Title slide hexagon theme | `0:30` | `0:30` |
+| **1** | Title & Research Question | **Updated** (Added RQ) | Criterion 1 (Context & RQ) | Title slide hexagon theme | `0:30` | `0:30` |
 | **2** | Ecological Motivation: Why 3D Coral Monitoring? | **NEW** (Sets Context) | Criterion 1 (Context Analysis) | 2D Planar vs. 3D Volumetric Reef Comparison | `0:35` | `1:05` |
 | **3** | Understanding the Concept: 3DGS (2023) | **Retained & Refined** (Slide 2) | Criterion 1 (Foundational Tech) | Original 3DGS Bicycle GIF + Kerbl et al. (2023) | `0:30` | `1:35` |
 | **4** | Understanding the Concept: Primitive-Space Change Detection (2026) | **Retained & Refined** (Slide 3) | Criterion 1 & 2 (Core Theory) | `2A/gifs/concept_oscd_paper.gif` (Galappaththige et al., 2026) | `0:40` | `2:15` |
@@ -50,9 +51,9 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
 - **Visual Layout:** Existing Title Slide with Hexagon Border.
   - **Title:** Investigation of Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models
   - **Subtitle / Core Research Question:** *Can direct primitive-space differencing on surface-regularized, optically restored 3D Gaussian Splatting models accurately isolate physical structural and colour changes in turbid underwater environments?*
-  - **Presenter & Supervision:** Joshua Hecke | Principal Supervisor: Prof. Niko Sünderhauf | Associate Supervisor: Dr. Scarlett Raine (QUT Centre for Robotics / AIMS Liaison)
+  - **Presenter & Supervision:** Joshua Hecke | Principal Supervisor: Prof. Niko Sünderhauf (QUT Centre for Robotics)
 - **Speaker Script (`0:00 – 0:30`, 30s):**
-  > "Good morning/afternoon everyone. My name is Joshua Hecke, and under the supervision of Professor Niko Sünderhauf and Dr. Scarlett Raine at the QUT Centre for Robotics, my project investigates Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models. Our core research question asks: *How can we detect fine-scale physical and colour changes—such as coral growth, breakage, or bleaching—directly inside 3D Gaussian primitive space without being fooled by changing water turbidity and backscatter?*"
+  > "Good morning/afternoon everyone. My name is Joshua Hecke, and under the supervision of Professor Niko Sünderhauf at the QUT Centre for Robotics, my project investigates Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models. Our core research question asks: *How can we detect fine-scale physical and colour changes—such as coral growth, breakage, or bleaching—directly inside 3D Gaussian primitive space without being fooled by changing water turbidity and backscatter?*"
 
 ---
 
@@ -116,10 +117,11 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
 
 ### Slide 7: Proposed Pipeline & Automated 6-Stage HPC Architecture (Existing Slide 6)
 - **Slide Header:** **Proposed CONOPS & Implemented 6-Stage HPC Pipeline**
-- **Visual Layout:** Keep the CONOPS diagram from Slide 6, and add a bottom ribbon showing the **Implemented 6-Stage Automated Pipeline on QUT Aqua HPC**:
+- **Visual Layout:** High-resolution CONOPS diagram (`2A/gifs/conops.jpg` from `1B/QUT_Project_Proposal/Images/conops.jpg`), plus top/right panels showing the **Implemented 6-Stage Automated Pipeline on QUT Aqua HPC** and **Public Code Repository (`https://github.com/Heckus/UMP`)**:
+  - **Public Code Reference:** All public scripts, patches, and automation files referenced below are available at [https://github.com/Heckus/UMP](https://github.com/Heckus/UMP).
   - `Stage 1: Data Prep` $\rightarrow$ `Stage 2: COLMAP SfM` $\rightarrow$ `Stage 3: Depth-Anything-V2 (ViT-L) & Inversion` $\rightarrow$ `Stage 4: 3DGS Training (8 Models)` $\rightarrow$ `Stage 5: Per-Model SuGaR Mesh (--output_dir_tag)` $\rightarrow$ `Stage 6: Held-Out Evaluation (PSNR / SSIM / LPIPS)`
 - **Speaker Script (`3:25 – 4:05`, 40s):**
-  > "This CONOPS diagram shows how all these pieces unite. Multi-temporal surveys at Time 1 and Time 2 pass through COLMAP Structure-from-Motion, dense monocular depth estimation via Depth-Anything-V2, underwater 3DGS optical reconstruction, and SuGaR surface refinement, before entering primitive-space change detection to output separate colour-change, geometry-change, and full-change maps. Over the past semester, I engineered this conceptual pipeline into a fully automated, 6-stage bash and PBS batch orchestration suite running on the QUT Aqua supercomputer."
+  > "This CONOPS diagram shows how all these pieces unite. Multi-temporal surveys at Time 1 and Time 2 pass through COLMAP Structure-from-Motion, dense monocular depth estimation via Depth-Anything-V2, underwater 3DGS optical reconstruction, and SuGaR surface refinement, before entering primitive-space change detection to output separate colour-change, geometry-change, and full-change maps. All public scripts and automation code referenced across this presentation are openly available on GitHub at github.com/Heckus/UMP. Over the past semester, I engineered this conceptual pipeline into a fully automated, 6-stage bash and PBS batch orchestration suite running on the QUT Aqua supercomputer."
 
 ---
 
@@ -193,13 +195,13 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
 ### Slide 12: Progress — Per-Model SuGaR 3D Surface Meshes (NEW — Criterion 2)
 - **Slide Header:** **Progress: Per-Model SuGaR 3D Surface Extraction (`Stage 5`)**
 - **Visual Assets to Embed:**
-  - [`2B/ProgressReport/Images/sugar_kwaj_mesh.png`](file:///home/hecke/0Github/UMP/2B/ProgressReport/Images/sugar_kwaj_mesh.png) & [`2A/gifs/underwater_3dgs_tokai_comparison.gif`](file:///home/hecke/0Github/UMP/2A/gifs/underwater_3dgs_tokai_comparison.gif)
+  - Static Mesh Render Images: [`2A/gifs/sugar_kwaj_mesh_bright.png`](file:///home/hecke/0Github/UMP/2A/gifs/sugar_kwaj_mesh_bright.png) & [`2A/gifs/sugar_tokai_mesh_bright.png`](file:///home/hecke/0Github/UMP/2A/gifs/sugar_tokai_mesh_bright.png)
 - **Key Technical Achievements:**
   - **Floater Removal:** SDF consistency regularization (`dn_consistency`) prunes **85–92% of floating water-column Gaussians**, binding primitives onto physical surfaces.
-  - **Critical Bug Discovered & Fixed (`--output_dir_tag <model>/<scene>`):** Vanilla SuGaR hardcoded output paths to `output/refined_mesh/<scene>/` and skipped training if a checkpoint existed—causing all underwater models to overwrite and share the same `.obj` mesh! We engineered per-model namespace isolation so **every underwater 3DGS architecture exports its own distinct, 1.0M-face UV-textured `.obj` mesh**.
-  - **Supporting Output for $\text{mm} \to \text{cm}$ Coral Metrology:** Reviewing per-model `.obj` meshes in Blender/MeshLab verifies which optical restoration method produces the cleanest 3D surface geometry.
+  - **Critical Bug Discovered & Fixed (`--output_dir_tag <model>/<scene>`):** Vanilla SuGaR hardcoded output paths to `output/refined_mesh/<scene>/` and skipped training if a checkpoint existed—causing all underwater models to overwrite and share the same `.obj` mesh! We engineered per-model namespace isolation (hosted in our public repo at [https://github.com/Heckus/UMP](https://github.com/Heckus/UMP)) so **every underwater 3DGS architecture exports its own distinct, 1.0M-face UV-textured `.obj` mesh**.
+  - **Supporting Output for $\text{mm} \to \text{cm}$ Coral Metrology:** Reviewing static renders of our per-model `.obj` meshes in Blender/MeshLab verifies which optical restoration method produces the cleanest 3D surface geometry.
 - **Speaker Script (`7:00 – 7:30`, 30s):**
-  > "In Stage 5, every trained underwater model is passed into SuGaR to bind Gaussians to physical surfaces and extract a 1-million-face watertight Poisson mesh. During Blender inspection, we discovered a major bug in vanilla SuGaR: it hardcoded cache directories by scene name alone, causing subsequent models to reuse the first model's mesh. By engineering per-model namespace isolation via `--output_dir_tag`, we now generate and review distinct textured `.obj` meshes for every underwater method—pruning up to 92% of water-column floaters."
+  > "In Stage 5, every trained underwater model is passed into SuGaR to bind Gaussians to physical surfaces and extract a 1-million-face watertight Poisson mesh. During Blender inspection, we discovered a major bug in vanilla SuGaR: it hardcoded cache directories by scene name alone, causing subsequent models to reuse the first model's mesh. By engineering per-model namespace isolation via `--output_dir_tag`—available in our public GitHub repository—we now generate and review distinct textured `.obj` meshes for every underwater method, shown here in our static high-resolution mesh renders on Kwajalein and Tokai Maru, pruning up to 92% of water-column floaters."
 
 ---
 
@@ -207,12 +209,12 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
 - **Slide Header:** **Progress: Primitive-Space Change Detection (`O-SCD`) Verified**
 - **Visual Assets to Embed (High-Impact GIFs!):**
   - Left GIF: [`2A/gifs/oscd_4panel_comparison.gif`](file:///home/hecke/0Github/UMP/2A/gifs/oscd_4panel_comparison.gif) (or [`2A/gifs/oscd_2x2_grid.gif`](file:///home/hecke/0Github/UMP/2A/gifs/oscd_2x2_grid.gif)) — Synchronized multi-view change detection across all 122 poses (`T0 Reference | T1 Query | Thermal Heatmap | Binary Mask`).
-  - Right GIF: [`2A/gifs/oscd_3d_heatmap_toggle.gif`](file:///home/hecke/0Github/UMP/2A/gifs/oscd_3d_heatmap_toggle.gif) — Shows the updated 3DGS splat, SuGaR `.obj` mesh, and 3D Turbo Change Heatmaps (including the **volumetric 3D ghost of the removed red soda can**!).
+  - Right GIF: [`2A/gifs/orbit_oscd_heatmap_all_changes.gif`](file:///home/hecke/0Github/UMP/2A/gifs/orbit_oscd_heatmap_all_changes.gif), [`2A/gifs/orbit_oscd_updated_scene.gif`](file:///home/hecke/0Github/UMP/2A/gifs/orbit_oscd_updated_scene.gif), & [`2A/gifs/oscd_3d_heatmap_toggle.gif`](file:///home/hecke/0Github/UMP/2A/gifs/oscd_3d_heatmap_toggle.gif) — Shows the orbiting 3DGS splat and 3D Turbo Change Heatmaps (including the **volumetric 3D ghost of the removed red soda can**!).
 - **Key Quantitative & Technical Highlights:**
   - **High Reconstruction Fidelity:** Updated post-change 3DGS scene (`updated_scene.ply`) achieved **$\text{PSNR} = 27.08\text{ dB}$**, **$\text{SSIM} = 0.8315$**, and **$\text{LPIPS} = 0.3440$** across 25 held-out test views in **1h 04m**.
   - **Bidirectional 3D Thermal Heatmaps (`.ply`):** Directly localizes added, moved, and removed objects in 3D Gaussian primitive space without 2D rendering artifacts.
 - **Speaker Script (`7:30 – 8:05`, 35s):**
-  > "Finally, here is our primary primitive-space change detection engine—O-SCD—running end-to-end on our dual-state dataset. On the left, across 122 camera viewpoints, the model accurately segments added, removed, and rearranged objects without false positives from camera trajectory shifts. On the right, we synthesized direct 3D primitive-space thermal heatmaps—including a bidirectional 3D splat that retains the volumetric thermal 'ghost' of the removed soda can from Time 0—while the updated 3D scene achieves 27.08 dB PSNR and 0.8315 SSIM."
+  > "Finally, here is our primary primitive-space change detection engine—O-SCD—running end-to-end on our dual-state dataset. On the left, across 122 camera viewpoints, the model accurately segments added, removed, and rearranged objects without false positives from camera trajectory shifts. On the right, we synthesized direct 3D primitive-space thermal heatmaps—including an orbiting 3D splat that retains the volumetric thermal 'ghost' of the removed soda can from Time 0—while the updated 3D scene achieves 27.08 dB PSNR and 0.8315 SSIM."
 
 ---
 
@@ -226,7 +228,7 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
      - Graft our top-performing underwater backbones (**`3D-UIR` & `SeaSplat`**) + **SuGaR SDF regularization** directly into the **`O-SCD`** reference backbone.
      - Run extended 50k–100k iteration training on A100/H100 GPUs for turbidity-invariant primitive differencing.
   3. **Phase 4 (Jan – Feb 2027) — Ecological Quantitation & Thesis Delivery:**
-     - Quantify $\text{mm} \to \text{cm}$ coral growth, bleaching appearance shifts, and volumetric accretion/depletion ($\text{cm}^3, \text{m}^2$) with Dr. Scarlett Raine & AIMS experts.
+     - Quantify $\text{mm} \to \text{cm}$ coral growth, bleaching appearance shifts, and volumetric accretion/depletion ($\text{cm}^3, \text{m}^2$) on the AIMS EcoRRAP dataset.
 - **Speaker Script (`8:05 – 8:30`, 25s):**
   > "Looking ahead to our next priorities: as soon as the AIMS Data Transfer Agreement clears in Phase 2, our turnkey pipeline will ingest the 1.35-terabyte EcoRRAP dataset. In Phase 3, we will transplant our winning underwater backbones—3D-UIR and SeaSplat—alongside SuGaR surface anchoring directly into the O-SCD engine, enabling turbidity-invariant millimetre-to-centimetre coral change detection. Thank you, and I welcome any questions."
 

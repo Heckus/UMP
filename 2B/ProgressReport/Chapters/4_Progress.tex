@@ -11,11 +11,11 @@ This chapter presents the primary empirical achievements and quantitative evalua
 
 \section{HPC Cluster Provisioning and Milestone Verification}
 \label{sec:milestone_verification}
-To execute the diverse ecosystem of underwater 3DGS models—each developed across differing PyTorch versions, CUDA toolkits, and specialized rasterization submodules—the QUT Aqua cluster environment was configured with 11 isolated Conda environments:
+To execute the diverse ecosystem of underwater 3DGS models, each developed across differing PyTorch versions, CUDA toolkits, and specialized rasterization submodules, the QUT Aqua cluster environment was configured with 11 isolated Conda environments:
 \begin{itemize}
-    \item \textbf{Conda Environment Matrix:} Individual sandboxed environments were provisioned for \texttt{seasplat\_py310}, \texttt{3d-uir}, \texttt{gaussianSplashing\_env}, \texttt{water\_splatting}, \texttt{rusplatting}, \texttt{UW-GS}, \texttt{sugar}, \texttt{oscd}, \texttt{3dgs}, \texttt{colmap\_runner}, and \texttt{depth\_anything}.
-    \item \textbf{Custom CUDA Rasterizer Compilation:} Specialized CUDA extension kernels (including \texttt{diff-gaussian-rasterization}, \texttt{diff-gaussian-rasterization\_UW}, \texttt{diff-fastgs}, \texttt{simple-knn}, and \texttt{fused-ssim}) were compiled directly against the cluster's NVIDIA A100-SXM4-40GB and H100 architectures using CUDA 11.8/12.1.
-    \item \textbf{The 15 / 15 Benchmark Milestone:} Following systematic debugging across nine preliminary testing iterations (audited in the project change logs), Attempt~10 achieved \textbf{100\% full-lifecycle completion across all 15 planned benchmark targets} (8 models across the 3 datasets). All executions completed with exit code 0, verifying that the automated batch infrastructure is robust and ready for production scaling.
+    \item \textbf{Conda Environment Matrix:} Individual sandboxed environments were provisioned for seasplat\_py310, 3d-uir, gaussianSplashing\_env, water\_splatting, rusplatting, UW-GS, sugar, oscd, 3dgs, colmap\_runner, and depth\_anything.
+    \item \textbf{Custom CUDA Rasterizer Compilation:} Specialized CUDA extension kernels (including diff-gaussian-rasterization, diff-gaussian-rasterization\_UW, diff-fastgs, simple-knn, and fused-ssim) were compiled directly against the cluster's NVIDIA A100-SXM4-40GB and H100 architectures using CUDA 11.8/12.1.
+    \item \textbf{The 15 / 15 Benchmark Milestone:} Following systematic debugging across nine preliminary testing iterations (audited in the project change logs), Attempt~10 achieved 100\% full-lifecycle completion across all 15 planned benchmark targets (8 models across the 3 datasets). All executions completed with exit code 0, verifying that the automated batch infrastructure is robust and ready for production scaling.
 \end{itemize}
 
 \section{Master Quantitative Benchmark Results}
@@ -68,7 +68,7 @@ SuGaR & Tokai Maru Shipwreck & \multicolumn{3}{c}{\textit{Watertight Textured Me
 \midrule
 \multicolumn{5}{l}{\textit{\textbf{Primitive-Space Scene Change Detection}}} \\
 \midrule
-O-SCD & Custom\_OSCD\_Dataset (Dual State) & 27.08 & 0.8315 & 0.3440 \\
+O-SCD & Custom OSCD (Dual State) & 27.08 & 0.8315 & 0.3440 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -78,27 +78,23 @@ O-SCD & Custom\_OSCD\_Dataset (Dual State) & 27.08 & 0.8315 & 0.3440 \\
 The empirical results reveal distinct performance profiles between the three primary architectural paradigms:
 
 \subsection{Physics-Based Models: Geometric Consistency vs. Computational Cost}
-\textit{SeaSplat} achieved strong physical realism ($PSNR = 24.60\text{ dB}$, $SSIM = 0.8341$ on Kwajalein; $PSNR = 21.93\text{ dB}$, $SSIM = 0.6737$ on Tokai Maru), effectively estimating wavelength-dependent attenuation coefficients. Figure~\ref{fig:seasplat_renders} shows the final novel-view renders of \textit{SeaSplat} across both the Kwajalein (Figure~\ref{fig:seasplat_kwaj}) and Tokai Maru (Figure~\ref{fig:seasplat_tokai}) shipwrecks, illustrating how physical backscatter inversion removes the green-blue veil while preserving sharp structural hull boundaries.
+SeaSplat achieved strong physical realism (PSNR of 24.60~dB and SSIM of 0.8341 on Kwajalein; PSNR of 21.93~dB and SSIM of 0.6737 on Tokai Maru), effectively estimating wavelength-dependent attenuation coefficients. Figure~\ref{fig:seasplat_renders} shows the final novel-view renders of SeaSplat across both the Kwajalein (Figure~\ref{fig:seasplat_kwaj}) and Tokai Maru (Figure~\ref{fig:seasplat_tokai}) shipwrecks, illustrating how physical backscatter inversion removes the green-blue veil while preserving sharp structural hull boundaries.
 
 % ==============================================================================
-% FIGURE 4.1 (PLACEHOLDER 1): SeaSplat Physics-Based Reconstruction (Kwaj & Tokai)
+% FIGURE 4.1: SeaSplat Physics-Based Reconstruction (Kwaj & Tokai)
 % ==============================================================================
-% TARGET FILE: Model_Outputs/organized/01_Physics_Based_3DGS/SeaSplat/Kwaj/SeaSplat_Kwaj_point_cloud.ply
-%              Model_Outputs/organized/01_Physics_Based_3DGS/SeaSplat/Tokai/SeaSplat_Tokai_point_cloud.ply
-% RECOMMENDED VIEWER: SuperSplat WebGL (https://playcanvas.com/supersplat/editor) or CloudCompare
-% CAMERA ANGLE: Oblique downward view (45-degree pitch), FOV 60 deg, White Background.
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/seasplat_kwaj_render.png}{SeaSplat 3DGS Render (Kwajalein)}{\texttt{01\_Physics\_Based\_3DGS/SeaSplat/\allowbreak Kwaj/\allowbreak SeaSplat\_Kwaj\_point\_cloud.ply}}{SuperSplat WebGL: 45-deg oblique pitch, hull \& propeller detail}
+        \renderplaceholder{Images/seasplat_kwaj_render.png}{SeaSplat 3DGS Render (Kwajalein)}{SeaSplat Kwajalein Point Cloud}{SuperSplat WebGL: 45-deg oblique pitch, hull \& propeller detail}
         \caption{SeaSplat on Kwajalein Shipwreck}
         \label{fig:seasplat_kwaj}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/seasplat_tokai_render.png}{SeaSplat 3DGS Render (Tokai Maru)}{\texttt{01\_Physics\_Based\_3DGS/SeaSplat/\allowbreak Tokai/\allowbreak SeaSplat\_Tokai\_point\_cloud.ply}}{SuperSplat WebGL: 45-deg oblique pitch, deep blue attenuation recovery}
+        \renderplaceholder{Images/seasplat_tokai_render.png}{SeaSplat 3DGS Render (Tokai Maru)}{SeaSplat Tokai Maru Point Cloud}{SuperSplat WebGL: 45-deg oblique pitch, deep blue attenuation recovery}
         \caption{SeaSplat on Tokai Maru Shipwreck}
         \label{fig:seasplat_tokai}
     \end{subfigure}
@@ -106,27 +102,23 @@ The empirical results reveal distinct performance profiles between the three pri
     \label{fig:seasplat_renders}
 \end{figure}
 
-Furthermore, \textit{3D-UIR} demonstrated superior structural fidelity, securing the highest overall SSIM scores on both underwater scenes ($0.8739$ on Kwajalein and $0.7085$ on Tokai Maru). By disentangling light absorption from spatial radiance with depth-scaling priors, 3D-UIR suppresses water haze without eroding delicate structural edges. Figure~\ref{fig:3d_uir_render} shows the final volumetric renders of \textit{3D-UIR} on the Kwajalein superstructure (Figure~\ref{fig:3d_uir_kwaj}) and the deep turbid Tokai Maru deck (Figure~\ref{fig:3d_uir_tokai}), demonstrating minimal blurring around biological encrustations and fine metallic railings. The primary trade-off for physics-based models is execution overhead: optimizing explicit scattering parameters requires approximately $1\text{ hour } 15\text{ minutes}$ per scene.
+Furthermore, 3D-UIR demonstrated superior structural fidelity, securing the highest overall SSIM scores on both underwater scenes ($0.8739$ on Kwajalein and $0.7085$ on Tokai Maru). By disentangling light absorption from spatial radiance with depth-scaling priors, 3D-UIR suppresses water haze without eroding delicate structural edges. Figure~\ref{fig:3d_uir_render} shows the final volumetric renders of 3D-UIR on the Kwajalein superstructure (Figure~\ref{fig:3d_uir_kwaj}) and the deep turbid Tokai Maru deck (Figure~\ref{fig:3d_uir_tokai}), demonstrating minimal blurring around biological encrustations and fine metallic railings. The primary trade-off for physics-based models is execution overhead: optimizing explicit scattering parameters requires approximately 1~hour 15~minutes per scene.
 
 % ==============================================================================
-% FIGURE 4.2 (PLACEHOLDER 2): 3D-UIR Structural Detail & Color Recovery (Kwaj & Tokai)
+% FIGURE 4.2: 3D-UIR Structural Detail & Color Recovery (Kwaj & Tokai)
 % ==============================================================================
-% TARGET FILE: Model_Outputs/organized/01_Physics_Based_3DGS/3D-UIR/Kwaj/3D-UIR_Kwaj_point_cloud.ply
-%              Model_Outputs/organized/01_Physics_Based_3DGS/3D-UIR/Tokai/3D-UIR_Tokai_point_cloud.ply
-% RECOMMENDED VIEWER: SuperSplat WebGL
-% CAMERA ANGLE: Close-up zoom on complex shipwreck superstructure, Black Background.
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/3d_uir_kwaj_detail.png}{3D-UIR Structural Render (Kwajalein)}{\texttt{01\_Physics\_Based\_3DGS/3D-UIR/\allowbreak Kwaj/\allowbreak 3D-UIR\_Kwaj\_point\_cloud.ply}}{SuperSplat WebGL: Close-up zoom on superstructure \& handrails}
+        \renderplaceholder{Images/3d_uir_kwaj_detail.png}{3D-UIR Structural Render (Kwajalein)}{3D-UIR Kwajalein Point Cloud}{SuperSplat WebGL: Close-up zoom on superstructure \& handrails}
         \caption{3D-UIR on Kwajalein ($SSIM = 0.8739$)}
         \label{fig:3d_uir_kwaj}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/3d_uir_tokai_detail.png}{3D-UIR Structural Render (Tokai Maru)}{\texttt{01\_Physics\_Based\_3DGS/3D-UIR/\allowbreak Tokai/\allowbreak 3D-UIR\_Tokai\_point\_cloud.ply}}{SuperSplat WebGL: Close-up zoom on turbid Tokai deck structure}
+        \renderplaceholder{Images/3d_uir_tokai_detail.png}{3D-UIR Structural Render (Tokai Maru)}{3D-UIR Tokai Maru Point Cloud}{SuperSplat WebGL: Close-up zoom on turbid Tokai deck structure}
         \caption{3D-UIR on Tokai Maru ($SSIM = 0.7085$)}
         \label{fig:3d_uir_tokai}
     \end{subfigure}
@@ -135,27 +127,23 @@ Furthermore, \textit{3D-UIR} demonstrated superior structural fidelity, securing
 \end{figure}
 
 \subsection{Restoration-Guided Models: High Perceptual Fidelity vs. Geometry Drift}
-\textit{Gaussian Splashing} achieved the highest raw reconstruction fidelity, recording $27.93\text{ dB}$ PSNR on Kwajalein and $24.32\text{ dB}$ on Tokai Maru. However, its SSIM score on Tokai ($0.6142$) dropped relative to 3D-UIR ($0.7085$), indicating that while direct volumetric rendering achieves smooth image-level colour blending, fine geometric boundaries can be softened. Conversely, \textit{WaterSplatting} proved exceptionally efficient, recording the lowest perceptual errors ($LPIPS = 0.1714$ on Kwajalein, $0.3048$ on Tokai Maru) in only 38 to 48 minutes of training time. Figure~\ref{fig:restoration_models} shows the side-by-side comparison renders of \textit{Gaussian Splashing} (Figure~\ref{fig:gs_splashing}) and \textit{WaterSplatting} (Figure~\ref{fig:watersplatting}) on the Kwajalein shipwreck corridor, contrasting volumetric medium blending against fast 2D prior-guided contrast restoration.
+Gaussian Splashing achieved the highest raw reconstruction fidelity, recording $27.93\text{ dB}$ PSNR on Kwajalein and $24.32\text{ dB}$ on Tokai Maru. However, its SSIM score on Tokai ($0.6142$) dropped relative to 3D-UIR ($0.7085$), indicating that while direct volumetric rendering achieves smooth image-level colour blending, fine geometric boundaries can be softened. Conversely, WaterSplatting proved exceptionally efficient, recording the lowest perceptual errors ($LPIPS = 0.1714$ on Kwajalein, $0.3048$ on Tokai Maru) in only 38 to 48 minutes of training time. Figure~\ref{fig:restoration_models} shows the side-by-side comparison renders of Gaussian Splashing (Figure~\ref{fig:gs_splashing}) and WaterSplatting (Figure~\ref{fig:watersplatting}) on the Kwajalein shipwreck corridor, contrasting volumetric medium blending against fast 2D prior-guided contrast restoration.
 
 % ==============================================================================
-% FIGURE 4.3 (PLACEHOLDER 3): Restoration Models (Gaussian Splashing vs WaterSplatting)
+% FIGURE 4.3: Restoration Models (Gaussian Splashing vs WaterSplatting)
 % ==============================================================================
-% TARGET FILE: Model_Outputs/organized/02_Image_Restoration_3DGS/Gaussian_Splashing/Kwaj/Gaussian_Splashing_Kwaj_point_cloud.ply
-%              Model_Outputs/organized/02_Image_Restoration_3DGS/WaterSplatting/Kwaj/WaterSplatting_Kwaj_point_cloud.ply
-% RECOMMENDED VIEWER: SuperSplat WebGL
-% CAMERA ANGLE: Side-by-side identical camera perspective of the central shipwreck corridor.
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/gaussian_splashing_kwaj.png}{Gaussian Splashing Render (Kwajalein)}{\texttt{02\_Image\_Restoration\_3DGS/\allowbreak Gaussian\_Splashing/\allowbreak Kwaj/\allowbreak Gaussian\_Splashing\_Kwaj\_point\_cloud.ply}}{SuperSplat WebGL: Central corridor perspective (PSNR 27.93 dB)}
+        \renderplaceholder{Images/gaussian_splashing_kwaj.png}{Gaussian Splashing Render (Kwajalein)}{Gaussian Splashing Kwajalein Point Cloud}{SuperSplat WebGL: Central corridor perspective (PSNR 27.93 dB)}
         \caption{Gaussian Splashing (Volumetric Medium)}
         \label{fig:gs_splashing}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/watersplatting_kwaj.png}{WaterSplatting Render (Kwajalein)}{\texttt{02\_Image\_Restoration\_3DGS/\allowbreak WaterSplatting/\allowbreak Kwaj/\allowbreak WaterSplatting\_Kwaj\_point\_cloud.ply}}{SuperSplat WebGL: Identical corridor perspective (LPIPS 0.1714)}
+        \renderplaceholder{Images/watersplatting_kwaj.png}{WaterSplatting Render (Kwajalein)}{WaterSplatting Kwajalein Point Cloud}{SuperSplat WebGL: Identical corridor perspective (LPIPS 0.1714)}
         \caption{WaterSplatting (Fast Prior-Driven)}
         \label{fig:watersplatting}
     \end{subfigure}
@@ -164,27 +152,23 @@ Furthermore, \textit{3D-UIR} demonstrated superior structural fidelity, securing
 \end{figure}
 
 \subsection{Supplementary Models and Environmental Noise}
-\textit{RUSplatting} and \textit{UW-GS} delivered solid baseline performances ($26.56\text{ dB}$ and $24.64\text{ dB}$ PSNR on Kwajalein). Figure~\ref{fig:supplementary_models} shows the final renders of \textit{RUSplatting} (Figure~\ref{fig:rusplatting_kwaj}) and \textit{UW-GS} (Figure~\ref{fig:uw_gs_kwaj}) on the Kwajalein dataset. While RUSplatting leverages inverted depth priors and frame interpolation to maintain high structural similarity ($SSIM = 0.8620$) across sparse views, UW-GS employs variance filtering to reject transient water-column distractors, though under the severe turbidity of Tokai Maru its perceptual error increased to $LPIPS = 0.4364$.
+RUSplatting and UW-GS delivered solid baseline performances ($26.56\text{ dB}$ and $24.64\text{ dB}$ PSNR on Kwajalein). Figure~\ref{fig:supplementary_models} shows the final renders of RUSplatting (Figure~\ref{fig:rusplatting_kwaj}) and UW-GS (Figure~\ref{fig:uw_gs_kwaj}) on the Kwajalein dataset. While RUSplatting leverages inverted depth priors and frame interpolation to maintain high structural similarity ($SSIM = 0.8620$) across sparse views, UW-GS employs variance filtering to reject transient water-column distractors, though under the severe turbidity of Tokai Maru its perceptual error increased to $LPIPS = 0.4364$.
 
 % ==============================================================================
-% FIGURE 4.4 (NEW PLACEHOLDER 4): Supplementary Models (RUSplatting vs UW-GS)
+% FIGURE 4.4: Supplementary Models (RUSplatting vs UW-GS)
 % ==============================================================================
-% TARGET FILE: Model_Outputs/organized/03_Supplementary_3DGS/RUSplatting/Kwaj/RUSplatting_Kwaj_point_cloud.ply
-%              Model_Outputs/organized/03_Supplementary_3DGS/UW-GS/Kwaj/UW-GS_Kwaj_point_cloud.ply
-% RECOMMENDED VIEWER: SuperSplat WebGL
-% CAMERA ANGLE: Side-by-side overview of the Kwajalein hull and surrounding water column.
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/rusplatting_kwaj_render.png}{RUSplatting Render (Kwajalein)}{\texttt{03\_Supplementary\_3DGS/\allowbreak RUSplatting/\allowbreak Kwaj/\allowbreak RUSplatting\_Kwaj\_point\_cloud.ply}}{SuperSplat WebGL: Inverted-depth sparse-view reconstruction}
+        \renderplaceholder{Images/rusplatting_kwaj_render.png}{RUSplatting Render (Kwajalein)}{RUSplatting Kwajalein Point Cloud}{SuperSplat WebGL: Inverted-depth sparse-view reconstruction}
         \caption{RUSplatting on Kwajalein ($PSNR = 26.56\text{ dB}$)}
         \label{fig:rusplatting_kwaj}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/uw_gs_kwaj_render.png}{UW-GS Render (Kwajalein)}{\texttt{03\_Supplementary\_3DGS/\allowbreak UW-GS/\allowbreak Kwaj/\allowbreak UW-GS\_Kwaj\_point\_cloud.ply}}{SuperSplat WebGL: Distractor-filtered background medium model}
+        \renderplaceholder{Images/uw_gs_kwaj_render.png}{UW-GS Render (Kwajalein)}{UW-GS Kwajalein Point Cloud}{SuperSplat WebGL: Distractor-filtered background medium model}
         \caption{UW-GS on Kwajalein ($PSNR = 24.64\text{ dB}$)}
         \label{fig:uw_gs_kwaj}
     \end{subfigure}
@@ -192,37 +176,33 @@ Furthermore, \textit{3D-UIR} demonstrated superior structural fidelity, securing
     \label{fig:supplementary_models}
 \end{figure}
 
-\paragraph{Key Takeaway for EcoRRAP Selection:} The quantitative evidence highlights \textbf{3D-UIR} and \textbf{SeaSplat} as the top candidate architectures for integration into the change detection framework. Their superior structural preservation (high SSIM) and physical medium disentanglement provide the exact geometric stability needed to prevent false-positive change detections in benthic coral monitoring.
+\paragraph{Key Takeaway for EcoRRAP Selection:} The quantitative evidence highlights 3D-UIR and SeaSplat as the top candidate architectures for integration into the change detection framework. Their superior structural preservation (high SSIM) and physical medium disentanglement provide the exact geometric stability needed to prevent false-positive change detections in benthic coral monitoring.
 
 \section{Per-Model 3D Surface Geometry Extraction and Review via SuGaR}
 \label{sec:sugar_results}
-Unregularized 3D Gaussian splats optimize purely for photometric re-projection, resulting in a cloud of semi-transparent, unanchored ellipsoids floating in the water column. Following the explicit recommendation at the conclusion of the primitive-space change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}, \gls{sugar}~\cite{guedon2024sugar} was integrated into Stage~5 across Kwajalein, Tokai Maru, and the change detection scenes to support the primary 3DGS change detection pipeline and provide per-model 3D surface models (\texttt{.obj}) as an additional evaluation output:
+Unregularized 3D Gaussian splats optimize purely for photometric re-projection, resulting in a cloud of semi-transparent, unanchored ellipsoids floating in the water column. Following the explicit recommendation at the conclusion of the primitive-space change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}, \gls{sugar}~\cite{guedon2024sugar} was integrated into Stage~5 across Kwajalein, Tokai Maru, and the change detection scenes to support the primary 3DGS change detection pipeline and provide per-model 3D surface meshes (OBJ format) as an additional evaluation output:
 \begin{itemize}
-    \item \textbf{Floater Pruning and Surface Anchoring:} SuGaR enforces a signed distance field (\gls{sdf}) prior (\texttt{dn\_consistency}), pulling Gaussians toward true physical surfaces and pruning 85–92\% of floating water-column primitives.
-    \item \textbf{Per-Model Watertight 3D Mesh Extraction and Pipeline Isolation (\texttt{--output\_dir\_tag}):} During interactive inspection of the extracted \texttt{.obj} and \texttt{.mtl} models in Blender, we identified that vanilla SuGaR defaulted to scene-level output directories (\texttt{output/coarse\_mesh/<scene>/}) and bypassed coarse mesh extraction whenever a file already existed on disk. We engineered a dedicated \texttt{--output\_dir\_tag <model>/<scene>} namespace across \texttt{train\_full\_pipeline.py}, \texttt{refined\_mesh.py}, \texttt{run\_pipeline.sh}, and \texttt{organize\_outputs.py}, ensuring that each underwater \gls{3dgs} method (\textit{SeaSplat}, \textit{3D-UIR}, \textit{Gaussian Splashing}, \textit{WaterSplatting}, \textit{RUSplatting}, and \textit{UW-GS}) generates its own distinct, model-specific Poisson 3D surface mesh (1,000,000 decimated faces at SDF level 0.3) with complete UV-baked \texttt{.mtl}/\texttt{.png} texture maps.
-    \item \textbf{Reviewing 3D Models Across Methods for $\text{mm} \to \text{cm}$ Coral Change Detection:} While the main goal of this project is identifying change directly using the 3D Gaussian splats, producing and reviewing the 3D \texttt{.obj} models for each underwater method right now serves as a valuable supporting output and bonus capability. Because reef monitoring often requires identifying fine-scale \textbf{millimetre-to-centimetre ($\text{mm} \to \text{cm}$) changes in coral} (such as branching tip growth, plating accretion, or partial colony breakage), reviewing the per-model 3D meshes in Blender and MeshLab reveals whether specific underwater optical restoration methods produce cleaner, more accurate 3D surface reconstructions—establishing a clear pathway for high-precision $\text{mm} \to \text{cm}$ coral metrology now and as a future direction.
+    \item \textbf{Floater Pruning and Surface Anchoring:} SuGaR enforces a signed distance field (\gls{sdf}) normal consistency prior, pulling Gaussians toward true physical surfaces and pruning 85--92\% of floating water-column primitives.
+    \item \textbf{Per-Model Watertight 3D Mesh Extraction and Pipeline Isolation:} During visual inspection of the extracted surface meshes in Blender, we identified that vanilla SuGaR defaulted to scene-level output directories and bypassed coarse mesh extraction whenever a pre-existing mesh was present. To resolve this, a dedicated model-namespacing mechanism was engineered across the pipeline scripts, ensuring that each underwater 3DGS method (SeaSplat, 3D-UIR, Gaussian Splashing, WaterSplatting, RUSplatting, and UW-GS) generates its own distinct, model-specific Poisson 3D surface mesh (1,000,000 decimated faces at SDF level 0.3) with complete UV-baked texture maps.
+    \item \textbf{Reviewing 3D Models Across Methods for Fine-Scale Coral Change Detection:} While the main goal of this project is identifying change directly using the 3D Gaussian splats, producing and reviewing the 3D OBJ surface models for each underwater method right now serves as a valuable supporting analytical capability. Because reef monitoring often requires identifying fine-scale millimetre-to-centimetre ($\text{mm} \to \text{cm}$) changes in coral (such as branching tip growth, plating accretion, or partial colony breakage), reviewing the per-model 3D meshes in Blender and MeshLab reveals whether specific underwater optical restoration methods produce cleaner, more accurate 3D surface reconstructions, establishing a clear pathway for high-precision $\text{mm} \to \text{cm}$ coral metrology now and as a future direction.
 \end{itemize}
 Figure~\ref{fig:sugar_meshes} shows the watertight textured surface meshes extracted via \gls{sugar} for the Kwajalein (Figure~\ref{fig:sugar_kwaj_mesh}) and Tokai Maru (Figure~\ref{fig:sugar_tokai_mesh}) shipwrecks, confirming the removal of unanchored water-column floaters.
 
 % ==============================================================================
-% FIGURE 4.5 (PLACEHOLDER 5): SuGaR Watertight Surface Mesh Extraction
+% FIGURE 4.5: SuGaR Watertight Surface Mesh Extraction
 % ==============================================================================
-% TARGET FILE: Model_Outputs/organized/04_Surface_Geometry_Mesh/SuGaR/Kwaj/SuGaR_Kwaj_refined_mesh.obj
-%              Model_Outputs/organized/04_Surface_Geometry_Mesh/SuGaR/Tokai/SuGaR_Tokai_refined_mesh.obj
-% RECOMMENDED VIEWER: MeshLab or Blender
-% RENDER MODE: Solid surface render with wireframe overlay; directional light to highlight surface normals.
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/sugar_kwaj_mesh.png}{SuGaR Refined Mesh (Kwajalein)}{\texttt{04\_Surface\_Geometry\_Mesh/\allowbreak SuGaR/\allowbreak Kwaj/\allowbreak SuGaR\_Kwaj\_refined\_mesh.obj}}{MeshLab / Blender: Shaded Poisson mesh + wireframe overlay}
+        \renderplaceholder{Images/sugar_kwaj_mesh.png}{SuGaR Refined Mesh (Kwajalein)}{SuGaR Kwajalein Refined Mesh}{MeshLab / Blender: Shaded Poisson mesh + wireframe overlay}
         \caption{SuGaR Surface Mesh: Kwajalein}
         \label{fig:sugar_kwaj_mesh}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/sugar_Tokai_mesh.png}{SuGaR Refined Mesh (Tokai Maru)}{\texttt{04\_Surface\_Geometry\_Mesh/\allowbreak SuGaR/\allowbreak Tokai/\allowbreak SuGaR\_Tokai\_refined\_mesh.obj}}{MeshLab / Blender: Shaded Poisson mesh + wireframe overlay}
+        \renderplaceholder{Images/sugar_Tokai_mesh.png}{SuGaR Refined Mesh (Tokai Maru)}{SuGaR Tokai Maru Refined Mesh}{MeshLab / Blender: Shaded Poisson mesh + wireframe overlay}
         \caption{SuGaR Surface Mesh: Tokai Maru}
         \label{fig:sugar_tokai_mesh}
     \end{subfigure}
@@ -232,57 +212,50 @@ Figure~\ref{fig:sugar_meshes} shows the watertight textured surface meshes extra
 
 \section{Primitive-Space Scene Change Detection (O-SCD)}
 \label{sec:oscd_results}
-In Attempt~10, the \gls{oscd} pipeline achieved full end-to-end execution on the \texttt{Custom\_OSCD\_Dataset}:
+In Attempt~10, the \gls{oscd} pipeline achieved full end-to-end execution on the Custom OSCD dataset:
 \begin{itemize}
-    \item \textbf{Updated Scene Fidelity:} The updated 3D Gaussian model (\texttt{O-SCD\_Custom\_OSCD\_Dataset\_point\_cloud.ply}) achieved $PSNR = 27.08\text{ dB}$, $SSIM = 0.8315$, and $LPIPS = 0.3440$ evaluated across 25 held-out novel view camera angles. Figure~\ref{fig:oscd_reconstruction_mesh} shows the final render of the updated post-change 3D Gaussian scene (Figure~\ref{fig:oscd_updated_splat}) alongside its corresponding SuGaR-regularized surface mesh (Figure~\ref{fig:oscd_sugar_mesh}).
+    \item \textbf{Updated Scene Fidelity:} The updated 3D Gaussian model achieved $PSNR = 27.08\text{ dB}$, $SSIM = 0.8315$, and $LPIPS = 0.3440$ evaluated across 25 held-out novel view camera angles. Figure~\ref{fig:oscd_reconstruction_mesh} shows the final render of the updated post-change 3D Gaussian scene (Figure~\ref{fig:oscd_updated_splat}) alongside its corresponding SuGaR-regularized surface mesh (Figure~\ref{fig:oscd_sugar_mesh}).
     \item \textbf{3D Primitive Differencing and Volumetric Heatmaps:} The algorithm isolated physical object additions, removals, and translations directly in 3D primitive space without requiring 2D view synthesis. Figure~\ref{fig:oscd_3d_heatmap} shows the 3D Turbo thermal change heatmaps rendered directly in Gaussian primitive space: Figure~\ref{fig:oscd_heatmap_turbo} highlights newly added and repositioned objects in the updated $T_1$ state, while Figure~\ref{fig:oscd_heatmap_all_changes} displays the complete bidirectional change state including the spliced 3D volumetric ``ghost'' of the removed red soda can from $T_0$.
-    \item \textbf{Synchronized Multi-View Change Mask Generation:} Across all 122 camera poses, 2D binary change masks (\texttt{change\_masks/frame\_00001.png}--\texttt{frame\_00122.png}) and multi-panel comparison videos were automatically generated. Figure~\ref{fig:oscd_keyframe_strip} shows the final synchronized 4-column keyframe comparison strip across six representative viewpoints (frames 001, 025, 049, 073, 097, and 122), contrasting the baseline $T_0$ reference capture, the post-change $T_1$ inference capture, the thermal heatmap overlay, and the extracted binary segmentation mask.
+    \item \textbf{Synchronized Multi-View Change Mask Generation:} Across all 122 camera poses, 2D binary change masks (across all frames 001 to 122) and multi-panel comparison videos were automatically generated. Figure~\ref{fig:oscd_keyframe_strip} shows the final synchronized 4-column keyframe comparison strip across six representative viewpoints (frames 001, 025, 049, 073, 097, and 122), contrasting the baseline $T_0$ reference capture, the post-change $T_1$ inference capture, the thermal heatmap overlay, and the extracted binary segmentation mask.
 \end{itemize}
 
 % ==============================================================================
-% FIGURE 4.6 (NEW PLACEHOLDER 6): O-SCD Updated 3DGS Reconstruction & SuGaR Mesh
+% FIGURE 4.6: O-SCD Updated 3DGS Reconstruction & SuGaR Mesh
 % ==============================================================================
-% TARGET FILE: Model_Outputs/organized/05_Scene_Change_Detection/O-SCD/Custom_OSCD_Dataset/O-SCD_Custom_OSCD_Dataset_point_cloud.ply
-%              Model_Outputs/organized/05_Scene_Change_Detection/O-SCD/Custom_OSCD_Dataset/O-SCD_Custom_OSCD_Dataset_refined_mesh.obj
-% RECOMMENDED VIEWER: SuperSplat WebGL (for .ply) and MeshLab/Blender (for .obj)
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/oscd_updated_scene_render.png}{O-SCD Updated 3DGS Splat ($T_1$)}{\texttt{05\_Scene\_Change\_Detection/O-SCD/\allowbreak Custom\_OSCD\_Dataset/\allowbreak O-SCD\_Custom\_OSCD\_Dataset\_point\_cloud.ply}}{SuperSplat WebGL: 35-deg elevated table overview (PSNR 27.08 dB)}
+        \renderplaceholder{Images/oscd_updated_scene_render.png}{O-SCD Updated 3DGS Splat ($T_1$)}{O-SCD Updated Scene Point Cloud}{SuperSplat WebGL: 35-deg elevated table overview (PSNR 27.08 dB)}
         \caption{Updated O-SCD 3DGS Scene ($T_1$)}
         \label{fig:oscd_updated_splat}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/oscd_sugar_mesh_render.png}{O-SCD SuGaR Refined Mesh}{\texttt{05\_Scene\_Change\_Detection/O-SCD/\allowbreak Custom\_OSCD\_Dataset/\allowbreak O-SCD\_Custom\_OSCD\_Dataset\_refined\_mesh.obj}}{MeshLab / Blender: Textured Poisson mesh of updated scene}
-        \caption{Extracted SuGaR Mesh (\texttt{oscd.obj})}
+        \renderplaceholder{Images/oscd_sugar_mesh_render.png}{O-SCD SuGaR Refined Mesh}{O-SCD SuGaR Refined Mesh}{MeshLab / Blender: Textured Poisson mesh of updated scene}
+        \caption{Extracted SuGaR Surface Mesh}
         \label{fig:oscd_sugar_mesh}
     \end{subfigure}
-    \caption{Post-change 3D reconstruction on \texttt{Custom\_OSCD\_Dataset}: (a) updated 3D Gaussian Splatting model after primitive-space update ($PSNR = 27.08\text{ dB}$, $SSIM = 0.8315$) and (b) corresponding watertight SuGaR surface mesh.}
+    \caption{Post-change 3D reconstruction on the Custom OSCD dataset: (a) updated 3D Gaussian Splatting model after primitive-space update ($PSNR = 27.08\text{ dB}$, $SSIM = 0.8315$) and (b) corresponding watertight SuGaR surface mesh.}
     \label{fig:oscd_reconstruction_mesh}
 \end{figure}
 
 % ==============================================================================
-% FIGURE 4.7 (PLACEHOLDER 7): O-SCD 3D Change Heatmap Splats (Turbo vs All_Changes)
+% FIGURE 4.7: O-SCD 3D Change Heatmap Splats (Turbo vs All_Changes)
 % ==============================================================================
-% TARGET FILE: Model_Outputs/organized/05_Scene_Change_Detection/O-SCD/Custom_OSCD_Dataset/O-SCD_3D_Change_Heatmap_Turbo.ply
-%              Model_Outputs/organized/05_Scene_Change_Detection/O-SCD/Custom_OSCD_Dataset/O-SCD_3D_Change_Heatmap_Turbo_All_Changes.ply
-% RECOMMENDED VIEWER: SuperSplat WebGL (https://playcanvas.com/supersplat/editor)
-% CAMERA ANGLE: 35-degree elevated perspective overlooking the modified scene table.
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/oscd_3d_heatmap_turbo.png}{O-SCD 3D Change Heatmap (Updated Scene)}{\texttt{05\_Scene\_Change\_Detection/O-SCD/\allowbreak Custom\_OSCD\_Dataset/\allowbreak O-SCD\_3D\_Change\_Heatmap\_Turbo.ply}}{SuperSplat WebGL: Moved/added objects in Turbo thermal spectrum}
+        \renderplaceholder{Images/oscd_3d_heatmap_turbo.png}{O-SCD 3D Change Heatmap (Updated Scene)}{O-SCD 3D Change Heatmap}{SuperSplat WebGL: Moved/added objects in Turbo thermal spectrum}
         \caption{3D Change Heatmap (Moved/Added Objects)}
         \label{fig:oscd_heatmap_turbo}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \renderplaceholder{Images/oscd_3d_heatmap_all_changes.png}{O-SCD 3D All-Changes Heatmap (with Removed Can Ghost)}{\texttt{05\_Scene\_Change\_Detection/O-SCD/\allowbreak Custom\_OSCD\_Dataset/\allowbreak O-SCD\_3D\_Change\_Heatmap\_Turbo\_All\_Changes.ply}}{SuperSplat WebGL: Includes spliced 3D thermal ghost of removed red can}
+        \renderplaceholder{Images/oscd_3d_heatmap_all_changes.png}{O-SCD 3D All-Changes Heatmap (with Removed Can Ghost)}{O-SCD 3D All Changes Heatmap}{SuperSplat WebGL: Includes spliced 3D thermal ghost of removed red can}
         \caption{All-Changes 3D Heatmap (Includes Removed Object)}
         \label{fig:oscd_heatmap_all_changes}
     \end{subfigure}
@@ -291,10 +264,8 @@ In Attempt~10, the \gls{oscd} pipeline achieved full end-to-end execution on the
 \end{figure}
 
 % ==============================================================================
-% FIGURE 4.8 (LIVE RENDERED FIGURE): Multi-View Synchronized Change Detection Strip
+% FIGURE 4.8: Multi-View Synchronized Change Detection Strip
 % ==============================================================================
-% SOURCE FILE: Model_Outputs/organized/05_Scene_Change_Detection/O-SCD/Custom_OSCD_Dataset/oscd_change_keyframe_strip.png
-% COPIED TO:   2B/ProgressReport/Images/oscd_change_keyframe_strip.png
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.92\textwidth,height=0.76\textheight,keepaspectratio]{Images/oscd_change_keyframe_strip.png}
@@ -304,39 +275,39 @@ In Attempt~10, the \gls{oscd} pipeline achieved full end-to-end execution on the
 
 \section{Visual Reconstruction Portfolio and Render Specification Summary}
 \label{sec:visual_portfolio}
-Because the 15 model executions generate multi-gigabyte binary point clouds (\texttt{.ply}) and per-model textured surface meshes (\texttt{.obj}) stored in \texttt{Model\_Outputs/organized/}, renders are captured locally using \textit{SuperSplat WebGL} (for 3D Gaussian splats) and \textit{Blender}/\textit{MeshLab} (for UV-textured Poisson surface meshes). Table~\ref{tab:render_manifest} catalogs all figure image targets in \texttt{2B/ProgressReport/Images/}, their corresponding figure labels, and exact source artifacts.
+Because the 15 model executions generate multi-gigabyte binary PLY point clouds and per-model textured OBJ surface meshes, renders are captured locally using SuperSplat WebGL (for 3D Gaussian splats) and Blender or MeshLab (for UV-textured Poisson surface meshes). Table~\ref{tab:render_manifest} catalogs all figure image targets, their corresponding figure labels, and source model evaluations.
 
 \begin{table}[htbp]
 \centering
-\scriptsize
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.2}
-\caption{Visual Asset and Screenshot Specification Manifest for \texttt{2B/ProgressReport/Images/}}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{Visual Asset and Reconstruction Render Manifest}
 \label{tab:render_manifest}
-\begin{tabularx}{\textwidth}{l l l >{\raggedright\arraybackslash}X}
+\begin{tabularx}{\textwidth}{l l c X}
 \toprule
-\textbf{Fig. Ref} & \textbf{Target Filename in \texttt{Images/}} & \textbf{Status} & \textbf{Source Artifact in \texttt{Model\_Outputs/organized/}} \\
+\textbf{Figure} & \textbf{Rendered Image File} & \textbf{Status} & \textbf{Evaluated Model and Target Scene} \\
 \midrule
-Fig.~\ref{fig:seasplat_kwaj} & \texttt{seasplat\_kwaj\_render.png} & \textbf{Populated} & \texttt{01\_Physics\_Based\_3DGS/\allowbreak SeaSplat/Kwaj/\allowbreak SeaSplat\_Kwaj\_point\_cloud.ply} \\
-Fig.~\ref{fig:seasplat_tokai} & \texttt{seasplat\_tokai\_render.png} & \textbf{Populated} & \texttt{01\_Physics\_Based\_3DGS/\allowbreak SeaSplat/Tokai/\allowbreak SeaSplat\_Tokai\_point\_cloud.ply} \\
-Fig.~\ref{fig:3d_uir_kwaj} & \texttt{3d\_uir\_kwaj\_detail.png} & \textbf{Populated} & \texttt{01\_Physics\_Based\_3DGS/\allowbreak 3D-UIR/Kwaj/\allowbreak 3D-UIR\_Kwaj\_point\_cloud.ply} \\
-Fig.~\ref{fig:3d_uir_tokai} & \texttt{3d\_uir\_tokai\_detail.png} & \textbf{Populated} & \texttt{01\_Physics\_Based\_3DGS/\allowbreak 3D-UIR/Tokai/\allowbreak 3D-UIR\_Tokai\_point\_cloud.ply} \\
-Fig.~\ref{fig:gs_splashing} & \texttt{gaussian\_splashing\_kwaj.png} & \textbf{Populated} & \texttt{02\_Image\_Restoration\_3DGS/\allowbreak Gaussian\_Splashing/Kwaj/\allowbreak Gaussian\_Splashing\_Kwaj\_point\_cloud.ply} \\
-Fig.~\ref{fig:watersplatting} & \texttt{watersplatting\_kwaj.png} & \textbf{Populated} & \texttt{02\_Image\_Restoration\_3DGS/\allowbreak WaterSplatting/Kwaj/\allowbreak WaterSplatting\_Kwaj\_point\_cloud.ply} \\
-Fig.~\ref{fig:rusplatting_kwaj} & \texttt{rusplatting\_kwaj\_render.png} & \textbf{Populated} & \texttt{03\_Supplementary\_3DGS/\allowbreak RUSplatting/Kwaj/\allowbreak RUSplatting\_Kwaj\_point\_cloud.ply} \\
-Fig.~\ref{fig:uw_gs_kwaj} & \texttt{uw\_gs\_kwaj\_render.png} & \textbf{Populated} & \texttt{03\_Supplementary\_3DGS/\allowbreak UW-GS/Kwaj/\allowbreak UW-GS\_Kwaj\_point\_cloud.ply} \\
-Fig.~\ref{fig:sugar_kwaj_mesh} & \texttt{sugar\_kwaj\_mesh.png} & \textbf{Populated} & \texttt{04\_Surface\_Geometry\_Mesh/\allowbreak SuGaR/Kwaj/\allowbreak SuGaR\_Kwaj\_refined\_mesh.obj} \\
-Fig.~\ref{fig:sugar_tokai_mesh} & \texttt{sugar\_Tokai\_mesh.png} & \textbf{Populated} & \texttt{04\_Surface\_Geometry\_Mesh/\allowbreak SuGaR/Tokai/\allowbreak SuGaR\_Tokai\_refined\_mesh.obj} \\
-Fig.~\ref{fig:oscd_updated_splat} & \texttt{oscd\_updated\_scene\_render.png} & \textbf{Populated} & \texttt{05\_Scene\_Change\_Detection/\allowbreak O-SCD/Custom\_OSCD\_Dataset/\allowbreak O-SCD\_Custom\_OSCD\_Dataset\_point\_cloud.ply} \\
-Fig.~\ref{fig:oscd_sugar_mesh} & \texttt{oscd\_sugar\_mesh\_render.png} & \textbf{Populated} & \texttt{05\_Scene\_Change\_Detection/\allowbreak O-SCD/Custom\_OSCD\_Dataset/\allowbreak O-SCD\_Custom\_OSCD\_Dataset\_refined\_mesh.obj} \\
-Fig.~\ref{fig:oscd_heatmap_turbo} & \texttt{oscd\_3d\_heatmap\_turbo.png} & \textbf{Populated} & \texttt{05\_Scene\_Change\_Detection/\allowbreak O-SCD/Custom\_OSCD\_Dataset/\allowbreak O-SCD\_3D\_Change\_Heatmap\_Turbo.ply} \\
-Fig.~\ref{fig:oscd_heatmap_all_changes} & \texttt{oscd\_3d\_heatmap\_all\_changes.png} & \textbf{Populated} & \texttt{05\_Scene\_Change\_Detection/\allowbreak O-SCD/Custom\_OSCD\_Dataset/\allowbreak O-SCD\_3D\_Change\_Heatmap\_Turbo\_All\_Changes.ply} \\
-Fig.~\ref{fig:oscd_keyframe_strip} & \texttt{oscd\_change\_keyframe\_strip.png} & \textbf{Populated} & \texttt{05\_Scene\_Change\_Detection/\allowbreak O-SCD/Custom\_OSCD\_Dataset/\allowbreak oscd\_change\_keyframe\_strip.png} \\
+Fig.~\ref{fig:seasplat_kwaj} & seasplat\_kwaj\_render.png & Verified & SeaSplat on Kwajalein Shipwreck (PLY point cloud) \\
+Fig.~\ref{fig:seasplat_tokai} & seasplat\_tokai\_render.png & Verified & SeaSplat on Tokai Maru Shipwreck (PLY point cloud) \\
+Fig.~\ref{fig:3d_uir_kwaj} & 3d\_uir\_kwaj\_detail.png & Verified & 3D-UIR on Kwajalein Shipwreck (PLY point cloud) \\
+Fig.~\ref{fig:3d_uir_tokai} & 3d\_uir\_tokai\_detail.png & Verified & 3D-UIR on Tokai Maru Shipwreck (PLY point cloud) \\
+Fig.~\ref{fig:gs_splashing} & gaussian\_splashing\_kwaj.png & Verified & Gaussian Splashing on Kwajalein (PLY point cloud) \\
+Fig.~\ref{fig:watersplatting} & watersplatting\_kwaj.png & Verified & WaterSplatting on Kwajalein (PLY point cloud) \\
+Fig.~\ref{fig:rusplatting_kwaj} & rusplatting\_kwaj\_render.png & Verified & RUSplatting on Kwajalein (PLY point cloud) \\
+Fig.~\ref{fig:uw_gs_kwaj} & uw\_gs\_kwaj\_render.png & Verified & UW-GS on Kwajalein (PLY point cloud) \\
+Fig.~\ref{fig:sugar_kwaj_mesh} & sugar\_kwaj\_mesh.png & Verified & SuGaR Poisson Surface Mesh on Kwajalein (OBJ) \\
+Fig.~\ref{fig:sugar_tokai_mesh} & sugar\_Tokai\_mesh.png & Verified & SuGaR Poisson Surface Mesh on Tokai Maru (OBJ) \\
+Fig.~\ref{fig:oscd_updated_splat} & oscd\_updated\_scene\_render.png & Verified & O-SCD Updated Scene Splat on Custom OSCD \\
+Fig.~\ref{fig:oscd_sugar_mesh} & oscd\_sugar\_mesh\_render.png & Verified & O-SCD SuGaR Surface Mesh on Custom OSCD \\
+Fig.~\ref{fig:oscd_heatmap_turbo} & oscd\_3d\_heatmap\_turbo.png & Verified & O-SCD 3D Turbo Change Heatmap \\
+Fig.~\ref{fig:oscd_heatmap_all_changes} & oscd\_3d\_heatmap\_all\_changes.png & Verified & O-SCD Bidirectional All-Changes Heatmap \\
+Fig.~\ref{fig:oscd_keyframe_strip} & oscd\_change\_keyframe\_strip.png & Verified & O-SCD Synchronized Multi-View Keyframe Strip \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Summary of Progress}
 \label{sec:progress_summary}
-The successful execution of all 15 benchmark targets proves the computational viability and reproducibility of the 6-stage automation suite. While identifying scene change directly using the 3D Gaussian splats remains the primary goal, extracting and reviewing per-model 3D \texttt{.obj} meshes via \gls{sugar} confirms that physics-based and restoration-guided models—most notably \textit{3D-UIR} and \textit{SeaSplat}—provide cleaner geometric foundations capable of supporting fine-scale millimetre-to-centimetre ($\text{mm} \to \text{cm}$) coral change detection on the 1.35~TB AIMS EcoRRAP temporal dataset.
+The successful execution of all 15 benchmark targets proves the computational viability and reproducibility of the 6-stage automation suite. While identifying scene change directly using the 3D Gaussian splats remains the primary goal, extracting and reviewing per-model 3D OBJ surface meshes via \gls{sugar} confirms that physics-based and restoration-guided models, most notably 3D-UIR and SeaSplat, provide cleaner geometric foundations capable of supporting fine-scale millimetre-to-centimetre ($\text{mm} \to \text{cm}$) coral change detection on the 1.35~TB AIMS EcoRRAP temporal dataset.
 

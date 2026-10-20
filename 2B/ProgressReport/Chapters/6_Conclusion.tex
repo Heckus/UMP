@@ -13,20 +13,20 @@ This progress report has detailed the conception, technical implementation, and 
     \item \textbf{Master 15 / 15 Benchmark Milestone:} All 15 planned benchmark targets across 8 models and 3 datasets achieved 100\% full-lifecycle completion, demonstrating rock-solid execution stability on NVIDIA A100-SXM4-40GB hardware.
     \item \textbf{Comprehensive Model Benchmarking:} Quantitative evaluation across held-out novel views revealed critical architectural trade-offs:
     \begin{itemize}
-        \item \textit{3D-UIR} demonstrated the highest structural preservation ($SSIM = 0.8739$ on Kwaj, $0.7085$ on Tokai), proving optimal for retaining fine geometric coral features without blurring.
-        \item \textit{SeaSplat} successfully decoupled water column backscatter and wavelength attenuation ($PSNR = 24.60\text{ dB}$, $SSIM = 0.8341$), recovering true benthic albedo.
-        \item \textit{Gaussian Splashing} achieved the highest raw reconstruction fidelity ($PSNR = 27.93\text{ dB}$ on Kwaj), while \textit{WaterSplatting} achieved the lowest perceptual error ($LPIPS = 0.1714$) with sub-40-minute training times.
+        \item 3D-UIR demonstrated the highest structural preservation ($SSIM = 0.8739$ on Kwaj, $0.7085$ on Tokai), proving optimal for retaining fine geometric coral features without blurring.
+        \item SeaSplat successfully decoupled water column backscatter and wavelength attenuation ($PSNR = 24.60\text{ dB}$, $SSIM = 0.8341$), recovering true benthic albedo.
+        \item Gaussian Splashing achieved the highest raw reconstruction fidelity ($PSNR = 27.93\text{ dB}$ on Kwaj), while WaterSplatting achieved the lowest perceptual error ($LPIPS = 0.1714$) with sub-40-minute training times.
     \end{itemize}
-    \item \textbf{Per-Model Surface Regularization and 3D Mesh Review (SuGaR):} Motivated by the recommendation at the conclusion of the primitive-space change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}, enforced signed distance field (\gls{sdf}) priors to prune 85–92\% of floating water-column primitives and engineered per-model namespace isolation (\texttt{--output\_dir\_tag <model>/<scene>}) so that every evaluated underwater method exports its own distinct, watertight textured 3D surface mesh (\texttt{.obj}) for comparative review alongside the primary 3D Gaussian splats.
-    \item \textbf{Primitive-Space Change Detection (O-SCD):} Validated the primary primitive-space differencing engine on \texttt{Custom\_OSCD\_Dataset}, achieving $PSNR = 27.08\text{ dB}$ and $SSIM = 0.8315$ while accurately separating added and removed objects directly in 3D Gaussian space without viewpoint dependencies.
+    \item \textbf{Per-Model Surface Regularization and 3D Mesh Review (SuGaR):} Motivated by the recommendation at the conclusion of the primitive-space change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}, enforced signed distance field (\gls{sdf}) priors to prune 85--92\% of floating water-column primitives and engineered per-model output directory isolation so that every evaluated underwater method exports its own distinct, watertight textured 3D surface mesh (OBJ format) for comparative review alongside the primary 3D Gaussian splats.
+    \item \textbf{Primitive-Space Change Detection (O-SCD):} Validated the primary primitive-space differencing engine on the Custom OSCD dataset, achieving a PSNR of 27.08~dB and SSIM of 0.8315 while accurately separating added and removed objects directly in 3D Gaussian space without viewpoint dependencies.
 \end{enumerate}
 
 \section{Technical Challenges and Lessons Learned}
 \label{sec:lessons_learned}
 Experimental execution yielded valuable insights that inform subsequent project phases:
 \begin{itemize}
-    \item \textbf{Gaussian Drift and SuGaR Surface Anchoring:} Unconstrained Gaussian splats optimize purely for photometric re-projection; independent runs on identical scenes exhibit spatial centroid drift. Integrating \gls{sugar} surface regularization—as recommended at the end of the 3D change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}—and reviewing the resulting 3D \texttt{.obj} meshes across underwater methods proves indispensable for anchoring primitives to physical geometry and diagnosing whether higher-fidelity 3D reconstructions can resolve fine-scale $\text{mm} \to \text{cm}$ coral changes.
-    \item \textbf{Per-Model Mesh Cache Isolation:} Vanilla SuGaR defaults to scene-level output paths (\texttt{output/coarse\_mesh/<scene>/}) and skips coarse extraction if a file already exists, causing multiple models on the same scene to share identical meshes unless isolated via \texttt{--output\_dir\_tag <model>/<scene>}.
+    \item \textbf{Gaussian Drift and SuGaR Surface Anchoring:} Unconstrained Gaussian splats optimize purely for photometric re-projection; independent runs on identical scenes exhibit spatial centroid drift. Integrating SuGaR surface regularization, as recommended at the conclusion of the 3D change detection literature~\cite{galappaththige2026pixelsprimitivesscenechange}, and reviewing the resulting 3D OBJ meshes across underwater methods proves indispensable for anchoring primitives to physical geometry and diagnosing whether higher-fidelity 3D reconstructions can resolve fine-scale $\text{mm} \to \text{cm}$ coral changes.
+    \item \textbf{Per-Model Mesh Cache Isolation:} Vanilla SuGaR defaults to scene-level output paths and skips coarse extraction if a file already exists, causing multiple models on the same scene to share identical meshes unless isolated via model-specific directory tagging.
     \item \textbf{Severe Turbidity and Long-Range Collapse:} In highly turbid environments (such as Tokai Maru), optical attenuation models require accurate metric depth priors to avoid collapsing background Gaussians into foreground haze.
     \item \textbf{Batch Script Robustness:} Diverse submodules with conflicting GCC/CUDA dependencies require rigid environment sandboxing and process isolation.
 \end{itemize}
@@ -45,7 +45,7 @@ With baseline benchmarks and cluster toolchains fully validated, the project is 
 \subsection{Phase 3: Model Transplantation and Extended Cluster Optimization (Months 3–4)}
 Figure~\ref{fig:ecorrap_architecture} illustrates the target Phase~3 architectural integration bridging underwater optical restoration, \gls{sugar} surface regularization, and primitive-space scene change detection.
 \begin{itemize}
-    \item \textbf{Architectural Transplantation:} Based on the benchmark findings and per-model 3D \texttt{.obj} mesh evaluations, directly graft the winning underwater optical formulations (\textit{3D-UIR} and \textit{SeaSplat}) into the \gls{oscd} pipeline, replacing the default naive terrestrial Gaussian backbone.
+    \item \textbf{Architectural Transplantation:} Based on the benchmark findings and per-model 3D surface mesh evaluations, directly graft the winning underwater optical formulations (3D-UIR and SeaSplat) into the \gls{oscd} pipeline, replacing the default naive terrestrial Gaussian backbone.
     \item \textbf{Long-Duration HPC Training:} Train the unified model for extended iteration counts (50,000 to 100,000 iterations) on multi-GPU A100/H100 nodes, generating ultra-dense, turbidity-free representations of baseline reef colonies.
     \item \textbf{Millimetre-to-Centimetre ($\text{mm} \to \text{cm}$) Coral Change Quantitation:} Execute primitive-space change detection on the 3D Gaussian splats against the $T_1$ inspection surveys, supported by per-model SuGaR 3D mesh extraction to resolve fine-scale $\text{mm} \to \text{cm}$ coral changes and calculate exact physical metrics:
     \begin{itemize}
@@ -65,7 +65,7 @@ Figure~\ref{fig:ecorrap_architecture} illustrates the target Phase~3 architectur
     ]
         \node[block] (t0) {\textbf{Baseline Survey ($T_0$)}\\[1pt]Raw EcoRRAP Coral Imagery};
         \node[block, right=1.4cm of t0] (t1) {\textbf{Inspection Survey ($T_1$)}\\[1pt]Post-Disturbance Reef Imagery};
-        \node[block, below=of t0] (uw) {\textbf{Underwater-Optimised 3DGS}\\[1pt]\textit{3D-UIR} / \textit{SeaSplat} Optical Inversion};
+        \node[block, below=of t0] (uw) {\textbf{Underwater-Optimised 3DGS}\\[1pt]3D-UIR / SeaSplat Optical Inversion};
         \node[block, below=of uw] (sugar) {\textbf{SuGaR Surface Regularization}\\[1pt]Enforce SDF Prior \& Prune Floaters};
         \node[wideblock, below=3.4cm of $(t0)!0.5!(t1)$] (oscd) {\textbf{Primitive-Space O-SCD Engine}\\[1pt]Turbidity-Invariant 3D Gaussian Differencing ($T_1$ vs.\ $T_0$ Prior)};
         \node[wideblock, below=of oscd] (vol) {\textbf{Differential SuGaR Mesh \& Ecological Metrics}\\[1pt]Volumetric Accretion/Depletion ($\text{cm}^3$) \& Rugosity ($\text{m}^2$)};

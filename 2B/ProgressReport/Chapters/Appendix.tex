@@ -114,7 +114,7 @@ This appendix presents the verified terminal execution log and output manifest f
 \begin{verbatim}
 [INFO] SuGaR mesh verified and exported to: 
   Dataset/Custom_OSCD_Dataset/output/refined_mesh/oscd.obj
-[INFO] --- Stage 6: Benchmarking & Metrics Evaluation (eval) (oscd) ---
+[INFO] === Stage 6: Benchmarking & Metrics Evaluation (eval) (oscd) ===
 [INFO] Executing in [Env: oscd] [CWD: Codebase/3DGS-Change-Detection/O-SCD-main]:
   python utils/metrics.py -m output/Custom_OSCD_Dataset/output
 
@@ -201,4 +201,4 @@ Underwater optical propagation is governed by the simplified Jaffe-McGlamery for
 \end{equation}
 where $I_\lambda(x)$ is the observed sensor radiance at wavelength $\lambda$, $J_\lambda(x)$ represents the unattenuated direct scene radiance (true benthic colour), $d(x)$ is the Euclidean distance from the sensor, $\beta_{atten}$ and $\beta_{scat}$ denote wavelength-dependent attenuation and backscatter coefficients, and $B_\lambda^\infty$ is the veiling ambient background water radiance. 
 
-Traditional image restoration methods (such as histogram equalization, CLAHE, or deep GANs) operate strictly in 2D image space, introducing view-inconsistent color artifacts across different camera perspectives. In contrast, physically grounded 3DGS models (such as \textit{SeaSplat}~\cite{11128502}) optimize the attenuation coefficients $\beta(\lambda)$ directly within the differentiable volumetric rendering loop, ensuring that the recovered spatial primitives represent true, medium-independent benthic geometry.
+Traditional image restoration methods (such as histogram equalization, CLAHE, or deep GANs) operate strictly in 2D image space, introducing view-inconsistent color artifacts across different camera perspectives. In contrast, physically grounded 3DGS models (such as SeaSplat~\cite{11128502}) optimize the attenuation coefficients $\beta(\lambda)$ directly within the differentiable volumetric rendering loop, ensuring that the recovered spatial primitives represent true, medium-independent benthic geometry.

@@ -40,10 +40,10 @@ To achieve rigorous, repeatable experimentation across 8 distinct models and mul
 \begin{enumerate}
     \item \textbf{Stage 1: Data Preparation \& Ingestion:} Ingests multi-view imagery, extracts EXIF metadata, rescales inputs to standard resolutions ($1\times, 2\times, 4\times, 8\times$), and formats directory trees into standard camera convention layouts.
     \item \textbf{Stage 2: COLMAP Structure-from-Motion (SfM):} Performs SIFT feature extraction, exhaustive or spatial feature matching, bundle adjustment, and sparse geometric triangulation. For dual-scene change detection (\gls{oscd}), a joint co-registration procedure aligns reference and query camera poses into a shared coordinate reference frame.
-    \item \textbf{Stage 3: Depth Estimation and Optical Inversion:} Executes monocular dense depth estimation via \textit{Depth-Anything-V2} (ViT-L backbone), computing scene depth scaling priors for \textit{3D-UIR} and generating inverted depth maps plus RIFE intermediate frame interpolations for \textit{RUSplatting}.
+    \item \textbf{Stage 3: Depth Estimation and Optical Inversion:} Executes monocular dense depth estimation via Depth-Anything-V2 (ViT-L backbone), computing scene depth scaling priors for 3D-UIR and generating inverted depth maps plus RIFE intermediate frame interpolations for RUSplatting.
     \item \textbf{Stage 4: 3DGS Model Optimization:} Dispatches the chosen architecture into its dedicated, isolated Conda environment. The model is trained for up to 30,000 iterations on an NVIDIA A100 GPU, optimizing position, covariance, opacity, and spherical harmonic albedo via stochastic gradient descent.
-    \item \textbf{Stage 5: Per-Model SuGaR Surface Mesh Extraction (\texttt{--output\_dir\_tag}):} Motivated by the recommendation at the conclusion of the primitive-space 3D change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}, Stage~5 ingests each architecture's optimized 3D Gaussian point cloud (\texttt{.ply}), applies signed-distance-field (\gls{sdf}) regularization (\texttt{dn\_consistency}), prunes unanchored water-column floaters, and extracts a \textbf{distinct, model-namespaced watertight Poisson 3D surface mesh (\texttt{.obj}) with UV-baked \texttt{.mtl}/\texttt{.png} textures} into \texttt{output/refined\_mesh/<model>/<scene>.obj}. By isolating intermediate coarse/refined caches via \texttt{--output\_dir\_tag <model>/<scene>}, the pipeline ensures that every underwater 3DGS method produces its own true 3D surface model for comparative inspection alongside the primary 3D Gaussian splats.
-    \item \textbf{Stage 6: Quantitative Benchmarking \& Evaluation:} Evaluates novel view synthesis on held-out test cameras, computing Peak Signal-to-Noise Ratio (\gls{psnr}), Structural Similarity Index (\gls{ssim}), and Learned Perceptual Image Patch Similarity (\gls{lpips}). Outputs are recorded into structured JSON manifests (\texttt{results.json}, \texttt{evaluation.json}).
+    \item \textbf{Stage 5: Per-Model SuGaR Surface Mesh Extraction:} Motivated by the recommendation at the conclusion of the primitive-space 3D change detection paper~\cite{galappaththige2026pixelsprimitivesscenechange}, Stage~5 ingests each architecture's optimized 3D Gaussian point cloud, applies signed-distance-field (\gls{sdf}) surface regularization, prunes unanchored water-column floaters, and extracts a distinct, model-namespaced watertight Poisson 3D surface mesh (OBJ format with UV-baked textures). By isolating intermediate coarse and refined caches with model-specific output tagging, the pipeline ensures that every underwater 3DGS method produces its own true 3D surface model for comparative inspection alongside the primary 3D Gaussian splats.
+    \item \textbf{Stage 6: Quantitative Benchmarking \& Evaluation:} Evaluates novel view synthesis on held-out test cameras, computing Peak Signal-to-Noise Ratio (\gls{psnr}), Structural Similarity Index (\gls{ssim}), and Learned Perceptual Image Patch Similarity (\gls{lpips}). Outputs are recorded into structured JSON manifests (results.json, evaluation.json).
 \end{enumerate}
 
 \section{Compute, Storage, and Resource Budget}
@@ -51,7 +51,7 @@ To achieve rigorous, repeatable experimentation across 8 distinct models and mul
 Just as physical robotics projects require mechanical Bills of Materials (BOM) and electrical power budgets, high-performance artificial intelligence research demands a rigorous compute, storage, and memory resource budget.
 
 \subsection{HPC Compute Infrastructure}
-All model training and evaluations are conducted on the \textbf{QUT Aqua High-Performance Computing cluster}. Computations utilize dedicated GPU compute nodes equipped with:
+All model training and evaluations are conducted on the QUT Aqua High-Performance Computing cluster. Computations utilize dedicated GPU compute nodes equipped with:
 \begin{itemize}
     \item \textbf{Compute Nodes:} NVIDIA A100-SXM4-40GB GPUs (40~GB high-bandwidth HBM2 memory, 6,912 CUDA cores, 432 Tensor cores).
     \item \textbf{Host Processors:} AMD EPYC 7742 64-Core Processors (minimum 8 CPU cores allocated per job).
@@ -73,14 +73,14 @@ Table~\ref{tab:compute_budget} provides the empirical compute and memory budget 
         \toprule
         \textbf{Model} & \textbf{Category} & \textbf{Peak VRAM} & \textbf{Avg Duration} & \textbf{Disk} & \textbf{Primary Output Artifacts} \\
         \midrule
-        SeaSplat & Physics-based & 14.8 GB & 1h 01m & 1.2 GB & Point Cloud (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
-        3D-UIR & Physics-based & 16.2 GB & 1h 15m & 1.4 GB & Point Cloud (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
-        Gaussian Splashing & Restoration & 22.4 GB & 3h 45m & 2.8 GB & Volumetric Splat (\texttt{.ply}), Mesh (\texttt{.obj}) \\
-        WaterSplatting & Restoration & 11.2 GB & 43m & 0.9 GB & Fast Splat (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
-        RUSplatting & Supplementary & 13.5 GB & 52m & 1.1 GB & Point Cloud (\texttt{.ply}), Refined Mesh (\texttt{.obj}) \\
-        UW-GS & Supplementary & 12.9 GB & 57m & 1.0 GB & Variance-filtered Splat (\texttt{.ply}), Mesh (\texttt{.obj}) \\
-        SuGaR & Surface Reg. & 18.5 GB & 35m & 1.8 GB & Coarse \& Refined Textured Meshes (\texttt{.obj}) \\
-        O-SCD & Change Det. & 28.6 GB & 1h 04m & 3.2 GB & Updated Splat (\texttt{.ply}), Change Masks (\texttt{.png}) \\
+        SeaSplat & Physics-based & 14.8 GB & 1h 01m & 1.2 GB & Point Cloud (.ply), Refined Mesh (.obj) \\
+        3D-UIR & Physics-based & 16.2 GB & 1h 15m & 1.4 GB & Point Cloud (.ply), Refined Mesh (.obj) \\
+        Gaussian Splashing & Restoration & 22.4 GB & 3h 45m & 2.8 GB & Volumetric Splat (.ply), Mesh (.obj) \\
+        WaterSplatting & Restoration & 11.2 GB & 43m & 0.9 GB & Fast Splat (.ply), Refined Mesh (.obj) \\
+        RUSplatting & Supplementary & 13.5 GB & 52m & 1.1 GB & Point Cloud (.ply), Refined Mesh (.obj) \\
+        UW-GS & Supplementary & 12.9 GB & 57m & 1.0 GB & Variance-filtered Splat (.ply), Mesh (.obj) \\
+        SuGaR & Surface Reg. & 18.5 GB & 35m & 1.8 GB & Coarse \& Refined Textured Meshes (.obj) \\
+        O-SCD & Change Det. & 28.6 GB & 1h 04m & 3.2 GB & Updated Splat (.ply), Change Masks (.png) \\
         \bottomrule
     \end{tabularx}
 \end{table}
@@ -88,8 +88,8 @@ Table~\ref{tab:compute_budget} provides the empirical compute and memory budget 
 \subsection{Storage and Data Transfer Bandwidth}
 The project manages two storage tiers:
 \begin{enumerate}
-    \item \textbf{Cluster Scratch Storage (\texttt{/mnt/hpccs01/home/n11585382}):} High-speed NVMe/Lustre storage holding active Conda environments (11 environments $\approx 45\text{ GB}$), raw image sets, COLMAP feature databases, and checkpoint caches. Total allocation: 2.0~TB.
-    \item \textbf{Local Presentation Storage:} Extracted and organized deliverables on Ubuntu workstations. Transfers utilize the QUT Data Transfer Node (\texttt{eresdtn01.qut.edu.au}) via multi-threaded \texttt{rsync} over SSH, sustaining transfer bandwidths exceeding $85\text{ MB/s}$ over the university network.
+    \item \textbf{Cluster Scratch Storage (/mnt/hpccs01/home/n11585382):} High-speed NVMe/Lustre storage holding active Conda environments (11 environments $\approx 45\text{ GB}$), raw image sets, COLMAP feature databases, and checkpoint caches. Total allocation: 2.0~TB.
+    \item \textbf{Local Presentation Storage:} Extracted and organized deliverables on Ubuntu workstations. Transfers utilize the QUT Data Transfer Node (eresdtn01.qut.edu.au) via multi-threaded rsync over SSH, sustaining transfer bandwidths exceeding $85\text{ MB/s}$ over the university network.
 \end{enumerate}
 
 \section{Dataset Ingestion Protocols}
@@ -103,13 +103,13 @@ To establish comparative baselines and eliminate software bugs prior to receivin
         \item \textit{Kwaj:} Photogrammetric survey of the WW2 German cruiser \textit{Prinz Eugen} capsized at Kwajalein Atoll, exhibiting heavy biofouling, rust, and medium backscatter.
         \item \textit{Tokai:} Survey of the \textit{Tokai Maru} shipwreck in Guam, characterized by extreme blue-wavelength absorption, low ambient lighting, and suspended turbidity.
     \end{enumerate}
-    \item \textbf{Custom Dual-Scene Change Dataset (\texttt{Custom\_OSCD\_Dataset}):} A dual-pass dataset captured specifically to evaluate the primitive-space change detection pipeline. It features a controlled environment where multiple objects were physically introduced, removed, and rearranged between a reference survey ($T_0$) and an inference survey ($T_1$).
+    \item \textbf{Custom Dual-Scene Change Dataset:} A dual-pass dataset captured specifically to evaluate the primitive-space change detection pipeline. It features a controlled environment where multiple objects were physically introduced, removed, and rearranged between a reference survey ($T_0$) and an inference survey ($T_1$).
 \end{itemize}
 
 \subsection{The Production Target: AIMS EcoRRAP Dataset (1.35 TB)}
-The true research objective of this thesis centers on the \textbf{AIMS EcoRRAP dataset}~\cite{gordon2023field}, curated by the Australian Institute of Marine Science in partnership with the QUT Centre for Robotics:
+The true research objective of this thesis centers on the AIMS EcoRRAP dataset~\cite{gordon2023field}, curated by the Australian Institute of Marine Science in partnership with the QUT Centre for Robotics:
 \begin{itemize}
-    \item \textbf{Nature and Scale:} EcoRRAP contains multi-temporal benthic photogrammetry across major Great Barrier Reef monitoring sectors. The complete dataset encompasses approximately \textbf{1.35 Terabytes} of ultra-high-resolution stereoscopic imagery, tracking fixed coral colonies across seasonal cycles, cyclone impacts, and thermal bleaching events.
+    \item \textbf{Nature and Scale:} EcoRRAP contains multi-temporal benthic photogrammetry across major Great Barrier Reef monitoring sectors. The complete dataset encompasses approximately 1.35 Terabytes of ultra-high-resolution stereoscopic imagery, tracking fixed coral colonies across seasonal cycles, cyclone impacts, and thermal bleaching events.
     \item \textbf{Administrative and Legal Status:} Due to data confidentiality, commercial-in-confidence ecological mapping, and institutional compliance, the 1.35~TB dataset requires a formal inter-institutional Data Transfer Agreement (DTA). The data transfer process is currently undergoing standard institutional legal review between AIMS and QUT legal departments.
     \item \textbf{Ingestion Strategy:} Upon legal clearance, the dataset will be staged onto the Aqua Lustre filesystem via high-throughput Globus transfer. The 6-stage automation pipeline developed in this progress report will ingest the temporal pairs, using the optimal underwater models identified in Chapter~\ref{chap:progress} to execute large-scale primitive-space change detection.
 \end{itemize}

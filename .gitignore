@@ -49,6 +49,7 @@ Dataset/Custom_OSCD_Dataset/reference_reconstruction
 *.tar.gz
 *.tgz
 *.7z
+*.pptx
 
 # Deep monocular depth maps & intermediate rendered images
 **/depthmap/

@@ -1,5 +1,33 @@
 # Change Log
 
+## [2026-10-20] Assessment 2A Oral Presentation HTML Polish & PowerPoint (.pptx) Conversion
+- **Updated Presentation Files**:
+  - `2A/ENN595_2A_Presentation_Slides.html` (kept and updated with all requested changes)
+  - `2A/ENN595_2A_Presentation_Slides.pptx` (14-slide 16:9 widescreen PowerPoint slide deck generated and verified with `2A/pptx-official` tools)
+  - `2A/ENN595_2A_Presentation_Slides_and_Script.md` (synchronized speaker script and visual asset tables)
+- **Applied Requested Changes**:
+  1. **Removed Dr. Scarlett Raine**: Removed from the Title Slide (Slide 1), Phase 4 Future Work Roadmap (Slide 14), and speaker notes, as she is only part of the dataset privacy agreement.
+  2. **Removed All `Active:` Badge Boxes**: Removed all `.orbit-slot-badge` (`Active: ...`) overlays across the slides and the `[G]` filename popover.
+  3. **Reflected Static Mesh Renders (Not GIFs)**: Updated Slides 6 and 12 to explicitly state and display static high-visibility mesh images (`gifs/sugar_kwaj_mesh_bright.png` and `gifs/sugar_tokai_mesh_bright.png`) rather than mesh orbit GIFs.
+  4. **Updated CONOPS Diagram**: Copied `1B/QUT_Project_Proposal/Images/conops.jpg` to `2A/gifs/conops.jpg` and embedded it on Slide 7 ("Proposed Solution: End-to-End 6-Stage CONOPS").
+  5. **Fixed Slide 10 Status Column Wrapping Bug**: Added `display: inline-block; white-space: nowrap;` to `.pill-win`/`.pill-warn` and table cells on Slide 10 so `PASS (2/2)` and `PASS (1/1)` render cleanly on a single line in both HTML and PowerPoint.
+  6. **Wired All 8 Orbiting GIFs in `2A/gifs/`**: Integrated `orbit_3d_uir_kwaj.gif`, `orbit_3d_uir_tokai.gif`, `orbit_gaussiansplashing_kwaj.gif`, `orbit_oscd_heatmap_all_changes.gif`, `orbit_oscd_updated_scene.gif`, `orbit_seasplat_kwaj.gif`, `orbit_seasplat_tokai.gif`, and `orbit_watersplatting_kwaj.gif` across Slides 5, 11, 12, and 13.
+  7. **Added Public Repository Reference (`https://github.com/Heckus/UMP`)**: Added prominent callouts linking to `https://github.com/Heckus/UMP` before referencing code/scripts on Slides 7, 10, and 12.
+  8. **PowerPoint Conversion & QA Verification (`2A/pptx-official`)**: Built `2A/ENN595_2A_Presentation_Slides.pptx` with native shapes, tables, animated GIFs, static mesh PNGs, clickable hyperlinks, and full speaker notes; validated zero text overlaps/overflows via `2A/pptx-official/scripts/inventory.py` and visually inspected all 14 rendered slide images via LibreOffice + `2A/pptx-official/scripts/thumbnail.py`.
+
+## [2026-10-20] Assessment 2B Progress Report Editorial Polish: Em Dash Removal, Typography & Public Repo Link
+- **Report Editorial & Human-Readability Polish (`2B/ProgressReport/`)**:
+  - **Em Dash Removal**: Audited and replaced all em dashes (`—` and `---`) across all report chapters (`1_Introduction.tex`, `2_Literature Review.tex`, `4_Progress.tex`, `5_Management.tex`, `6_Conclusion.tex`, `Appendix.tex`) with natural, grammatically sound commas, colons, or parentheses.
+  - **Text Effects & File Representation Reconsidered**:
+    - Removed excessive inline bolding scattered across running paragraphs (e.g. in the Executive Summary, Introduction, Literature Review, Progress, Management, and Conclusion) so that bold is reserved for section headings, table headers, and list lead-ins.
+    - Replaced typewriter/monospace formatting (`\texttt`) used for standard file extensions (`.obj`, `.ply`, `.mtl`, `.png`) and internal file paths/flags (`--output_dir_tag`, `Custom_OSCD_Dataset`, `output/coarse_mesh/`) with human-readable academic prose (e.g. "OBJ surface meshes", "PLY point clouds", "Custom OSCD dataset").
+    - Standardized model names (SeaSplat, 3D-UIR, Gaussian Splashing, WaterSplatting, RUSplatting, UW-GS) in standard roman font rather than arbitrary italics.
+    - Completely overhauled Table 4.2 ("Visual Asset and Reconstruction Render Manifest") from a raw file path dump into a clean, publication-ready table detailing figures, image files, evaluation status, and model/scene targets, completely eliminating all overfull `\hbox` warnings.
+  - **Embedded Public Working Directory Link**:
+    - Embedded the project repository link (`https://github.com/Heckus/UMP.git`) at the conclusion of the Executive Summary (`0_1_Abstract.tex`).
+  - **Compilation Verification**:
+    - Compiled `ProgressReport.tex` with `pdflatex` (56 pages, exit code 0, 0 compilation errors, clean typography and layout).
+
 ## [2026-10-19] HPC Data Transfer Diagnostics & Host Endpoint Hardening
 - **Diagnostic of Local-to-HPC Transfer Failure (`eresdtn01.qut.edu.au`)**:
   - **Issue 1 (Syntax Error)**: The `rsync` command `rsync -avzP n11585382@eresdtn01.qut.edu.au:~/EUAPGM7346/UMP/ump_15_outputs.tar.gz` lacked a destination argument (e.g. `./`). Without a destination, `rsync` performs a remote directory listing rather than downloading files.

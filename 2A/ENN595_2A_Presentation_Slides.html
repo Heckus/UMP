@@ -341,17 +341,21 @@
     font-weight: 600;
   }
   .pill-win {
+    display: inline-block;
+    white-space: nowrap;
     background: #10b981;
     color: #fff;
-    padding: 0.12rem 0.48rem;
+    padding: 0.14rem 0.52rem;
     border-radius: 4px;
     font-size: 0.82em;
     font-weight: 700;
   }
   .pill-warn {
+    display: inline-block;
+    white-space: nowrap;
     background: #f59e0b;
     color: #fff;
-    padding: 0.12rem 0.48rem;
+    padding: 0.14rem 0.52rem;
     border-radius: 4px;
     font-size: 0.82em;
     font-weight: 700;
@@ -484,7 +488,7 @@
   <!-- ===================================================================== -->
   <!-- SLIDE 1: TITLE & RESEARCH QUESTION -->
   <!-- ===================================================================== -->
-  <div class="slide active" data-time="0:00 - 0:30 (30s)" data-notes="Good morning/afternoon everyone. My name is Joshua Hecke, and under the supervision of Professor Niko Sünderhauf and Dr. Scarlett Raine at the QUT Centre for Robotics, my project investigates Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models. Our core research question asks: How can we detect fine-scale physical and colour changes—such as coral growth, breakage, or bleaching—directly inside 3D Gaussian primitive space without being fooled by changing water turbidity and backscatter?">
+  <div class="slide active" data-time="0:00 - 0:30 (30s)" data-notes="Good morning/afternoon everyone. My name is Joshua Hecke, and under the supervision of Professor Niko Sünderhauf at the QUT Centre for Robotics, my project investigates Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models. Our core research question asks: How can we detect fine-scale physical and colour changes—such as coral growth, breakage, or bleaching—directly inside 3D Gaussian primitive space without being fooled by changing water turbidity and backscatter?">
     <div style="text-align:center; margin-top:1%;">
       <span class="slide-badge">ENN595-1 Assessment 2A • Project Summary Oral Presentation • QUT Centre for Robotics</span>
       <h1 style="font-family:'Poppins',sans-serif; font-size:clamp(1.9rem, 3.3vw, 3.1rem); color:#0f172a; line-height:1.2; max-width:86%; margin:0.6rem auto;">
@@ -518,7 +522,6 @@
     <div style="display:flex; justify-content:center; gap:3.5rem; font-family:'Poppins',sans-serif; font-weight:700; font-size:clamp(0.95rem, 1.3vw, 1.25rem); color:#1e293b; padding-bottom:0.3rem;">
       <span>Presenter: Joshua Hecke <small style="font-weight:500; color:#64748b;">(n11585382)</small></span>
       <span>Principal Supervisor: Prof. Niko Sünderhauf</span>
-      <span>Associate Supervisor: Dr. Scarlett Raine</span>
     </div>
   </div>
 
@@ -620,7 +623,6 @@
         <img src="gifs/concept_sugar_garden.gif" alt="3DGS Real-Time Radiance Field">
         <div class="media-footer">
           <span class="caption">Real-Time 3D Gaussian Splatting Radiance Field &amp; Explicit Primitive Geometry</span>
-          <span class="orbit-slot-badge live">Active: gifs/concept_sugar_garden.gif</span>
         </div>
       </div>
     </div>
@@ -666,7 +668,6 @@
         <img src="gifs/concept_oscd_paper.gif" alt="O-SCD Primitive Space Change Detection">
         <div class="media-footer">
           <span class="caption">Reference Scene vs. Inference Scene &rarr; Structural, Surface &amp; Full Change Maps</span>
-          <span class="orbit-slot-badge live">Active: gifs/concept_oscd_paper.gif</span>
         </div>
       </div>
     </div>
@@ -720,14 +721,14 @@
 
       <div class="media-box">
         <div class="tab-bar">
-          <button class="tab-btn active" onclick="switchMedia(this, 'slide5-img', 'gifs/seasplat_paper_diagram.png', 'gifs/seasplat_paper_diagram.png', true)">SeaSplat Water Subtraction (2025)</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide5-img', 'gifs/orbit_seasplat_kwaj.gif', '../2B/ProgressReport/Images/seasplat_kwaj_render.png', false)">Our SeaSplat Kwaj Render / Orbit</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide5-img', 'gifs/orbit_3d_uir_kwaj.gif', '../2B/ProgressReport/Images/3d_uir_kwaj_detail.png', false)">Our 3D-UIR Kwaj Render / Orbit</button>
+          <button class="tab-btn active" onclick="switchMedia(this, 'slide5-img', 'gifs/seasplat_paper_diagram.png', 'gifs/seasplat_paper_diagram.png', true)">SeaSplat Diagram (2025)</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide5-img', 'gifs/orbit_seasplat_kwaj.gif', 'gifs/orbit_seasplat_kwaj.gif', false)">SeaSplat Kwaj Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide5-img', 'gifs/orbit_3d_uir_kwaj.gif', 'gifs/orbit_3d_uir_kwaj.gif', false)">3D-UIR Kwaj Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide5-img', 'gifs/orbit_seasplat_tokai.gif', 'gifs/orbit_seasplat_tokai.gif', false)">SeaSplat Tokai Orbit</button>
         </div>
-        <img id="slide5-img" class="light-bg" src="gifs/seasplat_paper_diagram.png" data-orbit-gif="gifs/orbit_seasplat_kwaj.gif" data-fallback-src="gifs/seasplat_paper_diagram.png" alt="SeaSplat Underwater Restoration">
+        <img id="slide5-img" class="light-bg" src="gifs/seasplat_paper_diagram.png" alt="SeaSplat Underwater Restoration">
         <div class="media-footer">
           <span class="caption">Water Medium Subtracted &rarr; True Benthic Albedo <span class="math-var">J<sub>&lambda;</sub>(x)</span> &amp; Clean Geometry Restored</span>
-          <span class="orbit-slot-badge" id="slide5-img-badge">Drop-in Orbit Slot: gifs/orbit_seasplat_kwaj.gif</span>
         </div>
       </div>
     </div>
@@ -749,7 +750,7 @@
           <ul>
             <li><strong>Literature Motivation:</strong> Directly implements the future-work recommendation at the conclusion of <em>GS-Diff / O-SCD (2026)</em> to bind 3D Gaussians onto physical surfaces and mitigate Gaussian drift.</li>
             <li><strong>Signed Distance Field (<span class="code-pill">dn_consistency</span>) Prior:</strong> Aligns minimal Gaussian scale axes with surface normals, pulling ellipsoids flat onto true benthic geometry and <strong>pruning 85–92% of floating water-column artifacts</strong>.</li>
-            <li><strong>Supporting Deliverable for <span class="math-chip">mm &rarr; cm</span> Coral Metrology:</strong> Extracts a distinct, watertight 1,000,000-face Poisson 3D surface mesh (<span class="code-pill">.obj</span> + <span class="code-pill">.mtl</span> + <span class="code-pill">.png</span>) for every underwater 3DGS model to evaluate 3D reconstruction cleanliness in Blender and MeshLab.</li>
+            <li><strong>Supporting Deliverable for <span class="math-chip">mm &rarr; cm</span> Coral Metrology:</strong> Extracts a distinct, watertight 1,000,000-face Poisson 3D surface mesh (<span class="code-pill">.obj</span> + <span class="code-pill">.mtl</span> + <span class="code-pill">.png</span>) for every underwater 3DGS model to inspect 3D surface reconstruction quality via static mesh renders.</li>
           </ul>
         </div>
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.6rem;">
@@ -770,14 +771,13 @@
 
       <div class="media-box">
         <div class="tab-bar">
-          <button class="tab-btn active" onclick="switchMedia(this, 'slide6-img', 'gifs/orbit_sugar_mesh_kwaj.gif', 'gifs/sugar_kwaj_mesh_bright.png', true)">Our SuGaR Mesh: Kwajalein (1.0M Faces)</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide6-img', 'gifs/orbit_sugar_mesh_tokai.gif', 'gifs/sugar_tokai_mesh_bright.png', true)">Our SuGaR Mesh: Tokai Maru</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide6-img', 'gifs/concept_sugar_garden.gif', 'gifs/concept_sugar_garden.gif', false)">SuGaR Paper Concept GIF</button>
+          <button class="tab-btn active" onclick="switchMedia(this, 'slide6-img', 'gifs/sugar_kwaj_mesh_bright.png', 'gifs/sugar_kwaj_mesh_bright.png', true)">Kwajalein SuGaR Mesh (Static Image)</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide6-img', 'gifs/sugar_tokai_mesh_bright.png', 'gifs/sugar_tokai_mesh_bright.png', true)">Tokai Maru SuGaR Mesh (Static Image)</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide6-img', 'gifs/concept_sugar_garden.gif', 'gifs/concept_sugar_garden.gif', false)">SuGaR Paper Concept (2024)</button>
         </div>
-        <img id="slide6-img" class="light-bg" src="gifs/sugar_kwaj_mesh_bright.png" data-orbit-gif="gifs/orbit_sugar_mesh_kwaj.gif" data-fallback-src="gifs/sugar_kwaj_mesh_bright.png" alt="SuGaR Extracted Mesh on Kwajalein">
+        <img id="slide6-img" class="light-bg" src="gifs/sugar_kwaj_mesh_bright.png" alt="SuGaR Extracted Mesh Image on Kwajalein">
         <div class="media-footer">
-          <span class="caption">Stage 5 Watertight Poisson Mesh on Kwajalein (1.0M Faces, Water Floaters Pruned)</span>
-          <span class="orbit-slot-badge" id="slide6-img-badge">Drop-in Orbit Slot: gifs/orbit_sugar_mesh_kwaj.gif</span>
+          <span class="caption">Static Render Image of Stage 5 Watertight Poisson Mesh on Kwajalein (1.0M Faces, Floaters Pruned)</span>
         </div>
       </div>
     </div>
@@ -786,7 +786,7 @@
   <!-- ===================================================================== -->
   <!-- SLIDE 7: PROPOSED CONOPS & IMPLEMENTED 6-STAGE HPC PIPELINE -->
   <!-- ===================================================================== -->
-  <div class="slide" data-time="3:25 - 4:05 (40s)" data-notes="This CONOPS diagram shows how all these pieces unite. Multi-temporal surveys at Time 1 and Time 2 pass through COLMAP Structure-from-Motion, dense monocular depth estimation via Depth-Anything-V2, underwater 3DGS optical reconstruction, and SuGaR surface refinement, before entering primitive-space change detection to output separate colour-change, geometry-change, and full-change maps. Over the past semester, I engineered this conceptual pipeline into a fully automated, 6-stage bash and PBS batch orchestration suite running on the QUT Aqua supercomputer.">
+  <div class="slide" data-time="3:25 - 4:05 (40s)" data-notes="This CONOPS diagram shows how all these pieces unite. Multi-temporal surveys at Time 1 and Time 2 pass through COLMAP Structure-from-Motion, dense monocular depth estimation via Depth-Anything-V2, underwater 3DGS optical reconstruction, and SuGaR surface refinement, before entering primitive-space change detection to output separate colour-change, geometry-change, and full-change maps. All public scripts and automation code referenced across this presentation are openly available on GitHub at github.com/Heckus/UMP. Over the past semester, I engineered this conceptual pipeline into a fully automated, 6-stage bash and PBS batch orchestration suite running on the QUT Aqua supercomputer.">
     <div class="slide-header">
       <span class="slide-badge">Criterion 2 • System Architecture &amp; Turnkey HPC Orchestration</span>
       <h2 class="slide-title">Proposed CONOPS &amp; Implemented 6-Stage HPC Pipeline</h2>
@@ -801,9 +801,9 @@
       <div class="stage-card"><strong>Stage 6: Evaluate</strong>PSNR, SSIM, LPIPS &amp; 3D Heatmaps</div>
     </div>
 
-    <div class="two-col" style="grid-template-columns: 1.25fr 0.95fr;">
+    <div class="two-col" style="grid-template-columns: 1.28fr 0.92fr;">
       <div class="media-box">
-        <img class="light-bg" src="gifs/conops_pipeline_diagram.png" alt="CONOPS Pipeline Diagram">
+        <img class="light-bg" src="gifs/conops.jpg" alt="CONOPS for Temporal Coral Reef Monitoring using EcoRRAP Dataset">
         <div class="media-footer">
           <span class="caption">CONOPS for Temporal Coral Reef Monitoring: Dual-Survey Underwater 3DGS + SuGaR + GS-Diff</span>
         </div>
@@ -811,6 +811,10 @@
       <div class="col-stack">
         <div class="col-box" style="flex:1;">
           <h3>The 5-Phase Reproducible Lifecycle</h3>
+          <div style="background:#e0f2fe; border:1px solid #38bdf8; border-left:4px solid #0284c7; border-radius:6px; padding:0.45rem 0.7rem; margin-bottom:0.55rem; font-size:clamp(0.76rem, 0.92vw, 0.88rem);">
+            <strong>Public Code &amp; Scripts Repository:</strong><br>
+            All public pipeline scripts &amp; patches referenced below are hosted at <a href="https://github.com/Heckus/UMP" target="_blank" style="color:#0369a1; font-family:'JetBrains Mono',monospace; font-weight:700;">https://github.com/Heckus/UMP</a>
+          </div>
           <ul>
             <li><strong>1. Setup (<span class="code-pill">setup_env.sh</span> &amp; <span class="code-pill">verify_env.sh</span>):</strong> Provisions 11 isolated Conda envs, repairs Git submodules, &amp; runs deep CUDA probes.</li>
             <li><strong>2. Run (<span class="code-pill">run_pipeline.pbs</span>):</strong> Fault-tolerant 6-stage execution on QUT Aqua NVIDIA A100-40GB &amp; H100-80GB nodes.</li>
@@ -879,7 +883,6 @@
         <img src="gifs/submerged3d_4locations_20images.gif" alt="Submerged3D 4 Locations x 20 Images GIF">
         <div class="media-footer">
           <span class="caption">Animated 4-Location &times; 20-Image Submerged3D Suite</span>
-          <span class="orbit-slot-badge live">Active: gifs/submerged3d_4locations_20images.gif</span>
         </div>
       </div>
     </div>
@@ -981,6 +984,9 @@
     <div class="two-col">
       <div class="col-box">
         <h3>Key Technical Difficulties Diagnosed &amp; Solved</h3>
+        <div style="background:#e0f2fe; border:1px solid #38bdf8; border-left:4px solid #0284c7; border-radius:6px; padding:0.4rem 0.65rem; margin-bottom:0.5rem; font-size:clamp(0.75rem, 0.9vw, 0.85rem);">
+          <strong>Public Code Reference:</strong> Full source files &amp; patches available at <a href="https://github.com/Heckus/UMP" target="_blank" style="color:#0369a1; font-family:'JetBrains Mono',monospace; font-weight:700;">https://github.com/Heckus/UMP</a>
+        </div>
         <ul>
           <li><strong>COLMAP 4.x &amp; Linker Isolation (<span class="code-pill">colmap_wrapper.sh</span>):</strong> Scoped <span class="code-pill">libOpenImageIO.so.3.1</span> without leaking Qt5 ABI conflicts; auto-translated <span class="code-pill">--FeatureExtraction.use_gpu</span> flags.</li>
           <li><strong>Custom CUDA Rasterizer Repairs:</strong> Restored 4D AbsGS homodirectional gradients (<span class="code-pill">0.1.0+homodirectional</span>) for <span class="code-pill">3D-UIR</span>, 6-output underwater kernels for <span class="code-pill">RUSplatting</span>/<span class="code-pill">UW-GS</span>, and <span class="code-pill">diff-fastgs</span> for <span class="code-pill">O-SCD</span>.</li>
@@ -992,17 +998,17 @@
       <div class="col-stack">
         <table class="bench-table">
           <thead>
-            <tr><th>#</th><th>Architecture</th><th>Category</th><th>Scenes</th><th>Status</th><th>Avg Time</th><th>Peak VRAM</th></tr>
+            <tr><th>#</th><th>Architecture</th><th>Category</th><th>Scenes</th><th style="white-space:nowrap;">Status</th><th style="white-space:nowrap;">Avg Time</th><th style="white-space:nowrap;">Peak VRAM</th></tr>
           </thead>
           <tbody>
-            <tr class="highlight"><td>1–2</td><td><strong>3D-UIR</strong></td><td>Physics-Based</td><td>Kwaj, Tokai</td><td><span class="pill-win">PASS (2/2)</span></td><td>1h 15m</td><td>16.2 GB</td></tr>
-            <tr class="highlight"><td>3–4</td><td><strong>SeaSplat</strong></td><td>Physics-Based</td><td>Kwaj, Tokai</td><td><span class="pill-win">PASS (2/2)</span></td><td>1h 01m</td><td>14.8 GB</td></tr>
-            <tr><td>5–6</td><td><strong>Gaussian Splashing</strong></td><td>Restoration</td><td>Kwaj, Tokai</td><td><span class="pill-win">PASS (2/2)</span></td><td>3h 45m</td><td>22.4 GB</td></tr>
-            <tr><td>7–8</td><td><strong>WaterSplatting</strong></td><td>Restoration</td><td>Kwaj, Tokai</td><td><span class="pill-win">PASS (2/2)</span></td><td>43m</td><td>11.2 GB</td></tr>
-            <tr><td>9–10</td><td><strong>RUSplatting</strong></td><td>Supplementary</td><td>Kwaj, Tokai</td><td><span class="pill-win">PASS (2/2)</span></td><td>52m</td><td>13.5 GB</td></tr>
-            <tr><td>11–12</td><td><strong>UW-GS</strong></td><td>Supplementary</td><td>Kwaj, Tokai</td><td><span class="pill-win">PASS (2/2)</span></td><td>57m</td><td>12.9 GB</td></tr>
-            <tr><td>13–14</td><td><strong>SuGaR</strong></td><td>Surface Mesh</td><td>Kwaj, Tokai</td><td><span class="pill-win">PASS (2/2)</span></td><td>35m</td><td>18.5 GB</td></tr>
-            <tr class="highlight"><td>15</td><td><strong>O-SCD</strong></td><td>Change Det.</td><td>Custom_OSCD</td><td><span class="pill-win">PASS (1/1)</span></td><td>1h 04m</td><td>28.6 GB</td></tr>
+            <tr class="highlight"><td style="white-space:nowrap;">1–2</td><td><strong>3D-UIR</strong></td><td style="white-space:nowrap;">Physics-Based</td><td style="white-space:nowrap;">Kwaj, Tokai</td><td style="white-space:nowrap;"><span class="pill-win">PASS (2/2)</span></td><td style="white-space:nowrap;">1h 15m</td><td style="white-space:nowrap;">16.2 GB</td></tr>
+            <tr class="highlight"><td style="white-space:nowrap;">3–4</td><td><strong>SeaSplat</strong></td><td style="white-space:nowrap;">Physics-Based</td><td style="white-space:nowrap;">Kwaj, Tokai</td><td style="white-space:nowrap;"><span class="pill-win">PASS (2/2)</span></td><td style="white-space:nowrap;">1h 01m</td><td style="white-space:nowrap;">14.8 GB</td></tr>
+            <tr><td style="white-space:nowrap;">5–6</td><td><strong>Gaussian Splashing</strong></td><td>Restoration</td><td style="white-space:nowrap;">Kwaj, Tokai</td><td style="white-space:nowrap;"><span class="pill-win">PASS (2/2)</span></td><td style="white-space:nowrap;">3h 45m</td><td style="white-space:nowrap;">22.4 GB</td></tr>
+            <tr><td style="white-space:nowrap;">7–8</td><td><strong>WaterSplatting</strong></td><td>Restoration</td><td style="white-space:nowrap;">Kwaj, Tokai</td><td style="white-space:nowrap;"><span class="pill-win">PASS (2/2)</span></td><td style="white-space:nowrap;">43m</td><td style="white-space:nowrap;">11.2 GB</td></tr>
+            <tr><td style="white-space:nowrap;">9–10</td><td><strong>RUSplatting</strong></td><td>Supplementary</td><td style="white-space:nowrap;">Kwaj, Tokai</td><td style="white-space:nowrap;"><span class="pill-win">PASS (2/2)</span></td><td style="white-space:nowrap;">52m</td><td style="white-space:nowrap;">13.5 GB</td></tr>
+            <tr><td style="white-space:nowrap;">11–12</td><td><strong>UW-GS</strong></td><td>Supplementary</td><td style="white-space:nowrap;">Kwaj, Tokai</td><td style="white-space:nowrap;"><span class="pill-win">PASS (2/2)</span></td><td style="white-space:nowrap;">57m</td><td style="white-space:nowrap;">12.9 GB</td></tr>
+            <tr><td style="white-space:nowrap;">13–14</td><td><strong>SuGaR</strong></td><td style="white-space:nowrap;">Surface Mesh</td><td style="white-space:nowrap;">Kwaj, Tokai</td><td style="white-space:nowrap;"><span class="pill-win">PASS (2/2)</span></td><td style="white-space:nowrap;">35m</td><td style="white-space:nowrap;">18.5 GB</td></tr>
+            <tr class="highlight"><td style="white-space:nowrap;">15</td><td><strong>O-SCD</strong></td><td style="white-space:nowrap;">Change Det.</td><td style="white-space:nowrap;">Custom_OSCD</td><td style="white-space:nowrap;"><span class="pill-win">PASS (1/1)</span></td><td style="white-space:nowrap;">1h 04m</td><td style="white-space:nowrap;">28.6 GB</td></tr>
           </tbody>
         </table>
       </div>
@@ -1012,7 +1018,7 @@
   <!-- ===================================================================== -->
   <!-- SLIDE 11: PROGRESS — UNDERWATER 3DGS BENCHMARK RESULTS -->
   <!-- ===================================================================== -->
-  <div class="slide" data-time="6:10 - 7:00 (50s)" data-notes="Here are the quantitative and visual results across all six underwater 3DGS architectures on Kwajalein and Tokai Maru. As you can see in the animated comparison and metrics table, Gaussian Splashing achieved the highest raw PSNR at 27.93 dB on Kwajalein, but its structural similarity dropped to 0.6142 in the heavy turbidity of Tokai Maru due to volumetric smoothing. WaterSplatting was the fastest model at 43 minutes with the best perceptual LPIPS score of 0.1714. However, for our change detection goal, 3D-UIR and SeaSplat are the clear winners: 3D-UIR achieved the highest structural similarity on both datasets—0.8739 on Kwajalein and 0.7085 on Tokai—preserving sharp geometric boundaries essential for millimeter-to-centimeter change tracking.">
+  <div class="slide" data-time="6:10 - 7:00 (50s)" data-notes="Here are the quantitative and visual results across all six underwater 3DGS architectures on Kwajalein and Tokai Maru. As you can see in the animated orbit renders and metrics table, Gaussian Splashing achieved the highest raw PSNR at 27.93 dB on Kwajalein, but its structural similarity dropped to 0.6142 in the heavy turbidity of Tokai Maru due to volumetric smoothing. WaterSplatting was the fastest model at 43 minutes with the best perceptual LPIPS score of 0.1714. However, for our change detection goal, 3D-UIR and SeaSplat are the clear winners: 3D-UIR achieved the highest structural similarity on both datasets—0.8739 on Kwajalein and 0.7085 on Tokai—preserving sharp geometric boundaries essential for millimeter-to-centimeter change tracking.">
     <div class="slide-header">
       <span class="slide-badge">Criterion 2 &amp; 3 • Quantitative &amp; Visual Underwater 3DGS Evaluation</span>
       <h2 class="slide-title">Progress: Underwater 3DGS Benchmark Results (Kwaj &amp; Tokai)</h2>
@@ -1088,16 +1094,17 @@
 
       <div class="media-box">
         <div class="tab-bar">
-          <button class="tab-btn active" onclick="switchMedia(this, 'slide11-img', 'gifs/underwater_3dgs_kwaj_comparison.gif', 'gifs/underwater_3dgs_kwaj_comparison.gif', false)">All Models Comparison GIF</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_3d_uir_kwaj.gif', '../2B/ProgressReport/Images/3d_uir_kwaj_detail.png', false)">3D-UIR Orbit</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_seasplat_kwaj.gif', '../2B/ProgressReport/Images/seasplat_kwaj_render.png', false)">SeaSplat Orbit</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_watersplatting_kwaj.gif', '../2B/ProgressReport/Images/watersplatting_kwaj.png', false)">WaterSplatting Orbit</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_gaussiansplashing_kwaj.gif', '../2B/ProgressReport/Images/gaussian_splashing_kwaj.png', false)">Splashing Orbit</button>
+          <button class="tab-btn active" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_3d_uir_kwaj.gif', 'gifs/orbit_3d_uir_kwaj.gif', false)">3D-UIR Kwaj Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_seasplat_kwaj.gif', 'gifs/orbit_seasplat_kwaj.gif', false)">SeaSplat Kwaj Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_watersplatting_kwaj.gif', 'gifs/orbit_watersplatting_kwaj.gif', false)">WaterSplatting Kwaj Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_gaussiansplashing_kwaj.gif', 'gifs/orbit_gaussiansplashing_kwaj.gif', false)">Splashing Kwaj Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_3d_uir_tokai.gif', 'gifs/orbit_3d_uir_tokai.gif', false)">3D-UIR Tokai Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/orbit_seasplat_tokai.gif', 'gifs/orbit_seasplat_tokai.gif', false)">SeaSplat Tokai Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide11-img', 'gifs/underwater_3dgs_kwaj_comparison.gif', 'gifs/underwater_3dgs_kwaj_comparison.gif', false)">All-Model Summary</button>
         </div>
-        <img id="slide11-img" src="gifs/underwater_3dgs_kwaj_comparison.gif" data-orbit-gif="gifs/orbit_3d_uir_kwaj.gif" data-fallback-src="gifs/underwater_3dgs_kwaj_comparison.gif" alt="Kwajalein 3DGS Model Comparison GIF">
+        <img id="slide11-img" src="gifs/orbit_3d_uir_kwaj.gif" alt="Kwajalein & Tokai 3DGS Orbit GIF">
         <div class="media-footer">
-          <span class="caption">Kwajalein Shipwreck: Multi-Model 3DGS Renders &amp; Orbiting Splat Switcher</span>
-          <span class="orbit-slot-badge live" id="slide11-img-badge">Active: gifs/underwater_3dgs_kwaj_comparison.gif</span>
+          <span class="caption">Kwajalein &amp; Tokai Maru Shipwrecks: Interactive 3DGS Orbiting Splat Switcher</span>
         </div>
       </div>
     </div>
@@ -1106,7 +1113,7 @@
   <!-- ===================================================================== -->
   <!-- SLIDE 12: PROGRESS — PER-MODEL SUGAR 3D MESHES (--output_dir_tag) -->
   <!-- ===================================================================== -->
-  <div class="slide" data-time="7:00 - 7:30 (30s)" data-notes="In Stage 5, every trained underwater model is passed into SuGaR to bind Gaussians to physical surfaces and extract a 1-million-face watertight Poisson mesh. During Blender inspection, we discovered a major bug in vanilla SuGaR: it hardcoded cache directories by scene name alone, causing subsequent models to reuse the first model's mesh. By engineering per-model namespace isolation via --output_dir_tag, we now generate and review distinct textured .obj meshes for every underwater method—pruning up to 92% of water-column floaters.">
+  <div class="slide" data-time="7:00 - 7:30 (30s)" data-notes="In Stage 5, every trained underwater model is passed into SuGaR to bind Gaussians to physical surfaces and extract a 1-million-face watertight Poisson mesh. During Blender inspection, we discovered a major bug in vanilla SuGaR: it hardcoded cache directories by scene name alone, causing subsequent models to reuse the first model's mesh. By engineering per-model namespace isolation via --output_dir_tag—available in our public GitHub repository—we now generate and review distinct textured .obj meshes for every underwater method, shown here in our static high-resolution mesh renders on Kwajalein and Tokai Maru, pruning up to 92% of water-column floaters.">
     <div class="slide-header">
       <span class="slide-badge">Criterion 2 • Creative Engineering Solution for Fine-Scale (mm to cm) Geometry</span>
       <h2 class="slide-title">Progress: Per-Model SuGaR 3D Meshes (<span class="code-pill">--output_dir_tag</span>)</h2>
@@ -1116,6 +1123,9 @@
       <div class="col-stack">
         <div class="col-box" style="flex:1;">
           <h3>Discovery &amp; Resolution of the SuGaR Cache Collision Bug</h3>
+          <div style="background:#e0f2fe; border:1px solid #38bdf8; border-left:4px solid #0284c7; border-radius:6px; padding:0.4rem 0.65rem; margin-bottom:0.5rem; font-size:clamp(0.75rem, 0.9vw, 0.85rem);">
+            <strong>Public Code Reference:</strong> Full Stage 5 mesh scripts &amp; fixes hosted at <a href="https://github.com/Heckus/UMP" target="_blank" style="color:#0369a1; font-family:'JetBrains Mono',monospace; font-weight:700;">https://github.com/Heckus/UMP</a>
+          </div>
           <ul>
             <li><strong>Root Cause Identified During Blender Inspection:</strong> Vanilla <span class="code-pill">SuGaR-main</span> hardcoded output paths to <span class="code-pill">output/coarse_mesh/&lt;scene&gt;/</span> without namespacing by the upstream 3DGS model, and immediately skipped training if <span class="code-pill">15000.pt</span> existed—causing all 7 models on the same scene to overwrite and share an identical <span class="code-pill">.obj</span> mesh!</li>
             <li><strong>Our Code-Level Fix (<span class="code-pill">--output_dir_tag &lt;model&gt;/&lt;scene&gt;</span>):</strong>
@@ -1124,7 +1134,7 @@
                 <li>Also patched SH degree auto-inference (<span class="code-pill">sh_degree = 0</span> vs <span class="code-pill">3</span>) so both <span class="code-pill">SeaSplat</span> and standard 3DGS checkpoints load seamlessly.</li>
               </ul>
             </li>
-            <li><strong>Impact for <span class="math-chip">mm &rarr; cm</span> Coral Change Detection:</strong> Prunes <strong>85–92% of water-column floaters</strong> and produces distinct 1.0M-face UV-textured <span class="code-pill">.obj</span> models for comparative metrology in Blender/MeshLab.</li>
+            <li><strong>Impact for <span class="math-chip">mm &rarr; cm</span> Coral Change Detection:</strong> Prunes <strong>85–92% of water-column floaters</strong> and produces distinct 1.0M-face UV-textured <span class="code-pill">.obj</span> models inspected via static 3D mesh renders in Blender/MeshLab.</li>
           </ul>
         </div>
 
@@ -1137,15 +1147,12 @@
 
       <div class="media-box">
         <div class="tab-bar">
-          <button class="tab-btn active" onclick="switchMedia(this, 'slide12-img', 'gifs/underwater_3dgs_tokai_comparison.gif', 'gifs/underwater_3dgs_tokai_comparison.gif', false)">Tokai Maru Benchmark &amp; Mesh GIF</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide12-img', 'gifs/orbit_sugar_mesh_kwaj.gif', 'gifs/sugar_kwaj_mesh_bright.png', true)">Kwaj SuGaR Mesh (.obj)</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide12-img', 'gifs/orbit_sugar_mesh_tokai.gif', 'gifs/sugar_tokai_mesh_bright.png', true)">Tokai SuGaR Mesh (.obj)</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide12-img', 'gifs/orbit_3d_uir_tokai.gif', '../2B/ProgressReport/Images/3d_uir_tokai_detail.png', false)">3D-UIR Tokai Orbit</button>
+          <button class="tab-btn active" onclick="switchMedia(this, 'slide12-img', 'gifs/sugar_kwaj_mesh_bright.png', 'gifs/sugar_kwaj_mesh_bright.png', true)">Kwajalein SuGaR Mesh (Static Image)</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide12-img', 'gifs/sugar_tokai_mesh_bright.png', 'gifs/sugar_tokai_mesh_bright.png', true)">Tokai Maru SuGaR Mesh (Static Image)</button>
         </div>
-        <img id="slide12-img" src="gifs/underwater_3dgs_tokai_comparison.gif" data-orbit-gif="gifs/orbit_sugar_mesh_tokai.gif" data-fallback-src="gifs/underwater_3dgs_tokai_comparison.gif" alt="Tokai Maru Extreme Turbidity & SuGaR Mesh GIF">
+        <img id="slide12-img" class="light-bg" src="gifs/sugar_kwaj_mesh_bright.png" alt="Static Render Image of SuGaR 1.0M-Face Mesh">
         <div class="media-footer">
-          <span class="caption">Tokai Maru (Extreme Blue Attenuation) Reconstructions &amp; Floater-Pruned SuGaR Meshes</span>
-          <span class="orbit-slot-badge live" id="slide12-img-badge">Active: gifs/underwater_3dgs_tokai_comparison.gif</span>
+          <span class="caption">Static Render Images of Floater-Pruned SuGaR 1.0M-Face Poisson Meshes (.obj) on Kwajalein &amp; Tokai Maru</span>
         </div>
       </div>
     </div>
@@ -1154,7 +1161,7 @@
   <!-- ===================================================================== -->
   <!-- SLIDE 13: PROGRESS — PRIMITIVE-SPACE O-SCD RESULTS & 3D HEATMAPS -->
   <!-- ===================================================================== -->
-  <div class="slide" data-time="7:30 - 8:05 (35s)" data-notes="Finally, here is our primary primitive-space change detection engine—O-SCD—running end-to-end on our dual-state dataset. On the left, across 122 camera viewpoints, the model accurately segments added, removed, and rearranged objects without false positives from camera trajectory shifts. On the right, we synthesized direct 3D primitive-space thermal heatmaps—including a bidirectional 3D splat that retains the volumetric thermal ghost of the removed soda can from Time 0—while the updated 3D scene achieves 27.08 dB PSNR and 0.8315 SSIM.">
+  <div class="slide" data-time="7:30 - 8:05 (35s)" data-notes="Finally, here is our primary primitive-space change detection engine—O-SCD—running end-to-end on our dual-state dataset. On the left, across 122 camera viewpoints, the model accurately segments added, removed, and rearranged objects without false positives from camera trajectory shifts. On the right, we synthesized direct 3D primitive-space thermal heatmaps—including an orbiting 3D splat that retains the volumetric thermal ghost of the removed soda can from Time 0—while the updated 3D scene achieves 27.08 dB PSNR and 0.8315 SSIM.">
     <div class="slide-header">
       <span class="slide-badge">Criterion 2 &amp; 3 • Primary Research Goal Validated (Attempt 10 Milestone)</span>
       <h2 class="slide-title">Progress: Primitive-Space Change Detection (O-SCD) &amp; 3D Heatmaps</h2>
@@ -1191,21 +1198,18 @@
         <img id="slide13-left" src="gifs/oscd_4panel_comparison.gif" alt="O-SCD 4-Panel Multi-View Change Detection GIF">
         <div class="media-footer">
           <span class="caption">[1. Reference <span class="math-var">T<sub>0</sub></span>] &nbsp;|&nbsp; [2. Query <span class="math-var">T<sub>1</sub></span>] &nbsp;|&nbsp; [3. Thermal Heatmap] &nbsp;|&nbsp; [4. Binary Mask]</span>
-          <span class="orbit-slot-badge live" id="slide13-left-badge">Active: gifs/oscd_4panel_comparison.gif</span>
         </div>
       </div>
 
       <div class="media-box">
         <div class="tab-bar">
-          <button class="tab-btn active" onclick="switchMedia(this, 'slide13-right', 'gifs/oscd_3d_heatmap_toggle.gif', 'gifs/oscd_3d_heatmap_toggle.gif', false)">4-State 3D Cycle GIF</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide13-right', 'gifs/orbit_oscd_heatmap_all_changes.gif', '../2B/ProgressReport/Images/oscd_3d_heatmap_all_changes.png', false)">All-Changes 3D Orbit (+Can Ghost)</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide13-right', 'gifs/orbit_oscd_heatmap_turbo.gif', '../2B/ProgressReport/Images/oscd_3d_heatmap_turbo.png', false)">Turbo 3D Orbit</button>
-          <button class="tab-btn" onclick="switchMedia(this, 'slide13-right', 'gifs/orbit_oscd_updated_scene.gif', '../2B/ProgressReport/Images/oscd_updated_scene_render.png', false)">Updated Splat Orbit</button>
+          <button class="tab-btn active" onclick="switchMedia(this, 'slide13-right', 'gifs/orbit_oscd_heatmap_all_changes.gif', 'gifs/orbit_oscd_heatmap_all_changes.gif', false)">All-Changes 3D Orbit (+Can Ghost)</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide13-right', 'gifs/orbit_oscd_updated_scene.gif', 'gifs/orbit_oscd_updated_scene.gif', false)">Updated Scene 3DGS Orbit</button>
+          <button class="tab-btn" onclick="switchMedia(this, 'slide13-right', 'gifs/oscd_3d_heatmap_toggle.gif', 'gifs/oscd_3d_heatmap_toggle.gif', false)">4-State 3D Cycle GIF</button>
         </div>
-        <img id="slide13-right" src="gifs/oscd_3d_heatmap_toggle.gif" data-orbit-gif="gifs/orbit_oscd_heatmap_all_changes.gif" data-fallback-src="gifs/oscd_3d_heatmap_toggle.gif" alt="O-SCD 3D Primitive Heatmap & Removed Object Ghost GIF">
+        <img id="slide13-right" src="gifs/orbit_oscd_heatmap_all_changes.gif" alt="O-SCD 3D Primitive Heatmap & Removed Object Ghost Orbit GIF">
         <div class="media-footer">
           <span class="caption">Direct 3D Primitive Heatmaps &amp; Spliced Volumetric "Ghost" of Removed Red Soda Can</span>
-          <span class="orbit-slot-badge live" id="slide13-right-badge">Active: gifs/oscd_3d_heatmap_toggle.gif</span>
         </div>
       </div>
     </div>
@@ -1238,7 +1242,7 @@
       <div class="col-box" style="border-top-color:#10b981;">
         <h3>Phase 4: Jan–Feb 2027 <span class="code-pill">Planned</span></h3>
         <ul>
-          <li><strong><span class="math-chip">mm &rarr; cm</span> Coral Metrology:</strong> Quantify branching skeletal accretion (<span class="math-chip">cm<sup>3</sup></span>), storm breakage, and bleaching shifts with Dr. Scarlett Raine &amp; AIMS.</li>
+          <li><strong><span class="math-chip">mm &rarr; cm</span> Coral Metrology:</strong> Quantify branching skeletal accretion (<span class="math-chip">cm<sup>3</sup></span>), storm breakage, and bleaching shifts on the AIMS EcoRRAP dataset.</li>
           <li><strong>Final Thesis &amp; Handover:</strong> Deliver Master's thesis, conference paper, and QCR open benchmark suite.</li>
         </ul>
       </div>
@@ -1290,7 +1294,6 @@
     <button onclick="nextSlide()">Next &#8594;</button>
     <!-- Declarative Invoker Commands for Popovers (modern-web-guidance: declarative-dialog-popover-control) -->
     <button commandfor="notes-popover" command="toggle-popover">[S] Speaker Notes</button>
-    <button commandfor="gif-guide-popover" command="toggle-popover">[G] Orbiting GIF Filenames</button>
     <button onclick="toggleTimer()">Start/Pause Timer</button>
   </div>
 </div>
@@ -1302,29 +1305,6 @@
     <button commandfor="notes-popover" command="hide-popover" style="background:#334155;color:#fff;border:none;padding:0.2rem 0.6rem;border-radius:4px;cursor:pointer;">Close [Esc]</button>
   </div>
   <div id="notes-content"></div>
-</div>
-
-<!-- Declarative Popover 2: Orbiting GIF Naming Guide -->
-<div id="gif-guide-popover" class="overlay-popover" popover>
-  <div class="notes-meta">
-    <span>Drop-In Panning / Orbiting GIF Naming Guide (Save in 2A/gifs/)</span>
-    <button commandfor="gif-guide-popover" command="hide-popover" style="background:#334155;color:#fff;border:none;padding:0.2rem 0.6rem;border-radius:4px;cursor:pointer;">Close [Esc]</button>
-  </div>
-  <div style="font-size:0.84rem; line-height:1.45;">
-    <p style="margin-bottom:0.5rem;">Save your screen-recorded panning/orbiting GIFs in <code>2A/gifs/</code> with these exact filenames—this deck auto-detects them on load and when clicking model tabs:</p>
-    <ul style="padding-left:1.2rem; display:grid; grid-template-columns:1fr 1fr; gap:0.3rem 1.5rem;">
-      <li><code>2A/gifs/orbit_3d_uir_kwaj.gif</code> (Slide 5 &amp; 11 — 3D-UIR Kwajalein Splat)</li>
-      <li><code>2A/gifs/orbit_seasplat_kwaj.gif</code> (Slide 5 &amp; 11 — SeaSplat Kwajalein Splat)</li>
-      <li><code>2A/gifs/orbit_watersplatting_kwaj.gif</code> (Slide 11 — WaterSplatting Kwajalein Splat)</li>
-      <li><code>2A/gifs/orbit_gaussiansplashing_kwaj.gif</code> (Slide 11 — Gaussian Splashing Kwaj Splat)</li>
-      <li><code>2A/gifs/orbit_sugar_mesh_kwaj.gif</code> (Slide 6 &amp; 12 — SuGaR Kwajalein .obj Mesh)</li>
-      <li><code>2A/gifs/orbit_sugar_mesh_tokai.gif</code> (Slide 6 &amp; 12 — SuGaR Tokai .obj Mesh)</li>
-      <li><code>2A/gifs/orbit_3d_uir_tokai.gif</code> (Slide 12 — 3D-UIR Tokai Maru Splat)</li>
-      <li><code>2A/gifs/orbit_oscd_heatmap_all_changes.gif</code> (Slide 13 — O-SCD All-Changes 3D Heatmap)</li>
-      <li><code>2A/gifs/orbit_oscd_heatmap_turbo.gif</code> (Slide 13 — O-SCD Turbo 3D Heatmap)</li>
-      <li><code>2A/gifs/orbit_oscd_updated_scene.gif</code> (Slide 13 — O-SCD Updated T1 3DGS Splat)</li>
-    </ul>
-  </div>
 </div>
 
 <!-- Feature-detected Fallbacks for Invoker Commands & Popover (modern-web-guidance) -->
@@ -1368,71 +1348,21 @@
     }
   }
 
-  // Smart Switcher: Attempts to load preferredSrc (e.g., user's recorded orbit_*.gif).
-  // If that file doesn't exist yet on disk, cleanly displays fallbackSrc and updates badge!
   function switchMedia(btn, imgId, preferredSrc, fallbackSrc, isLightBg) {
     const bar = btn.parentElement;
     bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
     const img = document.getElementById(imgId);
-    const badge = document.getElementById(imgId + '-badge');
     img.classList.toggle('light-bg', !!isLightBg);
-
-    if (preferredSrc === fallbackSrc) {
-      img.src = preferredSrc;
-      if (badge) {
-        badge.textContent = `Active: ${preferredSrc}`;
-        badge.classList.add('live');
-      }
-      return;
-    }
-
-    const probe = new Image();
-    probe.onload = () => {
-      img.src = preferredSrc;
-      if (badge) {
-        badge.textContent = `Live Orbit GIF: ${preferredSrc}`;
-        badge.classList.add('live');
-      }
-    };
-    probe.onerror = () => {
-      img.src = fallbackSrc;
-      if (badge) {
-        badge.textContent = `Fallback Render (Drop in: ${preferredSrc})`;
-        badge.classList.remove('live');
-      }
-    };
-    probe.src = preferredSrc;
+    img.src = preferredSrc || fallbackSrc;
   }
-
-  // On initial load, check if any default data-orbit-gif files have been dropped into 2A/gifs/
-  window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('img[data-orbit-gif]').forEach(img => {
-      const orbitPath = img.getAttribute('data-orbit-gif');
-      const badge = document.getElementById(img.id + '-badge');
-      const probe = new Image();
-      probe.onload = () => {
-        img.src = orbitPath;
-        if (badge) {
-          badge.textContent = `Live Orbit GIF: ${orbitPath}`;
-          badge.classList.add('live');
-        }
-      };
-      probe.onerror = () => {};
-      probe.src = orbitPath;
-    });
-  });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
     if (e.key === 'ArrowLeft') prevSlide();
     if (e.key.toLowerCase() === 's') {
       const pop = document.getElementById('notes-popover');
-      if (pop.togglePopover) pop.togglePopover();
-    }
-    if (e.key.toLowerCase() === 'g') {
-      const pop = document.getElementById('gif-guide-popover');
       if (pop.togglePopover) pop.togglePopover();
     }
   });
