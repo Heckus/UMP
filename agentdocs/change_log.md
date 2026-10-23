@@ -1,5 +1,35 @@
 # Change Log
 
+## [2026-10-23] Assessment 2A Supervisor Cleanup: Exclusive Attribution to Prof. Niko Sünderhauf
+- **Removed Prof. Will Browne & Prof. Matthew Dunbabin**:
+  - Audited all presentation files and confirmed they have no connection to this project.
+  - Removed all occurrences from the header and Slide 1 opening script in `2A/script.md`.
+  - Removed all occurrences from Slide 1 speaker script in `2A/ENN595_2A_Presentation_Slides_and_Script.md`.
+  - Rebuilt `2A/ENN595_2A_Presentation_Slides.pptx` with updated Slide 1 Presenter View speaker notes so that **only Professor Niko Sünderhauf** is attributed as the Principal Supervisor.
+
+## [2026-10-23] Assessment 2A Oral Presentation 8-Minute Print-Ready Master Script & Presenter Synchronization
+- **Created Dedicated Print-Ready Master Script (`2A/script.md`)**:
+  - Engineered a print-ready, lectern-friendly presenter's script timed for an exact **8-minute presentation** (~1,065 total spoken words at a comfortable, authoritative speaking pace of 133–137 wpm, timed to finish in 7m 45s with a built-in 15s buffer).
+  - Designed print layout with CSS `@media print` rules enforcing clean per-slide cards, clean page breaks (`page-break-after: always;`), large readable typography, and bold operative keywords for effortless lectern glancing.
+  - Included delivery directions (`[GESTURE]`, `[POINT TO SCREEN]`, `[PAUSE]`, `[PACE]`), pronunciation guides for technical terms (*Jaffe-McGlamery*, *SuGaR*, *Poisson*, *anisotropic*, *rugosity*, *Galappaththige*), transition bridges between every slide, and rubric focus callouts (Criteria 1, 2, and 3).
+  - Added a front-matter 1-page **Presenter's 8-Minute Pacing Dashboard** for instant clock checkpoints during the talk.
+  - Added a back-matter **2-Minute Q&A Defense Battle Card** with PREP-structured answers (Point, Reason, Evidence, Point) for the top 5 anticipated examiner questions (sparse Submerged3D validation, water turbidity decoupling, SuGaR surface mesh metrology, 3D-UIR SSIM vs. PSNR trade-offs, and AIMS EcoRRAP DTA status).
+- **Synchronized Presentation Materials**:
+  - Rebuilt `2A/ENN595_2A_Presentation_Slides.pptx` with the updated speaker notes matching `2A/script.md` slide-for-slide in the PowerPoint notes pane for live presenter view.
+  - Updated `2A/ENN595_2A_Presentation_Slides_and_Script.md` timing map and script sections to reflect the synchronized 8-minute timeline.
+
+## [2026-10-23] Assessment 2B Progress Report Refinements: Removal of Table 4.2 & Architecture Diagram Overlap Fix
+- **Table 4.2 & Render Manifest Removal (`2B/ProgressReport/Chapters/4_Progress.tex`)**:
+  - Removed Section 4.7 ("Visual Reconstruction Portfolio and Render Specification Summary") and Table 4.2 (`tab:render_manifest`) listing reconstructed visual assets, eliminating redundant file and render path tables from the report.
+  - Updated Section 4.1 introduction lead-in reference from Section 4.7 to Section 4.8 (`sec:progress_summary`).
+  - Verified no orphaned cross-references or lot entries remain across the document.
+- **Figure 6.1 (Page 35) TikZ Layout Correction (`2B/ProgressReport/Chapters/6_Conclusion.tex`)**:
+  - Resolved node collision and line overlap in `Figure~\ref{fig:ecorrap_architecture}` ("Proposed End-to-End EcoRRAP Dual-Survey Architecture"), where the right-hand side change detection module overlapped the left-hand SuGaR mesh regularization block.
+  - Dynamically re-anchored the temporal change detection module (`oscd`) cleanly below `sugar.south` with explicit vertical offset spacing.
+  - Restructured connector routing between survey epochs ($T_0$ and $T_1$) using a horizontal intermediate bus line into offset northern input ports of `oscd`, ensuring all labels and connector lines are cleanly separated.
+- **Document Recompilation & Verification**:
+  - Successfully recompiled `2B/ProgressReport/ProgressReport.tex` via `makeglossaries` and `pdflatex` (55 pages, zero compilation errors, synchronized TOC, LOT, and LOF).
+
 ## [2026-10-20] Assessment 2A Oral Presentation HTML Polish & PowerPoint (.pptx) Conversion
 - **Updated Presentation Files**:
   - `2A/ENN595_2A_Presentation_Slides.html` (kept and updated with all requested changes)

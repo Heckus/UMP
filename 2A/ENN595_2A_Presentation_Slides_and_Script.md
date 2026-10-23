@@ -15,17 +15,17 @@
 | **1** | Title & Research Question | **Updated** (Added RQ) | Criterion 1 (Context & RQ) | Title slide hexagon theme | `0:30` | `0:30` |
 | **2** | Ecological Motivation: Why 3D Coral Monitoring? | **NEW** (Sets Context) | Criterion 1 (Context Analysis) | 2D Planar vs. 3D Volumetric Reef Comparison | `0:35` | `1:05` |
 | **3** | Understanding the Concept: 3DGS (2023) | **Retained & Refined** (Slide 2) | Criterion 1 (Foundational Tech) | Original 3DGS Bicycle GIF + Kerbl et al. (2023) | `0:30` | `1:35` |
-| **4** | Understanding the Concept: Primitive-Space Change Detection (2026) | **Retained & Refined** (Slide 3) | Criterion 1 & 2 (Core Theory) | `2A/gifs/concept_oscd_paper.gif` (Galappaththige et al., 2026) | `0:40` | `2:15` |
-| **5** | Extending the Concept: Underwater 3DGS (2025) | **Retained & Refined** (Slide 4) | Criterion 1 & 2 (Marine Physics) | SeaSplat / WaterSplatting backscatter subtraction | `0:35` | `2:50` |
-| **6** | Extending the Concept: SuGaR Surface Alignment (2024) | **Retained & Refined** (Slide 5) | Criterion 2 (Creative Solution) | `2A/gifs/concept_sugar_garden.gif` (Guédon & Lepetit, 2024) | `0:35` | `3:25` |
-| **7** | Proposed End-to-End Architecture & CONOPS | **Retained & Refined** (Slide 6) | Criterion 2 (Methodology Alignment) | CONOPS Pipeline Diagram + 6-Stage HPC Workflow | `0:40` | `4:05` |
-| **8** | **Why the Submerged3D Test Dataset (`20 Images × 4 Locations`)** | **FIXED** (Replaced duplicate EcoRRAP text) | Criterion 2 (Technical Validation & Difficulties) | **`2A/gifs/submerged3d_4locations_20images.gif`** | `0:50` | `4:55` |
-| **9** | Why the AIMS EcoRRAP Dataset (1.35 TB Target) | **Retained & Polished** (Slide 8) | Criterion 1 & 2 (Ecological Horizon) | EcoRRAP 3-Column Analysis & Legal DTA Buffer Strategy | `0:35` | `5:30` |
-| **10** | Project Progress: QUT Aqua HPC & 15/15 Milestone | **NEW** (Progress Evidence) | Criterion 2 (Excellent Progress & Engineering Rigour) | 11 Isolated Conda Envs + 15/15 Execution Summary Table | `0:40` | `6:10` |
-| **11** | Progress: Underwater 3DGS Benchmark Results (`Kwaj` & `Tokai`) | **NEW** (Quantitative + Visuals) | Criterion 2 (Technically Sound Evaluation) | **`2A/gifs/underwater_3dgs_kwaj_comparison.gif`** + **`tokai_comparison.gif`** | `0:50` | `7:00` |
-| **12** | Progress: Per-Model SuGaR `.obj` Meshes (`--output_dir_tag`) | **NEW** (Technical Difficulty Solved) | Criterion 2 (Creative Solution to Drift/Floaters) | `sugar_kwaj_mesh.png` & `sugar_Tokai_mesh.png` | `0:30` | `7:30` |
-| **13** | Progress: Primitive-Space O-SCD Results & 3D Heatmaps | **NEW** (Primary Goal Verified) | Criterion 2 & 3 (Sophisticated Media & Proof) | **`2A/gifs/oscd_4panel_comparison.gif`** + **`oscd_3d_heatmap_toggle.gif`** | `0:35` | `8:05` |
-| **14** | Technical Challenges, Risk Mitigation & Phase 2–4 Roadmap | **NEW** (Next Steps & Conclusion) | Criterion 2 (Priorities for Next Steps) | Phase 3 Unified Architecture + Gantt Timeline | `0:25` | `8:30` (Target `8:00`) |
+| **4** | Understanding the Concept: Primitive-Space Change Detection (2026) | **Retained & Refined** (Slide 3) | Criterion 1 & 2 (Core Theory) | `2A/gifs/concept_oscd_paper.gif` (Galappaththige et al., 2026) | `0:35` | `2:10` |
+| **5** | Extending the Concept: Underwater 3DGS (2025) | **Retained & Refined** (Slide 4) | Criterion 1 & 2 (Marine Physics) | SeaSplat / WaterSplatting backscatter subtraction | `0:35` | `2:45` |
+| **6** | Extending the Concept: SuGaR Surface Alignment (2024) | **Retained & Refined** (Slide 5) | Criterion 2 (Creative Solution) | `2A/gifs/concept_sugar_garden.gif` (Guédon & Lepetit, 2024) | `0:35` | `3:20` |
+| **7** | Proposed End-to-End Architecture & CONOPS | **Retained & Refined** (Slide 6) | Criterion 2 (Methodology Alignment) | CONOPS Pipeline Diagram + 6-Stage HPC Workflow | `0:40` | `4:00` |
+| **8** | **Why the Submerged3D Test Dataset (`20 Images × 4 Locations`)** | **FIXED** (Replaced duplicate EcoRRAP text) | Criterion 2 (Technical Validation & Difficulties) | **`2A/gifs/submerged3d_4locations_20images.gif`** | `0:40` | `4:40` |
+| **9** | Why the AIMS EcoRRAP Dataset (1.35 TB Target) | **Retained & Polished** (Slide 8) | Criterion 1 & 2 (Ecological Horizon) | EcoRRAP 3-Column Analysis & Legal DTA Buffer Strategy | `0:30` | `5:10` |
+| **10** | Project Progress: QUT Aqua HPC & 15/15 Milestone | **NEW** (Progress Evidence) | Criterion 2 (Excellent Progress & Engineering Rigour) | 11 Isolated Conda Envs + 15/15 Execution Summary Table | `0:35` | `5:45` |
+| **11** | Progress: Underwater 3DGS Benchmark Results (`Kwaj` & `Tokai`) | **NEW** (Quantitative + Visuals) | Criterion 2 (Technically Sound Evaluation) | **`2A/gifs/underwater_3dgs_kwaj_comparison.gif`** + **`tokai_comparison.gif`** | `0:45` | `6:30` |
+| **12** | Progress: Per-Model SuGaR `.obj` Meshes (`--output_dir_tag`) | **NEW** (Technical Difficulty Solved) | Criterion 2 (Creative Solution to Drift/Floaters) | `sugar_kwaj_mesh_bright.png` & `sugar_tokai_mesh_bright.png` | `0:30` | `7:00` |
+| **13** | Progress: Primitive-Space O-SCD Results & 3D Heatmaps | **NEW** (Primary Goal Verified) | Criterion 2 & 3 (Sophisticated Media & Proof) | **`2A/gifs/oscd_4panel_comparison.gif`** + **`oscd_3d_heatmap_toggle.gif`** | `0:35` | `7:35` |
+| **14** | Technical Challenges, Risk Mitigation & Phase 2–4 Roadmap | **NEW** (Next Steps & Conclusion) | Criterion 2 (Priorities for Next Steps) | Phase 3 Unified Architecture + Gantt Timeline | `0:25` | `8:00` (Net `7:45`) |
 
 ---
 
@@ -53,7 +53,9 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - **Subtitle / Core Research Question:** *Can direct primitive-space differencing on surface-regularized, optically restored 3D Gaussian Splatting models accurately isolate physical structural and colour changes in turbid underwater environments?*
   - **Presenter & Supervision:** Joshua Hecke | Principal Supervisor: Prof. Niko Sünderhauf (QUT Centre for Robotics)
 - **Speaker Script (`0:00 – 0:30`, 30s):**
-  > "Good morning/afternoon everyone. My name is Joshua Hecke, and under the supervision of Professor Niko Sünderhauf at the QUT Centre for Robotics, my project investigates Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models. Our core research question asks: *How can we detect fine-scale physical and colour changes—such as coral growth, breakage, or bleaching—directly inside 3D Gaussian primitive space without being fooled by changing water turbidity and backscatter?*"
+  > "Good morning everyone. My name is **Joshua Hecke**, and under the supervision of Professor Niko Sünderhauf at the QUT Centre for Robotics, my research investigates **Primitive-Space Scene Change Detection in Underwater 3D Gaussian Splatting Models**.
+
+Our core research question asks: **How can we detect fine-scale structural growth, breakage, and bleaching directly inside 3D Gaussian primitive space, without being deceived by fluctuating underwater turbidity and backscatter?**"
 
 ---
 
@@ -64,7 +66,11 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   2. **Limitations of Current Diver & 2D Surveys:** Traditional Point Intercept Transects and 2D planar orthomosaics underestimate vertical canopy rugosity by up to **45%** (Davey et al., 2025) and miss volumetric branching changes under overhangs.
   3. **The Underwater 3D Vision Challenge:** Multi-temporal underwater surveys ($T_0$ vs. $T_1$) suffer from wavelength-dependent red-light absorption, particulate backscatter, and floating water-column noise—causing standard 2D render-then-compare methods to flag water haze as structural change.
 - **Speaker Script (`0:30 – 1:05`, 35s):**
-  > "To understand the context of this work: marine monitoring programs like the Australian Institute of Marine Science EcoRRAP project need to track millimetre-to-centimetre coral growth, skeletal erosion, and bleaching across massive reef sectors. Historically, surveys rely on 2D planar photo-transects, which miss up to 45% of three-dimensional canopy rugosity and volumetric change. However, moving to 3D underwater vision introduces a major hurdle: between survey Time A and Time B, water turbidity, ambient lighting, and particulate backscatter change dramatically, causing conventional 2D image-comparison pipelines to fail."
+  > "Coral ecosystems like the Great Barrier Reef face unprecedented thermal bleaching and storm destruction. Ecological programs like AIMS EcoRRAP need to monitor **millimetre-to-centimetre changes** over time.
+
+However, standard monitoring still relies on two-dimensional planar photo-transects. Recent studies show 2D surveys underestimate structural reef rugosity by **up to 45%**, completely missing complex vertical branching and under-canopy health.
+
+Yet moving to 3D underwater vision is notoriously difficult: between survey passes, changing light, water haze, and floating particles corrupt standard image comparison."
 
 ---
 
@@ -75,7 +81,11 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - **Explicit 3D Primitives:** Represents scenes as millions of explicit 3D ellipsoids with position $\mu$, anisotropic covariance $\Sigma$, opacity $\alpha$, and Spherical Harmonics colour $c$.
   - **Why It Matters:** Real-time rendering ($\ge 30\text{ FPS}$), explicit geometry, and lightweight file sizes—ideal for interactive digital twins.
 - **Speaker Script (`1:05 – 1:35`, 30s):**
-  > "Our foundation begins with 3D Gaussian Splatting, introduced by Kerbl et al. in 2023. Unlike Neural Radiance Fields—which lock geometry inside slow, implicit MLP weights—3DGS represents a scene explicitly as millions of 3D Gaussian ellipsoids, each defined by a 3D position, anisotropic covariance, opacity, and spherical harmonic colour. This enables real-time rendering at over 30 frames per second and gives us direct mathematical access to the 3D primitives themselves."
+  > "Introduced by Kerbl et al. in 2023, 3D Gaussian Splatting revolutionised computer vision.
+
+Unlike Neural Radiance Fields—which bury scene geometry inside slow, black-box neural networks—3DGS represents the world **explicitly** as millions of 3D Gaussian ellipsoids. Each primitive carries an exact 3D position, anisotropic covariance shape, opacity, and spherical harmonic colour.
+
+This delivers real-time rendering at over thirty frames per second, while giving us direct mathematical access to the physical primitives themselves."
 
 ---
 
@@ -86,8 +96,14 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - `Structural = Geometric Kernel = Physical Change` (Coral growth / breakage)
   - `Surface = Appearance Kernel = Colour Change` (Coral bleaching / disease)
   - **Literature Recommendation:** At the conclusion of their paper, the authors explicitly recommend integrating **SuGaR surface alignment** to mitigate unconstrained Gaussian drift between independent runs.
-- **Speaker Script (`1:35 – 2:15`, 40s):**
-  > "In 2026, Galappaththige et al. at QUT introduced primitive-space scene change detection—GS-Diff and O-SCD. Instead of rendering 3D models back into 2D pixels to compare them, this method compares the 3D Gaussian primitives directly in 3D space. Crucially, it decouples a Geometric Kernel—which detects physical structural additions or breakage—from an Appearance Kernel, which isolates surface colour shifts like coral bleaching. However, because unconstrained Gaussians can drift in space, the authors explicitly recommended at the conclusion of their paper integrating SuGaR surface regularization to anchor Gaussians to physical surfaces."
+- **Speaker Script (`1:35 – 2:10`, 35s):**
+  > "Galappaththige et al. introduced **GS-Diff** and **O-SCD**, operating directly on 3D primitives rather than comparing rendered 2D images.
+
+Crucially, this architecture decouples change into two independent mathematical kernels:
+- A **Geometric Kernel**, which detects true physical additions or structural breakage;
+- And an **Appearance Kernel**, which isolates surface colour shifts like thermal coral bleaching.
+
+Importantly, the authors concluded that unconstrained Gaussians can drift over time, explicitly recommending surface regularization like SuGaR to anchor geometry."
 
 ---
 
@@ -98,8 +114,12 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - Models the Jaffe-McGlamery underwater optical formation equation: $I_\lambda(x) = J_\lambda(x)e^{-\beta_{\text{atten}}d(x)} + B_\lambda^\infty(1 - e^{-\beta_{\text{scat}}d(x)})$.
   - Separates the **water medium** (backscatter & attenuation) from **true benthic geometry & colour**.
   - **Evaluated in Our Pipeline:** 6 underwater architectures across Physics-Based (`SeaSplat`, `3D-UIR`), Image-Restoration (`Gaussian Splashing`, `WaterSplatting`), and Supplementary (`RUSplatting`, `UW-GS`) paradigms.
-- **Speaker Script (`2:15 – 2:50`, 35s):**
-  > "To extend primitive-space change detection underwater, we first have to solve water distortion. Standard 3DGS models bake water haze and backscatter directly into floating "ghost" Gaussians in the water column. Recent 2025 methods like SeaSplat, 3D-UIR, and WaterSplatting embed a physically grounded Jaffe-McGlamery optical model into the rasterizer. This allows the network to learn the water medium separately and subtract backscatter and wavelength attenuation—recovering true clear-water colour and cleaner geometry."
+- **Speaker Script (`2:10 – 2:45`, 35s):**
+  > "Standard 3DGS treats water haze as physical geometry, creating dense swarms of floating ghost splats.
+
+Recent underwater architectures embed the **Jaffe-McGlamery optical formation model** directly into the differentiable rasterizer. This explicitly decouples the medium's wavelength-dependent attenuation and backscatter from true benthic scene radiance.
+
+Across our benchmark, we evaluated six distinct architectures across physics-based methods like **SeaSplat** and **3D-UIR**, alongside restoration models like **Gaussian Splashing** and **WaterSplatting**, isolating true underwater colour and crisp geometry."
 
 ---
 
@@ -110,8 +130,12 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - **Solves Two Critical Underwater Problems:**
     1. Enforces a Signed Distance Field (SDF) normal-consistency prior (`dn_consistency`) that binds Gaussians flat onto true physical surfaces and **prunes 85–92% of floating water-column artifacts**.
     2. Extracts a watertight, UV-textured 3D Poisson mesh (`.obj` + `.mtl` + `.png`) for every underwater 3DGS model—enabling $\text{mm} \to \text{cm}$ volumetric coral inspection.
-- **Speaker Script (`2:50 – 3:25`, 35s):**
-  > "The second extension is SuGaR by Guédon and Lepetit. Following the recommendation from the GS-Diff paper, we integrate SuGaR into Stage 5 of our pipeline for two reasons. First, its Signed Distance Field consistency prior pulls Gaussians flat onto physical surfaces and prunes 85 to 92 percent of unanchored water-column floaters. Second, it extracts a distinct, watertight 1-million-face 3D surface mesh for every underwater 3DGS model we test—allowing us to evaluate which optical method yields the cleanest 3D geometry for millimetre-to-centimetre coral monitoring."
+- **Speaker Script (`2:45 – 3:20`, 35s):**
+  > "Following the recommendation from the O-SCD authors, our pipeline integrates **SuGaR** by Guédon and Lepetit into Stage 5 for two vital reasons.
+
+First, its Signed Distance Field normal-consistency prior forces ellipsoids flat against actual surfaces, **pruning 85 to 92 percent of floating water-column artifacts**.
+
+Second, it reconstructs a watertight, UV-textured Poisson surface mesh for every model. This gives marine scientists millimeter-level surface geometry and physical area measurements, preventing unconstrained Gaussian drift between surveys."
 
 ---
 
@@ -120,8 +144,20 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
 - **Visual Layout:** High-resolution CONOPS diagram (`2A/gifs/conops.jpg` from `1B/QUT_Project_Proposal/Images/conops.jpg`), plus top/right panels showing the **Implemented 6-Stage Automated Pipeline on QUT Aqua HPC** and **Public Code Repository (`https://github.com/Heckus/UMP`)**:
   - **Public Code Reference:** All public scripts, patches, and automation files referenced below are available at [https://github.com/Heckus/UMP](https://github.com/Heckus/UMP).
   - `Stage 1: Data Prep` $\rightarrow$ `Stage 2: COLMAP SfM` $\rightarrow$ `Stage 3: Depth-Anything-V2 (ViT-L) & Inversion` $\rightarrow$ `Stage 4: 3DGS Training (8 Models)` $\rightarrow$ `Stage 5: Per-Model SuGaR Mesh (--output_dir_tag)` $\rightarrow$ `Stage 6: Held-Out Evaluation (PSNR / SSIM / LPIPS)`
-- **Speaker Script (`3:25 – 4:05`, 40s):**
-  > "This CONOPS diagram shows how all these pieces unite. Multi-temporal surveys at Time 1 and Time 2 pass through COLMAP Structure-from-Motion, dense monocular depth estimation via Depth-Anything-V2, underwater 3DGS optical reconstruction, and SuGaR surface refinement, before entering primitive-space change detection to output separate colour-change, geometry-change, and full-change maps. All public scripts and automation code referenced across this presentation are openly available on GitHub at github.com/Heckus/UMP. Over the past semester, I engineered this conceptual pipeline into a fully automated, 6-stage bash and PBS batch orchestration suite running on the QUT Aqua supercomputer."
+- **Speaker Script (`3:20 – 4:00`, 40s):**
+  > "This CONOPS illustrates our complete temporal change detection pipeline.
+
+Multi-temporal reef passes stream through:
+1. Automated data validation;
+2. Structure-from-Motion in COLMAP;
+3. Monocular depth inversion via Depth-Anything-V2;
+4. Underwater optical 3DGS training;
+5. SuGaR surface regularization and mesh extraction; and
+6. Held-out quantitative evaluation.
+
+All custom PBS batch scripts, CUDA rasterizer patches, and automation code referenced throughout this presentation are published on GitHub at **github.com/Heckus/UMP**.
+
+I engineered this into a turnkey six-stage automated pipeline operating on the **QUT Aqua supercomputer**."
 
 ---
 
@@ -139,16 +175,24 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
 | • **Diverse Optical Profiles:** Spans medium backscatter & heavy biofouling (`Kwaj`), extreme deep-blue attenuation (`Tokai`), and sparse low-contrast haze (`Cormoran`, `Isro`). | • **Rapid HPC Turnaround:** 20 images per site kept end-to-end 6-stage runtimes to **38–78 mins per model** on an A100 GPU, enabling 10 iterative debugging cycles across 8 architectures. | • **Single Timestamp ($T_0$ Only):** No $T_1$ repeat survey exists in Submerged3D—requiring our dual-state `Custom_OSCD_Dataset` to validate primitive-space change detection (`O-SCD`). |
 | • **Pre-Calibrated Ground-Truth:** High-resolution underwater imagery (`1280×720`) ideal for testing held-out novel view synthesis (`PSNR`, `SSIM`, `LPIPS`). | • **Backbone Selection for EcoRRAP:** Head-to-head comparison of 6 underwater 3DGS methods + per-model SuGaR `.obj` meshes identified `3D-UIR` & `SeaSplat` as the best optical backbones. | • **Macro vs. $\text{mm} \to \text{cm}$ Scale:** Shipwreck hulls validate macro structure & colour restoration, whereas EcoRRAP requires resolving fine $\text{mm} \to \text{cm}$ coral branching changes. |
 
-- **Speaker Script (`4:05 – 4:55`, 50s):**
-  > "Why did we start with the Submerged3D test dataset—specifically its 20-image, 4-location subset covering the Kwajalein, Tokai Maru, Cormoran, and Isle Royale shipwrecks? First, because our target 1.35-terabyte AIMS EcoRRAP coral dataset is undergoing inter-institutional legal Data Transfer Agreement review, this compact 80-image dataset served as a proactive engineering buffer. Having exactly 20 images per location kept full 6-stage training and mesh extraction runtimes to roughly 40 to 75 minutes per model on an A100 GPU—allowing us to rapidly iterate through 10 full debugging cycles across 11 isolated Conda environments. Second, testing across all four locations stress-tested our pipeline: the sparse 20-image views in low-contrast water on Cormoran and Isro exposed COLMAP feature-matching limits early, while Kwajalein and Tokai Maru provided ideal benchmarks for medium backscatter versus extreme blue attenuation. Finally, because Submerged3D only captures a single timestamp, we paired it with a custom dual-state change detection dataset to validate O-SCD."
+- **Speaker Script (`4:00 – 4:40`, 40s):**
+  > "Why begin with the Submerged3D dataset—specifically twenty images across four shipwreck sites?
+
+First, it acted as a **proactive engineering buffer**. While our primary 1.35-terabyte coral dataset undergoes AIMS legal Data Transfer Agreement review, this compact benchmark allowed rapid development. Twenty images kept full six-stage training to under seventy minutes per run, allowing ten complete debugging cycles across eleven Conda environments.
+
+Second, sparse views stress-tested our pipeline: low-contrast imagery on Cormoran and Isro exposed feature-matching limits early, proving our pre-flight data guards work."
 
 ---
 
 ### Slide 9: Why the EcoRRAP Dataset (Existing Slide 8 — Kept Distinct!)
 - **Slide Header:** **Why the AIMS EcoRRAP Dataset (1.35 TB Production Target)**
 - **Visual Layout:** Keep existing Slide 8 (`Data Type`, `Application`, `Potential Blockers`), with a small badge noting: **1.35 TB Multi-Temporal Reef Photogrammetry | AIMS–QUT DTA In Progress (Phase 2 Staging)**.
-- **Speaker Script (`4:55 – 5:30`, 35s):**
-  > "That leads directly to our production target: the 1.35-terabyte AIMS EcoRRAP dataset. Unlike Submerged3D, EcoRRAP provides high-overlap, multi-temporal 4D photogrammetry of fixed Great Barrier Reef coral quadrats across seasonal bleaching and storm events. For marine biologists, our pipeline will enable interactive browser walkthroughs and separate heatmaps for coral bleaching versus physical growth or breakage. The key potential blockers we must manage are large temporal changes saturating the heatmap, transient marine life or shifting sand, and the extreme geometric complexity of branching corals."
+- **Speaker Script (`4:40 – 5:10`, 30s):**
+  > "Our production target is the **1.35-terabyte AIMS EcoRRAP repository**.
+
+Unlike sparse test sets, EcoRRAP features dense, seventy-percent-overlap stereoscopic photogrammetry capturing permanent Great Barrier Reef quadrats across seasonal bleaching and cyclone events.
+
+Our pipeline will allow marine ecologists to walk through interactive 3D digital twins, automatically isolating bleaching colour shifts from physical colony growth or breakage. Our turnkey HPC scripts are fully staged for immediate ingestion upon legal clearance."
 
 ---
 
@@ -163,8 +207,12 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - `Restoration-Guided (4/4):` `Gaussian Splashing` (Kwaj, Tokai), `WaterSplatting` (Kwaj, Tokai) — **100% Pass**
   - `Supplementary (4/4):` `RUSplatting` (Kwaj, Tokai), `UW-GS` (Kwaj, Tokai) — **100% Pass**
   - `Surface Mesh & Change Detection (3/3):` Standalone `SuGaR` (Kwaj, Tokai) + `O-SCD` (`Custom_OSCD_Dataset`) — **100% Pass**
-- **Speaker Script (`5:30 – 6:10`, 40s):**
-  > "Moving into our concrete technical progress this semester: open-source underwater 3DGS repositories span incompatible Python versions from 3.7 to 3.12 and require custom-compiled CUDA rasterizers. To solve this, I engineered an automated provisioning and verification suite on the QUT Aqua supercomputer that builds 11 isolated Conda environments on NVIDIA A100 and H100 nodes. Across 10 systematic cluster iterations—where we diagnosed and patched issues ranging from 3D-UIR homodirectional gradient shapes to SuGaR subnormal float division—we achieved our primary milestone: 15 out of 15 full-lifecycle benchmark runs completed with zero errors."
+- **Speaker Script (`5:10 – 5:45`, 35s):**
+  > "Open-source underwater 3DGS codebases are notorious for conflicting dependencies, spanning Python 3.7 to 3.12 and incompatible CUDA rasterizers.
+
+I engineered an automated provisioning suite on QUT Aqua, isolating **eleven Conda environments** across NVIDIA A100 and H100 nodes. Across ten intensive audit cycles, we diagnosed and resolved critical bugs—including COLMAP library linking, custom CUDA rasterizer gradient shapes, and SuGaR numerical NaN collapses.
+
+This delivered our primary milestone: **15 out of 15 full-lifecycle benchmark runs succeeded with Exit Code 0**."
 
 ---
 
@@ -187,8 +235,12 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - **Best Structural Integrity (`SSIM`):** **3D-UIR** ($0.8739$ Kwaj / $0.7085$ Tokai) preserves fine metallic railings and biological encrustations without over-smoothing.
   - **Best Physical Albedo Recovery:** **SeaSplat** cleanly strips green-blue backscatter.
   - **Best Speed / Perceptual Score:** **WaterSplatting** achieves lowest LPIPS ($0.1714$) in just **38–48 mins**.
-- **Speaker Script (`6:10 – 7:00`, 50s):**
-  > "Here are the quantitative and visual results across all six underwater 3DGS architectures on Kwajalein and Tokai Maru. As you can see in the animated comparison and metrics table, Gaussian Splashing achieved the highest raw PSNR at 27.93 dB on Kwajalein, but its structural similarity dropped to 0.6142 in the heavy turbidity of Tokai Maru due to volumetric smoothing. WaterSplatting was the fastest model at 43 minutes with the best perceptual LPIPS score of 0.1714. However, for our change detection goal, 3D-UIR and SeaSplat are the clear winners: 3D-UIR achieved the highest structural similarity on both datasets—0.8739 on Kwajalein and 0.7085 on Tokai—preserving sharp geometric boundaries essential for millimeter-to-centimeter change tracking."
+- **Speaker Script (`5:45 – 6:30`, 45s):**
+  > "Here are our quantitative and visual results across Kwajalein and Tokai Maru.
+
+While Gaussian Splashing achieved the highest raw PSNR at 27.93 dB on Kwajalein, its structural similarity collapsed under the heavy blue turbidity of Tokai Maru to 0.6142 due to severe over-smoothing. WaterSplatting was our fastest architecture at 43 minutes with the lowest perceptual error.
+
+However, for change detection, structural integrity is paramount: **3D-UIR achieved the highest structural similarity on both scenes**—0.8739 and 0.7085—preserving fine metallic railings and biological textures. Combined with SeaSplat's superior physical backscatter removal, these two models form our winning backbones."
 
 ---
 
@@ -200,8 +252,12 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
   - **Floater Removal:** SDF consistency regularization (`dn_consistency`) prunes **85–92% of floating water-column Gaussians**, binding primitives onto physical surfaces.
   - **Critical Bug Discovered & Fixed (`--output_dir_tag <model>/<scene>`):** Vanilla SuGaR hardcoded output paths to `output/refined_mesh/<scene>/` and skipped training if a checkpoint existed—causing all underwater models to overwrite and share the same `.obj` mesh! We engineered per-model namespace isolation (hosted in our public repo at [https://github.com/Heckus/UMP](https://github.com/Heckus/UMP)) so **every underwater 3DGS architecture exports its own distinct, 1.0M-face UV-textured `.obj` mesh**.
   - **Supporting Output for $\text{mm} \to \text{cm}$ Coral Metrology:** Reviewing static renders of our per-model `.obj` meshes in Blender/MeshLab verifies which optical restoration method produces the cleanest 3D surface geometry.
-- **Speaker Script (`7:00 – 7:30`, 30s):**
-  > "In Stage 5, every trained underwater model is passed into SuGaR to bind Gaussians to physical surfaces and extract a 1-million-face watertight Poisson mesh. During Blender inspection, we discovered a major bug in vanilla SuGaR: it hardcoded cache directories by scene name alone, causing subsequent models to reuse the first model's mesh. By engineering per-model namespace isolation via `--output_dir_tag`—available in our public GitHub repository—we now generate and review distinct textured `.obj` meshes for every underwater method, shown here in our static high-resolution mesh renders on Kwajalein and Tokai Maru, pruning up to 92% of water-column floaters."
+- **Speaker Script (`6:30 – 7:00`, 30s):**
+  > "In Stage 5, every model generates a one-million-face watertight mesh.
+
+During inspection, we uncovered a critical flaw in vanilla SuGaR: it cached meshes by scene name alone, causing all models to overwrite the first model's geometry. We engineered per-model namespace isolation via `--output_dir_tag`, published in our repository.
+
+As seen in these static renders of Kwajalein and Tokai Maru, SuGaR successfully eliminated water floaters and recovered clean, measurable 3D hulls."
 
 ---
 
@@ -213,8 +269,12 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
 - **Key Quantitative & Technical Highlights:**
   - **High Reconstruction Fidelity:** Updated post-change 3DGS scene (`updated_scene.ply`) achieved **$\text{PSNR} = 27.08\text{ dB}$**, **$\text{SSIM} = 0.8315$**, and **$\text{LPIPS} = 0.3440$** across 25 held-out test views in **1h 04m**.
   - **Bidirectional 3D Thermal Heatmaps (`.ply`):** Directly localizes added, moved, and removed objects in 3D Gaussian primitive space without 2D rendering artifacts.
-- **Speaker Script (`7:30 – 8:05`, 35s):**
-  > "Finally, here is our primary primitive-space change detection engine—O-SCD—running end-to-end on our dual-state dataset. On the left, across 122 camera viewpoints, the model accurately segments added, removed, and rearranged objects without false positives from camera trajectory shifts. On the right, we synthesized direct 3D primitive-space thermal heatmaps—including an orbiting 3D splat that retains the volumetric thermal 'ghost' of the removed soda can from Time 0—while the updated 3D scene achieves 27.08 dB PSNR and 0.8315 SSIM."
+- **Speaker Script (`7:00 – 7:35`, 35s):**
+  > "Here is our primary change detection engine—O-SCD—operating end-to-end on our dual-state benchmark.
+
+On the left, across 122 viewpoints, the network accurately segments added, moved, and removed objects without false positives caused by camera movement.
+
+On the right, we synthesized direct **3D primitive-space thermal heatmaps**. Notice how the 3D splat captures the volumetric thermal 'ghost' of the removed red soda can, while the updated scene achieves over 27 dB PSNR and 0.83 SSIM."
 
 ---
 
@@ -229,8 +289,14 @@ All presentation GIFs have been pre-generated and saved in [`2A/gifs/`](file:///
      - Run extended 50k–100k iteration training on A100/H100 GPUs for turbidity-invariant primitive differencing.
   3. **Phase 4 (Jan – Feb 2027) — Ecological Quantitation & Thesis Delivery:**
      - Quantify $\text{mm} \to \text{cm}$ coral growth, bleaching appearance shifts, and volumetric accretion/depletion ($\text{cm}^3, \text{m}^2$) on the AIMS EcoRRAP dataset.
-- **Speaker Script (`8:05 – 8:30`, 25s):**
-  > "Looking ahead to our next priorities: as soon as the AIMS Data Transfer Agreement clears in Phase 2, our turnkey pipeline will ingest the 1.35-terabyte EcoRRAP dataset. In Phase 3, we will transplant our winning underwater backbones—3D-UIR and SeaSplat—alongside SuGaR surface anchoring directly into the O-SCD engine, enabling turbidity-invariant millimetre-to-centimetre coral change detection. Thank you, and I welcome any questions."
+- **Speaker Script (`7:35 – 8:00`, 25s):**
+  > "Looking ahead: In Phase 2, as the AIMS agreement clears, our pipeline will ingest the 1.35-terabyte EcoRRAP dataset.
+
+In Phase 3, we will graft our winning 3D-UIR and SeaSplat optical backbones directly into the O-SCD change engine.
+
+This will deliver an automated, turbidity-invariant 3D monitoring tool for coral reef conservation.
+
+Thank you, and I look forward to your questions."
 
 ---
 

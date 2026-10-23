@@ -58,22 +58,34 @@ Figure~\ref{fig:ecorrap_architecture} illustrates the target Phase~3 architectur
 \begin{figure}[htbp]
     \centering
     \begin{tikzpicture}[
-        node distance=0.55cm and 0.8cm,
-        block/.style={rectangle, draw=blue!75!black, fill=blue!6, thick, text width=4.4cm, minimum height=1.15cm, align=center, font=\scriptsize\sffamily, inner sep=3pt},
-        wideblock/.style={rectangle, draw=blue!80!black, fill=blue!10, thick, text width=6.8cm, minimum height=1.2cm, align=center, font=\scriptsize\sffamily, inner sep=3pt},
+        node distance=0.6cm and 1.4cm,
+        block/.style={rectangle, draw=blue!75!black, fill=blue!6, thick, text width=4.6cm, minimum height=1.2cm, align=center, font=\scriptsize\sffamily, inner sep=3pt},
+        wideblock/.style={rectangle, draw=blue!80!black, fill=blue!10, thick, text width=7.6cm, minimum height=1.2cm, align=center, font=\scriptsize\sffamily, inner sep=3pt},
         arrow/.style={->, >=stealth, thick, blue!75!black}
     ]
-        \node[block] (t0) {\textbf{Baseline Survey ($T_0$)}\\[1pt]Raw EcoRRAP Coral Imagery};
-        \node[block, right=1.4cm of t0] (t1) {\textbf{Inspection Survey ($T_1$)}\\[1pt]Post-Disturbance Reef Imagery};
-        \node[block, below=of t0] (uw) {\textbf{Underwater-Optimised 3DGS}\\[1pt]3D-UIR / SeaSplat Optical Inversion};
-        \node[block, below=of uw] (sugar) {\textbf{SuGaR Surface Regularization}\\[1pt]Enforce SDF Prior \& Prune Floaters};
-        \node[wideblock, below=3.4cm of $(t0)!0.5!(t1)$] (oscd) {\textbf{Primitive-Space O-SCD Engine}\\[1pt]Turbidity-Invariant 3D Gaussian Differencing ($T_1$ vs.\ $T_0$ Prior)};
-        \node[wideblock, below=of oscd] (vol) {\textbf{Differential SuGaR Mesh \& Ecological Metrics}\\[1pt]Volumetric Accretion/Depletion ($\text{cm}^3$) \& Rugosity ($\text{m}^2$)};
+        % Left Column: Baseline T0 Offline Pipeline
+        \node[block] (t0) {\textbf{Baseline Survey ($T_0$)}\\[2pt]Raw EcoRRAP Coral Imagery};
+        \node[block, below=0.6cm of t0] (uw) {\textbf{Underwater-Optimised 3DGS}\\[2pt]3D-UIR / SeaSplat Optical Inversion};
+        \node[block, below=0.6cm of uw] (sugar) {\textbf{SuGaR Surface Regularization}\\[2pt]Enforce SDF Prior \& Prune Floaters};
 
+        % Right Column: Inspection T1 Survey
+        \node[block, right=1.6cm of t0] (t1) {\textbf{Inspection Survey ($T_1$)}\\[2pt]Post-Disturbance Reef Imagery};
+
+        % Horizontal midpoint
+        \coordinate (midcol) at ($(t0.east)!0.5!(t1.west)$);
+
+        % Central Engine: positioned cleanly BELOW the bottom of the left column (sugar)
+        \node[wideblock] (oscd) at ([yshift=-1.1cm]sugar.south -| midcol) {\textbf{Primitive-Space O-SCD Engine}\\[2pt]Turbidity-Invariant 3D Gaussian Differencing ($T_1$ vs.\ $T_0$ Prior)};
+        \node[wideblock, below=0.6cm of oscd] (vol) {\textbf{Differential SuGaR Mesh \& Ecological Metrics}\\[2pt]Volumetric Accretion/Depletion ($\text{cm}^3$) \& Rugosity ($\text{m}^2$)};
+
+        % Connectors
         \draw[arrow] (t0) -- (uw);
         \draw[arrow] (uw) -- (sugar);
-        \draw[arrow] (sugar.south) |- ([yshift=0.25cm]oscd.north) -- (oscd.north);
-        \draw[arrow] (t1.south) |- ([yshift=0.25cm]oscd.north) -- (oscd.north);
+        
+        \coordinate (bus) at ([yshift=0.45cm]oscd.north);
+        \draw[arrow] (sugar.south) -- (sugar.south |- bus) -| ([xshift=-2.0cm]oscd.north);
+        \draw[arrow] (t1.south) -- (t1.south |- bus) -| ([xshift=2.0cm]oscd.north);
+
         \draw[arrow] (oscd) -- (vol);
     \end{tikzpicture}
     \caption{Target Phase~3 unified temporal underwater change detection architecture, combining underwater-optimised 3DGS optical restoration and SuGaR surface regularization with primitive-space O-SCD for the 1.35~TB AIMS EcoRRAP dataset.}

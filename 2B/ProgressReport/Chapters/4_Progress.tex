@@ -7,7 +7,7 @@
 
 \section{Introduction}
 \label{sec:progress_intro}
-This chapter presents the primary empirical achievements and quantitative evaluation of the research to date. Section~\ref{sec:milestone_verification} summarizes the cluster provisioning and verification of the 15/15 benchmark execution milestone. Section~\ref{sec:quantitative_benchmarks} provides the master quantitative performance table. Section~\ref{sec:comparative_analysis} performs a rigorous comparative analysis across the distinct 3DGS paradigms with visual figure references. Section~\ref{sec:sugar_results} examines surface mesh regularization. Section~\ref{sec:oscd_results} details the primitive-space change detection results and multi-view visual evaluations. Finally, Section~\ref{sec:visual_portfolio} summarizes the visual reconstruction portfolio and asset specifications.
+This chapter presents the primary empirical achievements and quantitative evaluation of the research to date. Section~\ref{sec:milestone_verification} summarizes the cluster provisioning and verification of the 15/15 benchmark execution milestone. Section~\ref{sec:quantitative_benchmarks} provides the master quantitative performance table. Section~\ref{sec:comparative_analysis} performs a rigorous comparative analysis across the distinct 3DGS paradigms with visual figure references. Section~\ref{sec:sugar_results} examines surface mesh regularization. Section~\ref{sec:oscd_results} details the primitive-space change detection results and multi-view visual evaluations. Finally, Section~\ref{sec:progress_summary} summarizes the project progress to date and key experimental takeaways.
 
 \section{HPC Cluster Provisioning and Milestone Verification}
 \label{sec:milestone_verification}
@@ -272,40 +272,6 @@ In Attempt~10, the \gls{oscd} pipeline achieved full end-to-end execution on the
     \caption{Synchronized multi-view change detection sequence from O-SCD across six camera perspectives (frames 001, 025, 049, 073, 097, and 122). Columns from left to right: (1) Reference RGB capture at $T_0$ showing the red soda can, pencil case, marker, highlighter, and ruler; (2) Query inspection capture at $T_1$ after object removal and rearrangement; (3) Spatial thermal change heatmap overlay; and (4) Extracted binary change segmentation mask.}
     \label{fig:oscd_keyframe_strip}
 \end{figure}
-
-\section{Visual Reconstruction Portfolio and Render Specification Summary}
-\label{sec:visual_portfolio}
-Because the 15 model executions generate multi-gigabyte binary PLY point clouds and per-model textured OBJ surface meshes, renders are captured locally using SuperSplat WebGL (for 3D Gaussian splats) and Blender or MeshLab (for UV-textured Poisson surface meshes). Table~\ref{tab:render_manifest} catalogs all figure image targets, their corresponding figure labels, and source model evaluations.
-
-\begin{table}[htbp]
-\centering
-\small
-\setlength{\tabcolsep}{6pt}
-\renewcommand{\arraystretch}{1.15}
-\caption{Visual Asset and Reconstruction Render Manifest}
-\label{tab:render_manifest}
-\begin{tabularx}{\textwidth}{l l c X}
-\toprule
-\textbf{Figure} & \textbf{Rendered Image File} & \textbf{Status} & \textbf{Evaluated Model and Target Scene} \\
-\midrule
-Fig.~\ref{fig:seasplat_kwaj} & seasplat\_kwaj\_render.png & Verified & SeaSplat on Kwajalein Shipwreck (PLY point cloud) \\
-Fig.~\ref{fig:seasplat_tokai} & seasplat\_tokai\_render.png & Verified & SeaSplat on Tokai Maru Shipwreck (PLY point cloud) \\
-Fig.~\ref{fig:3d_uir_kwaj} & 3d\_uir\_kwaj\_detail.png & Verified & 3D-UIR on Kwajalein Shipwreck (PLY point cloud) \\
-Fig.~\ref{fig:3d_uir_tokai} & 3d\_uir\_tokai\_detail.png & Verified & 3D-UIR on Tokai Maru Shipwreck (PLY point cloud) \\
-Fig.~\ref{fig:gs_splashing} & gaussian\_splashing\_kwaj.png & Verified & Gaussian Splashing on Kwajalein (PLY point cloud) \\
-Fig.~\ref{fig:watersplatting} & watersplatting\_kwaj.png & Verified & WaterSplatting on Kwajalein (PLY point cloud) \\
-Fig.~\ref{fig:rusplatting_kwaj} & rusplatting\_kwaj\_render.png & Verified & RUSplatting on Kwajalein (PLY point cloud) \\
-Fig.~\ref{fig:uw_gs_kwaj} & uw\_gs\_kwaj\_render.png & Verified & UW-GS on Kwajalein (PLY point cloud) \\
-Fig.~\ref{fig:sugar_kwaj_mesh} & sugar\_kwaj\_mesh.png & Verified & SuGaR Poisson Surface Mesh on Kwajalein (OBJ) \\
-Fig.~\ref{fig:sugar_tokai_mesh} & sugar\_Tokai\_mesh.png & Verified & SuGaR Poisson Surface Mesh on Tokai Maru (OBJ) \\
-Fig.~\ref{fig:oscd_updated_splat} & oscd\_updated\_scene\_render.png & Verified & O-SCD Updated Scene Splat on Custom OSCD \\
-Fig.~\ref{fig:oscd_sugar_mesh} & oscd\_sugar\_mesh\_render.png & Verified & O-SCD SuGaR Surface Mesh on Custom OSCD \\
-Fig.~\ref{fig:oscd_heatmap_turbo} & oscd\_3d\_heatmap\_turbo.png & Verified & O-SCD 3D Turbo Change Heatmap \\
-Fig.~\ref{fig:oscd_heatmap_all_changes} & oscd\_3d\_heatmap\_all\_changes.png & Verified & O-SCD Bidirectional All-Changes Heatmap \\
-Fig.~\ref{fig:oscd_keyframe_strip} & oscd\_change\_keyframe\_strip.png & Verified & O-SCD Synchronized Multi-View Keyframe Strip \\
-\bottomrule
-\end{tabularx}
-\end{table}
 
 \section{Summary of Progress}
 \label{sec:progress_summary}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.17)  20 OCT 2026 17:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.17)  23 OCT 2026 21:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2162,7 +2162,7 @@ or `english'. on input line 52.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: supertabular package is loaded.
 Package caption Info: End \AtBeginDocument code.
-<qutlogo.png, id=314, 749.80125pt x 182.6825pt>
+<qutlogo.png, id=310, 749.80125pt x 182.6825pt>
 File: qutlogo.png Graphic file (type png)
 <use qutlogo.png>
 Package pdftex.def Info: qutlogo.png  used on input line 58.
@@ -2491,25 +2491,25 @@ Underfull \hbox (badness 2027) in paragraph at lines 73--73
 
 LaTeX Warning: Float too large for page by 12.37222pt on input line 74.
 
-<Images/seasplat_kwaj_render.png, id=846, 1927.2pt x 1084.05pt>
+<Images/seasplat_kwaj_render.png, id=839, 1927.2pt x 1084.05pt>
 File: Images/seasplat_kwaj_render.png Graphic file (type png)
 <use Images/seasplat_kwaj_render.png>
 Package pdftex.def Info: Images/seasplat_kwaj_render.png  used on input line 90
 .
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/seasplat_tokai_render.png, id=847, 1927.2pt x 1084.05pt>
+<Images/seasplat_tokai_render.png, id=840, 1927.2pt x 1084.05pt>
 File: Images/seasplat_tokai_render.png Graphic file (type png)
 <use Images/seasplat_tokai_render.png>
 Package pdftex.def Info: Images/seasplat_tokai_render.png  used on input line 9
 7.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/3d_uir_kwaj_detail.png, id=851, 1927.2pt x 1084.05pt>
+<Images/3d_uir_kwaj_detail.png, id=844, 1927.2pt x 1084.05pt>
 File: Images/3d_uir_kwaj_detail.png Graphic file (type png)
 <use Images/3d_uir_kwaj_detail.png>
 Package pdftex.def Info: Images/3d_uir_kwaj_detail.png  used on input line 114.
 
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/3d_uir_tokai_detail.png, id=852, 1927.2pt x 1084.05pt>
+<Images/3d_uir_tokai_detail.png, id=845, 1927.2pt x 1084.05pt>
 File: Images/3d_uir_tokai_detail.png Graphic file (type png)
 <use Images/3d_uir_tokai_detail.png>
 Package pdftex.def Info: Images/3d_uir_tokai_detail.png  used on input line 121
@@ -2517,19 +2517,19 @@ Package pdftex.def Info: Images/3d_uir_tokai_detail.png  used on input line 121
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
 [18] [19] [20 <./Images/seasplat_kwaj_render.png> <./Images/seasplat_tokai_rend
 er.png> <./Images/3d_uir_kwaj_detail.png> <./Images/3d_uir_tokai_detail.png>]
-<Images/gaussian_splashing_kwaj.png, id=874, 1927.2pt x 1084.05pt>
+<Images/gaussian_splashing_kwaj.png, id=867, 1927.2pt x 1084.05pt>
 File: Images/gaussian_splashing_kwaj.png Graphic file (type png)
 <use Images/gaussian_splashing_kwaj.png>
 Package pdftex.def Info: Images/gaussian_splashing_kwaj.png  used on input line
  139.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/watersplatting_kwaj.png, id=875, 1927.2pt x 1084.05pt>
+<Images/watersplatting_kwaj.png, id=868, 1927.2pt x 1084.05pt>
 File: Images/watersplatting_kwaj.png Graphic file (type png)
 <use Images/watersplatting_kwaj.png>
 Package pdftex.def Info: Images/watersplatting_kwaj.png  used on input line 146
 .
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/rusplatting_kwaj_render.png, id=879, 1927.2pt x 1084.05pt>
+<Images/rusplatting_kwaj_render.png, id=872, 1927.2pt x 1084.05pt>
 File: Images/rusplatting_kwaj_render.png Graphic file (type png)
 <use Images/rusplatting_kwaj_render.png>
 Package pdftex.def Info: Images/rusplatting_kwaj_render.png  used on input line
@@ -2541,7 +2541,7 @@ Underfull \hbox (badness 4981) in paragraph at lines 165--165
 0.95 PSNR \OT1/ztmcm/m/n/10.95 =
  []
 
-<Images/uw_gs_kwaj_render.png, id=880, 1927.2pt x 1084.05pt>
+<Images/uw_gs_kwaj_render.png, id=873, 1927.2pt x 1084.05pt>
 File: Images/uw_gs_kwaj_render.png Graphic file (type png)
 <use Images/uw_gs_kwaj_render.png>
 Package pdftex.def Info: Images/uw_gs_kwaj_render.png  used on input line 171.
@@ -2549,61 +2549,52 @@ Package pdftex.def Info: Images/uw_gs_kwaj_render.png  used on input line 171.
 [21 <./Images/gaussian_splashing_kwaj.png> <./Images/watersplatting_kwaj.png> <
 ./Images/rusplatting_kwaj_render.png> <./Images/uw_gs_kwaj_render.png>]
 [22]
-<Images/sugar_kwaj_mesh.png, id=902, 1927.2pt x 1084.05pt>
+<Images/sugar_kwaj_mesh.png, id=895, 1927.2pt x 1084.05pt>
 File: Images/sugar_kwaj_mesh.png Graphic file (type png)
 <use Images/sugar_kwaj_mesh.png>
 Package pdftex.def Info: Images/sugar_kwaj_mesh.png  used on input line 198.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/sugar_Tokai_mesh.png, id=903, 1927.2pt x 1084.05pt>
+<Images/sugar_Tokai_mesh.png, id=896, 1927.2pt x 1084.05pt>
 File: Images/sugar_Tokai_mesh.png Graphic file (type png)
 <use Images/sugar_Tokai_mesh.png>
 Package pdftex.def Info: Images/sugar_Tokai_mesh.png  used on input line 205.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
  [23 <./Images/sugar_kwaj_mesh.png> <./Images/sugar_Tokai_mesh.png>]
-<Images/oscd_updated_scene_render.png, id=918, 1927.2pt x 1084.05pt>
+<Images/oscd_updated_scene_render.png, id=911, 1927.2pt x 1084.05pt>
 File: Images/oscd_updated_scene_render.png Graphic file (type png)
 <use Images/oscd_updated_scene_render.png>
 Package pdftex.def Info: Images/oscd_updated_scene_render.png  used on input li
 ne 229.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/oscd_sugar_mesh_render.png, id=919, 1927.2pt x 1084.05pt>
+<Images/oscd_sugar_mesh_render.png, id=912, 1927.2pt x 1084.05pt>
 File: Images/oscd_sugar_mesh_render.png Graphic file (type png)
 <use Images/oscd_sugar_mesh_render.png>
 Package pdftex.def Info: Images/oscd_sugar_mesh_render.png  used on input line 
 236.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/oscd_3d_heatmap_turbo.png, id=920, 1927.2pt x 1084.05pt>
+<Images/oscd_3d_heatmap_turbo.png, id=913, 1927.2pt x 1084.05pt>
 File: Images/oscd_3d_heatmap_turbo.png Graphic file (type png)
 <use Images/oscd_3d_heatmap_turbo.png>
 Package pdftex.def Info: Images/oscd_3d_heatmap_turbo.png  used on input line 2
 51.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/oscd_3d_heatmap_all_changes.png, id=921, 1927.2pt x 1084.05pt>
+<Images/oscd_3d_heatmap_all_changes.png, id=914, 1927.2pt x 1084.05pt>
 File: Images/oscd_3d_heatmap_all_changes.png Graphic file (type png)
 <use Images/oscd_3d_heatmap_all_changes.png>
 Package pdftex.def Info: Images/oscd_3d_heatmap_all_changes.png  used on input 
 line 258.
 (pdftex.def)             Requested size: 204.47818pt x 115.0113pt.
-<Images/oscd_change_keyframe_strip.png, id=922, 2890.8pt x 7708.8pt>
+<Images/oscd_change_keyframe_strip.png, id=915, 2890.8pt x 7708.8pt>
 File: Images/oscd_change_keyframe_strip.png Graphic file (type png)
 <use Images/oscd_change_keyframe_strip.png>
 Package pdftex.def Info: Images/oscd_change_keyframe_strip.png  used on input l
 ine 271.
 (pdftex.def)             Requested size: 193.15768pt x 515.08717pt.
-
-Underfull \hbox (badness 5519) in paragraph at lines 307--307
-[]|\OT1/ptm/b/n/10.95 (+20) Evaluated Model and Tar-get
- []
-
-
-Underfull \hbox (badness 1152) in paragraph at lines 307--307
-[]|\OT1/ptm/m/n/10.95 (+20) RUSplatting on Kwa-jalein (PLY
- []
-
-[24 <./Images/oscd_updated_scene_render.png> <./Images/oscd_sugar_mesh_render.p
-ng> <./Images/oscd_3d_heatmap_turbo.png> <./Images/oscd_3d_heatmap_all_changes.
-png>] [25 <./Images/oscd_change_keyframe_strip.png (PNG copy)>])
-(Chapters/5_Management.tex [26]
+)
+(Chapters/5_Management.tex [24 <./Images/oscd_updated_scene_render.png> <./Imag
+es/oscd_sugar_mesh_render.png> <./Images/oscd_3d_heatmap_turbo.png> <./Images/o
+scd_3d_heatmap_all_changes.png>] [25 <./Images/oscd_change_keyframe_strip.png (
+PNG copy)>]
 Chapter 5.
 
 Underfull \hbox (badness 10000) in paragraph at lines 35--35
@@ -2720,9 +2711,9 @@ Underfull \hbox (badness 6927) in paragraph at lines 35--35
 \OT1/ptm/m/n/10.95 (+20) per-mis-sions (chmod 700)
  []
 
-[27
+[26
 
-] [28] [29]
+] [27] [28]
 Underfull \hbox (badness 10000) in paragraph at lines 111--111
 []|\OT1/ptm/b/n/10.95 (+20) Prof. Niko
  []
@@ -2747,14 +2738,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 111--111
 []|\OT1/ptm/m/n/10.95 (+20) Institutional Host,
  []
 
-) (Chapters/6_Conclusion.tex [30] [31]
+) (Chapters/6_Conclusion.tex [29] [30]
 Chapter 6.
-[32
+[31
 
-] [33]
+] [32]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 66.
- [34]) (Chapters/Appendix.tex [35]
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 67.
+ [33]) (Chapters/Appendix.tex [34]
 Appendix A.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 70.
@@ -2770,13 +2761,13 @@ Underfull \hbox (badness 10000) in alignment at lines 102--102
 [][][][] 
  []
 
-[36
+[35
 
-] [37]
+] [36]
 Appendix B.
-[38
+[37
 
-] [39]
+] [38]
 Appendix C.
 
 Underfull \hbox (badness 10000) in paragraph at lines 182--182
@@ -2833,18 +2824,18 @@ Underfull \hbox (badness 6641) in paragraph at lines 182--182
 \OT1/ptm/m/n/10.95 (+20) temp fold-ers; symlink-
  []
 
-[40
+[39
 
 ]
 Appendix D.
-) [41
+) [40
 
 ] (ProgressReport.bbl
 bibitemlist
-[42
+[41
 
 
-] [43]) [44]
+] [42]) [43]
 \tf@toc=\write11
 \openout11 = `ProgressReport.toc'.
 
@@ -2860,14 +2851,14 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `ProgressReport.out' has not changed.
-(rerunfilecheck)             Checksum: 714E8E70ACBBF29A102F4C0F428D97D4;19770.
+(rerunfilecheck)             Checksum: 069C4AF60A367F72A24533E5996ABCD7;19377.
  ) 
 Here is how much of TeX's memory you used:
- 52213 strings out of 467871
- 1041766 string characters out of 5418376
- 1646884 words of memory out of 5000000
- 79398 multiletter control sequences out of 15000+600000
- 724180 words of font info for 550 fonts, out of 8000000 for 9000
+ 52218 strings out of 467871
+ 1041923 string characters out of 5418376
+ 1646951 words of memory out of 5000000
+ 79415 multiletter control sequences out of 15000+600000
+ 723832 words of font info for 544 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,12n,107p,3321b,1412s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
@@ -2890,9 +2881,9 @@ e1/urw/times/utmbi8a.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/ty
 pe1/urw/times/utmr8a.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/ty
 pe1/urw/times/utmr8a.pfb><C:/Users/hecke/AppData/Local/Programs/MiKTeX/fonts/ty
 pe1/urw/times/utmri8a.pfb>
-Output written on ProgressReport.pdf (56 pages, 64798999 bytes).
+Output written on ProgressReport.pdf (55 pages, 64790589 bytes).
 PDF statistics:
- 1223 PDF objects out of 1440 (max. 8388607)
- 233 named destinations out of 1000 (max. 500000)
- 121541 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 1166 PDF objects out of 1200 (max. 8388607)
+ 230 named destinations out of 1000 (max. 500000)
+ 121533 words of extra memory for PDF output out of 128383 (max. 10000000)
 
